@@ -19,6 +19,7 @@ this implementation for the default when working with NumPy arrays.
 """
 
 from numpy import *
+from . import linalg
 
 # These imports may overwrite names from the import * above.
 from ._aliases import *
