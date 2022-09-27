@@ -19,7 +19,13 @@ this implementation for the default when working with NumPy arrays.
 """
 
 from numpy import *
-from . import linalg
 
 # These imports may overwrite names from the import * above.
 from ._aliases import *
+
+# Don't know why, but we have to do this to import linalg. If we instead do
+#
+# from . import linalg
+#
+# It doesn't overwrite np.linalg from above.
+import numpy_array_api_compat.linalg
