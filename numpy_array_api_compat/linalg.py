@@ -47,5 +47,10 @@ def vector_norm(x: ndarray, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = 
 
 from numpy.linalg import *
 from numpy.linalg import __all__ as linalg_all
+
+# These are in the main NumPy namespace but not in numpy.linalg
+from numpy import cross, diagonal, matmul, outer, tensordot, trace
+
 __all__ = linalg_all.copy()
-__all__ += ['matrix_norm', 'vector_norm']
+__all__ += ['cross', 'diagonal', 'matmul', 'matrix_norm', 'outer',
+            'tensordot', 'trace', 'vector_norm']
