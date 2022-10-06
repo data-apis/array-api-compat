@@ -112,4 +112,5 @@ from numpy import cross, diagonal, matmul, outer, tensordot, trace
 
 __all__ = linalg_all.copy()
 __all__ += ['cross', 'diagonal', 'matmul', 'matrix_norm', 'matrix_transpose',
-            'outer', 'svdvals', 'tensordot', 'trace', 'vecdot', 'vector_norm']
+            'outer', 'svdvals', 'tensordot', 'trace', 'vecdot', 'vector_norm',
+            'EighResult', 'QRResult', 'SlogdetResult', 'SVDResult']
