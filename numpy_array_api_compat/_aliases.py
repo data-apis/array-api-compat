@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Union
-    from numpy import ndarray, dtype
+    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
 from typing import NamedTuple
 
@@ -107,7 +107,7 @@ def unique_values(x: ndarray, /) -> ndarray:
         equal_nan=False,
     )
 
-def astype(x: ndarray, dtype: dtype, /, *, copy: bool = True) -> ndarray:
+def astype(x: ndarray, dtype: Dtype, /, *, copy: bool = True) -> ndarray:
     if not copy and dtype == x.dtype:
         return x
     return x.astype(dtype=dtype, copy=copy)
@@ -138,6 +138,136 @@ def var(
 def permute_dims(x: ndarray, /, axes: Tuple[int, ...]) -> ndarray:
     return np.transpose(x, axes)
 
+# Creation functions add the device keyword (which does nothing for NumPy)
+
+def _check_device(device):
+    if device not in ["cpu", None]:
+        raise ValueError(f"Unsupported device {device!r}")
+
+def asarray(
+    obj: Union[
+        ndarray,
+        bool,
+        int,
+        float,
+        NestedSequence[bool | int | float],
+        SupportsBufferProtocol,
+    ],
+    /,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    copy: Optional[Union[bool, np._CopyMode]] = None,
+) -> ndarray:
+    _check_device(device)
+    if copy in (False, np._CopyMode.IF_NEEDED):
+        # copy=False is not yet implemented in np.asarray
+        raise NotImplementedError("copy=False is not yet implemented")
+    return np.asarray(obj, dtype=dtype)
+
+def arange(
+    start: Union[int, float],
+    /,
+    stop: Optional[Union[int, float]] = None,
+    step: Union[int, float] = 1,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.arange(start, stop=stop, step=step, dtype=dtype)
+
+def empty(
+    shape: Union[int, Tuple[int, ...]],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.empty(shape, dtype=dtype)
+
+def empty_like(
+    x: ndarray, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(device)
+    return np.empty_like(x, dtype=dtype)
+
+def eye(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    /,
+    *,
+    k: int = 0,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.eye(n_rows, M=n_cols, k=k, dtype=dtype)
+
+def full(
+    shape: Union[int, Tuple[int, ...]],
+    fill_value: Union[int, float],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.full(shape, fill_value, dtype=dtype)
+
+def full_like(
+    x: ndarray,
+    /,
+    fill_value: Union[int, float],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.full_like(x, fill_value, dtype=dtype)
+
+def linspace(
+    start: Union[int, float],
+    stop: Union[int, float],
+    /,
+    num: int,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    endpoint: bool = True,
+) -> ndarray:
+    _check_device(device)
+    return np.linspace(start, stop, num, dtype=dtype, endpoint=endpoint)
+
+def ones(
+    shape: Union[int, Tuple[int, ...]],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.ones(shape, dtype=dtype)
+
+def ones_like(
+    x: ndarray, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(device)
+    return np.ones_like(x, dtype=dtype)
+
+def zeros(
+    shape: Union[int, Tuple[int, ...]],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(device)
+    return np.zeros(shape, dtype=dtype)
+
+def zeros_like(
+    x: ndarray, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(device)
+    return np.zeros_like(x, dtype=dtype)
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
 
@@ -146,4 +276,6 @@ __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'bool', 'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
            'UniqueInverseResult', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'astype', 'abs', 'max', 'min',
-           'round', 'std', 'var', 'permute_dims']
+           'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
+           'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
+           'ones', 'ones_like', 'zeros', 'zeros_like']
