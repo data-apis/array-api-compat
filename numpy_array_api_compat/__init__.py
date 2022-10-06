@@ -26,6 +26,11 @@ Known differences from the Array API spec:
   np._set_promotion_state('weak') (requires NumPy 1.24 or newer, see NEP 50
   and https://github.com/numpy/numpy/issues/22341)
 
+- NumPy functions which are not wrapped may not have the same type aliases as
+  the spec.
+
+- NumPy functions which are not wrapped may not use positional-only arguments.
+
 """
 
 from numpy import *
