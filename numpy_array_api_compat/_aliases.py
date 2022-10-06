@@ -287,4 +287,4 @@ __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'unique_inverse', 'unique_values', 'astype', 'abs', 'max', 'min',
            'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
            'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
-           'ones', 'ones_like', 'zeros', 'zeros_like']
+           'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape']
