@@ -45,12 +45,44 @@ def slogdet(x: ndarray, /) -> SlogdetResult:
 def svd(x: ndarray, /, *, full_matrices: bool = True) -> SVDResult:
     return SVDResult(*np.linalg.svd(x, full_matrices=full_matrices))
 
-# This function is not in NumPy.
+# These functions have additional keyword arguments
+
+# The upper keyword argument is new from NumPy
+def cholesky(x: ndarray, /, *, upper: bool = False) -> ndarray:
+    L = np.linalg.cholesky(x)
+    if upper:
+        return matrix_transpose(L)
+    return L
+
+# The rtol keyword argument of matrix_rank() and pinv() is new from NumPy.
+# Note that it has a different semantic meaning from tol and rcond.
+def matrix_rank(x: ndarray, /, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
+    # this is different from np.linalg.matrix_rank, which supports 1
+    # dimensional arrays.
+    if x.ndim < 2:
+        raise np.linalg.LinAlgError("1-dimensional array given. Array must be at least two-dimensional")
+    S = np.linalg.svd(x, compute_uv=False)
+    if rtol is None:
+        tol = S.max(axis=-1, keepdims=True) * max(x.shape[-2:]) * np.finfo(S.dtype).eps
+    else:
+        # this is different from np.linalg.matrix_rank, which does not
+        # multiply the tolerance by the largest singular value.
+        tol = S.max(axis=-1, keepdims=True)*np.asarray(rtol)[..., np.newaxis]
+    return np.count_nonzero(S > tol, axis=-1)
+
+def pinv(x: ndarray, /, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
+    # this is different from np.linalg.pinv, which does not multiply the
+    # default tolerance by max(M, N).
+    if rtol is None:
+        rtol = max(x.shape[-2:]) * np.finfo(x.dtype).eps
+    return np.linalg.pinv(x, rcond=rtol)
+
+# These functions are new in the array API spec
+
 def matrix_norm(x: ndarray, /, *, keepdims: bool = False, ord: Optional[Union[int, float, Literal['fro', 'nuc']]] = 'fro') -> ndarray:
     return np.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
-# This function is new in the array API spec. Unlike transpose, it only
-# transposes the last two axes.
+# Unlike transpose, matrix_transpose only transposes the last two axes.
 def matrix_transpose(x: ndarray, /) -> ndarray:
     if x.ndim < 2:
         raise ValueError("x must be at least 2-dimensional for matrix_transpose")
@@ -61,7 +93,6 @@ def matrix_transpose(x: ndarray, /) -> ndarray:
 def svdvals(x: ndarray, /) -> Union[ndarray, Tuple[ndarray, ...]]:
     return np.linalg.svd(x, compute_uv=False)
 
-# vecdot is not in NumPy
 def vecdot(x1: ndarray, x2: ndarray, /, *, axis: int = -1) -> ndarray:
     ndim = max(x1.ndim, x2.ndim)
     x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
@@ -111,6 +142,7 @@ def vector_norm(x: ndarray, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = 
     return res
 
 __all__ = linalg_all.copy()
-__all__ += ['cross', 'diagonal', 'matmul', 'matrix_norm', 'matrix_transpose',
-            'outer', 'svdvals', 'tensordot', 'trace', 'vecdot', 'vector_norm',
-            'EighResult', 'QRResult', 'SlogdetResult', 'SVDResult']
+__all__ += ['cross', 'diagonal', 'matmul', 'cholesky', 'matrix_rank', 'pinv',
+            'matrix_norm', 'matrix_transpose', 'outer', 'svdvals',
+            'tensordot', 'trace', 'vecdot', 'vector_norm', 'EighResult',
+            'QRResult', 'SlogdetResult', 'SVDResult']
