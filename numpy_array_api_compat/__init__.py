@@ -32,3 +32,5 @@ from ._aliases import *
 #
 # It doesn't overwrite np.linalg from above.
 import numpy_array_api_compat.linalg
+
+from .linalg import matrix_transpose, vecdot
