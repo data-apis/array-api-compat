@@ -277,6 +277,39 @@ def reshape(x: ndarray, /, shape: Tuple[int, ...], copy: Optional[bool] = None) 
         return x
     return np.reshape(x, shape)
 
+# The descending keyword is new in sort and argsort, and 'kind' replaced with
+# 'stable'
+def argsort(
+    x: ndarray, /, *, axis: int = -1, descending: bool = False, stable: bool = True
+) -> ndarray:
+    # Note: this keyword argument is different, and the default is different.
+    kind = "stable" if stable else "quicksort"
+    if not descending:
+        res = np.argsort(x, axis=axis, kind=kind)
+    else:
+        # As NumPy has no native descending sort, we imitate it here. Note that
+        # simply flipping the results of np.argsort(x, ...) would not
+        # respect the relative order like it would in native descending sorts.
+        res = np.flip(
+            np.argsort(np.flip(x, axis=axis), axis=axis, kind=kind),
+            axis=axis,
+        )
+        # Rely on flip()/argsort() to validate axis
+        normalised_axis = axis if axis >= 0 else x.ndim + axis
+        max_i = x.shape[normalised_axis] - 1
+        res = max_i - res
+    return res
+
+def sort(
+    x: ndarray, /, *, axis: int = -1, descending: bool = False, stable: bool = True
+) -> ndarray:
+    # Note: this keyword argument is different, and the default is different.
+    kind = "stable" if stable else "quicksort"
+    res = np.sort(x, axis=axis, kind=kind)
+    if descending:
+        res = np.flip(res, axis=axis)
+    return res
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
 
@@ -287,4 +320,5 @@ __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'unique_inverse', 'unique_values', 'astype', 'abs', 'max', 'min',
            'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
            'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
-           'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape']
+           'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape', 'argsort',
+           'sort']
