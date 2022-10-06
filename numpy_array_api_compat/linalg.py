@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 if TYPE_CHECKING:
     from typing import Literal, Optional, Tuple, Union
     from numpy import ndarray
@@ -8,10 +8,42 @@ if TYPE_CHECKING:
 import numpy as np
 from numpy.core.numeric import normalize_axis_tuple
 
+class EighResult(NamedTuple):
+    eigenvalues: ndarray
+    eigenvectors: ndarray
+
+class QRResult(NamedTuple):
+    Q: ndarray
+    R: ndarray
+
+class SlogdetResult(NamedTuple):
+    sign: ndarray
+    logabsdet: ndarray
+
+class SVDResult(NamedTuple):
+    U: ndarray
+    S: ndarray
+    Vh: ndarray
+
+# These functions are the same as their NumPy counterparts except they return
+# a namedtuple.
+def eigh(x: ndarray, /) -> EighResult:
+    return EighResult(*np.linalg.eigh(x))
+
+def qr(x: ndarray, /, *, mode: Literal['reduced', 'complete'] = 'reduced') -> QRResult:
+    return QRResult(*np.linalg.qr(x, mode=mode))
+
+def slogdet(x: ndarray, /) -> SlogdetResult:
+    return SlogdetResult(*np.linalg.slogdet(x))
+
+def svd(x: ndarray, /, *, full_matrices: bool = True) -> SVDResult:
+    return SVDResult(*np.linalg.svd(x, full_matrices=full_matrices))
+
+# This function is not in NumPy.
 def matrix_norm(x: ndarray, /, *, keepdims: bool = False, ord: Optional[Union[int, float, Literal['fro', 'nuc']]] = 'fro') -> ndarray:
     return np.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
-# this function is new in the array API spec. Unlike transpose, it only
+# This function is new in the array API spec. Unlike transpose, it only
 # transposes the last two axes.
 def matrix_transpose(x: ndarray, /) -> ndarray:
     if x.ndim < 2:
