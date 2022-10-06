@@ -268,6 +268,10 @@ def zeros_like(
     _check_device(device)
     return np.zeros_like(x, dtype=dtype)
 
+# np.reshape calls the keyword argument 'newshape' instead of 'shape'
+def reshape(x: ndarray, /, shape: Tuple[int, ...]) -> ndarray:
+    return np.reshape(x, shape)
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
 
