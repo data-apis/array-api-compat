@@ -8,6 +8,12 @@ if TYPE_CHECKING:
 import numpy as np
 from numpy.core.numeric import normalize_axis_tuple
 
+from numpy.linalg import *
+from numpy.linalg import __all__ as linalg_all
+
+# These are in the main NumPy namespace but not in numpy.linalg
+from numpy import cross, diagonal, matmul, outer, tensordot, trace
+
 class EighResult(NamedTuple):
     eigenvalues: ndarray
     eigenvectors: ndarray
@@ -103,12 +109,6 @@ def vector_norm(x: ndarray, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = 
         res = np.reshape(res, tuple(shape))
 
     return res
-
-from numpy.linalg import *
-from numpy.linalg import __all__ as linalg_all
-
-# These are in the main NumPy namespace but not in numpy.linalg
-from numpy import cross, diagonal, matmul, outer, tensordot, trace
 
 __all__ = linalg_all.copy()
 __all__ += ['cross', 'diagonal', 'matmul', 'matrix_norm', 'matrix_transpose',
