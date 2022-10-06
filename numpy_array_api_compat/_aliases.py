@@ -117,3 +117,6 @@ def astype(x: ndarray, dtype: dtype, /, *, copy: bool = True) -> ndarray:
     if not copy and dtype == x.dtype:
         return x
     return x.astype(dtype=dtype, copy=copy)
+
+# from numpy import * doesn't overwrite these builtin names
+from numpy import abs, max, min, round

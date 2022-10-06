@@ -30,9 +30,6 @@ Known differences from the Array API spec:
 
 from numpy import *
 
-# from numpy import * doesn't overwrite these builtin names
-from numpy import abs, max, min, round
-
 # These imports may overwrite names from the import * above.
 from ._aliases import *
 
