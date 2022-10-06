@@ -269,7 +269,12 @@ def zeros_like(
     return np.zeros_like(x, dtype=dtype)
 
 # np.reshape calls the keyword argument 'newshape' instead of 'shape'
-def reshape(x: ndarray, /, shape: Tuple[int, ...]) -> ndarray:
+def reshape(x: ndarray, /, shape: Tuple[int, ...], copy: Optional[bool] = None) -> ndarray:
+    if copy is True:
+        x = x.copy()
+    elif copy is False:
+        x.shape = shape
+        return x
     return np.reshape(x, shape)
 
 # from numpy import * doesn't overwrite these builtin names
