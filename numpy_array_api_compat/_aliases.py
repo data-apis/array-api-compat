@@ -6,35 +6,29 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Tuple
+    from typing import Optional, Tuple, Union
     from numpy import ndarray, dtype
 
 from typing import NamedTuple
 
-from numpy import (arccos, arccosh, arcsin, arcsinh, arctan, arctan2, arctanh,
-                   left_shift, invert, right_shift, bool_, concatenate, power,
-                   transpose, unique)
+import numpy as np
 
 # Basic renames
-acos = arccos
-acosh = arccosh
-asin = arcsin
-asinh = arcsinh
-atan = arctan
-atan2 = arctan2
-atanh = arctanh
-bitwise_left_shift = left_shift
-bitwise_invert = invert
-bitwise_right_shift = right_shift
-bool = bool_
-concat = concatenate
-pow = power
+acos = np.arccos
+acosh = np.arccosh
+asin = np.arcsin
+asinh = np.arcsinh
+atan = np.arctan
+atan2 = np.arctan2
+atanh = np.arctanh
+bitwise_left_shift = np.left_shift
+bitwise_invert = np.invert
+bitwise_right_shift = np.right_shift
+bool = np.bool_
+concat = np.concatenate
+pow = np.power
 
 # These functions are modified from the NumPy versions.
-
-# Unlike transpose(), the axes argument to permute_dims() is required.
-def permute_dims(x: ndarray, /, axes: Tuple[int, ...]) -> ndarray:
-    return transpose(x, axes)
 
 # np.unique() is split into four functions in the array API:
 # unique_all, unique_counts, unique_inverse, and unique_values (this is done
@@ -60,7 +54,7 @@ class UniqueInverseResult(NamedTuple):
 
 
 def unique_all(x: ndarray, /) -> UniqueAllResult:
-    values, indices, inverse_indices, counts = unique(
+    values, indices, inverse_indices, counts = np.unique(
         x,
         return_counts=True,
         return_index=True,
@@ -79,7 +73,7 @@ def unique_all(x: ndarray, /) -> UniqueAllResult:
 
 
 def unique_counts(x: ndarray, /) -> UniqueCountsResult:
-    res = unique(
+    res = np.unique(
         x,
         return_counts=True,
         return_index=False,
@@ -91,7 +85,7 @@ def unique_counts(x: ndarray, /) -> UniqueCountsResult:
 
 
 def unique_inverse(x: ndarray, /) -> UniqueInverseResult:
-    values, inverse_indices = unique(
+    values, inverse_indices = np.unique(
         x,
         return_counts=False,
         return_index=False,
@@ -105,7 +99,7 @@ def unique_inverse(x: ndarray, /) -> UniqueInverseResult:
 
 
 def unique_values(x: ndarray, /) -> ndarray:
-    return unique(
+    return np.unique(
         x,
         return_counts=False,
         return_index=False,
@@ -118,5 +112,38 @@ def astype(x: ndarray, dtype: dtype, /, *, copy: bool = True) -> ndarray:
         return x
     return x.astype(dtype=dtype, copy=copy)
 
+# These functions have different keyword argument names
+
+def std(
+    x: ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    correction: Union[int, float] = 0.0, # correction instead of ddof
+    keepdims: bool = False,
+) -> ndarray:
+    return np.std(x, axis=axis, ddof=correction, keepdims=keepdims)
+
+def var(
+    x: ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    correction: Union[int, float] = 0.0, # correction instead of ddof
+    keepdims: bool = False,
+) -> ndarray:
+    return np.var(x, axis=axis, ddof=correction, keepdims=keepdims)
+
+# Unlike transpose(), the axes argument to permute_dims() is required.
+def permute_dims(x: ndarray, /, axes: Tuple[int, ...]) -> ndarray:
+    return np.transpose(x, axes)
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
+
+__all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
+           'bitwise_left_shift', 'bitwise_invert', 'bitwise_right_shift',
+           'bool', 'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
+           'UniqueInverseResult', 'unique_all', 'unique_counts',
+           'unique_inverse', 'unique_values', 'astype', 'abs', 'max', 'min',
+           'round', 'std', 'var', 'permute_dims']
