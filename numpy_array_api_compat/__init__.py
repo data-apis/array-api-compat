@@ -55,4 +55,4 @@ import numpy_array_api_compat.linalg
 
 from .linalg import matrix_transpose, vecdot
 
-from .helpers import *
+from ._helpers import *
