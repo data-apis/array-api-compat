@@ -310,6 +310,32 @@ def sort(
         res = np.flip(res, axis=axis)
     return res
 
+# sum() and prod() should always upcast when dtype=None
+def sum(
+    x: ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: Optional[Dtype] = None,
+    keepdims: bool = False,
+) -> ndarray:
+    # `np.sum` already upcasts integers, but not floats
+    if dtype is None and x.dtype == np.float32:
+        dtype = np.float64
+    return np.sum(x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+def prod(
+    x: ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: Optional[Dtype] = None,
+    keepdims: bool = False,
+) -> ndarray:
+    if dtype is None and x.dtype == np.float32:
+        dtype = np.float64
+    return np.prod(x, dtype=dtype, axis=axis, keepdims=keepdims)
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
 
@@ -321,4 +347,4 @@ __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
            'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
            'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape', 'argsort',
-           'sort']
+           'sort', 'sum', 'prod']
