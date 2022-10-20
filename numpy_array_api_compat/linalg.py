@@ -12,7 +12,7 @@ from numpy.linalg import *
 from numpy.linalg import __all__ as linalg_all
 
 # These are in the main NumPy namespace but not in numpy.linalg
-from numpy import cross, diagonal, matmul, outer, tensordot, trace
+from numpy import cross, matmul, outer, tensordot
 
 class EighResult(NamedTuple):
     eigenvalues: ndarray
@@ -140,6 +140,15 @@ def vector_norm(x: ndarray, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = 
         res = np.reshape(res, tuple(shape))
 
     return res
+
+# np.diagonal and np.trace operate on the first two axes whereas these
+# operates on the last two
+
+def diagonal(x: ndarray, /, *, offset: int = 0) -> ndarray:
+    return np.diagonal(x, offset=offset, axis1=-2, axis2=-1)
+
+def trace(x: ndarray, /, *, offset: int = 0) -> ndarray:
+    return np.asarray(np.trace(x, offset=offset, axis1=-2, axis2=-1))
 
 __all__ = linalg_all.copy()
 __all__ += ['cross', 'diagonal', 'matmul', 'cholesky', 'matrix_rank', 'pinv',
