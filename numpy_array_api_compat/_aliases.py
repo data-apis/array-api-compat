@@ -144,6 +144,7 @@ def _check_device(device):
     if device not in ["cpu", None]:
         raise ValueError(f"Unsupported device {device!r}")
 
+# asarray also adds the copy keyword
 def asarray(
     obj: Union[
         ndarray,
@@ -336,6 +337,23 @@ def prod(
         dtype = np.float64
     return np.prod(x, dtype=dtype, axis=axis, keepdims=keepdims)
 
+# ceil, floor, and trunc return integers for integer inputs
+
+def ceil(x: ndarray, /) -> ndarray:
+    if np.issubdtype(x.dtype, np.integer):
+        return x
+    return np.ceil(x)
+
+def floor(x: ndarray, /) -> ndarray:
+    if np.issubdtype(x.dtype, np.integer):
+        return x
+    return np.floor(x)
+
+def trunc(x: ndarray, /) -> ndarray:
+    if np.issubdtype(x.dtype, np.integer):
+        return x
+    return np.trunc(x)
+
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
 
@@ -347,4 +365,4 @@ __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
            'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
            'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape', 'argsort',
-           'sort', 'sum', 'prod']
+           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc']
