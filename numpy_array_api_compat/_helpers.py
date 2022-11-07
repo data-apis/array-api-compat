@@ -4,7 +4,46 @@ Various helper functions which are not part of the spec.
 
 from __future__ import annotations
 
+import importlib
+compat_namespace = importlib.import_module(__package__)
+
 import numpy as np
+
+def _is_numpy_array(x):
+    # TODO: Should we reject ndarray subclasses?
+    return isinstance(x, (np.ndarray, np.generic))
+
+def is_array_api_obj(x):
+    """
+    Check if x is an array API compatible array object.
+    """
+    return _is_numpy_array(x) or hasattr(x, '__array_namespace__')
+
+def get_namespace(*xs):
+    """
+    Get the array API compatible namespace for the arrays `xs`.
+
+    `xs` should contain one or more arrays.
+    """
+    namespaces = set()
+    for x in xs:
+        if hasattr(x, '__array_namespace__'):
+            namespaces.add(x.__array_namespace__)
+        elif _is_numpy_array(x):
+            namespaces.add(compat_namespace)
+        else:
+            # TODO: Support Python scalars?
+            raise ValueError("The input is not a supported array type")
+
+    if not namespaces:
+        raise ValueError("Unrecognized array input")
+
+    if len(namespaces) != 1:
+        raise ValueError(f"Multiple namespaces for array inputs: {namespaces}")
+
+    xp, = namespaces
+
+    return xp
 
 # device and to_device are not included in array object of this library
 # because this library just reuses ndarray without wrapping or subclassing it.
@@ -24,7 +63,7 @@ def device(x: "Array", /) -> "Device":
     out: device
         a ``device`` object (see the "Device Support" section of the array API specification).
     """
-    if isinstance(x, np.ndarray):
+    if _is_numpy_array(x):
         return "cpu"
     return x.device
 
@@ -49,7 +88,7 @@ def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, An
     .. note::
        If ``stream`` is given, the copy operation should be enqueued on the provided ``stream``; otherwise, the copy operation should be enqueued on the default stream/queue. Whether the copy is performed synchronously or asynchronously is implementation-dependent. Accordingly, if synchronization is required to guarantee data safety, this must be clearly explained in a conforming library's documentation.
     """
-    if isinstance(x, np.ndarray):
+    if _is_numpy_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         if device == 'cpu':
@@ -58,4 +97,4 @@ def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, An
 
     return x.to_device(device, stream=stream)
 
-__all__ = ['device', 'to_device']
+__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device']
