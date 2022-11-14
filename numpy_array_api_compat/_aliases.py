@@ -164,6 +164,13 @@ def asarray(
     if copy in (False, np._CopyMode.IF_NEEDED):
         # copy=False is not yet implemented in np.asarray
         raise NotImplementedError("copy=False is not yet implemented")
+    if isinstance(obj, np.ndarray):
+        if dtype is not None and obj.dtype != dtype:
+            copy = True
+        if copy in (True, np._CopyMode.ALWAYS):
+            return np.array(obj, copy=True, dtype=dtype)
+        return obj
+
     return np.asarray(obj, dtype=dtype)
 
 def arange(
