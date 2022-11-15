@@ -19,7 +19,7 @@ def is_array_api_obj(x):
     """
     return _is_numpy_array(x) or hasattr(x, '__array_namespace__')
 
-def get_namespace(*xs):
+def get_namespace(*xs, _use_compat=True):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
@@ -30,7 +30,10 @@ def get_namespace(*xs):
         if hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__)
         elif _is_numpy_array(x):
-            namespaces.add(compat_namespace)
+            if _use_compat:
+                namespaces.add(compat_namespace)
+            else:
+                namespaces.add(np)
         else:
             # TODO: Support Python scalars?
             raise ValueError("The input is not a supported array type")
