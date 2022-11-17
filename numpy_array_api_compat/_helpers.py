@@ -27,7 +27,9 @@ def get_namespace(*xs, _use_compat=True):
     """
     namespaces = set()
     for x in xs:
-        if hasattr(x, '__array_namespace__'):
+        if isinstance(x, (tuple, list)):
+            namespaces.add(get_namespace(*x, _use_compat=_use_compat))
+        elif hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__)
         elif _is_numpy_array(x):
             if _use_compat:

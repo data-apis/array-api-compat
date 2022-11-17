@@ -27,6 +27,14 @@ def get_xp(f):
     sig = signature(f)
     new_sig = sig.replace(parameters=[sig.parameters[i] for i in sig.parameters if i != 'xp'])
 
+    if inner.__doc__ is None:
+        inner.__doc__ = f"""\
+Array API compatibility wrapper for {f.__name__}.
+
+See the corresponding documentation in NumPy/CuPy and/or the array API
+specification for more details.
+
+"""
     inner.__signature__ = new_sig
 
     return inner
