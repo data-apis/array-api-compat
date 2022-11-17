@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 from types import ModuleType
 
-from ._helpers import _is_numpy_array
+from ._helpers import _is_numpy_array, get_namespace
 from ._internal import get_xp
 
 # Basic renames
@@ -208,10 +208,15 @@ def asarray(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
     copy: "Optional[Union[bool, np._CopyMode]]" = None,
-    namespace = 'numpy',
+    namespace = None,
 ) -> ndarray:
-
-    if isinstance(namespace, ModuleType):
+    if namespace is None:
+        try:
+            xp = get_namespace(obj, _use_compat=False)
+        except ValueError:
+            # TODO: What about lists of arrays?
+            raise ValueError("A namespace must be specified for asarray() with non-array input")
+    elif isinstance(namespace, ModuleType):
         xp = namespace
     elif namespace == 'numpy':
         import numpy as xp
