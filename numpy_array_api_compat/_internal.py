@@ -5,7 +5,7 @@ Internal helpers
 from functools import wraps
 from inspect import signature
 
-from ._helpers import get_namespace
+from .common._helpers import get_namespace
 
 def get_xp(f):
     """

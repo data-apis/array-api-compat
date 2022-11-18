@@ -9,11 +9,12 @@ if TYPE_CHECKING:
     from typing import Optional, Tuple, Union, List
     from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
+from functools import partial
 from typing import NamedTuple
 from types import ModuleType
 
 from ._helpers import _is_numpy_array, get_namespace
-from ._internal import get_xp
+from .._internal import get_xp
 
 # Basic renames
 @get_xp
@@ -194,7 +195,7 @@ def _check_device(device):
         raise ValueError(f"Unsupported device {device!r}")
 
 # asarray also adds the copy keyword
-def asarray(
+def _asarray(
     obj: Union[
         ndarray,
         bool,
@@ -244,6 +245,8 @@ def asarray(
         return obj
 
     return xp.asarray(obj, dtype=dtype)
+
+asarray_numpy = partial(_asarray, namespace='numpy')
 
 @get_xp
 def arange(
@@ -462,15 +465,12 @@ def trunc(x: ndarray, /, xp) -> ndarray:
         return x
     return xp.trunc(x)
 
-# from numpy import * doesn't overwrite these builtin names
-from numpy import abs, max, min, round
-
 __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'bitwise_left_shift', 'bitwise_invert', 'bitwise_right_shift',
            'bool', 'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
            'UniqueInverseResult', 'unique_all', 'unique_counts',
-           'unique_inverse', 'unique_values', 'astype', 'abs', 'max', 'min',
-           'round', 'std', 'var', 'permute_dims', 'asarray', 'arange',
-           'empty', 'empty_like', 'eye', 'full', 'full_like', 'linspace',
-           'ones', 'ones_like', 'zeros', 'zeros_like', 'reshape', 'argsort',
-           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc']
+           'unique_inverse', 'unique_values', 'astype', 'std', 'var',
+           'permute_dims', 'asarray_numpy', 'arange', 'empty', 'empty_like',
+           'eye', 'full', 'full_like', 'linspace', 'ones', 'ones_like',
+           'zeros', 'zeros_like', 'reshape', 'argsort', 'sort', 'sum', 'prod',
+           'ceil', 'floor', 'trunc']

@@ -4,10 +4,9 @@ Various helper functions which are not part of the spec.
 
 from __future__ import annotations
 
-import importlib
-compat_namespace = importlib.import_module(__package__)
-
 import numpy as np
+
+from ..common._helpers import get_namespace
 
 def _is_numpy_array(x):
     # TODO: Should we reject ndarray subclasses?
@@ -18,37 +17,6 @@ def is_array_api_obj(x):
     Check if x is an array API compatible array object.
     """
     return _is_numpy_array(x) or hasattr(x, '__array_namespace__')
-
-def get_namespace(*xs, _use_compat=True):
-    """
-    Get the array API compatible namespace for the arrays `xs`.
-
-    `xs` should contain one or more arrays.
-    """
-    namespaces = set()
-    for x in xs:
-        if isinstance(x, (tuple, list)):
-            namespaces.add(get_namespace(*x, _use_compat=_use_compat))
-        elif hasattr(x, '__array_namespace__'):
-            namespaces.add(x.__array_namespace__)
-        elif _is_numpy_array(x):
-            if _use_compat:
-                namespaces.add(compat_namespace)
-            else:
-                namespaces.add(np)
-        else:
-            # TODO: Support Python scalars?
-            raise ValueError("The input is not a supported array type")
-
-    if not namespaces:
-        raise ValueError("Unrecognized array input")
-
-    if len(namespaces) != 1:
-        raise ValueError(f"Multiple namespaces for array inputs: {namespaces}")
-
-    xp, = namespaces
-
-    return xp
 
 # device and to_device are not included in array object of this library
 # because this library just reuses ndarray without wrapping or subclassing it.
