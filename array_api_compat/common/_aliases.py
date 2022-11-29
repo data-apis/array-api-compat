@@ -56,10 +56,10 @@ def pow(x1, x2, /, xp):
 def arange(
     start: Union[int, float],
     /,
-    xp,
     stop: Optional[Union[int, float]] = None,
     step: Union[int, float] = 1,
     *,
+    xp,
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
