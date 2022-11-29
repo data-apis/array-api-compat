@@ -6,7 +6,7 @@ from ..common import _aliases
 
 from .._internal import get_xp
 
-asarray = asarray_numpy = partial(_aliases._asarray, namespace='numpy')
+asarray = asarray_cupy = partial(_aliases._asarray, namespace='cupy')
 asarray.__doc__ = _aliases._asarray.__doc__
 del partial
 
@@ -56,6 +56,6 @@ ceil = get_xp(cp)(_aliases.ceil)
 floor = get_xp(cp)(_aliases.floor)
 trunc = get_xp(cp)(_aliases.trunc)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'arange',
+__all__ = _aliases.__all__ + ['asarray', 'asarray_cupy', 'bool', 'arange',
                               'empty', 'empty_like', 'eye', 'full', 'full_like',
                               'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like']
