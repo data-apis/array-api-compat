@@ -22,12 +22,11 @@ def get_xp(xp):
 
     """
     def inner(f):
-        sig = signature(f)
-
         @wraps(f)
         def wrapped_f(*args, **kwargs):
             return f(*args, xp=xp, **kwargs)
 
+        sig = signature(f)
         new_sig = sig.replace(parameters=[sig.parameters[i] for i in sig.parameters if i != 'xp'])
 
         if wrapped_f.__doc__ is None:
@@ -38,7 +37,7 @@ See the corresponding documentation in NumPy/CuPy and/or the array API
 specification for more details.
 
 """
-        # wrapped_f.__signature__ = new_sig
+        wrapped_f.__signature__ = new_sig
         return wrapped_f
 
     return inner
