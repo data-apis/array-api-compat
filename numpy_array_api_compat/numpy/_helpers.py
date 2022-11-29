@@ -4,11 +4,17 @@ Various helper functions which are not part of the spec.
 
 from __future__ import annotations
 
-import numpy as np
+import sys
 
 from ..common._helpers import get_namespace
 
 def _is_numpy_array(x):
+    # Avoid importing NumPy if it isn't already
+    if 'numpy' not in sys.modules:
+        return False
+
+    import numpy as np
+
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (np.ndarray, np.generic))
 
