@@ -11,10 +11,10 @@ from ._aliases import *
 #
 # from . import linalg
 #
-# It doesn't overwrite np.linalg from above. The import is generated
+# It doesn't overwrite cupy.linalg from above. The import is generated
 # dynamically so that the library can be vendored.
 __import__(__package__ + '.linalg')
 
 from .linalg import matrix_transpose, vecdot
 
-from ._helpers import *
+from ..common._helpers import *

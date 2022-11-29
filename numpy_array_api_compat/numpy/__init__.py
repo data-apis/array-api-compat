@@ -17,4 +17,4 @@ __import__(__package__ + '.linalg')
 
 from .linalg import matrix_transpose, vecdot
 
-from ._helpers import *
+from ..common._helpers import *

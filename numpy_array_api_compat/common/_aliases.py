@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 from types import ModuleType
 
-from ..numpy._helpers import _is_numpy_array, get_namespace
+from ._helpers import _check_device, _is_numpy_array, get_namespace
 from .._internal import get_xp
 
 # Basic renames
@@ -189,10 +189,6 @@ def permute_dims(x: ndarray, /, xp, axes: Tuple[int, ...]) -> ndarray:
 
 # Creation functions add the device keyword (which does nothing for NumPy)
 
-def _check_device(device):
-    if device not in ["cpu", None]:
-        raise ValueError(f"Unsupported device {device!r}")
-
 # asarray also adds the copy keyword
 def _asarray(
     obj: Union[
@@ -232,7 +228,7 @@ def _asarray(
     else:
         raise ValueError("Unrecognized namespace argument to asarray()")
 
-    _check_device(device)
+    _check_device(xp, device)
     if _is_numpy_array(obj):
         import numpy as np
         COPY_FALSE = (False, np._CopyMode.IF_NEEDED)
@@ -263,7 +259,7 @@ def arange(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.arange(start, stop=stop, step=step, dtype=dtype)
 
 @get_xp
@@ -274,14 +270,14 @@ def empty(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.empty(shape, dtype=dtype)
 
 @get_xp
 def empty_like(
     x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.empty_like(x, dtype=dtype)
 
 @get_xp
@@ -295,7 +291,7 @@ def eye(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype)
 
 @get_xp
@@ -307,7 +303,7 @@ def full(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.full(shape, fill_value, dtype=dtype)
 
 @get_xp
@@ -320,7 +316,7 @@ def full_like(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.full_like(x, fill_value, dtype=dtype)
 
 @get_xp
@@ -335,7 +331,7 @@ def linspace(
     device: Optional[Device] = None,
     endpoint: bool = True,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint)
 
 @get_xp
@@ -346,14 +342,14 @@ def ones(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.ones(shape, dtype=dtype)
 
 @get_xp
 def ones_like(
     x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.ones_like(x, dtype=dtype)
 
 @get_xp
@@ -364,14 +360,14 @@ def zeros(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.zeros(shape, dtype=dtype)
 
 @get_xp
 def zeros_like(
     x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
 ) -> ndarray:
-    _check_device(device)
+    _check_device(xp, device)
     return xp.zeros_like(x, dtype=dtype)
 
 # xp.reshape calls the keyword argument 'newshape' instead of 'shape'
