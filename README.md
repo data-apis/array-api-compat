@@ -1,4 +1,4 @@
-# NumPy Array API compatibility library
+# Array API compatibility library
 
 This is a small wrapper around NumPy that is compatible with the [Array API
 standard](https://data-apis.org/array-api/latest/). See also [NEP 47](https://numpy.org/neps/nep-0047-array-api-standard.html).
@@ -12,6 +12,8 @@ separate Array object, but rather just uses `numpy.ndarray` directly.
 
 Note that some of the functionality in this library is backwards incompatible
 with NumPy.
+
+This library also supports CuPy in addition to NumPy.
 
 Library authors using the Array API may wish to test against `numpy.array_api`
 to ensure they are not using functionality outside of the standard, but prefer
@@ -28,5 +30,17 @@ import numpy as np
 with
 
 ```py
-import numpy_array_api_compat as np
+import array_api_compat.numpy as np
+```
+
+and replace
+
+```py
+import cupy as cp
+```
+
+with
+
+```py
+import array_api_compat.cupy as cp
 ```
