@@ -13,62 +13,156 @@ from typing import NamedTuple
 from types import ModuleType
 
 from ._helpers import _check_device, _is_numpy_array, get_namespace
-from .._internal import get_xp
 
 # Basic renames
-@get_xp
 def acos(x, /, xp):
     return xp.arccos(x)
 
-@get_xp
 def acosh(x, /, xp):
     return xp.arccosh(x)
 
-@get_xp
 def asin(x, /, xp):
     return xp.arcsin(x)
 
-@get_xp
 def asinh(x, /, xp):
     return xp.arcsinh(x)
 
-@get_xp
 def atan(x, /, xp):
     return xp.arctan(x)
 
-@get_xp
 def atan2(x1, x2, /, xp):
     return xp.arctan2(x1, x2)
 
-@get_xp
 def atanh(x, /, xp):
     return xp.arctanh(x)
 
-@get_xp
 def bitwise_left_shift(x1, x2, /, xp):
     return xp.left_shift(x1, x2)
 
-@get_xp
 def bitwise_invert(x, /, xp):
     return xp.invert(x)
 
-@get_xp
 def bitwise_right_shift(x1, x2, /, xp):
     return xp.right_shift(x1, x2)
 
-@get_xp
-def bool(x, /, xp):
-    return xp.bool_(x)
-
-@get_xp
 def concat(arrays: Union[Tuple[ndarray, ...], List[ndarray]], /, xp, *, axis: Optional[int] = 0) -> ndarray:
     return xp.concatenate(arrays, axis=axis)
 
-@get_xp
 def pow(x1, x2, /, xp):
     return xp.power(x1, x2)
 
 # These functions are modified from the NumPy versions.
+
+def arange(
+    start: Union[int, float],
+    /,
+    xp,
+    stop: Optional[Union[int, float]] = None,
+    step: Union[int, float] = 1,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.arange(start, stop=stop, step=step, dtype=dtype)
+
+def empty(
+    shape: Union[int, Tuple[int, ...]],
+    xp,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.empty(shape, dtype=dtype)
+
+def empty_like(
+    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.empty_like(x, dtype=dtype)
+
+def eye(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    /,
+    *,
+    xp,
+    k: int = 0,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype)
+
+def full(
+    shape: Union[int, Tuple[int, ...]],
+    fill_value: Union[int, float],
+    xp,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.full(shape, fill_value, dtype=dtype)
+
+def full_like(
+    x: ndarray,
+    /,
+    xp,
+    fill_value: Union[int, float],
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.full_like(x, fill_value, dtype=dtype)
+
+def linspace(
+    start: Union[int, float],
+    stop: Union[int, float],
+    /,
+    xp,
+    num: int,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    endpoint: bool = True,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint)
+
+def ones(
+    shape: Union[int, Tuple[int, ...]],
+    xp,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.ones(shape, dtype=dtype)
+
+def ones_like(
+    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.ones_like(x, dtype=dtype)
+
+def zeros(
+    shape: Union[int, Tuple[int, ...]],
+    xp,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.zeros(shape, dtype=dtype)
+
+def zeros_like(
+    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> ndarray:
+    _check_device(xp, device)
+    return xp.zeros_like(x, dtype=dtype)
 
 # np.unique() is split into four functions in the array API:
 # unique_all, unique_counts, unique_inverse, and unique_values (this is done
@@ -93,7 +187,6 @@ class UniqueInverseResult(NamedTuple):
     inverse_indices: ndarray
 
 
-@get_xp
 def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
     values, indices, inverse_indices, counts = xp.unique(
         x,
@@ -113,7 +206,6 @@ def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
     )
 
 
-@get_xp
 def unique_counts(x: ndarray, /, xp) -> UniqueCountsResult:
     res = xp.unique(
         x,
@@ -126,7 +218,6 @@ def unique_counts(x: ndarray, /, xp) -> UniqueCountsResult:
     return UniqueCountsResult(*res)
 
 
-@get_xp
 def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
     values, inverse_indices = xp.unique(
         x,
@@ -141,7 +232,6 @@ def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
     return UniqueInverseResult(values, inverse_indices)
 
 
-@get_xp
 def unique_values(x: ndarray, /, xp) -> ndarray:
     return xp.unique(
         x,
@@ -158,7 +248,6 @@ def astype(x: ndarray, dtype: Dtype, /, *, copy: bool = True) -> ndarray:
 
 # These functions have different keyword argument names
 
-@get_xp
 def std(
     x: ndarray,
     /,
@@ -170,7 +259,6 @@ def std(
 ) -> ndarray:
     return xp.std(x, axis=axis, ddof=correction, keepdims=keepdims)
 
-@get_xp
 def var(
     x: ndarray,
     /,
@@ -183,7 +271,6 @@ def var(
     return xp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 # Unlike transpose(), the axes argument to permute_dims() is required.
-@get_xp
 def permute_dims(x: ndarray, /, xp, axes: Tuple[int, ...]) -> ndarray:
     return xp.transpose(x, axes)
 
@@ -248,131 +335,8 @@ def _asarray(
 
     return xp.asarray(obj, dtype=dtype)
 
-@get_xp
-def arange(
-    start: Union[int, float],
-    /,
-    xp,
-    stop: Optional[Union[int, float]] = None,
-    step: Union[int, float] = 1,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.arange(start, stop=stop, step=step, dtype=dtype)
-
-@get_xp
-def empty(
-    shape: Union[int, Tuple[int, ...]],
-    xp,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.empty(shape, dtype=dtype)
-
-@get_xp
-def empty_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.empty_like(x, dtype=dtype)
-
-@get_xp
-def eye(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    /,
-    *,
-    xp,
-    k: int = 0,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype)
-
-@get_xp
-def full(
-    shape: Union[int, Tuple[int, ...]],
-    fill_value: Union[int, float],
-    xp,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.full(shape, fill_value, dtype=dtype)
-
-@get_xp
-def full_like(
-    x: ndarray,
-    /,
-    xp,
-    fill_value: Union[int, float],
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.full_like(x, fill_value, dtype=dtype)
-
-@get_xp
-def linspace(
-    start: Union[int, float],
-    stop: Union[int, float],
-    /,
-    xp,
-    num: int,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-    endpoint: bool = True,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint)
-
-@get_xp
-def ones(
-    shape: Union[int, Tuple[int, ...]],
-    xp,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.ones(shape, dtype=dtype)
-
-@get_xp
-def ones_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.ones_like(x, dtype=dtype)
-
-@get_xp
-def zeros(
-    shape: Union[int, Tuple[int, ...]],
-    xp,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.zeros(shape, dtype=dtype)
-
-@get_xp
-def zeros_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
-) -> ndarray:
-    _check_device(xp, device)
-    return xp.zeros_like(x, dtype=dtype)
-
 # xp.reshape calls the keyword argument 'newshape' instead of 'shape'
-@get_xp
-def reshape(x: ndarray, /, xp, shape: Tuple[int, ...], copy: Optional[bool] = None) -> ndarray:
+def reshape(x: ndarray, /, shape: Tuple[int, ...], xp, copy: Optional[bool] = None) -> ndarray:
     if copy is True:
         x = x.copy()
     elif copy is False:
@@ -382,7 +346,6 @@ def reshape(x: ndarray, /, xp, shape: Tuple[int, ...], copy: Optional[bool] = No
 
 # The descending keyword is new in sort and argsort, and 'kind' replaced with
 # 'stable'
-@get_xp
 def argsort(
     x: ndarray, /, xp, *, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> ndarray:
@@ -404,7 +367,6 @@ def argsort(
         res = max_i - res
     return res
 
-@get_xp
 def sort(
     x: ndarray, /, xp, *, axis: int = -1, descending: bool = False, stable: bool = True
 ) -> ndarray:
@@ -416,7 +378,6 @@ def sort(
     return res
 
 # sum() and prod() should always upcast when dtype=None
-@get_xp
 def sum(
     x: ndarray,
     /,
@@ -431,7 +392,6 @@ def sum(
         dtype = xp.float64
     return xp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims)
 
-@get_xp
 def prod(
     x: ndarray,
     /,
@@ -447,19 +407,16 @@ def prod(
 
 # ceil, floor, and trunc return integers for integer inputs
 
-@get_xp
 def ceil(x: ndarray, /, xp) -> ndarray:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
     return xp.ceil(x)
 
-@get_xp
 def floor(x: ndarray, /, xp) -> ndarray:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
     return xp.floor(x)
 
-@get_xp
 def trunc(x: ndarray, /, xp) -> ndarray:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
@@ -467,10 +424,8 @@ def trunc(x: ndarray, /, xp) -> ndarray:
 
 __all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
            'bitwise_left_shift', 'bitwise_invert', 'bitwise_right_shift',
-           'bool', 'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
+           'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
            'UniqueInverseResult', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'astype', 'std', 'var',
-           'permute_dims', 'arange', 'empty', 'empty_like', 'eye', 'full',
-           'full_like', 'linspace', 'ones', 'ones_like', 'zeros',
-           'zeros_like', 'reshape', 'argsort', 'sort', 'sum', 'prod', 'ceil',
-           'floor', 'trunc']
+           'permute_dims', 'reshape', 'argsort', 'sort', 'sum', 'prod',
+           'ceil', 'floor', 'trunc']

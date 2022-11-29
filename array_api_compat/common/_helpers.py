@@ -41,8 +41,6 @@ def get_namespace(*xs, _use_compat=True):
 
     `xs` should contain one or more arrays.
     """
-    from ..numpy._helpers import _is_numpy_array
-
     namespaces = set()
     for x in xs:
         if isinstance(x, (tuple, list)):
@@ -56,6 +54,13 @@ def get_namespace(*xs, _use_compat=True):
             else:
                 import numpy as np
                 namespaces.add(np)
+        elif _is_cupy_array(x):
+            if _use_compat:
+                from .. import cupy as cupy_namespace
+                namespaces.add(cupy_namespace)
+            else:
+                import cupy as cp
+                namespaces.add(cp)
         else:
             # TODO: Support Python scalars?
             raise ValueError("The input is not a supported array type")

@@ -10,19 +10,15 @@ from numpy.core.numeric import normalize_axis_tuple
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
-@get_xp
 def cross(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     return xp.cross(x1, x2, axis=axis)
 
-@get_xp
 def matmul(x1: ndarray, x2: ndarray, /, xp) -> ndarray:
     return xp.matmul(x1, x2)
 
-@get_xp
 def outer(x1: ndarray, x2: ndarray, /, xp) -> ndarray:
     return xp.outer(x1, x2)
 
-@get_xp
 def tensordot(x1: ndarray, x2: ndarray, /, xp, *, axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2) -> ndarray:
     return xp.tensordot(x1, x2, axes=axes)
 
@@ -45,26 +41,21 @@ class SVDResult(NamedTuple):
 
 # These functions are the same as their NumPy counterparts except they return
 # a namedtuple.
-@get_xp
 def eigh(x: ndarray, /, xp) -> EighResult:
     return EighResult(*xp.linalg.eigh(x))
 
-@get_xp
 def qr(x: ndarray, /, xp, *, mode: Literal['reduced', 'complete'] = 'reduced') -> QRResult:
     return QRResult(*xp.linalg.qr(x, mode=mode))
 
-@get_xp
 def slogdet(x: ndarray, /, xp) -> SlogdetResult:
     return SlogdetResult(*xp.linalg.slogdet(x))
 
-@get_xp
 def svd(x: ndarray, /, xp, *, full_matrices: bool = True) -> SVDResult:
     return SVDResult(*xp.linalg.svd(x, full_matrices=full_matrices))
 
 # These functions have additional keyword arguments
 
 # The upper keyword argument is new from NumPy
-@get_xp
 def cholesky(x: ndarray, /, xp, *, upper: bool = False) -> ndarray:
     L = xp.linalg.cholesky(x)
     if upper:
@@ -73,7 +64,6 @@ def cholesky(x: ndarray, /, xp, *, upper: bool = False) -> ndarray:
 
 # The rtol keyword argument of matrix_rank() and pinv() is new from NumPy.
 # Note that it has a different semantic meaning from tol and rcond.
-@get_xp
 def matrix_rank(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
     # this is different from xp.linalg.matrix_rank, which supports 1
     # dimensional arrays.
@@ -88,7 +78,6 @@ def matrix_rank(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = No
         tol = S.max(axis=-1, keepdims=True)*xp.asarray(rtol)[..., xp.newaxis]
     return xp.count_nonzero(S > tol, axis=-1)
 
-@get_xp
 def pinv(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
     # this is different from xp.linalg.pinv, which does not multiply the
     # default tolerance by max(M, N).
@@ -98,12 +87,10 @@ def pinv(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None) -> 
 
 # These functions are new in the array API spec
 
-@get_xp
 def matrix_norm(x: ndarray, /, xp, *, keepdims: bool = False, ord: Optional[Union[int, float, Literal['fro', 'nuc']]] = 'fro') -> ndarray:
     return xp.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
 # Unlike transpose, matrix_transpose only transposes the last two axes.
-@get_xp
 def matrix_transpose(x: ndarray, /, xp) -> ndarray:
     if x.ndim < 2:
         raise ValueError("x must be at least 2-dimensional for matrix_transpose")
@@ -111,11 +98,9 @@ def matrix_transpose(x: ndarray, /, xp) -> ndarray:
 
 # svdvals is not in NumPy (but it is in SciPy). It is equivalent to
 # xp.linalg.svd(compute_uv=False).
-@get_xp
 def svdvals(x: ndarray, /, xp) -> Union[ndarray, Tuple[ndarray, ...]]:
     return xp.linalg.svd(x, compute_uv=False)
 
-@get_xp
 def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     ndim = max(x1.ndim, x2.ndim)
     x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
@@ -130,7 +115,6 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     res = x1_[..., None, :] @ x2_[..., None]
     return res[..., 0, 0]
 
-@get_xp
 def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False, ord: Optional[Union[int, float]] = 2) -> ndarray:
     # xp.linalg.norm tries to do a matrix norm whenever axis is a 2-tuple or
     # when axis=None and the input is 2-D, so to force a vector norm, we make
@@ -168,11 +152,9 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
 # xp.diagonal and xp.trace operate on the first two axes whereas these
 # operates on the last two
 
-@get_xp
 def diagonal(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
     return xp.diagonal(x, offset=offset, axis1=-2, axis2=-1)
 
-@get_xp
 def trace(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
     return xp.asarray(xp.trace(x, offset=offset, axis1=-2, axis2=-1))
 
