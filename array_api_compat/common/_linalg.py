@@ -59,7 +59,7 @@ def svd(x: ndarray, /, xp, *, full_matrices: bool = True) -> SVDResult:
 def cholesky(x: ndarray, /, xp, *, upper: bool = False) -> ndarray:
     L = xp.linalg.cholesky(x)
     if upper:
-        return matrix_transpose(L)
+        return get_xp(xp)(matrix_transpose)(L)
     return L
 
 # The rtol keyword argument of matrix_rank() and pinv() is new from NumPy.
@@ -158,7 +158,8 @@ def diagonal(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
 def trace(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
     return xp.asarray(xp.trace(x, offset=offset, axis1=-2, axis2=-1))
 
-__all__ = ['cross', 'diagonal', 'matmul', 'cholesky', 'matrix_rank', 'pinv',
-           'matrix_norm', 'matrix_transpose', 'outer', 'svdvals',
-           'tensordot', 'trace', 'vecdot', 'vector_norm', 'EighResult',
-           'QRResult', 'SlogdetResult', 'SVDResult']
+__all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
+           'QRResult', 'SlogdetResult', 'SVDResult', 'eigh', 'qr', 'slogdet',
+           'svd', 'cholesky', 'matrix_rank', 'pinv', 'matrix_norm',
+           'matrix_transpose', 'svdvals', 'vecdot', 'vector_norm', 'diagonal',
+           'trace']
