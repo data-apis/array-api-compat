@@ -271,7 +271,7 @@ def var(
     return xp.var(x, axis=axis, ddof=correction, keepdims=keepdims)
 
 # Unlike transpose(), the axes argument to permute_dims() is required.
-def permute_dims(x: ndarray, /, xp, axes: Tuple[int, ...]) -> ndarray:
+def permute_dims(x: ndarray, /, axes: Tuple[int, ...], xp) -> ndarray:
     return xp.transpose(x, axes)
 
 # Creation functions add the device keyword (which does nothing for NumPy)
