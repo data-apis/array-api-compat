@@ -109,9 +109,9 @@ def full(
 def full_like(
     x: ndarray,
     /,
-    xp,
     fill_value: Union[int, float],
     *,
+    xp,
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
 ) -> ndarray:
@@ -122,9 +122,9 @@ def linspace(
     start: Union[int, float],
     stop: Union[int, float],
     /,
-    xp,
     num: int,
     *,
+    xp,
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
     endpoint: bool = True,
