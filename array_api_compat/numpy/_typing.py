@@ -4,18 +4,13 @@ __all__ = [
     "ndarray",
     "Device",
     "Dtype",
-    "NestedSequence",
-    "SupportsBufferProtocol",
 ]
 
 import sys
 from typing import (
-    Any,
     Literal,
     Union,
     TYPE_CHECKING,
-    TypeVar,
-    Protocol,
 )
 
 from numpy import (
@@ -33,12 +28,6 @@ from numpy import (
     float64,
 )
 
-_T_co = TypeVar("_T_co", covariant=True)
-
-class NestedSequence(Protocol[_T_co]):
-    def __getitem__(self, key: int, /) -> _T_co | NestedSequence[_T_co]: ...
-    def __len__(self, /) -> int: ...
-
 Device = Literal["cpu"]
 if TYPE_CHECKING or sys.version_info >= (3, 9):
     Dtype = dtype[Union[
@@ -55,5 +44,3 @@ if TYPE_CHECKING or sys.version_info >= (3, 9):
     ]]
 else:
     Dtype = dtype
-
-SupportsBufferProtocol = Any
