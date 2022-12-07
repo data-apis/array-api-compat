@@ -56,7 +56,7 @@ import array_api_compat.cupy as cp
 Each will include all the functions from the normal NumPy/CuPy namespace,
 except that functions that are part of the array API are wrapped so that they
 have the correct array API behavior. In each case, the array object used will
-be thew same array object from the wrapped library.
+be the same array object from the wrapped library.
 
 
 ## Helper Functions
