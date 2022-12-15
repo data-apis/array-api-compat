@@ -10,17 +10,24 @@ from numpy.core.numeric import normalize_axis_tuple
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
-def cross(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
-    return xp.cross(x1, x2, axis=axis)
+def cross(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1, **kwargs) -> ndarray:
+    return xp.cross(x1, x2, axis=axis, **kwargs)
 
-def matmul(x1: ndarray, x2: ndarray, /, xp) -> ndarray:
-    return xp.matmul(x1, x2)
+def matmul(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
+    return xp.matmul(x1, x2, **kwargs)
 
-def outer(x1: ndarray, x2: ndarray, /, xp) -> ndarray:
-    return xp.outer(x1, x2)
+def outer(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
+    return xp.outer(x1, x2, **kwargs)
 
-def tensordot(x1: ndarray, x2: ndarray, /, xp, *, axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2) -> ndarray:
-    return xp.tensordot(x1, x2, axes=axes)
+def tensordot(x1: ndarray,
+              x2: ndarray,
+              /,
+              xp,
+              *,
+              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+              **kwargs,
+) -> ndarray:
+    return xp.tensordot(x1, x2, axes=axes, **kwargs)
 
 class EighResult(NamedTuple):
     eigenvalues: ndarray
@@ -41,35 +48,41 @@ class SVDResult(NamedTuple):
 
 # These functions are the same as their NumPy counterparts except they return
 # a namedtuple.
-def eigh(x: ndarray, /, xp) -> EighResult:
-    return EighResult(*xp.linalg.eigh(x))
+def eigh(x: ndarray, /, xp, **kwargs) -> EighResult:
+    return EighResult(*xp.linalg.eigh(x, **kwargs))
 
-def qr(x: ndarray, /, xp, *, mode: Literal['reduced', 'complete'] = 'reduced') -> QRResult:
-    return QRResult(*xp.linalg.qr(x, mode=mode))
+def qr(x: ndarray, /, xp, *, mode: Literal['reduced', 'complete'] = 'reduced',
+       **kwargs) -> QRResult:
+    return QRResult(*xp.linalg.qr(x, mode=mode, **kwargs))
 
-def slogdet(x: ndarray, /, xp) -> SlogdetResult:
-    return SlogdetResult(*xp.linalg.slogdet(x))
+def slogdet(x: ndarray, /, xp, **kwargs) -> SlogdetResult:
+    return SlogdetResult(*xp.linalg.slogdet(x, **kwargs))
 
-def svd(x: ndarray, /, xp, *, full_matrices: bool = True) -> SVDResult:
-    return SVDResult(*xp.linalg.svd(x, full_matrices=full_matrices))
+def svd(x: ndarray, /, xp, *, full_matrices: bool = True, **kwargs) -> SVDResult:
+    return SVDResult(*xp.linalg.svd(x, full_matrices=full_matrices, **kwargs))
 
 # These functions have additional keyword arguments
 
 # The upper keyword argument is new from NumPy
-def cholesky(x: ndarray, /, xp, *, upper: bool = False) -> ndarray:
-    L = xp.linalg.cholesky(x)
+def cholesky(x: ndarray, /, xp, *, upper: bool = False, **kwargs) -> ndarray:
+    L = xp.linalg.cholesky(x, **kwargs)
     if upper:
         return get_xp(xp)(matrix_transpose)(L)
     return L
 
 # The rtol keyword argument of matrix_rank() and pinv() is new from NumPy.
 # Note that it has a different semantic meaning from tol and rcond.
-def matrix_rank(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
+def matrix_rank(x: ndarray,
+                /,
+                xp,
+                *,
+                rtol: Optional[Union[float, ndarray]] = None,
+                **kwargs) -> ndarray:
     # this is different from xp.linalg.matrix_rank, which supports 1
     # dimensional arrays.
     if x.ndim < 2:
         raise xp.linalg.LinAlgError("1-dimensional array given. Array must be at least two-dimensional")
-    S = xp.linalg.svd(x, compute_uv=False)
+    S = xp.linalg.svd(x, compute_uv=False, **kwargs)
     if rtol is None:
         tol = S.max(axis=-1, keepdims=True) * max(x.shape[-2:]) * xp.finfo(S.dtype).eps
     else:
@@ -78,12 +91,12 @@ def matrix_rank(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = No
         tol = S.max(axis=-1, keepdims=True)*xp.asarray(rtol)[..., xp.newaxis]
     return xp.count_nonzero(S > tol, axis=-1)
 
-def pinv(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None) -> ndarray:
+def pinv(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None, **kwargs) -> ndarray:
     # this is different from xp.linalg.pinv, which does not multiply the
     # default tolerance by max(M, N).
     if rtol is None:
         rtol = max(x.shape[-2:]) * xp.finfo(x.dtype).eps
-    return xp.linalg.pinv(x, rcond=rtol)
+    return xp.linalg.pinv(x, rcond=rtol, **kwargs)
 
 # These functions are new in the array API spec
 
@@ -152,11 +165,11 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
 # xp.diagonal and xp.trace operate on the first two axes whereas these
 # operates on the last two
 
-def diagonal(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
-    return xp.diagonal(x, offset=offset, axis1=-2, axis2=-1)
+def diagonal(x: ndarray, /, xp, *, offset: int = 0, **kwargs) -> ndarray:
+    return xp.diagonal(x, offset=offset, axis1=-2, axis2=-1, **kwargs)
 
-def trace(x: ndarray, /, xp, *, offset: int = 0) -> ndarray:
-    return xp.asarray(xp.trace(x, offset=offset, axis1=-2, axis2=-1))
+def trace(x: ndarray, /, xp, *, offset: int = 0, **kwargs) -> ndarray:
+    return xp.asarray(xp.trace(x, offset=offset, axis1=-2, axis2=-1, **kwargs))
 
 __all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
            'QRResult', 'SlogdetResult', 'SVDResult', 'eigh', 'qr', 'slogdet',
