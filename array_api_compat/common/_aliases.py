@@ -14,43 +14,6 @@ from types import ModuleType
 
 from ._helpers import _check_device, _is_numpy_array, get_namespace
 
-# Basic renames
-def acos(x, /, xp):
-    return xp.arccos(x)
-
-def acosh(x, /, xp):
-    return xp.arccosh(x)
-
-def asin(x, /, xp):
-    return xp.arcsin(x)
-
-def asinh(x, /, xp):
-    return xp.arcsinh(x)
-
-def atan(x, /, xp):
-    return xp.arctan(x)
-
-def atan2(x1, x2, /, xp):
-    return xp.arctan2(x1, x2)
-
-def atanh(x, /, xp):
-    return xp.arctanh(x)
-
-def bitwise_left_shift(x1, x2, /, xp):
-    return xp.left_shift(x1, x2)
-
-def bitwise_invert(x, /, xp):
-    return xp.invert(x)
-
-def bitwise_right_shift(x1, x2, /, xp):
-    return xp.right_shift(x1, x2)
-
-def concat(arrays: Union[Tuple[ndarray, ...], List[ndarray]], /, xp, *, axis: Optional[int] = 0) -> ndarray:
-    return xp.concatenate(arrays, axis=axis)
-
-def pow(x1, x2, /, xp):
-    return xp.power(x1, x2)
-
 # These functions are modified from the NumPy versions.
 
 def arange(
@@ -422,10 +385,7 @@ def trunc(x: ndarray, /, xp) -> ndarray:
         return x
     return xp.trunc(x)
 
-__all__ = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2', 'atanh',
-           'bitwise_left_shift', 'bitwise_invert', 'bitwise_right_shift',
-           'concat', 'pow', 'UniqueAllResult', 'UniqueCountsResult',
-           'UniqueInverseResult', 'unique_all', 'unique_counts',
-           'unique_inverse', 'unique_values', 'astype', 'std', 'var',
-           'permute_dims', 'reshape', 'argsort', 'sort', 'sum', 'prod',
-           'ceil', 'floor', 'trunc']
+__all__ = ['UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
+           'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
+           'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
+           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc']
