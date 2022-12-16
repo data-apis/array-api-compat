@@ -12,13 +12,14 @@ jobs:
     steps:
     - name: Checkout array-api-compat
       uses: actions/checkout@v3
-      path: array-api-compat
+      with:
+        path: array-api-compat
     - name: Checkout array-api-tests
       uses: actions/checkout@v3
       repository: data-apis/array-api-tests
       with:
         submodules: 'true'
-      path: array-api-tests
+        path: array-api-tests
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
