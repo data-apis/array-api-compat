@@ -1,10 +1,9 @@
-name: NumPy Array API
+name: Array API Tests
 
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
