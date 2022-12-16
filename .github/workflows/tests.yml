@@ -14,42 +14,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Dependencies
         run: |
-          set -x
-          set -e
-          # $CONDA is an environment variable pointing to the root of the miniconda directory
-          echo $CONDA/bin >> $GITHUB_PATH
-          conda config --set always_yes yes --set changeps1 no
-          conda config --add channels conda-forge
-          conda update -q conda
-          conda info -a
-          conda create -n test-environment python=${{ matrix.python-version }} pytest numpy
-          conda init
+          python -m pip install --upgrade pip
+          python -m install pytest numpy
 
       - name: Run Tests
         run: |
-          # Copied from .bashrc. We can't just source .bashrc because it exits
-          # when the shell isn't interactive.
-
-          # >>> conda initialize >>>
-          # !! Contents within this block are managed by 'conda init' !!
-          __conda_setup="$('/usr/share/miniconda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-          if [ $? -eq 0 ]; then
-              eval "$__conda_setup"
-          else
-              if [ -f "/usr/share/miniconda/etc/profile.d/conda.sh" ]; then
-                  . "/usr/share/miniconda/etc/profile.d/conda.sh"
-              else
-                  export PATH="/usr/share/miniconda/bin:$PATH"
-              fi
-          fi
-          unset __conda_setup
-          # <<< conda initialize <<<
-
-          set -x
-          set -e
-
-          conda activate test-environment
-
           pytest
 
           # Make sure it installs
