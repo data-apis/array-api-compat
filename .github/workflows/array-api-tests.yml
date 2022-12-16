@@ -32,6 +32,7 @@ jobs:
       env:
         ARRAY_API_TESTS_MODULE: array_api_compat.numpy
         PYTHONPATH: "${GITHUB_WORKSPACE}/array-api-compat"
+        NPY_PROMOTION_STATE: weak
       run: |
         cd ${GITHUB_WORKSPACE}/array-api-tests
         pytest -v -rxXfE
