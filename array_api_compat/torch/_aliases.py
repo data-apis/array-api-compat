@@ -12,12 +12,7 @@ array = torch.Tensor
 permute_dims = torch.permute
 
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
-    if axis > x.ndim or axis < -x.ndim - 1:
-        raise IndexError("axis must be in the range [-x.ndim-1, x.ndim]")
-    if axis < 0:
-        axis = x.ndim + axis + 1
-    slices = (slice(None),)*axis
-    return x[slices + (None,)]
+    return torch.unsqueeze(x, axis)
 
 def full(shape: Union[int, Tuple[int, ...]],
          fill_value: Union[bool, int, float, complex],
