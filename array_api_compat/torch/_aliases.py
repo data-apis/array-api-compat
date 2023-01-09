@@ -77,4 +77,4 @@ def full(shape: Union[int, Tuple[int, ...]],
 
     return torch.full(shape, fill_value, dtype=dtype, device=device, **kwargs)
 
-__all__ = ['permute_dims', 'max', 'min', 'expand_dims', 'full']
+__all__ = ['permute_dims', 'max', 'min', 'prod', 'expand_dims', 'full']
