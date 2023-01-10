@@ -90,6 +90,13 @@ the array API:
   [Stream](https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html)
   objects.
 
+- `size(x)`: Equivalent to
+  [`x.size`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html#array_api.array.size),
+  i.e., the number of elements in the array. Included because PyTorch's
+  `Tensor` defines `size` as a method which returns the shape, and this cannot
+  be wrapped because this compat library doesn't wrap or extend the array
+  objects.
+
 ## Known Differences from the Array API Specification
 
 There are some known differences between this library and the array API

@@ -8,6 +8,7 @@ users of the compat library.
 from __future__ import annotations
 
 import sys
+import math
 
 def _is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
@@ -191,4 +192,12 @@ def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, An
         return _torch_to_device(x)
     return x.to_device(device, stream=stream)
 
-__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device']
+def size(x):
+    """
+    Return the total number of elements of x
+    """
+    if None in x.shape:
+        return None
+    return math.prod(x.shape)
+
+__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device', 'size']
