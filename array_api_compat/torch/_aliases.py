@@ -13,6 +13,8 @@ permute_dims = torch.permute
 
 # These wrappers are mostly based on the fact that pytorch uses 'dim' instead
 # of 'axis'.
+
+# torch.min and torch.max return a tuple and don't support multiple axes https://github.com/pytorch/pytorch/issues/58745
 def max(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
@@ -40,28 +42,83 @@ def _normalize_axes(axis, ndim):
         axes.append(a)
     return sorted(axes)
 
+
+def _apply_keepdims(x, ndim, keepdims):
+    if keepdims:
+        return x[(None,)*ndim]
+    return x
+
 def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dtype: Optional[Dtype] = None, keepdims: bool = False) -> array:
     # torch.prod doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
+    ndim = x.ndim
     if isinstance(axis, tuple):
         axes = _normalize_axes(axis, x.ndim)
-        if keepdims:
-            for a in axes:
-                x = torch.prod(x, a, dtype=dtype, keepdims=keepdims)
-            return x
-        else:
-            for i, a in enumerate(axes):
-                x = torch.prod(x, a - i, dtype=dtype, keepdims=keepdims)
-            return x
+        for i, a in enumerate(axes):
+            if keepdims:
+                x = torch.prod(x, a, dtype=dtype)
+                x = torch.unsqueeze(x, a)
+            else:
+                x = torch.prod(x, a - i, dtype=dtype)
+        return x
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.prod(x, dtype=dtype)
-        if keepdims:
-            res = res[(None,)*x.ndim]
+        res = _apply_keepdims(res, ndim, keepdims)
         return res
 
     return torch.prod(x, axis, dtype=dtype, keepdims=keepdims)
+
+def any(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
+    # torch.any doesn't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
+    ndim = x.ndim
+    if axis == ():
+        return x.to(torch.bool)
+    if isinstance(axis, tuple):
+        axes = _normalize_axes(axis, x.ndim)
+        for i, a in enumerate(axes):
+            if keepdims:
+                x = torch.any(x, a)
+                x = torch.unsqueeze(x, a)
+            else:
+                x = torch.any(x, a - i)
+        return x.to(torch.bool)
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.any(x)
+        res = _apply_keepdims(res, ndim, keepdims)
+        return res.to(torch.bool)
+
+    # torch.any doesn't return bool for uint8
+    return torch.any(x, axis, keepdims=keepdims).to(torch.bool)
+
+def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
+    # torch.all doesn't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
+    ndim = x.ndim
+    if axis == ():
+        return x.to(torch.bool)
+    if isinstance(axis, tuple):
+        axes = _normalize_axes(axis, x.ndim)
+        for i, a in enumerate(axes):
+            if keepdims:
+                x = torch.all(x, a)
+                x = torch.unsqueeze(x, a)
+            else:
+                x = torch.all(x, a - i)
+        return x.to(torch.bool)
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.all(x)
+        res = _apply_keepdims(res, ndim, keepdims)
+        return res.to(torch.bool)
+
+    # torch.all doesn't return bool for uint8
+    return torch.all(x, axis, keepdims=keepdims).to(torch.bool)
 
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
     return torch.unsqueeze(x, axis)
@@ -77,4 +134,4 @@ def full(shape: Union[int, Tuple[int, ...]],
 
     return torch.full(shape, fill_value, dtype=dtype, device=device, **kwargs)
 
-__all__ = ['permute_dims', 'max', 'min', 'prod', 'expand_dims', 'full']
+__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'expand_dims', 'full']
