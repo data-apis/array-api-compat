@@ -16,13 +16,13 @@ permute_dims = torch.permute
 def max(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
-        return x
+        return torch.clone(x)
     return torch.amax(x, axis, keepdims=keepdims)
 
 def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
-        return x
+        return torch.clone(x)
     return torch.amin(x, axis, keepdims=keepdims)
 
 def _normalize_axes(axis, ndim):
