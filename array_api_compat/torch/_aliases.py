@@ -134,4 +134,8 @@ def full(shape: Union[int, Tuple[int, ...]],
 
     return torch.full(shape, fill_value, dtype=dtype, device=device, **kwargs)
 
-__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'expand_dims', 'full']
+def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
+    return x.to(dtype, copy=copy)
+
+__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'expand_dims',
+           'full', 'astype']
