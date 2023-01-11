@@ -51,6 +51,7 @@ def _apply_keepdims(x, ndim, keepdims):
 def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dtype: Optional[Dtype] = None, keepdims: bool = False) -> array:
     # torch.prod doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
+    x = torch.asarray(x)
     ndim = x.ndim
     if isinstance(axis, tuple):
         axes = _normalize_axes(axis, x.ndim)
@@ -73,6 +74,7 @@ def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dty
 def any(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
     # torch.any doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
+    x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
@@ -98,6 +100,7 @@ def any(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
 def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
     # torch.all doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
+    x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
