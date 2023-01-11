@@ -123,9 +123,9 @@ def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
     # torch.all doesn't return bool for uint8
     return torch.all(x, axis, keepdims=keepdims).to(torch.bool)
 
-def expand_dims(x: array, /, *, axis: int = 0) -> array:
-    return torch.unsqueeze(x, axis)
 
+# torch.full does not accept an int size
+# https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
          fill_value: Union[bool, int, float, complex],
          *,
@@ -137,8 +137,12 @@ def full(shape: Union[int, Tuple[int, ...]],
 
     return torch.full(shape, fill_value, dtype=dtype, device=device, **kwargs)
 
+# Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
+def expand_dims(x: array, /, *, axis: int = 0) -> array:
+    return torch.unsqueeze(x, axis)
+
 def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
     return x.to(dtype, copy=copy)
 
-__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'expand_dims',
-           'full', 'astype']
+__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'full',
+           'expand_dims', 'astype']
