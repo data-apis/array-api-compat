@@ -299,6 +299,20 @@ def eye(n_rows: int,
         z.diagonal(k).fill_(1)
     return z
 
+# torch.linspace doesn't have the endpoint parameter
+def linspace(start: Union[int, float],
+             stop: Union[int, float],
+             /,
+             num: int,
+             *,
+             dtype: Optional[Dtype] = None,
+             device: Optional[Device] = None,
+             endpoint: bool = True,
+             **kwargs) -> array:
+    if not endpoint:
+        return torch.linspace(start, stop, num+1, dtype=dtype, device=device, **kwargs)[:-1]
+    return torch.linspace(start, stop, num, dtype=dtype, device=device, **kwargs)
+
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
@@ -329,4 +343,4 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'prod', 'any', 'all', 'arange', 'eye',
-           'full', 'expand_dims', 'astype', 'broadcast_arrays']
+           'linspace', 'full', 'expand_dims', 'astype', 'broadcast_arrays']
