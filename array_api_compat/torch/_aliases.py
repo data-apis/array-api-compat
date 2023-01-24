@@ -303,6 +303,10 @@ def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Unio
 def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
     return torch.nonzero(x, as_tuple=True, **kwargs)
 
+def where(condition: array, x1: array, x2: array, /) -> array:
+    x1, x2 = _fix_promotion(x1, x2)
+    return torch.where(condition, x1, x2)
+
 # torch.arange doesn't support returning empty arrays
 # (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
 # keyword argument combinations
@@ -387,5 +391,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'prod', 'any', 'all', 'concat',
-           'squeeze', 'flip', 'roll', 'nonzero', 'arange', 'eye', 'linspace',
-           'full', 'expand_dims', 'astype', 'broadcast_arrays']
+           'squeeze', 'flip', 'roll', 'nonzero', 'where', 'arange', 'eye',
+           'linspace', 'full', 'expand_dims', 'astype', 'broadcast_arrays']
