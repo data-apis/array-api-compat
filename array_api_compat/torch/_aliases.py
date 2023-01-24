@@ -112,6 +112,7 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
 
 # Basic renames
 permute_dims = torch.permute
+bitwise_invert = torch.bitwise_not
 
 # Two-arg elementwise functions
 # These require a wrapper to do the correct type promotion on 0-D tensors
@@ -272,9 +273,10 @@ def expand_dims(x: array, /, *, axis: int = 0) -> array:
 def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
     return x.to(dtype, copy=copy)
 
-__all__ = ['result_type', 'permute_dims', 'add', 'atan2', 'bitwise_and',
-           'bitwise_left_shift', 'bitwise_or', 'bitwise_right_shift',
-           'bitwise_xor', 'divide', 'equal', 'floor_divide', 'greater',
-           'greater_equal', 'less', 'less_equal', 'logaddexp', 'multiply',
-           'not_equal', 'pow', 'remainder', 'subtract', 'max', 'min', 'prod',
-           'any', 'all', 'full', 'expand_dims', 'astype']
+__all__ = ['result_type', 'permute_dims', 'bitwise_invert', 'add', 'atan2',
+           'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
+           'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
+           'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
+           'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
+           'subtract', 'max', 'min', 'prod', 'any', 'all', 'full',
+           'expand_dims', 'astype']
