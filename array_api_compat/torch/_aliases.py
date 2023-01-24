@@ -287,6 +287,19 @@ def squeeze(x: array, /, axis: Union[int, Tuple[int, ...]]) -> array:
         x = torch.squeeze(x, a)
     return x
 
+# The axis parameter doesn't work for flip() and roll()
+# https://github.com/pytorch/pytorch/issues/71210. Also torch.flip() doesn't
+# accept axis=None
+def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
+    if axis is None:
+        axis = tuple(range(x.ndim-1, -1, -1))
+    # torch.flip doesn't accept dim as an int but the method does
+    # https://github.com/pytorch/pytorch/issues/18095
+    return x.flip(axis)
+
+def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
+    return torch.roll(x, shift, axis)
+
 # torch.arange doesn't support returning empty arrays
 # (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
 # keyword argument combinations
@@ -371,5 +384,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'prod', 'any', 'all', 'concat',
-           'squeeze', 'arange', 'eye', 'linspace', 'full', 'expand_dims',
-           'astype', 'broadcast_arrays']
+           'squeeze', 'flip', 'roll', 'arange', 'eye', 'linspace', 'full',
+           'expand_dims', 'astype', 'broadcast_arrays']
