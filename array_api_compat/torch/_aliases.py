@@ -282,6 +282,23 @@ def arange(start: Union[int, float],
         return torch.empty(0, dtype=dtype, device=device, **kwargs)
     return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
 
+# torch.eye does not accept None as a default for the second argument and
+# doesn't support off-diagonals (https://github.com/pytorch/pytorch/issues/70910)
+def eye(n_rows: int,
+        n_cols: Optional[int] = None,
+        /,
+        *,
+        k: int = 0,
+        dtype: Optional[Dtype] = None,
+        device: Optional[Device] = None,
+        **kwargs) -> array:
+    if n_cols is None:
+        n_cols = n_rows
+    z = torch.zeros(n_rows, n_cols, dtype=dtype, device=device, **kwargs)
+    if abs(k) <= n_rows + n_cols:
+        z.diagonal(k).fill_(1)
+    return z
+
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
@@ -311,5 +328,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'prod', 'any', 'all', 'arange', 'full',
-           'expand_dims', 'astype', 'broadcast_arrays']
+           'subtract', 'max', 'min', 'prod', 'any', 'all', 'arange', 'eye',
+           'full', 'expand_dims', 'astype', 'broadcast_arrays']
