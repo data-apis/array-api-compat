@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from functools import wraps
+from builtins import all as builtin_all
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -258,6 +259,28 @@ def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
     # torch.all doesn't return bool for uint8
     return torch.all(x, axis, keepdims=keepdims).to(torch.bool)
 
+# torch.arange doesn't support returning empty arrays
+# (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
+# keyword argument combinations
+# (https://github.com/pytorch/pytorch/issues/70914)
+def arange(start: Union[int, float],
+           /,
+           stop: Optional[Union[int, float]] = None,
+           step: Union[int, float] = 1,
+           *,
+           dtype: Optional[Dtype] = None,
+           device: Optional[Device] = None,
+           **kwargs) -> array:
+    if stop is None:
+        start, stop = 0, start
+    if step > 0 and stop <= start or step < 0 and stop >= start:
+        if dtype is None:
+            if builtin_all(isinstance(i, int) for i in [start, stop, step]):
+                dtype = torch.int64
+            else:
+                dtype = torch.float32
+        return torch.empty(0, dtype=dtype, device=device, **kwargs)
+    return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
 
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
@@ -288,5 +311,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'prod', 'any', 'all', 'full',
+           'subtract', 'max', 'min', 'prod', 'any', 'all', 'arange', 'full',
            'expand_dims', 'astype', 'broadcast_arrays']
