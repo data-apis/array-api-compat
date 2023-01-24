@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from functools import wraps
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Union
@@ -8,8 +10,134 @@ if TYPE_CHECKING:
 import torch
 array = torch.Tensor
 
+_array_api_dtypes = {
+    torch.bool,
+    torch.uint8,
+    torch.int8,
+    torch.int16,
+    torch.int32,
+    torch.int64,
+    torch.float32,
+    torch.float64,
+}
+
+_promotion_table  = {
+    # bool
+    (torch.bool, torch.bool): torch.bool,
+    # ints
+    (torch.int8, torch.int8): torch.int8,
+    (torch.int8, torch.int16): torch.int16,
+    (torch.int8, torch.int32): torch.int32,
+    (torch.int8, torch.int64): torch.int64,
+    (torch.int16, torch.int8): torch.int16,
+    (torch.int16, torch.int16): torch.int16,
+    (torch.int16, torch.int32): torch.int32,
+    (torch.int16, torch.int64): torch.int64,
+    (torch.int32, torch.int8): torch.int32,
+    (torch.int32, torch.int16): torch.int32,
+    (torch.int32, torch.int32): torch.int32,
+    (torch.int32, torch.int64): torch.int64,
+    (torch.int64, torch.int8): torch.int64,
+    (torch.int64, torch.int16): torch.int64,
+    (torch.int64, torch.int32): torch.int64,
+    (torch.int64, torch.int64): torch.int64,
+    # uints
+    (torch.uint8, torch.uint8): torch.uint8,
+    # ints and uints (mixed sign)
+    (torch.int8, torch.uint8): torch.int16,
+    (torch.int16, torch.uint8): torch.int16,
+    (torch.int32, torch.uint8): torch.int32,
+    (torch.int64, torch.uint8): torch.int64,
+    (torch.uint8, torch.int8): torch.int16,
+    (torch.uint8, torch.int16): torch.int16,
+    (torch.uint8, torch.int32): torch.int32,
+    (torch.uint8, torch.int64): torch.int64,
+    # floats
+    (torch.float32, torch.float32): torch.float32,
+    (torch.float32, torch.float64): torch.float64,
+    (torch.float64, torch.float32): torch.float64,
+    (torch.float64, torch.float64): torch.float64,
+}
+
+
+def _two_arg(f):
+    @wraps(f)
+    def _f(x1, x2, /, **kwargs):
+        x1, x2 = _fix_promotion(x1, x2)
+        return f(x1, x2, **kwargs)
+    if _f.__doc__ is None:
+        _f.__doc__ = f"""\
+Array API compatibility wrapper for torch.{f.__name__}.
+
+See the corresponding PyTorch documentation and/or the array API specification
+for more details.
+
+"""
+    return _f
+
+def _fix_promotion(x1, x2):
+    if x1.dtype not in _array_api_dtypes or x2.dtype not in _array_api_dtypes:
+        return x1, x2
+    # If an argument is 0-D pytorch downcasts the other argument
+    if x1.shape == ():
+        dtype = result_type(x1, x2)
+        x2 = x2.to(dtype)
+    if x2.shape == ():
+        dtype = result_type(x1, x2)
+        x1 = x1.to(dtype)
+    return x1, x2
+
+def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
+    if len(arrays_and_dtypes) == 0:
+        raise TypeError("At least one array or dtype must be provided")
+    if len(arrays_and_dtypes) == 1:
+        x = arrays_and_dtypes[0]
+        if isinstance(x, torch.dtype):
+            return x
+        return x.dtype
+    if len(arrays_and_dtypes) > 2:
+        return result_type(arrays_and_dtypes[0], result_type(*arrays_and_dtypes[1:]))
+
+    x, y = arrays_and_dtypes
+    xdt = x.dtype if not isinstance(x, torch.dtype) else x
+    ydt = y.dtype if not isinstance(y, torch.dtype) else y
+
+    if (xdt, ydt) in _promotion_table:
+        return _promotion_table[xdt, ydt]
+
+    # This doesn't result_type(dtype, dtype) for non-array API dtypes
+    # because torch.result_type only accepts tensors. This does however, allow
+    # cross-kind promotion.
+    return torch.result_type(x, y)
+
 # Basic renames
 permute_dims = torch.permute
+
+# Two-arg elementwise functions
+# These require a wrapper to do the correct type promotion on 0-D tensors
+add = _two_arg(torch.add)
+atan2 = _two_arg(torch.atan2)
+bitwise_and = _two_arg(torch.bitwise_and)
+bitwise_left_shift = _two_arg(torch.bitwise_left_shift)
+bitwise_or = _two_arg(torch.bitwise_or)
+bitwise_right_shift = _two_arg(torch.bitwise_right_shift)
+bitwise_xor = _two_arg(torch.bitwise_xor)
+divide = _two_arg(torch.divide)
+# Also a rename. torch.equal does not broadcast
+equal = _two_arg(torch.eq)
+floor_divide = _two_arg(torch.floor_divide)
+greater = _two_arg(torch.greater)
+greater_equal = _two_arg(torch.greater_equal)
+less = _two_arg(torch.less)
+less_equal = _two_arg(torch.less_equal)
+logaddexp = _two_arg(torch.logaddexp)
+# logical functions are not included here because they only accept bool in the
+# spec, so type promotion is irrelevant.
+multiply = _two_arg(torch.multiply)
+not_equal = _two_arg(torch.not_equal)
+pow = _two_arg(torch.pow)
+remainder = _two_arg(torch.remainder)
+subtract = _two_arg(torch.subtract)
 
 # These wrappers are mostly based on the fact that pytorch uses 'dim' instead
 # of 'axis'.
@@ -144,5 +272,9 @@ def expand_dims(x: array, /, *, axis: int = 0) -> array:
 def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
     return x.to(dtype, copy=copy)
 
-__all__ = ['permute_dims', 'max', 'min', 'prod', 'any', 'all', 'full',
-           'expand_dims', 'astype']
+__all__ = ['result_type', 'permute_dims', 'add', 'atan2', 'bitwise_and',
+           'bitwise_left_shift', 'bitwise_or', 'bitwise_right_shift',
+           'bitwise_xor', 'divide', 'equal', 'floor_divide', 'greater',
+           'greater_equal', 'less', 'less_equal', 'logaddexp', 'multiply',
+           'not_equal', 'pow', 'remainder', 'subtract', 'max', 'min', 'prod',
+           'any', 'all', 'full', 'expand_dims', 'astype']
