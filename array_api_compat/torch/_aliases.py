@@ -300,6 +300,9 @@ def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> 
 def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
     return torch.roll(x, shift, axis)
 
+def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
+    return torch.nonzero(x, as_tuple=True, **kwargs)
+
 # torch.arange doesn't support returning empty arrays
 # (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
 # keyword argument combinations
@@ -384,5 +387,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'prod', 'any', 'all', 'concat',
-           'squeeze', 'flip', 'roll', 'arange', 'eye', 'linspace', 'full',
-           'expand_dims', 'astype', 'broadcast_arrays']
+           'squeeze', 'flip', 'roll', 'nonzero', 'arange', 'eye', 'linspace',
+           'full', 'expand_dims', 'astype', 'broadcast_arrays']
