@@ -112,7 +112,7 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
     # cross-kind promotion.
     return torch.result_type(x, y)
 
-def can_cast(from_: Union[dtype, array], to: Dtype, /) -> bool:
+def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
     if not isinstance(from_, torch.dtype):
         from_ = from_.dtype
     return torch.can_cast(from_, to)
