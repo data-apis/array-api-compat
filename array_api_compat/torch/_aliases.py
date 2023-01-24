@@ -259,6 +259,34 @@ def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
     # torch.all doesn't return bool for uint8
     return torch.all(x, axis, keepdims=keepdims).to(torch.bool)
 
+# torch.concat doesn't support dim=None
+# https://github.com/pytorch/pytorch/issues/70925
+def concat(arrays: Union[Tuple[array, ...], List[array]],
+           /,
+           *,
+           axis: Optional[int] = 0,
+           **kwargs) -> array:
+    if axis is None:
+        arrays = tuple(ar.ravel() for ar in arrays)
+        axis = 0
+    return torch.concat(arrays, axis, **kwargs)
+
+# torch.squeeze only accepts int dim and doesn't require it
+# https://github.com/pytorch/pytorch/issues/70924. Support for tuple dim was
+# added at https://github.com/pytorch/pytorch/pull/89017.
+def squeeze(x: array, /, axis: Union[int, Tuple[int, ...]]) -> array:
+    if isinstance(axis, int):
+        axis = (axis,)
+    for a in axis:
+        if x.shape[a] != 1:
+            raise ValueError("squeezed dimensions must be equal to 1")
+    axes = _normalize_axes(axis, x.ndim)
+    # Remove this once pytorch 1.14 is released with the above PR #89017.
+    sequence = [a - i for i, a in enumerate(axes)]
+    for a in sequence:
+        x = torch.squeeze(x, a)
+    return x
+
 # torch.arange doesn't support returning empty arrays
 # (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
 # keyword argument combinations
@@ -342,5 +370,6 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'prod', 'any', 'all', 'arange', 'eye',
-           'linspace', 'full', 'expand_dims', 'astype', 'broadcast_arrays']
+           'subtract', 'max', 'min', 'prod', 'any', 'all', 'concat',
+           'squeeze', 'arange', 'eye', 'linspace', 'full', 'expand_dims',
+           'astype', 'broadcast_arrays']
