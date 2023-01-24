@@ -4,8 +4,9 @@ from functools import wraps
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, Tuple, Union
-    from ..common._typing import Device, Dtype
+    from typing import List, Optional, Tuple, Union
+    from ..common._typing import Device
+    from torch import dtype as Dtype
 
 import torch
 array = torch.Tensor
@@ -109,6 +110,11 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
     # because torch.result_type only accepts tensors. This does however, allow
     # cross-kind promotion.
     return torch.result_type(x, y)
+
+def can_cast(from_: Union[dtype, array], to: Dtype, /) -> bool:
+    if not isinstance(from_, torch.dtype):
+        from_ = from_.dtype
+    return torch.can_cast(from_, to)
 
 # Basic renames
 permute_dims = torch.permute
@@ -273,10 +279,14 @@ def expand_dims(x: array, /, *, axis: int = 0) -> array:
 def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
     return x.to(dtype, copy=copy)
 
-__all__ = ['result_type', 'permute_dims', 'bitwise_invert', 'add', 'atan2',
-           'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
+def broadcast_arrays(*arrays: array) -> List[array]:
+    shape = torch.broadcast_shapes(*[a.shape for a in arrays])
+    return [torch.broadcast_to(a, shape) for a in arrays]
+
+__all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
+           'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'prod', 'any', 'all', 'full',
-           'expand_dims', 'astype']
+           'expand_dims', 'astype', 'broadcast_arrays']
