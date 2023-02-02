@@ -280,6 +280,77 @@ def all(x: array,
     # torch.all doesn't return bool for uint8
     return torch.all(x, axis, keepdims=keepdims).to(torch.bool)
 
+def mean(x: array,
+         /,
+         *,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         keepdims: bool = False,
+         **kwargs) -> array:
+    # https://github.com/pytorch/pytorch/issues/29137
+    if axis == ():
+        return torch.clone(x)
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.mean(x, **kwargs)
+        res = _apply_keepdims(res, x.ndim, keepdims)
+        return res
+    return torch.mean(x, axis, keepdims=keepdims, **kwargs)
+
+def std(x: array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        **kwargs) -> array:
+    # Note, float correction is not supported
+    # https://github.com/pytorch/pytorch/issues/61492. We don't try to
+    # implement it here for now.
+
+    # if isinstance(correction, float):
+    #     correction = int(correction)
+
+    # https://github.com/pytorch/pytorch/issues/29137
+    if axis == ():
+        return torch.zeros_like(x)
+    if isinstance(axis, int):
+        axis = (axis,)
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.std(x, tuple(range(x.ndim)), correction=correction, **kwargs)
+        res = _apply_keepdims(res, x.ndim, keepdims)
+        return res
+    return torch.std(x, axis, correction=correction, keepdims=keepdims, **kwargs)
+
+def var(x: array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        **kwargs) -> array:
+    # Note, float correction is not supported
+    # https://github.com/pytorch/pytorch/issues/61492. We don't try to
+    # implement it here for now.
+
+    # if isinstance(correction, float):
+    #     correction = int(correction)
+
+    # https://github.com/pytorch/pytorch/issues/29137
+    if axis == ():
+        return torch.zeros_like(x)
+    if isinstance(axis, int):
+        axis = (axis,)
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.var(x, tuple(range(x.ndim)), correction=correction, **kwargs)
+        res = _apply_keepdims(res, x.ndim, keepdims)
+        return res
+    return torch.var(x, axis, correction=correction, keepdims=keepdims, **kwargs)
+
 # torch.concat doesn't support dim=None
 # https://github.com/pytorch/pytorch/issues/70925
 def concat(arrays: Union[Tuple[array, ...], List[array]],
@@ -411,6 +482,7 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'sort', 'prod', 'any', 'all', 'concat',
-           'squeeze', 'flip', 'roll', 'nonzero', 'where', 'arange', 'eye',
-           'linspace', 'full', 'expand_dims', 'astype', 'broadcast_arrays']
+           'subtract', 'max', 'min', 'sort', 'prod', 'any', 'all', 'mean',
+           'std', 'var', 'concat', 'squeeze', 'flip', 'roll', 'nonzero', 'where',
+           'arange', 'eye', 'linspace', 'full', 'expand_dims', 'astype',
+           'broadcast_arrays']
