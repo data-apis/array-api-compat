@@ -163,6 +163,11 @@ def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
         return torch.clone(x)
     return torch.amin(x, axis, keepdims=keepdims)
 
+# torch.sort also returns a tuple
+# https://github.com/pytorch/pytorch/issues/70921
+def sort(x: array, /, *, axis: int = -1, descending: bool = False, stable: bool = True, **kwargs) -> array:
+    return torch.sort(x, dim=axis, descending=descending, stable=stable, **kwargs).values
+
 def _normalize_axes(axis, ndim):
     axes = []
     lower, upper = -ndim, ndim - 1
@@ -390,6 +395,6 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'prod', 'any', 'all', 'concat',
+           'subtract', 'max', 'min', 'sort', 'prod', 'any', 'all', 'concat',
            'squeeze', 'flip', 'roll', 'nonzero', 'where', 'arange', 'eye',
            'linspace', 'full', 'expand_dims', 'astype', 'broadcast_arrays']
