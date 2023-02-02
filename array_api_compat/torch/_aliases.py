@@ -189,7 +189,13 @@ def _apply_keepdims(x, ndim, keepdims):
         return x[(None,)*ndim]
     return x
 
-def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dtype: Optional[Dtype] = None, keepdims: bool = False) -> array:
+def prod(x: array,
+         /,
+         *,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         dtype: Optional[Dtype] = None,
+         keepdims: bool = False,
+         **kwargs) -> array:
     # torch.prod doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
@@ -198,21 +204,26 @@ def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, dty
         axes = _normalize_axes(axis, x.ndim)
         for i, a in enumerate(axes):
             if keepdims:
-                x = torch.prod(x, a, dtype=dtype)
+                x = torch.prod(x, a, dtype=dtype, **kwargs)
                 x = torch.unsqueeze(x, a)
             else:
-                x = torch.prod(x, a - i, dtype=dtype)
+                x = torch.prod(x, a - i, dtype=dtype, **kwargs)
         return x
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
-        res = torch.prod(x, dtype=dtype)
+        res = torch.prod(x, dtype=dtype, **kwargs)
         res = _apply_keepdims(res, ndim, keepdims)
         return res
 
-    return torch.prod(x, axis, dtype=dtype, keepdims=keepdims)
+    return torch.prod(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
 
-def any(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
+def any(x: array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False,
+        **kwargs) -> array:
     # torch.any doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
@@ -223,22 +234,27 @@ def any(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
         axes = _normalize_axes(axis, x.ndim)
         for i, a in enumerate(axes):
             if keepdims:
-                x = torch.any(x, a)
+                x = torch.any(x, a, **kwargs)
                 x = torch.unsqueeze(x, a)
             else:
-                x = torch.any(x, a - i)
+                x = torch.any(x, a - i, **kwargs)
         return x.to(torch.bool)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
-        res = torch.any(x)
+        res = torch.any(x, **kwargs)
         res = _apply_keepdims(res, ndim, keepdims)
         return res.to(torch.bool)
 
     # torch.any doesn't return bool for uint8
     return torch.any(x, axis, keepdims=keepdims).to(torch.bool)
 
-def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False) -> array:
+def all(x: array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: bool = False,
+        **kwargs) -> array:
     # torch.all doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
@@ -246,18 +262,18 @@ def all(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
     if axis == ():
         return x.to(torch.bool)
     if isinstance(axis, tuple):
-        axes = _normalize_axes(axis, x.ndim)
+        axes = _normalize_axes(axis, ndim)
         for i, a in enumerate(axes):
             if keepdims:
-                x = torch.all(x, a)
+                x = torch.all(x, a, **kwargs)
                 x = torch.unsqueeze(x, a)
             else:
-                x = torch.all(x, a - i)
+                x = torch.all(x, a - i, **kwargs)
         return x.to(torch.bool)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
-        res = torch.all(x)
+        res = torch.all(x, **kwargs)
         res = _apply_keepdims(res, ndim, keepdims)
         return res.to(torch.bool)
 
