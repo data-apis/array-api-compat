@@ -196,10 +196,21 @@ def prod(x: array,
          dtype: Optional[Dtype] = None,
          keepdims: bool = False,
          **kwargs) -> array:
-    # torch.prod doesn't support multiple axes
-    # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
     ndim = x.ndim
+
+    # https://github.com/pytorch/pytorch/issues/29137. Separate from the logic
+    # below because it still needs to upcast.
+    if axis == ():
+        if dtype is None:
+            if x.dtype in [torch.int8, torch.int16, torch.int32]:
+                return x.to(torch.int64)
+            # we can't upcast uint8 because there is no torch.uint64
+            return x.clone()
+        return x.to(dtype)
+
+    # torch.prod doesn't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
     if isinstance(axis, tuple):
         axes = _normalize_axes(axis, x.ndim)
         for i, a in enumerate(axes):
@@ -217,6 +228,36 @@ def prod(x: array,
         return res
 
     return torch.prod(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
+
+
+def sum(x: array,
+         /,
+         *,
+         axis: Optional[Union[int, Tuple[int, ...]]] = None,
+         dtype: Optional[Dtype] = None,
+         keepdims: bool = False,
+         **kwargs) -> array:
+    x = torch.asarray(x)
+    ndim = x.ndim
+
+    # https://github.com/pytorch/pytorch/issues/29137.
+    # Make sure it upcasts.
+    if axis == ():
+        if dtype is None:
+            if x.dtype in [torch.int8, torch.int16, torch.int32]:
+                return x.to(torch.int64)
+            # we can't upcast uint8 because there is no torch.uint64
+            return x.clone()
+        return x.to(dtype)
+
+    if axis is None:
+        # torch doesn't support keepdims with axis=None
+        # (https://github.com/pytorch/pytorch/issues/71209)
+        res = torch.sum(x, dtype=dtype, **kwargs)
+        res = _apply_keepdims(res, ndim, keepdims)
+        return res
+
+    return torch.sum(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
 
 def any(x: array,
         /,
@@ -482,7 +523,7 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
-           'subtract', 'max', 'min', 'sort', 'prod', 'any', 'all', 'mean',
-           'std', 'var', 'concat', 'squeeze', 'flip', 'roll', 'nonzero', 'where',
-           'arange', 'eye', 'linspace', 'full', 'expand_dims', 'astype',
-           'broadcast_arrays']
+           'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
+           'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
+           'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
+           'expand_dims', 'astype', 'broadcast_arrays']
