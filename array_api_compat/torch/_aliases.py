@@ -3,6 +3,8 @@ from __future__ import annotations
 from functools import wraps
 from builtins import all as builtin_all
 
+from ..common._aliases import (UniqueAllResult, UniqueCountsResult, UniqueInverseResult)
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import List, Optional, Tuple, Union
@@ -518,6 +520,38 @@ def broadcast_arrays(*arrays: array) -> List[array]:
     shape = torch.broadcast_shapes(*[a.shape for a in arrays])
     return [torch.broadcast_to(a, shape) for a in arrays]
 
+# https://github.com/pytorch/pytorch/issues/70920
+def unique_all(x: array) -> UniqueAllResult:
+    values, inverse_indices, counts = torch.unique(x, return_counts=True, return_inverse=True)
+    # torch.unique doesn't support returning indices. We use this workaround
+    # suggested at
+    # https://github.com/pytorch/pytorch/issues/36748#issuecomment-619514810.
+    # Note that this makes use of an undocumented behavior of scatter, that it
+    # returns elements in order.
+    perm = torch.arange(inverse_indices.numel() - 1, -1, -1, dtype=inverse_indices.dtype, device=inverse_indices.device)
+    _inverse = inverse_indices.reshape((inverse_indices.numel(),)).flip([0])
+    indices = torch.zeros((values.numel(),), dtype=_inverse.dtype).scatter_(0, _inverse, perm)
+
+    # torch.unique incorrectly gives a 0 count for nan values.
+    # https://github.com/pytorch/pytorch/issues/94106
+    counts[torch.isnan(values)] = 1
+    return UniqueAllResult(values, indices, inverse_indices, counts)
+
+def unique_counts(x: array) -> UniqueCountsResult:
+    values, counts = torch.unique(x, return_counts=True)
+
+    # torch.unique incorrectly gives a 0 count for nan values.
+    # https://github.com/pytorch/pytorch/issues/94106
+    counts[torch.isnan(values)] = 1
+    return UniqueCountsResult(values, counts)
+
+def unique_inverse(x: array) -> UniqueInverseResult:
+    values, inverse = torch.unique(x, return_inverse=True)
+    return UniqueInverseResult(values, inverse)
+
+def unique_values(x: array) -> array:
+    return torch.unique(x)
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
@@ -526,4 +560,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
            'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
-           'expand_dims', 'astype', 'broadcast_arrays']
+           'expand_dims', 'astype', 'broadcast_arrays', 'unique_all',
+           'unique_counts', 'unique_inverse', 'unique_values']
