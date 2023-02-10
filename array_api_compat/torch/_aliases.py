@@ -526,16 +526,17 @@ def broadcast_arrays(*arrays: array) -> List[array]:
 
 # https://github.com/pytorch/pytorch/issues/70920
 def unique_all(x: array) -> UniqueAllResult:
-    values, inverse_indices, counts = torch.unique(x, return_counts=True, return_inverse=True)
     # torch.unique doesn't support returning indices.
     # https://github.com/pytorch/pytorch/issues/36748. The workaround
     # suggested in that issue doesn't actually function correctly (it relies
     # on non-deterministic behavior of scatter()).
     raise NotImplementedError("unique_all() not yet implemented for pytorch (see https://github.com/pytorch/pytorch/issues/36748)")
-    # torch.unique incorrectly gives a 0 count for nan values.
-    # https://github.com/pytorch/pytorch/issues/94106
-    counts[torch.isnan(values)] = 1
-    return UniqueAllResult(values, indices, inverse_indices, counts)
+
+    # values, inverse_indices, counts = torch.unique(x, return_counts=True, return_inverse=True)
+    # # torch.unique incorrectly gives a 0 count for nan values.
+    # # https://github.com/pytorch/pytorch/issues/94106
+    # counts[torch.isnan(values)] = 1
+    # return UniqueAllResult(values, indices, inverse_indices, counts)
 
 def unique_counts(x: array) -> UniqueCountsResult:
     values, counts = torch.unique(x, return_counts=True)
