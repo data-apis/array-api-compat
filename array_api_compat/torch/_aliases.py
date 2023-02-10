@@ -431,7 +431,7 @@ def squeeze(x: array, /, axis: Union[int, Tuple[int, ...]]) -> array:
 # accept axis=None
 def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
     if axis is None:
-        axis = tuple(range(x.ndim-1, -1, -1))
+        axis = tuple(range(x.ndim))
     # torch.flip doesn't accept dim as an int but the method does
     # https://github.com/pytorch/pytorch/issues/18095
     return x.flip(axis)
