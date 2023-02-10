@@ -406,7 +406,7 @@ def concat(arrays: Union[Tuple[array, ...], List[array]],
            axis: Optional[int] = 0,
            **kwargs) -> array:
     if axis is None:
-        arrays = tuple(ar.ravel() for ar in arrays)
+        arrays = tuple(ar.flatten() for ar in arrays)
         axis = 0
     return torch.concat(arrays, axis, **kwargs)
 
