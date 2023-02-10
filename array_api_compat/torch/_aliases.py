@@ -205,9 +205,11 @@ def prod(x: array,
     # below because it still needs to upcast.
     if axis == ():
         if dtype is None:
-            if x.dtype in [torch.int8, torch.int16, torch.int32]:
+            # We can't upcast uint8 according to the spec because there is no
+            # torch.uint64, so at least upcast to int64 which is what sum does
+            # when axis=None.
+            if x.dtype in [torch.int8, torch.int16, torch.int32, torch.uint8]:
                 return x.to(torch.int64)
-            # we can't upcast uint8 because there is no torch.uint64
             return x.clone()
         return x.to(dtype)
 
@@ -246,9 +248,11 @@ def sum(x: array,
     # Make sure it upcasts.
     if axis == ():
         if dtype is None:
-            if x.dtype in [torch.int8, torch.int16, torch.int32]:
+            # We can't upcast uint8 according to the spec because there is no
+            # torch.uint64, so at least upcast to int64 which is what sum does
+            # when axis=None.
+            if x.dtype in [torch.int8, torch.int16, torch.int32, torch.uint8]:
                 return x.to(torch.int64)
-            # we can't upcast uint8 because there is no torch.uint64
             return x.clone()
         return x.to(dtype)
 
