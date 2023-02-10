@@ -158,7 +158,7 @@ def _torch_to_device(x, device, /, stream=None):
         raise NotImplementedError
     return x.to(device)
 
-def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, Any]] = None) -> "Array":
+def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
@@ -189,7 +189,7 @@ def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, An
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
     elif _is_torch_array(x):
-        return _torch_to_device(x)
+        return _torch_to_device(x, device, stream=stream)
     return x.to_device(device, stream=stream)
 
 def size(x):
