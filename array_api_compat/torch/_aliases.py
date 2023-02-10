@@ -172,6 +172,9 @@ def sort(x: array, /, *, axis: int = -1, descending: bool = False, stable: bool 
 
 def _normalize_axes(axis, ndim):
     axes = []
+    if ndim == 0 and axis:
+        # Better error message in this case
+        raise IndexError(f"Dimension out of range: {axis[0]}")
     lower, upper = -ndim, ndim - 1
     for a in axis:
         if a < lower or a > upper:
@@ -180,11 +183,10 @@ def _normalize_axes(axis, ndim):
         if a < 0:
             a = a + ndim
         if a in axes:
-            # Match torch error message but use IndexError instead of RuntimeError
-            raise IndexError(f"dim {a} appears multiple times in the list of dims")
+            # Use IndexError instead of RuntimeError, and "axis" instead of "dim"
+            raise IndexError(f"Axis {a} appears multiple times in the list of axes")
         axes.append(a)
     return sorted(axes)
-
 
 def _apply_keepdims(x, ndim, keepdims):
     if keepdims:
