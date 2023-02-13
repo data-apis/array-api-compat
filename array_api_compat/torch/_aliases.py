@@ -188,9 +188,13 @@ def _normalize_axes(axis, ndim):
         axes.append(a)
     return sorted(axes)
 
-def _apply_keepdims(x, ndim, keepdims):
+def _axis_none_keepdims(x, ndim, keepdims):
+    # Apply keepdims when axis=None
+    # (https://github.com/pytorch/pytorch/issues/71209)
+    # Note that this is only valid for the axis=None case.
     if keepdims:
-        return x[(None,)*ndim]
+        for i in range(ndim):
+            x = torch.unsqueeze(x, 0)
     return x
 
 def prod(x: array,
@@ -230,7 +234,7 @@ def prod(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.prod(x, dtype=dtype, **kwargs)
-        res = _apply_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, ndim, keepdims)
         return res
 
     return torch.prod(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
@@ -262,7 +266,7 @@ def sum(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.sum(x, dtype=dtype, **kwargs)
-        res = _apply_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, ndim, keepdims)
         return res
 
     return torch.sum(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
@@ -292,7 +296,7 @@ def any(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.any(x, **kwargs)
-        res = _apply_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, ndim, keepdims)
         return res.to(torch.bool)
 
     # torch.any doesn't return bool for uint8
@@ -323,7 +327,7 @@ def all(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.all(x, **kwargs)
-        res = _apply_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, ndim, keepdims)
         return res.to(torch.bool)
 
     # torch.all doesn't return bool for uint8
@@ -342,7 +346,7 @@ def mean(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.mean(x, **kwargs)
-        res = _apply_keepdims(res, x.ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
     return torch.mean(x, axis, keepdims=keepdims, **kwargs)
 
@@ -369,7 +373,7 @@ def std(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.std(x, tuple(range(x.ndim)), correction=correction, **kwargs)
-        res = _apply_keepdims(res, x.ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
     return torch.std(x, axis, correction=correction, keepdims=keepdims, **kwargs)
 
@@ -396,7 +400,7 @@ def var(x: array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.var(x, tuple(range(x.ndim)), correction=correction, **kwargs)
-        res = _apply_keepdims(res, x.ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
     return torch.var(x, axis, correction=correction, keepdims=keepdims, **kwargs)
 
