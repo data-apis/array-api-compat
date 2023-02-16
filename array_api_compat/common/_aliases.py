@@ -408,7 +408,8 @@ def trunc(x: ndarray, /, xp, **kwargs) -> ndarray:
         return x
     return xp.trunc(x, **kwargs)
 
-__all__ = ['UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
+__all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
+           'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like', 'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
            'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc']
