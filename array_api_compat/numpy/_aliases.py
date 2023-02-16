@@ -58,6 +58,7 @@ ceil = get_xp(np)(_aliases.ceil)
 floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'arange',
-                              'empty', 'empty_like', 'eye', 'full', 'full_like',
-                              'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like']
+__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
+                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
+                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
+                              'bitwise_right_shift', 'concat', 'pow']
