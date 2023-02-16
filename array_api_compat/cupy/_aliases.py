@@ -13,18 +13,20 @@ del partial
 import cupy as cp
 bool = cp.bool_
 
-acos = get_xp(cp)(_aliases.acos)
-acosh = get_xp(cp)(_aliases.acosh)
-asin = get_xp(cp)(_aliases.asin)
-asinh = get_xp(cp)(_aliases.asinh)
-atan = get_xp(cp)(_aliases.atan)
-atan2 = get_xp(cp)(_aliases.atan2)
-atanh = get_xp(cp)(_aliases.atanh)
-bitwise_left_shift = get_xp(cp)(_aliases.bitwise_left_shift)
-bitwise_invert = get_xp(cp)(_aliases.bitwise_invert)
-bitwise_right_shift = get_xp(cp)(_aliases.bitwise_right_shift)
-concat = get_xp(cp)(_aliases.concat)
-pow = get_xp(cp)(_aliases.pow)
+# Basic renames
+acos = cp.arccos
+acosh = cp.arccosh
+asin = cp.arcsin
+asinh = cp.arcsinh
+atan = cp.arctan
+atan2 = cp.arctan2
+atanh = cp.arctanh
+bitwise_left_shift = cp.left_shift
+bitwise_invert = cp.invert
+bitwise_right_shift = cp.right_shift
+concat = cp.concatenate
+pow = cp.power
+
 arange = get_xp(cp)(_aliases.arange)
 empty = get_xp(cp)(_aliases.empty)
 empty_like = get_xp(cp)(_aliases.empty_like)

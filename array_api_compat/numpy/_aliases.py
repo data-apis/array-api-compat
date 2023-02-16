@@ -13,18 +13,20 @@ del partial
 import numpy as np
 bool = np.bool_
 
-acos = get_xp(np)(_aliases.acos)
-acosh = get_xp(np)(_aliases.acosh)
-asin = get_xp(np)(_aliases.asin)
-asinh = get_xp(np)(_aliases.asinh)
-atan = get_xp(np)(_aliases.atan)
-atan2 = get_xp(np)(_aliases.atan2)
-atanh = get_xp(np)(_aliases.atanh)
-bitwise_left_shift = get_xp(np)(_aliases.bitwise_left_shift)
-bitwise_invert = get_xp(np)(_aliases.bitwise_invert)
-bitwise_right_shift = get_xp(np)(_aliases.bitwise_right_shift)
-concat = get_xp(np)(_aliases.concat)
-pow = get_xp(np)(_aliases.pow)
+# Basic renames
+acos = np.arccos
+acosh = np.arccosh
+asin = np.arcsin
+asinh = np.arcsinh
+atan = np.arctan
+atan2 = np.arctan2
+atanh = np.arctanh
+bitwise_left_shift = np.left_shift
+bitwise_invert = np.invert
+bitwise_right_shift = np.right_shift
+concat = np.concatenate
+pow = np.power
+
 arange = get_xp(np)(_aliases.arange)
 empty = get_xp(np)(_aliases.empty)
 empty_like = get_xp(np)(_aliases.empty_like)
