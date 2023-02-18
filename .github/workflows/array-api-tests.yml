@@ -42,4 +42,4 @@ jobs:
       run: |
         export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
         cd ${GITHUB_WORKSPACE}/array-api-tests
-        pytest --max-examples 200 -v -rxXfE --ci --skips-file ${GITHUB_WORKSPACE}/array-api-compat/numpy-xfails.txt array_api_tests/
+        pytest --max-examples 200 -v -rxXfE --ci --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/numpy-xfails.txt array_api_tests/
