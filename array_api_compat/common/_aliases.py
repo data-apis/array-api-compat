@@ -443,7 +443,8 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     res = x1_[..., None, :] @ x2_[..., None]
     return res[..., 0, 0]
 
-__all__ = ['UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
+__all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
+           'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like', 'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
            'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc', 'matmul',
