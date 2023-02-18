@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 from numpy.core.numeric import normalize_axis_tuple
 
-from .._aliases import matmul, matrix_transpose, tensordot, vecdot
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
