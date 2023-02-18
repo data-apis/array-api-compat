@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, Tuple, Union, List
+    from typing import Optional, Sequence, Tuple, Union, List
     from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
 from typing import NamedTuple
@@ -408,7 +408,43 @@ def trunc(x: ndarray, /, xp, **kwargs) -> ndarray:
         return x
     return xp.trunc(x, **kwargs)
 
+# linear algebra functions
+
+def matmul(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
+    return xp.matmul(x1, x2, **kwargs)
+
+# Unlike transpose, matrix_transpose only transposes the last two axes.
+def matrix_transpose(x: ndarray, /, xp) -> ndarray:
+    if x.ndim < 2:
+        raise ValueError("x must be at least 2-dimensional for matrix_transpose")
+    return xp.swapaxes(x, -1, -2)
+
+def tensordot(x1: ndarray,
+              x2: ndarray,
+              /,
+              xp,
+              *,
+              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+              **kwargs,
+) -> ndarray:
+    return xp.tensordot(x1, x2, axes=axes, **kwargs)
+
+def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
+    ndim = max(x1.ndim, x2.ndim)
+    x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
+    x2_shape = (1,)*(ndim - x2.ndim) + tuple(x2.shape)
+    if x1_shape[axis] != x2_shape[axis]:
+        raise ValueError("x1 and x2 must have the same size along the given axis")
+
+    x1_, x2_ = xp.broadcast_arrays(x1, x2)
+    x1_ = xp.moveaxis(x1_, axis, -1)
+    x2_ = xp.moveaxis(x2_, axis, -1)
+
+    res = x1_[..., None, :] @ x2_[..., None]
+    return res[..., 0, 0]
+
 __all__ = ['UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
-           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc']
+           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc', 'matmul',
+           'matrix_transpose', 'tensordot', 'vecdot']
