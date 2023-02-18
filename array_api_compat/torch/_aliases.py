@@ -563,6 +563,12 @@ def unique_inverse(x: array) -> UniqueInverseResult:
 def unique_values(x: array) -> array:
     return torch.unique(x)
 
+def matmul(x1: array, x2: array, /, **kwargs) -> array:
+    # torch.matmul doesn't type promote (but differently from _fix_promotion)
+    dtype = result_type(x1, x2)
+    x1 = x1.to(dtype)
+    x2 = x2.to(dtype)
+    return torch.matmul(x1, x2, **kwargs)
 
 matrix_transpose = get_xp(torch)(_aliases_matrix_transpose)
 vecdot = get_xp(torch)(_aliases_vecdot)
@@ -577,4 +583,4 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
            'expand_dims', 'astype', 'broadcast_arrays', 'unique_all',
            'unique_counts', 'unique_inverse', 'unique_values',
-           'matrix_transpose', 'vecdot']
+           'matmul', 'matrix_transpose', 'vecdot']
