@@ -436,7 +436,12 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     if x1_shape[axis] != x2_shape[axis]:
         raise ValueError("x1 and x2 must have the same size along the given axis")
 
-    x1_, x2_ = xp.broadcast_arrays(x1, x2)
+    if hasattr(xp, 'broadcast_tensors'):
+        _broadcast = xp.broadcast_tensors
+    else:
+        _broadcast = xp.broadcast_arrays
+
+    x1_, x2_ = _broadcast(x1, x2)
     x1_ = xp.moveaxis(x1_, axis, -1)
     x2_ = xp.moveaxis(x2_, axis, -1)
 

@@ -3,7 +3,11 @@ from __future__ import annotations
 from functools import wraps
 from builtins import all as builtin_all
 
-from ..common._aliases import (UniqueAllResult, UniqueCountsResult, UniqueInverseResult)
+from ..common._aliases import (UniqueAllResult, UniqueCountsResult,
+                               UniqueInverseResult,
+                               matrix_transpose as _aliases_matrix_transpose,
+                               vecdot as _aliases_vecdot)
+from .._internal import get_xp
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -559,6 +563,10 @@ def unique_inverse(x: array) -> UniqueInverseResult:
 def unique_values(x: array) -> array:
     return torch.unique(x)
 
+
+matrix_transpose = get_xp(torch)(_aliases_matrix_transpose)
+vecdot = get_xp(torch)(_aliases_vecdot)
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
@@ -568,4 +576,5 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
            'expand_dims', 'astype', 'broadcast_arrays', 'unique_all',
-           'unique_counts', 'unique_inverse', 'unique_values']
+           'unique_counts', 'unique_inverse', 'unique_values',
+           'matrix_transpose', 'vecdot']
