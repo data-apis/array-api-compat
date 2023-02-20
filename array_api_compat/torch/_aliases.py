@@ -11,7 +11,7 @@ from .._internal import get_xp
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import List, Optional, Tuple, Union
+    from typing import List, Optional, Sequence, Tuple, Union
     from ..common._typing import Device
     from torch import dtype as Dtype
 
@@ -83,14 +83,14 @@ for more details.
 """
     return _f
 
-def _fix_promotion(x1, x2):
+def _fix_promotion(x1, x2, only_scalar=True):
     if x1.dtype not in _array_api_dtypes or x2.dtype not in _array_api_dtypes:
         return x1, x2
     # If an argument is 0-D pytorch downcasts the other argument
-    if x1.shape == ():
+    if not only_scalar or x1.shape == ():
         dtype = result_type(x1, x2)
         x2 = x2.to(dtype)
-    if x2.shape == ():
+    if not only_scalar or x2.shape == ():
         dtype = result_type(x1, x2)
         x1 = x1.to(dtype)
     return x1, x2
@@ -565,13 +565,22 @@ def unique_values(x: array) -> array:
 
 def matmul(x1: array, x2: array, /, **kwargs) -> array:
     # torch.matmul doesn't type promote (but differently from _fix_promotion)
-    dtype = result_type(x1, x2)
-    x1 = x1.to(dtype)
-    x2 = x2.to(dtype)
+    x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
     return torch.matmul(x1, x2, **kwargs)
 
 matrix_transpose = get_xp(torch)(_aliases_matrix_transpose)
-vecdot = get_xp(torch)(_aliases_vecdot)
+_vecdot = get_xp(torch)(_aliases_vecdot)
+
+def vecdot(x1: array, x2: array, /, *, axis: int = -1) -> array:
+    x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
+    return _vecdot(x1, x2, axis=axis)
+
+# torch.tensordot uses dims instead of axes
+def tensordot(x1: array, x2: array, /, *, axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2, **kwargs) -> array:
+    # Note: torch.tensordot fails with integer dtypes when there is only 1
+    # element in the axis (https://github.com/pytorch/pytorch/issues/84530).
+    x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
+    return torch.tensordot(x1, x2, dims=axes, **kwargs)
 
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
@@ -583,4 +592,4 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
            'expand_dims', 'astype', 'broadcast_arrays', 'unique_all',
            'unique_counts', 'unique_inverse', 'unique_values',
-           'matmul', 'matrix_transpose', 'vecdot']
+           'matmul', 'matrix_transpose', 'vecdot', 'tensordot']
