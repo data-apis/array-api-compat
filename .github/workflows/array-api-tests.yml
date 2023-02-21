@@ -2,6 +2,9 @@ name: Array API Tests
 
 on: [push, pull_request]
 
+env:
+  PYTEST_ARGS: "--max-examples 300 -v -rxXfE --ci -o xfail_strict=True"
+
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -42,4 +45,4 @@ jobs:
       run: |
         export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
         cd ${GITHUB_WORKSPACE}/array-api-tests
-        pytest --max-examples 300 -v -rxXfE --ci -o xfail_strict=True --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/numpy-xfails.txt array_api_tests/
+        pytest ${PYTEST_ARGS} --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/numpy-xfails.txt array_api_tests/
