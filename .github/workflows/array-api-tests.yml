@@ -6,9 +6,13 @@ on:
       package-name:
         required: true
         type: string
+      pytest-extra-args:
+        required: false
+        type: string
+
 
 env:
-  PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci"
+  PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }}"
 
 jobs:
   tests:
