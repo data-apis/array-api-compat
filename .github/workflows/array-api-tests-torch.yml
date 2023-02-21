@@ -1,0 +1,9 @@
+name: Array API Tests (PyTorch)
+
+on: [push, pull_request]
+
+jobs:
+  call-workflow-passing-data:
+    uses: ./github/workflows/array-api-tests.yml
+    with:
+      package-name: torch
