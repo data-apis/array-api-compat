@@ -1,0 +1,3 @@
+# This test causes a core dump on CI, so we have to skip it entirely (it
+# should actually pass)
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
