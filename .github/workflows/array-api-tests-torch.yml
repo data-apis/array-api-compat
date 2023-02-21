@@ -7,3 +7,4 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: torch
+      pytest-extra-args: "-s --hypothesis-verbosity=verbose"
