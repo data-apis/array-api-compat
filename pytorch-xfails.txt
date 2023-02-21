@@ -162,12 +162,13 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i < 0) -> -0]
+
+# Float correction is not supported by pytorch
+# (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_special_cases.py::test_empty_arrays[std]
 array_api_tests/test_special_cases.py::test_empty_arrays[var]
 array_api_tests/test_special_cases.py::test_nan_propagation[std]
 array_api_tests/test_special_cases.py::test_nan_propagation[var]
-
-# Float correction is not supported by pytorch (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_std
 array_api_tests/test_statistical_functions.py::test_var
 
