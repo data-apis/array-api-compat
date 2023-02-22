@@ -58,7 +58,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x1
 array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x1, x2)]
-array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
+# This test is skipped instead of xfailed because it causes core dumps on CI
+# array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
 
