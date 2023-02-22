@@ -95,6 +95,7 @@ array_api_tests/test_signatures.py::test_array_method_signature[to_device]
 # tensor methods which we couldn't fix anyway).
 array_api_tests/test_special_cases.py::test_binary[add(isfinite(x1_i) and x1_i != 0 and x2_i == -x1_i) -> +0]
 array_api_tests/test_special_cases.py::test_binary[__add__(x1_i is +infinity and isfinite(x2_i)) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__add__(x1_i is -infinity and isfinite(x2_i)) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[__add__(isfinite(x1_i) and x2_i is +infinity) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__add__(isfinite(x1_i) and x2_i is -infinity) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[__add__((x1_i is +0 or x1_i == -0) and isfinite(x2_i) and x2_i != 0) -> x2_i]
