@@ -7,4 +7,4 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: torch
-      pytest-extra-args: "--disable-extension linalg -s --hypothesis-verbosity=verbose"
+      pytest-extra-args: "--disable-extension linalg"
