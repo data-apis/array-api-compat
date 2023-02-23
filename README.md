@@ -35,9 +35,13 @@ corresponding wrapped namespace for each library, like
 
 ```py
 import array_api_compat.numpy as np
+```
 
+```py
 import array_api_compat.cupy as cp
+```
 
+```py
 import array_api_compat.torch as torch
 ```
 
@@ -167,8 +171,7 @@ specification:
   concern, use the functional form instead of the operator form, e.g., `add(x,
   y)` instead of `x + y`.
 
-- [`unique_all()`](https://data-apis.org/array-api/late
-  st/API_specification/generated/array_api.unique_all.html#array_api.unique_all)
+- [`unique_all()`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.unique_all.html#array_api.unique_all)
   is not implemented, due to the fact that `torch.unique` does not support
   returning the `indices` array. The other
   [`unique_*`](https://data-apis.org/array-api/latest/API_specification/set_functions.html)
@@ -202,7 +205,7 @@ references the name "array_api_compat").
 
 Alternatively, the library may be installed as dependency on PyPI.
 
-## Implementation
+## Implementation Notes
 
 As noted before, the goal of this library is to reuse the NumPy and CuPy array
 objects, rather than wrapping or extending them. This means that the functions
