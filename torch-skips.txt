@@ -1,3 +1,4 @@
 # These tests cause a core dump on CI, so we have to skip them entirely
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[floor_divide(x1, x2)]
