@@ -41,6 +41,9 @@ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 # tensordot doesn't allow integer dtypes in some corner cases
 array_api_tests/test_linalg.py::test_tensordot
 
+# A numerical difference in stacking (will be fixed by
+# https://github.com/data-apis/array-api-tests/pull/101)
+array_api_tests/test_linalg.py::test_matmul
 # We cannot wrap the tensor object
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x1, x2)]
