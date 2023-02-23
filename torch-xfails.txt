@@ -51,6 +51,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_equal[__eq__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)]
