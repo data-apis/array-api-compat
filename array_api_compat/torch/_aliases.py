@@ -201,6 +201,21 @@ def _axis_none_keepdims(x, ndim, keepdims):
             x = torch.unsqueeze(x, 0)
     return x
 
+def _reduce_multiple_axes(f, x, axis, keepdims=False, **kwargs):
+    # Some reductions don't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
+    axes = _normalize_axes(axis, x.ndim)
+    for a in reversed(axes):
+        x = torch.movedim(x, a, -1)
+    x = torch.flatten(x, -len(axes))
+
+    out = f(x, -1, **kwargs)
+
+    if keepdims:
+        for a in axes:
+            out = torch.unsqueeze(out, a)
+    return out
+
 def prod(x: array,
          /,
          *,
@@ -226,14 +241,7 @@ def prod(x: array,
     # torch.prod doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
     if isinstance(axis, tuple):
-        axes = _normalize_axes(axis, x.ndim)
-        for i, a in enumerate(axes):
-            if keepdims:
-                x = torch.prod(x, a, dtype=dtype, **kwargs)
-                x = torch.unsqueeze(x, a)
-            else:
-                x = torch.prod(x, a - i, dtype=dtype, **kwargs)
-        return x
+        return _reduce_multiple_axes(torch.prod, x, axis, keepdims=keepdims, dtype=dtype, **kwargs)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
@@ -281,21 +289,15 @@ def any(x: array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> array:
-    # torch.any doesn't support multiple axes
-    # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
+    # torch.any doesn't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
     if isinstance(axis, tuple):
-        axes = _normalize_axes(axis, x.ndim)
-        for i, a in enumerate(axes):
-            if keepdims:
-                x = torch.any(x, a, **kwargs)
-                x = torch.unsqueeze(x, a)
-            else:
-                x = torch.any(x, a - i, **kwargs)
-        return x.to(torch.bool)
+        res = _reduce_multiple_axes(torch.any, x, axis, keepdims=keepdims, **kwargs)
+        return res.to(torch.bool)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
@@ -312,21 +314,15 @@ def all(x: array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> array:
-    # torch.all doesn't support multiple axes
-    # (https://github.com/pytorch/pytorch/issues/56586).
     x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
+    # torch.all doesn't support multiple axes
+    # (https://github.com/pytorch/pytorch/issues/56586).
     if isinstance(axis, tuple):
-        axes = _normalize_axes(axis, ndim)
-        for i, a in enumerate(axes):
-            if keepdims:
-                x = torch.all(x, a, **kwargs)
-                x = torch.unsqueeze(x, a)
-            else:
-                x = torch.all(x, a - i, **kwargs)
-        return x.to(torch.bool)
+        res = _reduce_multiple_axes(torch.all, x, axis, keepdims=keepdims, **kwargs)
+        return res.to(torch.bool)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
