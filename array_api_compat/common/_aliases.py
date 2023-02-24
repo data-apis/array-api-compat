@@ -332,17 +332,19 @@ def argsort(
     **kwargs,
 ) -> ndarray:
     # Note: this keyword argument is different, and the default is different.
-    kind = "stable" if stable else "quicksort"
+    # We set it in kwargs like this because numpy.sort uses kind='quicksort'
+    # as the default whereas cupy.sort uses kind=None.
+    if stable:
+        kwargs['kind'] = "stable"
     if not descending:
-        res = xp.argsort(x, axis=axis, kind=kind, **kwargs)
+        res = xp.argsort(x, axis=axis, **kwargs)
     else:
         # As NumPy has no native descending sort, we imitate it here. Note that
         # simply flipping the results of xp.argsort(x, ...) would not
         # respect the relative order like it would in native descending sorts.
         res = xp.flip(
-            xp.argsort(xp.flip(x, axis=axis), axis=axis, kind=kind),
+            xp.argsort(xp.flip(x, axis=axis), axis=axis, **kwargs),
             axis=axis,
-            **kwargs,
         )
         # Rely on flip()/argsort() to validate axis
         normalised_axis = axis if axis >= 0 else x.ndim + axis
@@ -355,8 +357,11 @@ def sort(
     **kwargs,
 ) -> ndarray:
     # Note: this keyword argument is different, and the default is different.
-    kind = "stable" if stable else "quicksort"
-    res = xp.sort(x, axis=axis, kind=kind, **kwargs)
+    # We set it in kwargs like this because numpy.sort uses kind='quicksort'
+    # as the default whereas cupy.sort uses kind=None.
+    if stable:
+        kwargs['kind'] = "stable"
+    res = xp.sort(x, axis=axis, **kwargs)
     if descending:
         res = xp.flip(res, axis=axis)
     return res
