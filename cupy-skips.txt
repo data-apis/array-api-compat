@@ -1,0 +1,2 @@
+# Hangs
+array_api_tests/test_linalg.py::test_qr

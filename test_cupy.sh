@@ -23,4 +23,4 @@ git checkout asmeurer/xfails-file
 git submodule update --init
 
 export ARRAY_API_TESTS_MODULE=array_api_compat.cupy
-pytest ${PYTEST_ARGS} --xfails-file $SCRIPT_DIR/numpy-xfails.txt
+pytest ${PYTEST_ARGS} --xfails-file $SCRIPT_DIR/cupy-xfails.txt --skips-file $SCRIPT_DIR/cupy-skips.txt
