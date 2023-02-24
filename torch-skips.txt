@@ -6,3 +6,4 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__im
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[floor_divide(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__ifloordiv__(x1, x2)]
