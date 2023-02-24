@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # We cannot test cupy on CI so this script will test it manually. Assumes it
 # is being run in an environment that has cupy and the array-api-tests
 # dependencies installed
