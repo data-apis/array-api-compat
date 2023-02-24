@@ -32,15 +32,27 @@ array_api_tests/test_linalg.py::test_trace
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
-#
-# array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
+# floating point inaccuracy
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
+
+# cupy (arg)min/max wrong with infinities
+# https://github.com/cupy/cupy/issues/7424
 array_api_tests/test_searching_functions.py::test_argmax
+array_api_tests/test_searching_functions.py::test_argmin
+array_api_tests/test_statistical_functions.py::test_min
+array_api_tests/test_statistical_functions.py::test_max
+
+# testsuite incorrectly thinks meshgrid doesn't have indexing argument
+# (https://github.com/data-apis/array-api-tests/issues/171)
 array_api_tests/test_signatures.py::test_func_signature[meshgrid]
+
+# We cannot add array attributes
 array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
 array_api_tests/test_signatures.py::test_array_method_signature[__index__]
 array_api_tests/test_signatures.py::test_array_method_signature[to_device]
-array_api_tests/test_sorting_functions.py::test_argsort
-array_api_tests/test_sorting_functions.py::test_sort
+
+# We do not attempt to workaround special cases (and the operator method ones
+
 array_api_tests/test_special_cases.py::test_unary[abs(x_i is -0) -> +0]
 array_api_tests/test_special_cases.py::test_unary[__abs__(x_i is -0) -> +0]
 array_api_tests/test_special_cases.py::test_unary[asin(x_i is -0) -> -0]
@@ -148,4 +160,3 @@ array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i
 array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> x2_i]
 array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> x2_i]
 array_api_tests/test_special_cases.py::test_iop[__imod__(isfinite(x1_i) and x1_i < 0 and x2_i is -infinity) -> x1_i]
-array_api_tests/test_statistical_functions.py::test_min
