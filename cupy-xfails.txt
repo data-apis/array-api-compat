@@ -7,8 +7,13 @@ array_api_tests/test_array_object.py::test_scalar_casting[__index__(int8)]
 array_api_tests/test_array_object.py::test_scalar_casting[__index__(int16)]
 array_api_tests/test_array_object.py::test_scalar_casting[__index__(int32)]
 array_api_tests/test_array_object.py::test_scalar_casting[__index__(int64)]
+
+# testsuite bug (https://github.com/data-apis/array-api-tests/issues/172)
+array_api_tests/test_array_object.py::test_getitem
+
 # copy=False is not yet implemented
 array_api_tests/test_creation_functions.py::test_asarray_arrays
+
 # finfo test is testing that the result is a float instead of float32 (see
 # also https://github.com/data-apis/array-api/issues/405)
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
@@ -23,6 +28,7 @@ array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 # and some require https://github.com/data-apis/array-api-tests/pull/101 to
 array_api_tests/test_linalg.py::test_eigvalsh
 array_api_tests/test_linalg.py::test_matrix_norm
+array_api_tests/test_linalg.py::test_matrix_power
 array_api_tests/test_linalg.py::test_solve
 array_api_tests/test_linalg.py::test_svd
 array_api_tests/test_linalg.py::test_svdvals
@@ -32,6 +38,8 @@ array_api_tests/test_linalg.py::test_trace
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
 # floating point inaccuracy
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
 
@@ -80,6 +88,7 @@ array_api_tests/test_special_cases.py::test_binary[add(isfinite(x1_i) and x1_i !
 array_api_tests/test_special_cases.py::test_binary[__add__(x1_i is -0 and x2_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_binary[__add__(x1_i is -0 and x2_i is +0) -> +0]
 array_api_tests/test_special_cases.py::test_binary[__add__(x1_i is +0 and x2_i is -0) -> +0]
+array_api_tests/test_special_cases.py::test_binary[__add__(isfinite(x1_i) and x1_i != 0 and x2_i == -x1_i) -> +0]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i > 0 and x2_i is -0) -> roughly +pi/2]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i is +0 and x2_i is -0) -> roughly +pi]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i is -0 and x2_i > 0) -> -0]
