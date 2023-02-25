@@ -15,6 +15,8 @@
 
 - Added CI to run against the [array API testsuite](https://github.com/data-apis/array-api-tests).
 
+- Fix `sort(stable=False)` and `argsort(stable=False)` with CuPy.
+
 # 1.0 (2022-12-05)
 
 ## Major Changes
