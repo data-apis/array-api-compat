@@ -8,6 +8,7 @@ users of the compat library.
 from __future__ import annotations
 
 import sys
+import math
 
 def _is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
@@ -29,11 +30,24 @@ def _is_cupy_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (cp.ndarray, cp.generic))
 
+def _is_torch_array(x):
+    # Avoid importing torch if it isn't already
+    if 'torch' not in sys.modules:
+        return False
+
+    import torch
+
+    # TODO: Should we reject ndarray subclasses?
+    return isinstance(x, torch.Tensor)
+
 def is_array_api_obj(x):
     """
     Check if x is an array API compatible array object.
     """
-    return _is_numpy_array(x) or _is_cupy_array(x) or hasattr(x, '__array_namespace__')
+    return _is_numpy_array(x) \
+        or _is_cupy_array(x) \
+        or _is_torch_array(x) \
+        or hasattr(x, '__array_namespace__')
 
 def get_namespace(*xs, _use_compat=True):
     """
@@ -139,7 +153,12 @@ def _cupy_to_device(x, device, /, stream=None):
                 prev_stream.use()
         return arr
 
-def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, Any]] = None) -> "Array":
+def _torch_to_device(x, device, /, stream=None):
+    if stream is not None:
+        raise NotImplementedError
+    return x.to(device)
+
+def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
@@ -169,7 +188,16 @@ def to_device(x: "Array", device: "Device", /, *, stream: Optional[Union[int, An
     elif _is_cupy_array(x):
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
-
+    elif _is_torch_array(x):
+        return _torch_to_device(x, device, stream=stream)
     return x.to_device(device, stream=stream)
 
-__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device']
+def size(x):
+    """
+    Return the total number of elements of x
+    """
+    if None in x.shape:
+        return None
+    return math.prod(x.shape)
+
+__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device', 'size']

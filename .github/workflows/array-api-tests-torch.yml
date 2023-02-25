@@ -1,0 +1,10 @@
+name: Array API Tests (PyTorch)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-torch:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: torch
+      pytest-extra-args: "--disable-extension linalg"

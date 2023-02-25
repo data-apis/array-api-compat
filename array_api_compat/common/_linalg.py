@@ -7,27 +7,15 @@ if TYPE_CHECKING:
 
 from numpy.core.numeric import normalize_axis_tuple
 
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
 def cross(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1, **kwargs) -> ndarray:
     return xp.cross(x1, x2, axis=axis, **kwargs)
 
-def matmul(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
-    return xp.matmul(x1, x2, **kwargs)
-
 def outer(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
     return xp.outer(x1, x2, **kwargs)
-
-def tensordot(x1: ndarray,
-              x2: ndarray,
-              /,
-              xp,
-              *,
-              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
-              **kwargs,
-) -> ndarray:
-    return xp.tensordot(x1, x2, axes=axes, **kwargs)
 
 class EighResult(NamedTuple):
     eigenvalues: ndarray
@@ -103,30 +91,10 @@ def pinv(x: ndarray, /, xp, *, rtol: Optional[Union[float, ndarray]] = None, **k
 def matrix_norm(x: ndarray, /, xp, *, keepdims: bool = False, ord: Optional[Union[int, float, Literal['fro', 'nuc']]] = 'fro') -> ndarray:
     return xp.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
-# Unlike transpose, matrix_transpose only transposes the last two axes.
-def matrix_transpose(x: ndarray, /, xp) -> ndarray:
-    if x.ndim < 2:
-        raise ValueError("x must be at least 2-dimensional for matrix_transpose")
-    return xp.swapaxes(x, -1, -2)
-
 # svdvals is not in NumPy (but it is in SciPy). It is equivalent to
 # xp.linalg.svd(compute_uv=False).
 def svdvals(x: ndarray, /, xp) -> Union[ndarray, Tuple[ndarray, ...]]:
     return xp.linalg.svd(x, compute_uv=False)
-
-def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
-    ndim = max(x1.ndim, x2.ndim)
-    x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
-    x2_shape = (1,)*(ndim - x2.ndim) + tuple(x2.shape)
-    if x1_shape[axis] != x2_shape[axis]:
-        raise ValueError("x1 and x2 must have the same size along the given axis")
-
-    x1_, x2_ = xp.broadcast_arrays(x1, x2)
-    x1_ = xp.moveaxis(x1_, axis, -1)
-    x2_ = xp.moveaxis(x2_, axis, -1)
-
-    res = x1_[..., None, :] @ x2_[..., None]
-    return res[..., 0, 0]
 
 def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keepdims: bool = False, ord: Optional[Union[int, float]] = 2) -> ndarray:
     # xp.linalg.norm tries to do a matrix norm whenever axis is a 2-tuple or

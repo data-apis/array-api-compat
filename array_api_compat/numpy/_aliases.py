@@ -57,6 +57,10 @@ prod = get_xp(np)(_aliases.prod)
 ceil = get_xp(np)(_aliases.ceil)
 floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)
+matmul = get_xp(np)(_aliases.matmul)
+matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
+tensordot = get_xp(np)(_aliases.tensordot)
+vecdot = get_xp(np)(_aliases.vecdot)
 
 __all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',
