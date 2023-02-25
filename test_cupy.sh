@@ -5,6 +5,9 @@
 set -x
 set -e
 
+# Run the vendoring tests in this repo
+pytest
+
 tmpdir=$(mktemp -d)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export PYTHONPATH=$SCRIPT_DIR
