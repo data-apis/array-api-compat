@@ -75,6 +75,13 @@ def get_namespace(*xs, _use_compat=True):
             else:
                 import cupy as cp
                 namespaces.add(cp)
+        elif _is_torch_array(x):
+            if _use_compat:
+                from .. import torch as torch_namespace
+                namespaces.add(torch_namespace)
+            else:
+                import torch
+                namespaces.add(torch)
         else:
             # TODO: Support Python scalars?
             raise ValueError("The input is not a supported array type")
