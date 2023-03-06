@@ -57,4 +57,4 @@ jobs:
       run: |
         export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
         cd ${GITHUB_WORKSPACE}/array-api-tests
-        pytest --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-xfails.txt --skips-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-skips.txt ${PYTEST_ARGS} array_api_tests/
+        pytest array_api_tests/ --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-xfails.txt --skips-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-skips.txt ${PYTEST_ARGS}
