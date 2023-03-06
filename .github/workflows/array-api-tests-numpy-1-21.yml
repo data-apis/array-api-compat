@@ -1,0 +1,11 @@
+name: Array API Tests (NumPy)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-numpy:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: numpy
+      package-version: '== 1.21.*'
+      pytest-extra-args: '--xfails-file ${GITHUB_WORKSPACE}/array-api-compat/numpy-1-21-xfails.txt'
