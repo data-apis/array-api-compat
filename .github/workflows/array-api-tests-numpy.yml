@@ -1,4 +1,4 @@
-name: Array API Tests (NumPy)
+name: Array API Tests (NumPy Latest)
 
 on: [push, pull_request]
 
