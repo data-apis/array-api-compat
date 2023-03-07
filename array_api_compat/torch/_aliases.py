@@ -361,8 +361,10 @@ def std(x: array,
     # https://github.com/pytorch/pytorch/issues/61492. We don't try to
     # implement it here for now.
 
-    # if isinstance(correction, float):
-    #     correction = int(correction)
+    if isinstance(correction, float):
+        _correction = int(correction)
+        if correction != _correction:
+            raise NotImplementedError("float correction in torch std() is not yet supported")
 
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
@@ -372,10 +374,10 @@ def std(x: array,
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
-        res = torch.std(x, tuple(range(x.ndim)), correction=correction, **kwargs)
+        res = torch.std(x, tuple(range(x.ndim)), correction=_correction, **kwargs)
         res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
-    return torch.std(x, axis, correction=correction, keepdims=keepdims, **kwargs)
+    return torch.std(x, axis, correction=_correction, keepdims=keepdims, **kwargs)
 
 def var(x: array,
         /,
