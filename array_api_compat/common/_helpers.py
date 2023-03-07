@@ -54,6 +54,13 @@ def get_namespace(*xs, _use_compat=True):
     Get the array API compatible namespace for the arrays `xs`.
 
     `xs` should contain one or more arrays.
+
+    Typical usage is
+
+        def your_function(x, y):
+            xp = array_api_compat.get_namespace(x, y)
+            # Now use xp as the array library namespace
+            return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
     """
     namespaces = set()
     for x in xs:
