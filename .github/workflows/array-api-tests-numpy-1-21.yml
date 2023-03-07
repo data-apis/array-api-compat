@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   array-api-tests-numpy:
     # NumPy 1.21 doesn't support Python 3.11
-    if: matrix.python-version != '3.11'
+    if: env.PYTHONP_VERSION != '3.11'
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: numpy

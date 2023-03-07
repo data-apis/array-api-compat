@@ -25,6 +25,7 @@ on:
 
 env:
   PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }}"
+  PYTHON_VERSION: "${{ matrix.python-version }}"
 
 jobs:
   tests:
