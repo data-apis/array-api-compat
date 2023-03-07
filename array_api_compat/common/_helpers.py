@@ -84,13 +84,13 @@ def get_namespace(*xs, _use_compat=True):
                 namespaces.add(torch)
         else:
             # TODO: Support Python scalars?
-            raise ValueError("The input is not a supported array type")
+            raise TypeError("The input is not a supported array type")
 
     if not namespaces:
-        raise ValueError("Unrecognized array input")
+        raise TypeError("Unrecognized array input")
 
     if len(namespaces) != 1:
-        raise ValueError(f"Multiple namespaces for array inputs: {namespaces}")
+        raise TypeError(f"Multiple namespaces for array inputs: {namespaces}")
 
     xp, = namespaces
 
