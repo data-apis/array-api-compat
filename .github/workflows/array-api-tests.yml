@@ -35,7 +35,7 @@ jobs:
 
     # NumPy 1.21 doesn't support Python 3.11. There doesn't seem to be a way
     # to put this in the numpy 1.21 config file.
-    if: !(matrix.python-version == "3.11" && inputs.package-name == 'numpy' && contains(inputs.package-version, "1.21"))
+    if: ! (matrix.python-version == "3.11" && inputs.package-name == 'numpy' && contains(inputs.package-version, "1.21"))
 
     steps:
     - name: Checkout array-api-compat
