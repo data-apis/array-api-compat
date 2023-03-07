@@ -1,4 +1,5 @@
 import array_api_compat
+from array_api_compat import get_namespace
 import pytest
 
 
@@ -17,5 +18,23 @@ def test_get_namespace(library):
 def test_get_namespace_returns_actual_namespace(array_namespace):
     xp = pytest.importorskip(array_namespace)
     X = xp.asarray([1, 2, 3])
-    xp_ = array_api_compat.get_namespace(X)
+    xp_ = get_namespace(X)
     assert xp_ is xp
+
+def test_get_namespace_multiple():
+    import numpy as np
+
+    x = np.asarray([1, 2])
+    assert get_namespace(x, x) == get_namespace((x, x)) == \
+        get_namespace((x, x), x) == array_api_compat.numpy
+
+def test_get_namespace_errors():
+    pytest.raises(TypeError, lambda: get_namespace([1]))
+    pytest.raises(TypeError, lambda: get_namespace())
+
+    import numpy as np
+    import torch
+    x = np.asarray([1, 2])
+    y = torch.asarray([1, 2])
+
+    pytest.raises(TypeError, lambda: get_namespace(x, y))
