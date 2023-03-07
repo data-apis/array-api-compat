@@ -33,10 +33,6 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
 
-    # NumPy 1.21 doesn't support Python 3.11. There doesn't seem to be a way
-    # to put this in the numpy 1.21 config file.
-    if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
-
     steps:
     - name: Checkout array-api-compat
       uses: actions/checkout@v3
@@ -57,11 +53,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
+      # NumPy 1.21 doesn't support Python 3.11. There doesn't seem to be a way
+      # to put this in the numpy 1.21 config file.
+      if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
       run: |
         python -m pip install --upgrade pip
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}'
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
     - name: Run the array API testsuite (${{ inputs.package-name }})
+      if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
       env:
         ARRAY_API_TESTS_MODULE: array_api_compat.${{ inputs.package-name }}
         # This enables the NEP 50 type promotion behavior (without it a lot of
