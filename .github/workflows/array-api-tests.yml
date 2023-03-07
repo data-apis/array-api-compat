@@ -13,6 +13,15 @@ on:
       pytest-extra-args:
         required: false
         type: string
+      # This is not how I would prefer to implement this but it's the only way
+      # that seems possible with GitHub Actions' limited expressions syntax
+      xfails-file-extra:
+        required: false
+        type: string
+      skips-file-extra:
+        required: false
+        type: string
+
 
 env:
   PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }}"
@@ -57,4 +66,4 @@ jobs:
       run: |
         export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
         cd ${GITHUB_WORKSPACE}/array-api-tests
-        pytest array_api_tests/ --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-xfails.txt --skips-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}-skips.txt ${PYTEST_ARGS}
+        pytest array_api_tests/ --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}${{ xfails-file-extra }}-xfails.txt --skips-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}${{ inputs.skips-file-extra}}-skips.txt ${PYTEST_ARGS}
