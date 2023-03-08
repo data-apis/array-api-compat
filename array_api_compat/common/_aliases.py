@@ -13,7 +13,7 @@ from typing import NamedTuple
 from types import ModuleType
 import inspect
 
-from ._helpers import _check_device, _is_numpy_array, get_namespace
+from ._helpers import _check_device, _is_numpy_array, array_namespace
 
 # These functions are modified from the NumPy versions.
 
@@ -293,7 +293,7 @@ def _asarray(
     """
     if namespace is None:
         try:
-            xp = get_namespace(obj, _use_compat=False)
+            xp = array_namespace(obj, _use_compat=False)
         except ValueError:
             # TODO: What about lists of arrays?
             raise ValueError("A namespace must be specified for asarray() with non-array input")

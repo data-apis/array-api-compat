@@ -21,11 +21,11 @@ later this year.
 ## Usage
 
 The typical usage of this library will be to get the corresponding array API
-compliant namespace from the input arrays using `get_namespace()`, like
+compliant namespace from the input arrays using `array_namespace()`, like
 
 ```py
 def your_function(x, y):
-    xp = array_api_compat.get_namespace(x, y)
+    xp = array_api_compat.array_namespace(x, y)
     # Now use xp as the array library namespace
     return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
 ```
@@ -88,7 +88,7 @@ part of the specification but which are useful for using the array API:
 - `is_array_api_obj(x)`: Return `True` if `x` is an array API compatible array
   object.
 
-- `get_namespace(*xs)`: Get the corresponding array API namespace for the
+- `array_namespace(*xs)`: Get the corresponding array API namespace for the
   arrays `xs`. For example, if the arrays are NumPy arrays, the returned
   namespace will be `array_api_compat.numpy`. Note that this function will
   also work for namespaces that aren't supported by this compat library but
@@ -133,7 +133,7 @@ specification:
   don't want to monkeypatch or wrap it. The helper functions `device()` and
   `to_device()` are provided to work around these missing methods (see above).
   `x.mT` can be replaced with `xp.linalg.matrix_transpose(x)`.
-  `get_namespace(x)` should be used instead of `x.__array_namespace__`.
+  `array_namespace(x)` should be used instead of `x.__array_namespace__`.
 
 - Value-based casting for scalars will be in effect unless explicitly disabled
   with the environment variable `NPY_PROMOTION_STATE=weak` or
@@ -168,7 +168,7 @@ version.
 
 - Like NumPy/CuPy, we do not wrap the `torch.Tensor` object. It is missing the
   `__array_namespace__` and `to_device` methods, so the corresponding helper
-  functions `get_namespace()` and `to_device()` in this library should be
+  functions `array_namespace()` and `to_device()` in this library should be
   used instead (see above).
 
 - The `x.size` attribute on `torch.Tensor` is a function that behaves
