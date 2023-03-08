@@ -49,7 +49,11 @@ def is_array_api_obj(x):
         or _is_torch_array(x) \
         or hasattr(x, '__array_namespace__')
 
-def get_namespace(*xs, _use_compat=True):
+def _check_api_version(api_version):
+    if api_version is not None and api_version != '2021.12':
+        raise ValueError("Only the 2021.12 version of the array API specification is currently supported")
+
+def get_namespace(*xs, api_version=None, _use_compat=True):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
@@ -61,14 +65,18 @@ def get_namespace(*xs, _use_compat=True):
             xp = array_api_compat.get_namespace(x, y)
             # Now use xp as the array library namespace
             return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
+
+    api_version should be the newest version of the spec that you need support
+    for (currently the compat library wrapped APIs only support v2021.12).
     """
     namespaces = set()
     for x in xs:
         if isinstance(x, (tuple, list)):
             namespaces.add(get_namespace(*x, _use_compat=_use_compat))
         elif hasattr(x, '__array_namespace__'):
-            namespaces.add(x.__array_namespace__())
+            namespaces.add(x.__array_namespace__(api_version=api_version))
         elif _is_numpy_array(x):
+            _check_api_version(api_version)
             if _use_compat:
                 from .. import numpy as numpy_namespace
                 namespaces.add(numpy_namespace)
@@ -76,6 +84,7 @@ def get_namespace(*xs, _use_compat=True):
                 import numpy as np
                 namespaces.add(np)
         elif _is_cupy_array(x):
+            _check_api_version(api_version)
             if _use_compat:
                 from .. import cupy as cupy_namespace
                 namespaces.add(cupy_namespace)
@@ -83,6 +92,7 @@ def get_namespace(*xs, _use_compat=True):
                 import cupy as cp
                 namespaces.add(cp)
         elif _is_torch_array(x):
+            _check_api_version(api_version)
             if _use_compat:
                 from .. import torch as torch_namespace
                 namespaces.add(torch_namespace)

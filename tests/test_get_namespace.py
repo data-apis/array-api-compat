@@ -4,22 +4,17 @@ import pytest
 
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch"])
-def test_get_namespace(library):
+@pytest.mark.parametrize("api_version", [None, '2021.12'])
+def test_get_namespace(library, api_version):
     lib = pytest.importorskip(library)
 
     array = lib.asarray([1.0, 2.0, 3.0])
-    namespace = array_api_compat.get_namespace(array)
+    namespace = array_api_compat.get_namespace(array, api_version=api_version)
 
-    expected_namespace = getattr(array_api_compat, library)
-    assert namespace is expected_namespace
-
-
-@pytest.mark.parametrize("array_namespace", ["cupy.array_api", "numpy.array_api"])
-def test_get_namespace_returns_actual_namespace(array_namespace):
-    xp = pytest.importorskip(array_namespace)
-    X = xp.asarray([1, 2, 3])
-    xp_ = get_namespace(X)
-    assert xp_ is xp
+    if 'array_api' in library:
+        assert namespace == lib
+    else:
+        assert namespace == getattr(array_api_compat, library)
 
 def test_get_namespace_multiple():
     import numpy as np
@@ -38,3 +33,5 @@ def test_get_namespace_errors():
     y = torch.asarray([1, 2])
 
     pytest.raises(TypeError, lambda: get_namespace(x, y))
+
+    pytest.raises(ValueError, lambda: get_namespace(x, api_version='2022.12'))
