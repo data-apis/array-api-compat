@@ -107,6 +107,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[bi
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[divide(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[equal(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__ifloordiv__(x, s)]
