@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 from typing import NamedTuple
 from types import ModuleType
+import inspect
 
 from ._helpers import _check_device, _is_numpy_array, get_namespace
 
@@ -161,13 +162,23 @@ class UniqueInverseResult(NamedTuple):
     inverse_indices: ndarray
 
 
+def _unique_kwargs(xp):
+    # Older versions of NumPy and CuPy do not have equal_nan. Rather than
+    # trying to parse version numbers, just check if equal_nan is in the
+    # signature.
+    s = inspect.signature(xp.unique)
+    if 'equal_nan' in s.parameters:
+        return {'equal_nan': False}
+    return {}
+
 def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
+    kwargs = _unique_kwargs(xp)
     values, indices, inverse_indices, counts = xp.unique(
         x,
         return_counts=True,
         return_index=True,
         return_inverse=True,
-        equal_nan=False,
+        **kwargs,
     )
     # np.unique() flattens inverse indices, but they need to share x's shape
     # See https://github.com/numpy/numpy/issues/20638
@@ -181,24 +192,26 @@ def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
 
 
 def unique_counts(x: ndarray, /, xp) -> UniqueCountsResult:
+    kwargs = _unique_kwargs(xp)
     res = xp.unique(
         x,
         return_counts=True,
         return_index=False,
         return_inverse=False,
-        equal_nan=False,
+        **kwargs
     )
 
     return UniqueCountsResult(*res)
 
 
 def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
+    kwargs = _unique_kwargs(xp)
     values, inverse_indices = xp.unique(
         x,
         return_counts=False,
         return_index=False,
         return_inverse=True,
-        equal_nan=False,
+        **kwargs,
     )
     # xp.unique() flattens inverse indices, but they need to share x's shape
     # See https://github.com/numpy/numpy/issues/20638
@@ -207,12 +220,13 @@ def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
 
 
 def unique_values(x: ndarray, /, xp) -> ndarray:
+    kwargs = _unique_kwargs(xp)
     return xp.unique(
         x,
         return_counts=False,
         return_index=False,
         return_inverse=False,
-        equal_nan=False,
+        **kwargs,
     )
 
 def astype(x: ndarray, dtype: Dtype, /, *, copy: bool = True) -> ndarray:
@@ -295,8 +309,13 @@ def _asarray(
     _check_device(xp, device)
     if _is_numpy_array(obj):
         import numpy as np
-        COPY_FALSE = (False, np._CopyMode.IF_NEEDED)
-        COPY_TRUE = (True, np._CopyMode.ALWAYS)
+        if hasattr(np, '_CopyMode'):
+            # Not present in older NumPys
+            COPY_FALSE = (False, np._CopyMode.IF_NEEDED)
+            COPY_TRUE = (True, np._CopyMode.ALWAYS)
+        else:
+            COPY_FALSE = (False,)
+            COPY_TRUE = (True,)
     else:
         COPY_FALSE = (False,)
         COPY_TRUE = (True,)

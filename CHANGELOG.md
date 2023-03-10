@@ -1,3 +1,24 @@
+# 1.1.1 (2023-03-08)
+
+## Minor Changes
+
+- The minimum supported NumPy version is now 1.21. Fixed a few issues with
+  NumPy 1.21 (with `unique_*` and `asarray`), although there are also a few
+  known issues with this version (see the README).
+
+- Add `api_version` to `get_namespace()`.
+
+- `get_namespace()` now works correctly with `torch` tensors.
+
+- `get_namespace()` now works correctly with `numpy.array_api` arrays.
+
+- `get_namespace()` now raises `TypeError` instead of `ValueError`.
+
+- Fix the `torch.std` wrapper.
+
+- Add `torch` wrappers for `ones`, `empty`, and `zeros` so that `shape` can be
+  passed as a keyword argument.
+
 # 1.1 (2023-02-24)
 
 ## Major Changes

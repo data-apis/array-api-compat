@@ -361,8 +361,10 @@ def std(x: array,
     # https://github.com/pytorch/pytorch/issues/61492. We don't try to
     # implement it here for now.
 
-    # if isinstance(correction, float):
-    #     correction = int(correction)
+    if isinstance(correction, float):
+        _correction = int(correction)
+        if correction != _correction:
+            raise NotImplementedError("float correction in torch std() is not yet supported")
 
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
@@ -372,10 +374,10 @@ def std(x: array,
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
-        res = torch.std(x, tuple(range(x.ndim)), correction=correction, **kwargs)
+        res = torch.std(x, tuple(range(x.ndim)), correction=_correction, **kwargs)
         res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
-    return torch.std(x, axis, correction=correction, keepdims=keepdims, **kwargs)
+    return torch.std(x, axis, correction=_correction, keepdims=keepdims, **kwargs)
 
 def var(x: array,
         /,
@@ -519,6 +521,28 @@ def full(shape: Union[int, Tuple[int, ...]],
 
     return torch.full(shape, fill_value, dtype=dtype, device=device, **kwargs)
 
+# ones, zeros, and empty do not accept shape as a keyword argument
+def ones(shape: Union[int, Tuple[int, ...]],
+         *,
+         dtype: Optional[Dtype] = None,
+         device: Optional[Device] = None,
+         **kwargs) -> array:
+    return torch.ones(shape, dtype=dtype, device=device, **kwargs)
+
+def zeros(shape: Union[int, Tuple[int, ...]],
+         *,
+         dtype: Optional[Dtype] = None,
+         device: Optional[Device] = None,
+         **kwargs) -> array:
+    return torch.zeros(shape, dtype=dtype, device=device, **kwargs)
+
+def empty(shape: Union[int, Tuple[int, ...]],
+         *,
+         dtype: Optional[Dtype] = None,
+         device: Optional[Device] = None,
+         **kwargs) -> array:
+    return torch.empty(shape, dtype=dtype, device=device, **kwargs)
+
 # Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
     return torch.unsqueeze(x, axis)
@@ -585,7 +609,7 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
            'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
-           'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
-           'expand_dims', 'astype', 'broadcast_arrays', 'unique_all',
-           'unique_counts', 'unique_inverse', 'unique_values',
+           'nonzero', 'where', 'arange', 'eye', 'linspace', 'full', 'ones',
+           'zeros', 'empty', 'expand_dims', 'astype', 'broadcast_arrays',
+           'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot']
