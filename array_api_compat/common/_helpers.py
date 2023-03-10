@@ -53,7 +53,7 @@ def _check_api_version(api_version):
     if api_version is not None and api_version != '2021.12':
         raise ValueError("Only the 2021.12 version of the array API specification is currently supported")
 
-def get_namespace(*xs, api_version=None, _use_compat=True):
+def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
@@ -62,7 +62,7 @@ def get_namespace(*xs, api_version=None, _use_compat=True):
     Typical usage is
 
         def your_function(x, y):
-            xp = array_api_compat.get_namespace(x, y)
+            xp = array_api_compat.array_namespace(x, y)
             # Now use xp as the array library namespace
             return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
 
@@ -72,7 +72,7 @@ def get_namespace(*xs, api_version=None, _use_compat=True):
     namespaces = set()
     for x in xs:
         if isinstance(x, (tuple, list)):
-            namespaces.add(get_namespace(*x, _use_compat=_use_compat))
+            namespaces.add(array_namespace(*x, _use_compat=_use_compat))
         elif hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__(api_version=api_version))
         elif _is_numpy_array(x):
@@ -113,6 +113,8 @@ def get_namespace(*xs, api_version=None, _use_compat=True):
 
     return xp
 
+# backwards compatibility alias
+get_namespace = array_namespace
 
 def _check_device(xp, device):
     if xp == sys.modules.get('numpy'):
@@ -224,4 +226,4 @@ def size(x):
         return None
     return math.prod(x.shape)
 
-__all__ = ['is_array_api_obj', 'get_namespace', 'device', 'to_device', 'size']
+__all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device', 'to_device', 'size']

@@ -1,5 +1,10 @@
 # 1.1.1 (2023-03-08)
 
+## Major Changes
+
+- Rename `get_namespace()` to `array_namespace()` (`get_namespace()` is
+  maintained as a backwards compatible alias).
+
 ## Minor Changes
 
 - The minimum supported NumPy version is now 1.21. Fixed a few issues with
@@ -8,11 +13,14 @@
 
 - Add `api_version` to `get_namespace()`.
 
-- `get_namespace()` now works correctly with `torch` tensors.
+- `array_namespace()` (*née* `get_namespace()`) now works correctly with
+  `torch` tensors.
 
-- `get_namespace()` now works correctly with `numpy.array_api` arrays.
+- `array_namespace()` (*née* `get_namespace()`) now works correctly with
+  `numpy.array_api` arrays.
 
-- `get_namespace()` now raises `TypeError` instead of `ValueError`.
+- `array_namespace()` (*née* `get_namespace()`) now raises `TypeError` instead
+  of `ValueError`.
 
 - Fix the `torch.std` wrapper.
 
