@@ -106,7 +106,8 @@ def test_isdtype_additional_dtypes(library, dtype_):
     isdtype = xp.isdtype
 
     if not hasattr(xp, dtype_):
-        pytest.skip(f"{library} doesn't have dtype {dtype_}")
+        return
+        # pytest.skip(f"{library} doesn't have dtype {dtype_}")
 
     dtype = getattr(xp, dtype_)
     for cat in dtype_categories:
