@@ -14,6 +14,8 @@ def _spec_dtypes(library):
         # torch does not have unsigned integer dtypes
         return {
             'bool',
+            'complex64',
+            'complex128',
             'uint8',
             'int8',
             'int16',
@@ -25,6 +27,8 @@ def _spec_dtypes(library):
     else:
         return {
             'bool',
+            'complex64',
+            'complex128',
             'float32',
             'float64',
             'int16',
