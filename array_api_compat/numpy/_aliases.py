@@ -61,6 +61,7 @@ matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
 vecdot = get_xp(np)(_aliases.vecdot)
+isdtype = get_xp(np)(_aliases.isdtype)
 
 __all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',

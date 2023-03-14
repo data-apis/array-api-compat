@@ -1,12 +1,15 @@
 import array_api_compat
 from array_api_compat import array_namespace
+
+from ._helpers import import_
+
 import pytest
 
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch"])
 @pytest.mark.parametrize("api_version", [None, '2021.12'])
 def test_array_namespace(library, api_version):
-    lib = pytest.importorskip(library)
+    lib = import_(library)
 
     array = lib.asarray([1.0, 2.0, 3.0])
     namespace = array_api_compat.array_namespace(array, api_version=api_version)
