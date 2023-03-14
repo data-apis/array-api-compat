@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import wraps
-from builtins import all as builtin_all
+from builtins import all as builtin_all, any as builtin_any
 
 from ..common._aliases import (UniqueAllResult, UniqueCountsResult,
                                UniqueInverseResult,
@@ -18,13 +18,17 @@ if TYPE_CHECKING:
 import torch
 array = torch.Tensor
 
-_array_api_dtypes = {
-    torch.bool,
+_int_dtypes = {
     torch.uint8,
     torch.int8,
     torch.int16,
     torch.int32,
     torch.int64,
+}
+
+_array_api_dtypes = {
+    torch.bool,
+    *_int_dtypes,
     torch.float32,
     torch.float64,
 }
@@ -602,6 +606,43 @@ def tensordot(x1: array, x2: array, /, *, axes: Union[int, Tuple[Sequence[int], 
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
     return torch.tensordot(x1, x2, dims=axes, **kwargs)
 
+
+def isdtype(
+    dtype: Dtype, kind: Union[Dtype, str, Tuple[Union[Dtype, str], ...]],
+    *, _tuple=True, # Disallow nested tuples
+) -> bool:
+    """
+    Returns a boolean indicating whether a provided dtype is of a specified data type ``kind``.
+
+    Note that outside of this function, this compat library does not yet fully
+    support complex numbers.
+
+    See
+    https://data-apis.org/array-api/latest/API_specification/generated/array_api.isdtype.html
+    for more details
+    """
+    if isinstance(kind, tuple) and _tuple:
+        return builtin_any(isdtype(dtype, k, _tuple=False) for k in kind)
+    elif isinstance(kind, str):
+        if kind == 'bool':
+            return dtype == torch.bool
+        elif kind == 'signed integer':
+            return dtype in _int_dtypes and dtype.is_signed
+        elif kind == 'unsigned integer':
+            return dtype in _int_dtypes and not dtype.is_signed
+        elif kind == 'integral':
+            return dtype in _int_dtypes
+        elif kind == 'real floating':
+            return dtype.is_floating_point
+        elif kind == 'complex floating':
+            return dtype.is_complex
+        elif kind == 'numeric':
+            return isdtype(dtype, ('integral', 'real floating', 'complex floating'))
+        else:
+            raise ValueError(f"Unrecognized data type kind: {kind!r}")
+    else:
+        return dtype == kind
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
@@ -612,4 +653,4 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full', 'ones',
            'zeros', 'empty', 'expand_dims', 'astype', 'broadcast_arrays',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'matmul', 'matrix_transpose', 'vecdot', 'tensordot']
+           'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype']
