@@ -47,7 +47,7 @@ dtype_categories = {
     'unsigned integer': lambda d: d.startswith('uint'),
     'integral': lambda d: dtype_categories['signed integer'](d) or
                           dtype_categories['unsigned integer'](d),
-    'real floating': lambda d: d.startswith('float'),
+    'real floating': lambda d: 'float' in d,
     'complex floating': lambda d: d.startswith('complex'),
     'numeric': lambda d: dtype_categories['integral'](d) or
                          dtype_categories['real floating'](d) or
@@ -90,3 +90,25 @@ def test_isdtype_spec_dtypes(library):
 
                 res = isdtype_(dtype_, kind1_) or isdtype_(dtype_, kind2_)
                 assert isdtype(dtype, kind) == res, (dtype_, (kind1_, kind2_))
+
+additional_dtypes = [
+    'float16',
+    'float128',
+    'complex256',
+    'bfloat16',
+]
+
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch"])
+@pytest.mark.parametrize("dtype_", additional_dtypes)
+def test_isdtype_additional_dtypes(library, dtype_):
+    xp = import_('array_api_compat.' + library)
+
+    isdtype = xp.isdtype
+
+    if not hasattr(xp, dtype_):
+        pytest.skip(f"{library} doesn't have dtype {dtype_}")
+
+    dtype = getattr(xp, dtype_)
+    for cat in dtype_categories:
+        res = isdtype_(dtype_, cat)
+        assert isdtype(dtype, cat) == res, (dtype_, cat)
