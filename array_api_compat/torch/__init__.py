@@ -14,6 +14,9 @@ for n in dir(torch):
 # These imports may overwrite names from the import * above.
 from ._aliases import *
 
+# See the comment in the numpy __init__.py
+__import__(__package__ + '.linalg')
+
 from ..common._helpers import *
 
 __array_api_version__ = '2021.12'
