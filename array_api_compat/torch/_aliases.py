@@ -543,6 +543,14 @@ def empty(shape: Union[int, Tuple[int, ...]],
          **kwargs) -> array:
     return torch.empty(shape, dtype=dtype, device=device, **kwargs)
 
+# tril and triu do not call the keyword argument k
+
+def tril(x: array, /, *, k: int = 0) -> array:
+    return torch.tril(x, k)
+
+def triu(x: array, /, *, k: int = 0) -> array:
+    return torch.triu(x, k)
+
 # Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
     return torch.unsqueeze(x, axis)
@@ -610,6 +618,7 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
            'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
            'nonzero', 'where', 'arange', 'eye', 'linspace', 'full', 'ones',
-           'zeros', 'empty', 'expand_dims', 'astype', 'broadcast_arrays',
-           'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'matmul', 'matrix_transpose', 'vecdot', 'tensordot']
+           'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
+           'broadcast_arrays', 'unique_all', 'unique_counts',
+           'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
+           'vecdot', 'tensordot']
