@@ -472,10 +472,52 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     res = x1_[..., None, :] @ x2_[..., None]
     return res[..., 0, 0]
 
+# isdtype is a new function in the 2022.12 array API specification.
+
+def isdtype(
+    dtype: Dtype, kind: Union[Dtype, str, Tuple[Union[Dtype, str], ...]], xp,
+    *, _tuple=True, # Disallow nested tuples
+) -> bool:
+    """
+    Returns a boolean indicating whether a provided dtype is of a specified data type ``kind``.
+
+    Note that outside of this function, this compat library does not yet fully
+    support complex numbers.
+
+    See
+    https://data-apis.org/array-api/latest/API_specification/generated/array_api.isdtype.html
+    for more details
+    """
+    if isinstance(kind, tuple) and _tuple:
+        return any(isdtype(dtype, k, xp, _tuple=False) for k in kind)
+    elif isinstance(kind, str):
+        if kind == 'bool':
+            return dtype == xp.bool_
+        elif kind == 'signed integer':
+            return xp.issubdtype(dtype, xp.signedinteger)
+        elif kind == 'unsigned integer':
+            return xp.issubdtype(dtype, xp.unsignedinteger)
+        elif kind == 'integral':
+            return xp.issubdtype(dtype, xp.integer)
+        elif kind == 'real floating':
+            return xp.issubdtype(dtype, xp.floating)
+        elif kind == 'complex floating':
+            return xp.issubdtype(dtype, xp.complexfloating)
+        elif kind == 'numeric':
+            return xp.issubdtype(dtype, xp.number)
+        else:
+            raise ValueError(f"Unrecognized data type kind: {kind!r}")
+    else:
+        # This will allow things that aren't required by the spec, like
+        # isdtype(np.float64, float) or isdtype(np.int64, 'l'). Should we be
+        # more strict here to match the type annotation? Note that the
+        # numpy.array_api implementation will be very strict.
+        return dtype == kind
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
            'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc', 'matmul',
-           'matrix_transpose', 'tensordot', 'vecdot']
+           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
