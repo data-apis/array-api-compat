@@ -9,14 +9,15 @@ from ..common._aliases import (UniqueAllResult, UniqueCountsResult,
                                vecdot as _aliases_vecdot)
 from .._internal import get_xp
 
+import torch
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import List, Optional, Sequence, Tuple, Union
     from ..common._typing import Device
     from torch import dtype as Dtype
 
-import torch
-array = torch.Tensor
+    array = torch.Tensor
 
 _array_api_dtypes = {
     torch.bool,
