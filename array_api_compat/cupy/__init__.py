@@ -6,13 +6,7 @@ from cupy import abs, max, min, round
 # These imports may overwrite names from the import * above.
 from ._aliases import *
 
-# Don't know why, but we have to do an absolute import to import linalg. If we
-# instead do
-#
-# from . import linalg
-#
-# It doesn't overwrite cupy.linalg from above. The import is generated
-# dynamically so that the library can be vendored.
+# See the comment in the numpy __init__.py
 __import__(__package__ + '.linalg')
 
 from .linalg import matrix_transpose, vecdot

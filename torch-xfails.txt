@@ -26,24 +26,13 @@ array_api_tests/test_data_type_functions.py::test_iinfo[uint16]
 array_api_tests/test_data_type_functions.py::test_iinfo[uint32]
 array_api_tests/test_data_type_functions.py::test_iinfo[uint64]
 
-# --disable-extension broken with test_has_names.py
-# https://github.com/data-apis/array-api-tests/issues/169
-array_api_tests/test_has_names.py::test_has_names[linalg-matrix_transpose]
-array_api_tests/test_has_names.py::test_has_names[linalg-outer]
-array_api_tests/test_has_names.py::test_has_names[linalg-tensordot]
-array_api_tests/test_has_names.py::test_has_names[linalg-trace]
-
 # We cannot wrap the tensor object
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 
-
 # tensordot doesn't allow integer dtypes in some corner cases
 array_api_tests/test_linalg.py::test_tensordot
 
-# A numerical difference in stacking (will be fixed by
-# https://github.com/data-apis/array-api-tests/pull/101)
-array_api_tests/test_linalg.py::test_matmul
 # We cannot wrap the tensor object
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x1, x2)]
