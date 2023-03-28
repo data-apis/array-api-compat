@@ -22,13 +22,15 @@ def cross(x1: array, x2: array, /, *, axis: int = -1) -> array:
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
     return torch_linalg.cross(x1, x2, dim=axis)
 
-def vecdot(x1: array, x2: array, /, *, axis: int = -1) -> array:
+def vecdot(x1: array, x2: array, /, *, axis: int = -1, **kwargs) -> array:
     from ._aliases import isdtype
 
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
 
     # torch.linalg.vecdot doesn't support integer dtypes
     if isdtype(x1.dtype, 'integral') or isdtype(x2.dtype, 'integral'):
+        if kwargs:
+            raise RuntimeError("vecdot kwargs not supported for integral dtypes")
         ndim = max(x1.ndim, x2.ndim)
         x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
         x2_shape = (1,)*(ndim - x2.ndim) + tuple(x2.shape)
@@ -41,7 +43,7 @@ def vecdot(x1: array, x2: array, /, *, axis: int = -1) -> array:
 
         res = x1_[..., None, :] @ x2_[..., None]
         return res[..., 0, 0]
-    return torch.linalg.vecdot(x1, x2, axis=axis)
+    return torch.linalg.vecdot(x1, x2, dim=axis, **kwargs)
 
 __all__ = linalg_all + ['outer', 'trace', 'matrix_transpose', 'tensordot', 'vecdot']
 
