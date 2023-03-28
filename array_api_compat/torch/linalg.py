@@ -45,6 +45,11 @@ def vecdot(x1: array, x2: array, /, *, axis: int = -1, **kwargs) -> array:
         return res[..., 0, 0]
     return torch.linalg.vecdot(x1, x2, dim=axis, **kwargs)
 
-__all__ = linalg_all + ['outer', 'trace', 'matrix_transpose', 'tensordot', 'vecdot']
+def solve(x1: array, x2: array, /, **kwargs) -> array:
+    x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
+    return torch.linalg.solve(x1, x2, **kwargs)
+
+__all__ = linalg_all + ['outer', 'trace', 'matrix_transpose', 'tensordot',
+                        'vecdot', 'solve']
 
 del linalg_all
