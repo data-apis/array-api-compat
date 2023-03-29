@@ -57,8 +57,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__im
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
 
 
-# Mac-only bug (overflow near float max)
-# array_api_tests/test_operators_and_elementwise_functions.py::test_log1p
+# overflow near float max
+array_api_tests/test_operators_and_elementwise_functions.py::test_log1p
 
 # torch doesn't handle shifting by more than the bit size correctly
 # https://github.com/pytorch/pytorch/issues/70904
