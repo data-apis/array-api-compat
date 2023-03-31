@@ -1,3 +1,15 @@
+# 1.2 (2023-03-31)
+
+## Major Changes
+
+- Support the linalg extension in the `array_api_compat.torch` namespace.
+
+- Add `isdtype()`.
+
+## Minor Changes
+
+- Fix the `k` keyword argument to `tril` and `triu` in `torch`.
+
 # 1.1.1 (2023-03-10)
 
 ## Major Changes
