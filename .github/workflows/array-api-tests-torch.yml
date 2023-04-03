@@ -7,4 +7,6 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: torch
+      # Proper linalg testing will require
+      # https://github.com/data-apis/array-api-tests/pull/101
       pytest-extra-args: "--disable-extension linalg"
