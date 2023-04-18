@@ -32,6 +32,8 @@ _array_api_dtypes = {
     *_int_dtypes,
     torch.float32,
     torch.float64,
+    torch.complex64,
+    torch.complex128,
 }
 
 _promotion_table  = {
@@ -70,6 +72,16 @@ _promotion_table  = {
     (torch.float32, torch.float64): torch.float64,
     (torch.float64, torch.float32): torch.float64,
     (torch.float64, torch.float64): torch.float64,
+    # complexes
+    (torch.complex64, torch.complex64): torch.complex64,
+    (torch.complex64, torch.complex128): torch.complex128,
+    (torch.complex128, torch.complex64): torch.complex128,
+    (torch.complex128, torch.complex128): torch.complex128,
+    # Mixed float and complex
+    (torch.float32, torch.complex64): torch.complex64,
+    (torch.float32, torch.complex128): torch.complex128,
+    (torch.float64, torch.complex64): torch.complex128,
+    (torch.float64, torch.complex128): torch.complex128,
 }
 
 
@@ -652,6 +664,9 @@ def isdtype(
     else:
         return dtype == kind
 
+def take(x: array, indices: array, /, *, axis: int, **kwargs) -> array:
+    return torch.index_select(x, axis, indices, **kwargs)
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'divide', 'equal',
@@ -663,4 +678,4 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
            'broadcast_arrays', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
-           'vecdot', 'tensordot', 'isdtype']
+           'vecdot', 'tensordot', 'isdtype', 'take']
