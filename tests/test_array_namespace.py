@@ -26,6 +26,22 @@ def test_array_namespace_multiple():
     assert array_namespace(x, x) == array_namespace((x, x)) == \
         array_namespace((x, x), x) == array_api_compat.numpy
 
+def test_fallback_namespace():
+    import numpy as np
+    import array_api_compat.numpy
+
+    xp = array_api_compat.numpy
+    xp_ = array_namespace([1, 2], fallback_namespace=xp)
+    assert xp_ == xp
+
+    xp_ = array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace=xp)
+    assert xp_ == xp
+
+    msg = 'Multiple namespaces'
+    with pytest.raises(TypeError, match=msg):
+        array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace=np)
+
+
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
     pytest.raises(TypeError, lambda: array_namespace())
