@@ -53,7 +53,7 @@ def _check_api_version(api_version):
     if api_version is not None and api_version != '2021.12':
         raise ValueError("Only the 2021.12 version of the array API specification is currently supported")
 
-def array_namespace(*xs, api_version=None, _use_compat=True):
+def array_namespace(*xs, api_version=None, _use_compat=True, fallback_namespace=None):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
@@ -72,7 +72,9 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     namespaces = set()
     for x in xs:
         if isinstance(x, (tuple, list)):
-            namespaces.add(array_namespace(*x, _use_compat=_use_compat))
+            namespaces.add(array_namespace(
+                *x, _use_compat=_use_compat, fallback_namespace=fallback_namespace
+            ))
         elif hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__(api_version=api_version))
         elif _is_numpy_array(x):
@@ -99,6 +101,8 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import torch
                 namespaces.add(torch)
+        elif fallback_namespace is not None:
+            namespaces.add(fallback_namespace)
         else:
             # TODO: Support Python scalars?
             raise TypeError("The input is not a supported array type")
