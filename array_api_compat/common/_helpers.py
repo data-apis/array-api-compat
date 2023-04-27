@@ -69,6 +69,17 @@ def array_namespace(*xs, api_version=None, _use_compat=True, fallback_namespace=
     api_version should be the newest version of the spec that you need support
     for (currently the compat library wrapped APIs only support v2021.12).
     """
+    # convert fallback_namespace
+    if fallback_namespace is not None:
+        try:
+            x_ = fallback_namespace.asarray(1)
+            fallback_namespace = array_namespace(
+                x_, _use_compat=_use_compat
+            )
+        except AttributeError as exc:
+            msg = "'fallback_namespace' must be an Array API compatible namespace"
+            raise TypeError(msg) from exc
+
     namespaces = set()
     for x in xs:
         if isinstance(x, (tuple, list)):

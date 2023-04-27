@@ -28,6 +28,7 @@ def test_array_namespace_multiple():
 
 def test_fallback_namespace():
     import numpy as np
+    import numpy.array_api
     import array_api_compat.numpy
 
     xp = array_api_compat.numpy
@@ -37,9 +38,18 @@ def test_fallback_namespace():
     xp_ = array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace=xp)
     assert xp_ == xp
 
+    # convert to Array API compatible namespace
+    xp = array_api_compat.numpy
+    xp_ = array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace=np)
+    assert xp_ == xp
+
     msg = 'Multiple namespaces'
     with pytest.raises(TypeError, match=msg):
-        array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace=np)
+        array_namespace([1, 2], numpy.array_api.asarray([1, 2]), fallback_namespace=np)
+
+    msg = "'fallback_namespace' must be an Array API"
+    with pytest.raises(TypeError, match=msg):
+        array_namespace([1, 2], np.asarray([1, 2]), fallback_namespace="hop")
 
 
 def test_array_namespace_errors():
