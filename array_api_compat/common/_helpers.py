@@ -154,6 +154,11 @@ def _cupy_to_device(x, device, /, stream=None):
 
     if device == x.device:
         return x
+    elif device == "cpu":
+        # allowing us to use `to_device(x, "cpu")`
+        # is useful for portable test swapping between
+        # host and device backends
+        return x.get()
     elif not isinstance(device, _Device):
         raise ValueError(f"Unsupported device {device!r}")
     else:
