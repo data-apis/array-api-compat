@@ -71,9 +71,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     namespaces = set()
     for x in xs:
-        if isinstance(x, (tuple, list)):
-            namespaces.add(array_namespace(*x, _use_compat=_use_compat))
-        elif hasattr(x, '__array_namespace__'):
+        if hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__(api_version=api_version))
         elif _is_numpy_array(x):
             _check_api_version(api_version)
