@@ -141,7 +141,6 @@ def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
     return torch.can_cast(from_, to)
 
 # Basic renames
-permute_dims = torch.permute
 bitwise_invert = torch.bitwise_not
 
 # Two-arg elementwise functions
@@ -451,18 +450,26 @@ def squeeze(x: array, /, axis: Union[int, Tuple[int, ...]]) -> array:
         x = torch.squeeze(x, a)
     return x
 
+# torch.broadcast_to uses size instead of shape
+def broadcast_to(x: array, /, shape: Tuple[int, ...], **kwargs) -> array:
+    return torch.broadcast_to(x, shape, **kwargs)
+
+# torch.permute uses dims instead of axes
+def permute_dims(x: array, /, axes: Tuple[int, ...]) -> array:
+    return torch.permute(x, axes)
+
 # The axis parameter doesn't work for flip() and roll()
 # https://github.com/pytorch/pytorch/issues/71210. Also torch.flip() doesn't
 # accept axis=None
-def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
+def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, **kwargs) -> array:
     if axis is None:
         axis = tuple(range(x.ndim))
     # torch.flip doesn't accept dim as an int but the method does
     # https://github.com/pytorch/pytorch/issues/18095
-    return x.flip(axis)
+    return x.flip(axis, **kwargs)
 
-def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Union[int, Tuple[int, ...]]] = None) -> array:
-    return torch.roll(x, shift, axis)
+def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Union[int, Tuple[int, ...]]] = None, **kwargs) -> array:
+    return torch.roll(x, shift, axis, **kwargs)
 
 def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
     return torch.nonzero(x, as_tuple=True, **kwargs)
@@ -673,9 +680,9 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'floor_divide', 'greater', 'greater_equal', 'less', 'less_equal',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
-           'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
-           'nonzero', 'where', 'arange', 'eye', 'linspace', 'full', 'ones',
-           'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
+           'mean', 'std', 'var', 'concat', 'squeeze', 'broadcast_to', 'flip',
+           'roll', 'nonzero', 'where', 'arange', 'eye', 'linspace', 'full',
+           'ones', 'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
            'broadcast_arrays', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
            'vecdot', 'tensordot', 'isdtype', 'take']
