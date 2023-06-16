@@ -45,9 +45,8 @@ jobs:
         submodules: 'true'
         path: array-api-tests
 
-        # Temporarily use https://github.com/data-apis/array-api-tests/pull/157
-        repository: asmeurer/array-api-tests
-        ref: xfails-file
+        repository: data-apis/array-api-tests
+        ref: master
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
