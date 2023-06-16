@@ -331,7 +331,7 @@ def _asarray(
 
     return xp.asarray(obj, dtype=dtype, **kwargs)
 
-# xp.reshape calls the keyword argument 'newshape' instead of 'shape'
+# np.reshape calls the keyword argument 'newshape' instead of 'shape'
 def reshape(x: ndarray,
             /,
             shape: Tuple[int, ...],
@@ -340,8 +340,9 @@ def reshape(x: ndarray,
     if copy is True:
         x = x.copy()
     elif copy is False:
-        x.shape = shape
-        return x
+        y = x.view()
+        y.shape = shape
+        return y
     return xp.reshape(x, shape, **kwargs)
 
 # The descending keyword is new in sort and argsort, and 'kind' replaced with

@@ -459,6 +459,16 @@ def where(condition: array, x1: array, x2: array, /) -> array:
     x1, x2 = _fix_promotion(x1, x2)
     return torch.where(condition, x1, x2)
 
+# torch.reshape doesn't have the copy keyword
+def reshape(x: array,
+            /,
+            shape: Tuple[int, ...],
+            copy: Optional[bool] = None,
+            **kwargs) -> array:
+    if copy is not None:
+        raise NotImplementedError("torch.reshape doesn't yet support the copy keyword")
+    return torch.reshape(x, shape, **kwargs)
+
 # torch.arange doesn't support returning empty arrays
 # (https://github.com/pytorch/pytorch/issues/70915), and doesn't support some
 # keyword argument combinations
@@ -659,8 +669,8 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert', 'add',
            'logaddexp', 'multiply', 'not_equal', 'pow', 'remainder',
            'subtract', 'max', 'min', 'sort', 'prod', 'sum', 'any', 'all',
            'mean', 'std', 'var', 'concat', 'squeeze', 'flip', 'roll',
-           'nonzero', 'where', 'arange', 'eye', 'linspace', 'full', 'ones',
-           'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
+           'nonzero', 'where', 'reshape', 'arange', 'eye', 'linspace', 'full',
+           'ones', 'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
            'broadcast_arrays', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
            'vecdot', 'tensordot', 'isdtype']
