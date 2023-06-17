@@ -41,6 +41,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mo
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]
 # floating point inaccuracy
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
 
@@ -54,6 +55,10 @@ array_api_tests/test_statistical_functions.py::test_max
 # testsuite incorrectly thinks meshgrid doesn't have indexing argument
 # (https://github.com/data-apis/array-api-tests/issues/171)
 array_api_tests/test_signatures.py::test_func_signature[meshgrid]
+
+# testsuite issue with test_square
+# https://github.com/data-apis/array-api-tests/issues/190
+array_api_tests/test_operators_and_elementwise_functions.py::test_square
 
 # We cannot add array attributes
 array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
