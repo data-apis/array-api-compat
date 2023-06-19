@@ -177,8 +177,6 @@ version.
   in the spec. Use the `size(x)` helper function as a portable workaround (see
   above).
 
-- The `linalg` extension is not yet implemented.
-
 - PyTorch does not have unsigned integer types other than `uint8`, and no
   attempt is made to implement them here.
 
