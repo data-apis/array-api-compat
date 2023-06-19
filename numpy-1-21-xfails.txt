@@ -47,6 +47,10 @@ array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x
 array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 
+# testsuite issue with test_square
+# https://github.com/data-apis/array-api-tests/issues/190
+array_api_tests/test_operators_and_elementwise_functions.py::test_square
+
 # NumPy 1.21 specific XFAILS
 ############################
 
