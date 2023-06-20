@@ -1,3 +1,19 @@
+# 1.3 (2023-06-20)
+
+## Major Changes
+
+- Add [2022.12](https://data-apis.org/array-api/2022.12/) standard support.
+  This includes things like adding complex dtype support, adding the new
+  `take` function, and various minor changes in the specification.
+
+## Minor Changes
+
+- Support `"cpu"` in CuPy `to_device()`.
+
+- Return a new array in NumPy/CuPy `reshape(copy=False)`.
+
+- Fix signatures for PyTorch `broadcast_to` and `permute_dims`.
+
 # 1.2 (2023-04-03)
 
 ## Major Changes
