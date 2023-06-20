@@ -12,11 +12,8 @@ each array library itself fully compatible with the array API, but this
 requires making backwards incompatible changes in many cases, so this will
 take some time.
 
-Currently all libraries here are implemented against the 2021.12 version of
-the standard. Support for the [2022.12
-version](https://data-apis.org/array-api/2022.12/changelog.html), which adds
-complex number support as well as several additional functions, will be added
-later this year.
+Currently all libraries here are implemented against the [2022.22
+version](https://data-apis.org/array-api/2022.22/) of the standard.
 
 ## Usage
 
@@ -176,8 +173,6 @@ version.
   [`x.size`](https://data-apis.org/array-api/draft/API_specification/generated/array_api.array.size.html)
   in the spec. Use the `size(x)` helper function as a portable workaround (see
   above).
-
-- The `linalg` extension is not yet implemented.
 
 - PyTorch does not have unsigned integer types other than `uint8`, and no
   attempt is made to implement them here.

@@ -397,9 +397,12 @@ def sum(
     keepdims: bool = False,
     **kwargs,
 ) -> ndarray:
-    # `xp.sum` already upcasts integers, but not floats
-    if dtype is None and x.dtype == xp.float32:
-        dtype = xp.float64
+    # `xp.sum` already upcasts integers, but not floats or complexes
+    if dtype is None:
+        if x.dtype == xp.float32:
+            dtype = xp.float64
+        elif x.dtype == xp.complex64:
+            dtype = xp.complex128
     return xp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, **kwargs)
 
 def prod(
@@ -412,8 +415,11 @@ def prod(
     keepdims: bool = False,
     **kwargs,
 ) -> ndarray:
-    if dtype is None and x.dtype == xp.float32:
-        dtype = xp.float64
+    if dtype is None:
+        if x.dtype == xp.float32:
+            dtype = xp.float64
+        elif x.dtype == xp.complex64:
+            dtype = xp.complex128
     return xp.prod(x, dtype=dtype, axis=axis, keepdims=keepdims, **kwargs)
 
 # ceil, floor, and trunc return integers for integer inputs

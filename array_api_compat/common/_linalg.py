@@ -136,8 +136,13 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
 def diagonal(x: ndarray, /, xp, *, offset: int = 0, **kwargs) -> ndarray:
     return xp.diagonal(x, offset=offset, axis1=-2, axis2=-1, **kwargs)
 
-def trace(x: ndarray, /, xp, *, offset: int = 0, **kwargs) -> ndarray:
-    return xp.asarray(xp.trace(x, offset=offset, axis1=-2, axis2=-1, **kwargs))
+def trace(x: ndarray, /, xp, *, offset: int = 0, dtype=None, **kwargs) -> ndarray:
+    if dtype is None:
+        if x.dtype == xp.float32:
+            dtype = xp.float64
+        elif x.dtype == xp.complex64:
+            dtype = xp.complex128
+    return xp.asarray(xp.trace(x, offset=offset, dtype=dtype, axis1=-2, axis2=-1, **kwargs))
 
 __all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
            'QRResult', 'SlogdetResult', 'SVDResult', 'eigh', 'qr', 'slogdet',

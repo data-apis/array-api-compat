@@ -18,12 +18,6 @@ cd $tmpdir
 git clone https://github.com/data-apis/array-api-tests
 cd array-api-tests
 
-# Remove this once https://github.com/data-apis/array-api-tests/pull/157 is
-# merged
-git remote add asmeurer https://github.com/asmeurer/array-api-tests
-git fetch asmeurer
-git checkout asmeurer/xfails-file
-
 git submodule update --init
 
 # store the hypothesis examples database in this directory, so that failures

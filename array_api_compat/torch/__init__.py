@@ -19,4 +19,4 @@ __import__(__package__ + '.linalg')
 
 from ..common._helpers import *
 
-__array_api_version__ = '2021.12'
+__array_api_version__ = '2022.12'
