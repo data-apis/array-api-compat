@@ -15,6 +15,20 @@ take some time.
 Currently all libraries here are implemented against the [2022.12
 version](https://data-apis.org/array-api/2022.12/) of the standard.
 
+## Install
+
+`array-api-compat` is available on both [PyPI](https://pypi.org/project/array-api-compat/)
+
+```
+python -m pip install array-api-compat
+```
+
+and [Conda-forge](https://anaconda.org/conda-forge/array-api-compat)
+
+```
+conda install --channel conda-forge array-api-compat
+```
+
 ## Usage
 
 The typical usage of this library will be to get the corresponding array API
