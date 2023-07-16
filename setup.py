@@ -15,6 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://data-apis.org/array-api-compat/",
     license="MIT",
+    python_requires=">=3.8",
     extras_require={
         "numpy": "numpy",
         "cupy": "cupy",
