@@ -133,6 +133,8 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
     # This doesn't result_type(dtype, dtype) for non-array API dtypes
     # because torch.result_type only accepts tensors. This does however, allow
     # cross-kind promotion.
+    x = torch.tensor([], dtype=x) if isinstance(x, torch.dtype) else x
+    y = torch.tensor([], dtype=y) if isinstance(y, torch.dtype) else y
     return torch.result_type(x, y)
 
 def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
