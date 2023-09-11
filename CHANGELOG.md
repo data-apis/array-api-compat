@@ -1,3 +1,20 @@
+# 1.4 (2023-09-11)
+
+## Major Changes
+
+- Releases are now made with GitHub Actions (thanks
+  [@matthewfeickert](https://github.com/matthewfeickert)).
+
+## Minor Changes
+
+- Fix `torch.result_type()` cross-kind promotion
+  ([@lucascolley](https://github.com/lucascolley)).
+
+- Fix the torch.take() wrapper to make axis optional for ndim = 1.
+
+- Add requires-python metadata to the package
+  ([@matthewfeickert](https://github.com/matthewfeickert)).
+
 # 1.3 (2023-06-20)
 
 ## Major Changes
