@@ -1,6 +1,9 @@
 # asarray(copy=False) is not yet implemented
 array_api_tests/test_creation_functions.py::test_asarray_arrays
 
+# https://github.com/data-apis/array-api-tests/issues/195
+array_api_tests/test_creation_functions.py::test_linspace
+
 # finfo(float32).eps returns float32 but should return float
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 
