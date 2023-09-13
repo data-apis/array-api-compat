@@ -87,12 +87,6 @@ jobs:
     - name: List all files
       run: ls -lh dist
 
-    - name: Create GitHub Release from a Tag
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-          files: dist/*
-
     - name: Publish distribution 📦 to Test PyPI
       # Publish to TestPyPI on tag events of if manually triggered
       # Compare to 'true' string as booleans get turned into strings in the console
@@ -103,6 +97,12 @@ jobs:
       with:
         repository-url: https://test.pypi.org/legacy/
         print-hash: true
+
+    - name: Create GitHub Release from a Tag
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: dist/*
 
     - name: Publish distribution 📦 to PyPI
       if: github.event_name == 'release' && github.event.action == 'published'
