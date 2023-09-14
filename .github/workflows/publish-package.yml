@@ -106,7 +106,7 @@ jobs:
           files: dist/*
 
     - name: Publish distribution 📦 to PyPI
-      if: github.event_name == 'release' && github.event.action == 'published'
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@v1.8.10
       with:
         print-hash: true
