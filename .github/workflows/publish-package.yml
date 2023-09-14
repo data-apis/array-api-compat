@@ -73,6 +73,7 @@ jobs:
     # c.f. https://docs.pypi.org/trusted-publishers/using-a-publisher/
     permissions:
       id-token: write
+      contents: write
     # Restrict to the environment set for the trusted publisher
     environment:
       name: publish-package
