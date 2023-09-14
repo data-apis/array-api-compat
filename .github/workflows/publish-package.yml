@@ -73,6 +73,7 @@ jobs:
     # c.f. https://docs.pypi.org/trusted-publishers/using-a-publisher/
     permissions:
       id-token: write
+      contents: write
     # Restrict to the environment set for the trusted publisher
     environment:
       name: publish-package
@@ -98,8 +99,14 @@ jobs:
         repository-url: https://test.pypi.org/legacy/
         print-hash: true
 
+    - name: Create GitHub Release from a Tag
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: dist/*
+
     - name: Publish distribution 📦 to PyPI
-      if: github.event_name == 'release' && github.event.action == 'published'
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@v1.8.10
       with:
         print-hash: true
