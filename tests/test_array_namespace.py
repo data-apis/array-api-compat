@@ -19,25 +19,24 @@ def test_array_namespace(library, api_version):
     else:
         assert namespace == getattr(array_api_compat, library)
 
-def test_array_namespace_multiple():
-    import numpy as np
-
-    x = np.asarray([1, 2])
-    assert array_namespace(x, x) == array_namespace((x, x)) == \
-        array_namespace((x, x), x) == array_api_compat.numpy
 
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
     pytest.raises(TypeError, lambda: array_namespace())
 
     import numpy as np
-    import torch
     x = np.asarray([1, 2])
+
+    pytest.raises(TypeError, lambda: array_namespace((x, x)))
+    pytest.raises(TypeError, lambda: array_namespace(x, (x, x)))
+
+    import torch
     y = torch.asarray([1, 2])
 
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
     pytest.raises(ValueError, lambda: array_namespace(x, api_version='2022.12'))
+
 
 def test_get_namespace():
     # Backwards compatible wrapper
