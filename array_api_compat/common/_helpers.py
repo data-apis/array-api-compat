@@ -99,7 +99,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
                 namespaces.add(torch)
         else:
             # TODO: Support Python scalars?
-            raise TypeError(f"{type(x)!r} is not a supported array type")
+            raise TypeError(f"{type(x).__name__} is not a supported array type")
 
     if not namespaces:
         raise TypeError("Unrecognized array input")
