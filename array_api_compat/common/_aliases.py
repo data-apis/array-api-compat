@@ -303,6 +303,8 @@ def _asarray(
         import numpy as xp
     elif namespace == 'cupy':
         import cupy as xp
+    elif namespace == 'dask':
+        import dask.array as xp
     else:
         raise ValueError("Unrecognized namespace argument to asarray()")
 
@@ -322,7 +324,9 @@ def _asarray(
     if copy in COPY_FALSE:
         # copy=False is not yet implemented in xp.asarray
         raise NotImplementedError("copy=False is not yet implemented")
-    if isinstance(obj, xp.ndarray):
+    # TODO: This feels wrong (__array__ is not in the standard)
+    # Dask doesn't support DLPack, though, so, this'll do
+    if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
         if dtype is not None and obj.dtype != dtype:
             copy = True
         if copy in COPY_TRUE:

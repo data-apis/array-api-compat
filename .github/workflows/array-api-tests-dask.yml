@@ -1,0 +1,9 @@
+name: Array API Tests (Dask)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-dask:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: dask

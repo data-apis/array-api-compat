@@ -40,6 +40,16 @@ def _is_torch_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
 
+def _is_dask_array(x):
+    # Avoid importing dask if it isn't already
+    if 'dask.array' not in sys.modules:
+        return False
+
+    import dask.array
+
+    # TODO: Should we reject ndarray subclasses?
+    return isinstance(x, dask.array.Array)
+
 def is_array_api_obj(x):
     """
     Check if x is an array API compatible array object.
@@ -97,6 +107,13 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import torch
                 namespaces.add(torch)
+        elif _is_dask_array(x):
+            _check_api_version(api_version)
+            if _use_compat:
+                from .. import dask as dask_namespace
+                namespaces.add(dask_namespace)
+            else:
+                raise TypeError("_use_compat cannot be False if input array is a dask array!")
         else:
             # TODO: Support Python scalars?
             raise TypeError("The input is not a supported array type")
@@ -219,6 +236,13 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
         return _cupy_to_device(x, device, stream=stream)
     elif _is_torch_array(x):
         return _torch_to_device(x, device, stream=stream)
+    elif _is_dask_array(x):
+        if stream is not None:
+            raise ValueError("The stream argument to to_device() is not supported")
+        # TODO: What if our array is on the GPU already?
+        if device == 'cpu':
+            return x
+        raise ValueError(f"Unsupported device {device!r}")
     return x.to_device(device, stream=stream)
 
 def size(x):

@@ -17,3 +17,7 @@ def test_vendoring_cupy():
 def test_vendoring_torch():
     from vendor_test import uses_torch
     uses_torch._test_torch()
+
+def test_vendoring_torch():
+    from vendor_test import uses_torch
+    uses_torch._test_torch()
