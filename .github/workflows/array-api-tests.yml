@@ -6,6 +6,9 @@ on:
       package-name:
         required: true
         type: string
+      package-extras:
+        required: false
+        type: string
       package-version:
         required: false
         type: string
@@ -54,7 +57,7 @@ jobs:
       if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
       run: |
         python -m pip install --upgrade pip
-        python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}'
+        python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.package-extras }}
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
     - name: Run the array API testsuite (${{ inputs.package-name }})
       if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"

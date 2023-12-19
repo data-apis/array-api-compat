@@ -7,3 +7,4 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: dask
+      extra-requires: numpy
