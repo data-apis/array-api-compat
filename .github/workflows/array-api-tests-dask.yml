@@ -8,3 +8,4 @@ jobs:
     with:
       package-name: dask
       extra-requires: numpy
+      pytest-extra-args: --disable-deadline

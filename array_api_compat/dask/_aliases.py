@@ -37,6 +37,7 @@ astype = _aliases.astype
 
 # Common aliases
 arange = get_xp(da)(_aliases.arange)
+eye = get_xp(da)(_aliases.eye)
 
 from functools import partial
 asarray = partial(_aliases._asarray, namespace='dask')
@@ -66,8 +67,6 @@ reshape = get_xp(da)(_aliases.reshape)
 matrix_transpose = get_xp(da)(_aliases.matrix_transpose)
 vecdot = get_xp(da)(_aliases.vecdot)
 
-
-
 from dask.array import (
     # Element wise aliases
     arccos as acos,
@@ -83,6 +82,5 @@ from dask.array import (
     power as pow,
     # Other
     concatenate as concat,
-
 )
 

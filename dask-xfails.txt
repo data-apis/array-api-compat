@@ -1,9 +1,38 @@
+# This fails in dask
+# import dask.array as da
+# a = da.array([1]).reshape((1,1))
+# key = (0, slice(None, None, -1))
+# a[key] = da.array([1])
+
+# Failing hypothesis test case
+#x=dask.array<zeros_like, shape=(0, 2), dtype=bool, chunksize=(0, 2), chunktype=numpy.ndarray>
+#| Draw 1 (key): (slice(None, None, None), slice(None, None, None))
+#| Draw 2 (value): dask.array<zeros_like, shape=(0, 2), dtype=bool, chunksize=(0, 2), chunktype=numpy.ndarray>
+
+# TODO: this also skips test_setitem_masking unnecessarily
+array_api_tests/test_array_object.py::test_setitem
+
+# Various indexing errors
+array_api_tests/test_array_object.py::test_getitem_masking
+
+
+# asarray(copy=False) is not yet implemented
+# copied from numpy xfails, TODO: should this pass with dask?
+array_api_tests/test_creation_functions.py::test_asarray_arrays
+
+# zero division error, and typeerror: tuple indices must be integers or slices not tuple
+array_api_tests/test_creation_functions.py::test_eye
+
 # finfo(float32).eps returns float32 but should return float
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 
 # No sorting in dask
 array_api_tests/test_has_names.py::test_has_names[sorting-argsort]
 array_api_tests/test_has_names.py::test_has_names[sorting-sort]
+array_api_tests/test_sorting_functions.py::test_argsort
+array_api_tests/test_sorting_functions.py::test_sort
+array_api_tests/test_signatures.py::test_func_signature[argsort]
+array_api_tests/test_signatures.py::test_func_signature[sort]
 
 # Array methods and attributes not already on np.ndarray cannot be wrapped
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
@@ -11,37 +40,100 @@ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)] - AssertionError: out[0]=0, but should be (x1 + x2[0])=65536 [__add__()]
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_bitwise_and(ctx=BinaryParamContext(<__and__(x1, x2)>), data=data(...)) produces unreliable results: Falsified on the ...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__rshift__(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_bitwise_right_shift(ctx=BinaryParamContext(<__rshift__(x1, x2)>), data=data(...)) produces unreliable results: Falsif...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[bitwise_xor(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 994.44ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x1, x2)] - ValueError: Inferred dtype from function 'xor' was 'uint64' but got 'int16', which can't be cast using casting='same_kind'
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_ceil - exceptiongroup.ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_divide[divide(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_divide(ctx=BinaryParamContext(<divide(x1, x2)>), data=data(...)) produces unreliable results: Falsified on the first ...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_floor - exceptiongroup.ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[floor_divide(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 1015.43ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 900.99ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_greater[greater(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 1106.49ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_greater(ctx=BinaryParamContext(<__gt__(x1, x2)>), data=data(...)) produces unreliable results: Falsified on the first...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[greater_equal(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_greater_equal(ctx=BinaryParamContext(<greater_equal(x1, x2)>), data=data(...)) produces unreliable results: Falsified...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)] - hypothesis.errors.Flaky: Hypothesis test_greater_equal(ctx=BinaryParamContext(<__ge__(x1, x2)>), data=data(...)) produces unreliable results: Falsified on the...
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_less[less(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 961.84ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 980.68ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[less_equal(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 1043.47ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 1011.76ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[multiply(x1, x2)] - AssertionError: out[0]=0, but should be (x1 * x2[0])=256 [multiply()]
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)] - AssertionError: out[0]=2, but should be (x1 * x2[0])=258 [__mul__()]
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[subtract(x1, x2)] - exceptiongroup.ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)] - hypothesis.errors.DeadlineExceeded: Test took 1034.64ms, which exceeds the deadline of 800.00ms
-#FAILED array_api_tests/test_operators_and_elementwise_functions.py::test_trunc - exceptiongroup.ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
+# dask doesn't return int when input is already int for ceil/floor/trunc
+# Use $ to denote end of regex so we don't xfail other tests accidentally
+array_api_tests/test_operators_and_elementwise_functions.py::test_ceil
+# TODO: this xfails more than it should ... (e.g. test_floor_divide works)
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor
+array_api_tests/test_operators_and_elementwise_functions.py::test_trunc
 
-#FAILED array_api_tests/test_searching_functions.py::test_nonzero_zerodim_error - Failed: DID NOT RAISE <class 'Exception'>
+# Dask doesn't raise an error for this test
+array_api_tests/test_searching_functions.py::test_nonzero_zerodim_error
 
 # Fails because shape is NaN since we don't materialize it yet
-#FAILED array_api_tests/test_searching_functions.py::test_nonzero - AssertionError: prod(out[0].shape)=nan, but should be prod(out[0].shape)=nan
-#FAILED array_api_tests/test_set_functions.py::test_unique_all - AssertionError: out.indices.shape=(nan,), but should be out.values.shape=(nan,)
-#FAILED array_api_tests/test_set_functions.py::test_unique_counts - AssertionError: out.counts.shape=(nan,), but should be out.values.shape=(nan,)
+array_api_tests/test_searching_functions.py::test_nonzero
+array_api_tests/test_set_functions.py::test_unique_all
+array_api_tests/test_set_functions.py::test_unique_counts
 
-# Needs investigation
-#FAILED array_api_tests/test_set_functions.py::test_unique_inverse - TypeError: 'float' object cannot be interpreted as an integer
-#FAILED array_api_tests/test_set_functions.py::test_unique_values - TypeError: 'float' object cannot be interpreted as an integer
+# Different error but same cause as above, we're just trying to do ndindex on nan shape
+array_api_tests/test_set_functions.py::test_unique_inverse
+array_api_tests/test_set_functions.py::test_unique_values
+
+# Linalg failures (signature failures/missing methods)
+array_api_tests/test_has_names.py::test_has_names[linalg-cross]
+array_api_tests/test_has_names.py::test_has_names[linalg-det]
+array_api_tests/test_has_names.py::test_has_names[linalg-diagonal]
+array_api_tests/test_has_names.py::test_has_names[linalg-eigh]
+array_api_tests/test_has_names.py::test_has_names[linalg-eigvalsh]
+array_api_tests/test_has_names.py::test_has_names[linalg-matmul]
+array_api_tests/test_has_names.py::test_has_names[linalg-matrix_norm]
+array_api_tests/test_has_names.py::test_has_names[linalg-matrix_power]
+array_api_tests/test_has_names.py::test_has_names[linalg-matrix_rank]
+array_api_tests/test_has_names.py::test_has_names[linalg-matrix_transpose]
+array_api_tests/test_has_names.py::test_has_names[linalg-outer]
+array_api_tests/test_has_names.py::test_has_names[linalg-pinv]
+array_api_tests/test_has_names.py::test_has_names[linalg-slogdet]
+array_api_tests/test_has_names.py::test_has_names[linalg-svdvals]
+array_api_tests/test_has_names.py::test_has_names[linalg-tensordot]
+array_api_tests/test_has_names.py::test_has_names[linalg-trace]
+array_api_tests/test_has_names.py::test_has_names[linalg-vecdot]
+array_api_tests/test_has_names.py::test_has_names[linalg-vector_norm]
+array_api_tests/test_has_names.py::test_has_names[creation-from_dlpack]
+array_api_tests/test_has_names.py::test_has_names[array_method-__dlpack__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__dlpack_device__]
+array_api_tests/test_linalg.py::test_cross
+array_api_tests/test_linalg.py::test_det
+array_api_tests/test_linalg.py::test_diagonal
+array_api_tests/test_linalg.py::test_eigvalsh
+array_api_tests/test_linalg.py::test_matrix_norm
+array_api_tests/test_linalg.py::test_matrix_rank
+array_api_tests/test_linalg.py::test_outer
+array_api_tests/test_linalg.py::test_pinv
+array_api_tests/test_linalg.py::test_slogdet
+array_api_tests/test_linalg.py::test_svdvals
+array_api_tests/test_linalg.py::test_tensordot
+array_api_tests/test_linalg.py::test_trace
+array_api_tests/test_linalg.py::test_cholesky
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cholesky]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cross]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.det]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.diagonal]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigh]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigvalsh]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matmul]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_norm]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_power]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_rank]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_transpose]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.outer]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.pinv]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.qr]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.slogdet]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.svd]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.svdvals]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.tensordot]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.trace]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vector_norm]
+# errors
+array_api_tests/test_linalg.py::test_matrix_power
+array_api_tests/test_linalg.py::test_qr
+array_api_tests/test_linalg.py::test_solve
+array_api_tests/test_linalg.py::test_svd
+
+# Missing dlpack stuff
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack_device__]
+array_api_tests/test_signatures.py::test_array_method_signature[to_device]
+
+# Some cases unsupported by dask
+array_api_tests/test_manipulation_functions.py::test_roll
+
+# Dtype doesn't match (output is float32 but should be float64)
+array_api_tests/test_statistical_functions.py::test_prod
+array_api_tests/test_statistical_functions.py::test_sum
+
+# No mT on dask array
+array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
