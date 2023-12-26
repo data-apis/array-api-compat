@@ -15,7 +15,6 @@ array_api_tests/test_array_object.py::test_setitem
 # Various indexing errors
 array_api_tests/test_array_object.py::test_getitem_masking
 
-
 # asarray(copy=False) is not yet implemented
 # copied from numpy xfails, TODO: should this pass with dask?
 array_api_tests/test_creation_functions.py::test_asarray_arrays
@@ -25,6 +24,16 @@ array_api_tests/test_creation_functions.py::test_eye
 
 # finfo(float32).eps returns float32 but should return float
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
+
+# shape mismatch
+array_api_tests/test_creation_functions.py::test_linspace
+
+# out=-0, but should be +0
+array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
+
+# output is nan but should be infinity
+array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 
 # No sorting in dask
 array_api_tests/test_has_names.py::test_has_names[sorting-argsort]
