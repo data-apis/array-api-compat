@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from ..common import _aliases
+from ..common._helpers import _check_device
 
 from .._internal import get_xp
 
@@ -30,13 +33,44 @@ from numpy import (
     result_type,
 )
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Optional, Union
+    from ..common._typing import ndarray, Device, Dtype
+
 import dask.array as da
 
 isdtype = get_xp(np)(_aliases.isdtype)
 astype = _aliases.astype
 
 # Common aliases
-arange = get_xp(da)(_aliases.arange)
+
+# This arange func is modified from the common one to
+# not pass stop/step as keyword arguments, which will cause
+# an error with dask
+def dask_arange(
+    start: Union[int, float],
+    /,
+    stop: Optional[Union[int, float]] = None,
+    step: Union[int, float] = 1,
+    *,
+    xp,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    **kwargs
+) -> ndarray:
+    _check_device(xp, device)
+    args = [start]
+    if stop is not None:
+        args.append(stop)
+    else:
+        # stop is None, so start is actually stop
+        # prepend the default value for start which is 0
+        args.insert(0, 0)
+    args.append(step)
+    return xp.arange(*args, dtype=dtype, **kwargs)
+
+arange = get_xp(da)(dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
 from functools import partial

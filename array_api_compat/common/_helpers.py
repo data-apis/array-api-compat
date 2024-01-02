@@ -47,7 +47,6 @@ def _is_dask_array(x):
 
     import dask.array
 
-    # TODO: Should we reject ndarray subclasses?
     return isinstance(x, dask.array.Array)
 
 def is_array_api_obj(x):

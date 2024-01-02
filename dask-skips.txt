@@ -1,5 +1,2 @@
 # FFT isn't conformant
 array_api_tests/test_fft.py
-
-# Errors with dask, also makes Dask go OOM
-array_api_tests/test_creation_functions.py::test_arange

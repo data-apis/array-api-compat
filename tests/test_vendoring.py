@@ -18,6 +18,6 @@ def test_vendoring_torch():
     from vendor_test import uses_torch
     uses_torch._test_torch()
 
-def test_vendoring_torch():
-    from vendor_test import uses_torch
-    uses_torch._test_torch()
+def test_vendoring_dask():
+    from vendor_test import uses_dask
+    uses_dask._test_dask()

@@ -25,7 +25,8 @@ array_api_tests/test_creation_functions.py::test_eye
 # finfo(float32).eps returns float32 but should return float
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 
-# shape mismatch
+# out[-1]=dask.aray<getitem ...> but should be some floating number
+# (I think the test is not forcing the op to be computed?)
 array_api_tests/test_creation_functions.py::test_linspace
 
 # out=-0, but should be +0
