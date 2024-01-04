@@ -56,6 +56,7 @@ def is_array_api_obj(x):
     return _is_numpy_array(x) \
         or _is_cupy_array(x) \
         or _is_torch_array(x) \
+        or _is_dask_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
