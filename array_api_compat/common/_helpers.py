@@ -110,7 +110,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
         elif _is_dask_array(x):
             _check_api_version(api_version)
             if _use_compat:
-                from .. import dask as dask_namespace
+                from ..dask import array as dask_namespace
                 namespaces.add(dask_namespace)
             else:
                 raise TypeError("_use_compat cannot be False if input array is a dask array!")

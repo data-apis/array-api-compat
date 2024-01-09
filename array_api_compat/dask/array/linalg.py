@@ -1,8 +1,8 @@
 from dask.array.linalg import *
 from dask.array.linalg import __all__ as linalg_all
 
-from ..common import _linalg
-from .._internal import get_xp
+from ...common import _linalg
+from ..._internal import get_xp
 from ._aliases import (matmul, matrix_transpose, tensordot, vecdot)
 
 import dask.array as da
