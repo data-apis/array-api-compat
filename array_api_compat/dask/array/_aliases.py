@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from ..common import _aliases
-from ..common._helpers import _check_device
+from ...common import _aliases
+from ...common._helpers import _check_device
 
-from .._internal import get_xp
+from ..._internal import get_xp
 
 import numpy as np
 from numpy import (
@@ -36,7 +36,7 @@ from numpy import (
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Union
-    from ..common._typing import ndarray, Device, Dtype
+    from ...common._typing import ndarray, Device, Dtype
 
 import dask.array as da
 

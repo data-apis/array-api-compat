@@ -324,13 +324,11 @@ def _asarray(
     if copy in COPY_FALSE:
         # copy=False is not yet implemented in xp.asarray
         raise NotImplementedError("copy=False is not yet implemented")
-    # TODO: This feels wrong (__array__ is not in the standard)
-    # Dask doesn't support DLPack, though, so, this'll do
     if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
         if dtype is not None and obj.dtype != dtype:
             copy = True
         # Dask arrays are immutable, so copy doesn't do anything
-        if copy in COPY_TRUE and namespace != "dask":
+        if copy in COPY_TRUE and namespace != "dask.array":
             return xp.array(obj, copy=True, dtype=dtype)
         return obj
 

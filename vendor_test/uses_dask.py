@@ -1,6 +1,6 @@
 # Basic test that vendoring works
 
-from .vendored._compat import dask as dask_compat
+from .vendored._compat.dask import array as dask_compat
 
 import dask.array as da
 import numpy as np
