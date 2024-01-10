@@ -1,2 +1,0 @@
-# FFT isn't conformant
-array_api_tests/test_fft.py

@@ -4,3 +4,5 @@ from dask.array import *
 from ._aliases import *
 
 __array_api_version__ = '2022.12'
+
+__import__(__package__ + '.linalg')

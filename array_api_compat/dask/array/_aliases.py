@@ -48,6 +48,8 @@ astype = _aliases.astype
 # This arange func is modified from the common one to
 # not pass stop/step as keyword arguments, which will cause
 # an error with dask
+
+# TODO: delete the xp stuff, it shouldn't be necessary
 def dask_arange(
     start: Union[int, float],
     /,
@@ -118,3 +120,4 @@ from dask.array import (
     concatenate as concat,
 )
 
+del da

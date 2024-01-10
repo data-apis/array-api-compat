@@ -6,6 +6,6 @@ jobs:
   array-api-tests-dask:
     uses: ./.github/workflows/array-api-tests.yml
     with:
-      package-name: dask
+      package-name: dask.array
       extra-requires: numpy
       pytest-extra-args: --disable-deadline --max-examples=5
