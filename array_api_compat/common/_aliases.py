@@ -303,7 +303,7 @@ def _asarray(
         import numpy as xp
     elif namespace == 'cupy':
         import cupy as xp
-    elif namespace == 'dask':
+    elif namespace == 'dask.array':
         import dask.array as xp
     else:
         raise ValueError("Unrecognized namespace argument to asarray()")

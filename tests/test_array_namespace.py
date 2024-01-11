@@ -17,8 +17,9 @@ def test_array_namespace(library, api_version):
         assert namespace == lib
     else:
         if library == "dask.array":
-            library = "dask"
-        assert namespace == getattr(array_api_compat, library)
+            assert namespace == array_api_compat.dask.array
+        else:
+            assert namespace == getattr(array_api_compat, library)
 
 
 def test_array_namespace_errors():

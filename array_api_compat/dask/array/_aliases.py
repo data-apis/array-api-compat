@@ -76,7 +76,7 @@ arange = get_xp(da)(dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
 from functools import partial
-asarray = partial(_aliases._asarray, namespace='dask')
+asarray = partial(_aliases._asarray, namespace='dask.array')
 asarray.__doc__ = _aliases._asarray.__doc__
 
 linspace = get_xp(da)(_aliases.linspace)
