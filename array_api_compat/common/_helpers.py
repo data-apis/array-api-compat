@@ -71,9 +71,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     namespaces = set()
     for x in xs:
-        if hasattr(x, '__array_namespace__'):
-            namespaces.add(x.__array_namespace__(api_version=api_version))
-        elif _is_numpy_array(x):
+        if _is_numpy_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import numpy as numpy_namespace
@@ -97,6 +95,8 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import torch
                 namespaces.add(torch)
+        elif hasattr(x, '__array_namespace__'):
+            namespaces.add(x.__array_namespace__(api_version=api_version))
         else:
             # TODO: Support Python scalars?
             raise TypeError(f"{type(x).__name__} is not a supported array type")
