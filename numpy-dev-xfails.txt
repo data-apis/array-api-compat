@@ -5,16 +5,12 @@ array_api_tests/test_creation_functions.py::test_asarray_arrays
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 
 # Array methods and attributes not already on np.ndarray cannot be wrapped
-array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
-array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
 # linalg tests require https://github.com/data-apis/array-api-tests/pull/101
 # cleanups. Also some tests are using .mT
-array_api_tests/test_linalg.py::test_eigvalsh
 array_api_tests/test_linalg.py::test_solve
-array_api_tests/test_linalg.py::test_trace
 
 # Array methods and attributes not already on np.ndarray cannot be wrapped
 array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
@@ -39,10 +35,6 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity 
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
-
-# testsuite issue with test_square
-# https://github.com/data-apis/array-api-tests/issues/190
-array_api_tests/test_operators_and_elementwise_functions.py::test_square
 
 # https://github.com/numpy/numpy/issues/21213
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
