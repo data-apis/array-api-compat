@@ -386,6 +386,12 @@ def sort(
         res = xp.flip(res, axis=axis)
     return res
 
+# nonzero should error for zero-dimensional arrays
+def nonzero(x: ndarray, /, xp, **kwargs) -> Tuple[ndarray, ...]:
+    if x.ndim == 0:
+        raise ValueError("nonzero() does not support zero-dimensional arrays")
+    return xp.nonzero(x, **kwargs)
+
 # sum() and prod() should always upcast when dtype=None
 def sum(
     x: ndarray,
@@ -526,5 +532,5 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
-           'sort', 'sum', 'prod', 'ceil', 'floor', 'trunc', 'matmul',
-           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
+           'sort', 'nonzero', 'sum', 'prod', 'ceil', 'floor', 'trunc',
+           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
