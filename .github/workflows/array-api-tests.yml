@@ -64,7 +64,7 @@ jobs:
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.extra-requires }}
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
     - name: Run the array API testsuite (${{ inputs.package-name }})
-      if: "! (matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
+      if: "! ((matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21')) || (matrix.python-version == '3.8' && inputs.package-name == 'numpy' && contains(inputs.xfails-file-extra, 'dev')))"
       env:
         ARRAY_API_TESTS_MODULE: array_api_compat.${{ inputs.module-name || inputs.package-name }}
         # This enables the NEP 50 type promotion behavior (without it a lot of
