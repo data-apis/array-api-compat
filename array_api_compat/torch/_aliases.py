@@ -475,6 +475,8 @@ def roll(x: array, /, shift: Union[int, Tuple[int, ...]], *, axis: Optional[Unio
     return torch.roll(x, shift, axis, **kwargs)
 
 def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
+    if x.ndim == 0:
+        raise ValueError("nonzero() does not support zero-dimensional arrays")
     return torch.nonzero(x, as_tuple=True, **kwargs)
 
 def where(condition: array, x1: array, x2: array, /) -> array:
