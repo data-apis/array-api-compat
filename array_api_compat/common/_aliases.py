@@ -327,9 +327,16 @@ def _asarray(
     if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
         if dtype is not None and obj.dtype != dtype:
             copy = True
-        # Dask arrays are immutable, so copy doesn't do anything
-        if copy in COPY_TRUE and namespace != "dask.array":
-            return xp.array(obj, copy=True, dtype=dtype)
+        if copy in COPY_TRUE:
+            copy_kwargs = {}
+            if namespace != "dask.array":
+                copy_kwargs["copy"] = True
+            else:
+                # No copy kw in dask.asarray so we go thorugh np.asarray first
+                # (like dask also does) but copy after
+                import numpy as np
+                obj = np.asarray(obj).copy()
+            return xp.array(obj, dtype=dtype, **copy_kwargs)
         return obj
 
     return xp.asarray(obj, dtype=dtype, **kwargs)
