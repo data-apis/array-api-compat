@@ -29,9 +29,15 @@ matrix_rank = get_xp(cp)(_linalg.matrix_rank)
 pinv = get_xp(cp)(_linalg.pinv)
 matrix_norm = get_xp(cp)(_linalg.matrix_norm)
 svdvals = get_xp(cp)(_linalg.svdvals)
-vector_norm = get_xp(cp)(_linalg.vector_norm)
 diagonal = get_xp(cp)(_linalg.diagonal)
 trace = get_xp(cp)(_linalg.trace)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(cp.linalg, 'vector_norm'):
+    vector_norm = cp.linalg.vector_norm
+else:
+    vector_norm = get_xp(cp)(_linalg.vector_norm)
 
 __all__ = linalg_all + _linalg.__all__
 
