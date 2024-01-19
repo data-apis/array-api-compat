@@ -65,9 +65,9 @@ tensordot = get_xp(cp)(_aliases.tensordot)
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
-    vecdot = get_xp(cp)(_aliases.vecdot)
-else:
     vecdot = cp.vecdot
+else:
+    vecdot = get_xp(cp)(_aliases.vecdot)
 if hasattr(cp, 'isdtype'):
     isdtype = cp.isdtype
 else:
