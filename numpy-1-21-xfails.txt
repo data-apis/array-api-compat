@@ -50,9 +50,18 @@ array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x
 array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 
-# testsuite issue with test_square
-# https://github.com/data-apis/array-api-tests/issues/190
-array_api_tests/test_operators_and_elementwise_functions.py::test_square
+# fft functions are not yet supported
+# (https://github.com/data-apis/array-api-compat/issues/67)
+array_api_tests/test_fft.py::test_fft
+array_api_tests/test_fft.py::test_ifft
+array_api_tests/test_fft.py::test_fftn
+array_api_tests/test_fft.py::test_ifftn
+array_api_tests/test_fft.py::test_rfft
+array_api_tests/test_fft.py::test_irfft
+array_api_tests/test_fft.py::test_rfftn
+array_api_tests/test_fft.py::test_irfftn
+array_api_tests/test_fft.py::test_hfft
+array_api_tests/test_fft.py::test_ihfft
 
 # NumPy 1.21 specific XFAILS
 ############################
@@ -236,16 +245,3 @@ array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is +0 and x2_i
 array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is -0 and x2_i < 0) -> -0]
 array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is -0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
-
-# fft functions are not yet supported
-# (https://github.com/data-apis/array-api-compat/issues/67)
-array_api_tests/test_fft.py::test_fft
-array_api_tests/test_fft.py::test_ifft
-array_api_tests/test_fft.py::test_fftn
-array_api_tests/test_fft.py::test_ifftn
-array_api_tests/test_fft.py::test_rfft
-array_api_tests/test_fft.py::test_irfft
-array_api_tests/test_fft.py::test_rfftn
-array_api_tests/test_fft.py::test_irfftn
-array_api_tests/test_fft.py::test_hfft
-array_api_tests/test_fft.py::test_ihfft

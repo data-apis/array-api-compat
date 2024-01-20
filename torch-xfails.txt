@@ -171,10 +171,6 @@ array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i < 0
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_unary[sign(x_i is NaN) -> NaN]
 
-# testsuite issue with test_square
-# https://github.com/data-apis/array-api-tests/issues/190
-array_api_tests/test_operators_and_elementwise_functions.py::test_square
-
 # Float correction is not supported by pytorch
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_special_cases.py::test_empty_arrays[std]
