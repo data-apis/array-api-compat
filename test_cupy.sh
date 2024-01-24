@@ -12,7 +12,7 @@ tmpdir=$(mktemp -d)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export PYTHONPATH=$SCRIPT_DIR
 
-PYTEST_ARGS="--max-examples 200 -v -rxXfE --ci"
+PYTEST_ARGS="--max-examples 200 -v -rxXfE --ci --hypothesis-disable-deadline"
 
 cd $tmpdir
 git clone https://github.com/data-apis/array-api-tests

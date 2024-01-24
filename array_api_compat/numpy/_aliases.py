@@ -52,6 +52,7 @@ permute_dims = get_xp(np)(_aliases.permute_dims)
 reshape = get_xp(np)(_aliases.reshape)
 argsort = get_xp(np)(_aliases.argsort)
 sort = get_xp(np)(_aliases.sort)
+nonzero = get_xp(np)(_aliases.nonzero)
 sum = get_xp(np)(_aliases.sum)
 prod = get_xp(np)(_aliases.prod)
 ceil = get_xp(np)(_aliases.ceil)
@@ -60,8 +61,17 @@ trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
-vecdot = get_xp(np)(_aliases.vecdot)
-isdtype = get_xp(np)(_aliases.isdtype)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(np, 'vecdot'):
+    vecdot = np.vecdot
+else:
+    vecdot = get_xp(np)(_aliases.vecdot)
+if hasattr(np, 'isdtype'):
+    isdtype = np.isdtype
+else:
+    isdtype = get_xp(np)(_aliases.isdtype)
 
 __all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',

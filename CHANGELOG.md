@@ -1,3 +1,22 @@
+# 1.4.1 (2024-01-18)
+
+## Minor Changes
+
+- Add support for the upcoming NumPy 2.0 release.
+
+- Added a torch wrapper for `trace` (`torch.trace` doesn't support the
+  `offset` argument or stacking)
+
+- Wrap numpy, cupy, and torch `nonzero` to raise an error for zero-dimensional
+  input arrays.
+
+- Add torch wrapper for `newaxis`.
+
+- Improve error message for `array_namespace`
+
+- Fix linalg.cholesky returning the conjugate of the expected upper
+  decomposition for numpy and cupy.
+
 # 1.4 (2023-09-13)
 
 ## Major Changes
