@@ -1,0 +1,11 @@
+name: Array API Tests (NumPy dev)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-numpy-dev:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: numpy
+      extra-requires: '--pre --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
+      xfails-file-extra: '-dev'
