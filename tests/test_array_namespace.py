@@ -34,8 +34,10 @@ def test_array_namespace_errors():
 
 def test_array_namespace_errors_torch():
     torch = pytest.importorskip("torch")
+    np = pytest.importorskip("numpy")
 
     y = torch.asarray([1, 2])
+    x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
     pytest.raises(ValueError, lambda: array_namespace(x, api_version="2022.12"))
 

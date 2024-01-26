@@ -1,11 +1,11 @@
 # Several names are not included in the above import *
-import torch
+import torch as _torch
 from torch import *  # noqa: F401, F403
 
 from .._internal import _get_all_public_members
 
 
-def filter_(name):
+def exlcude(name):
     if (
         name.startswith("_")
         or name.endswith("_")
@@ -13,14 +13,14 @@ def filter_(name):
         or "cpu" in name
         or "backward" in name
     ):
-        return False
-    return True
+        return True
+    return False
 
 
-_torch_all = _get_all_public_members(torch, filter_=filter_)
+_torch_all = _get_all_public_members(_torch, exclude=exlcude, extend_all=True)
 
 for _name in _torch_all:
-    globals()[_name] = getattr(torch, _name)
+    globals()[_name] = getattr(_torch, _name)
 
 
 from ..common._helpers import (  # noqa: E402

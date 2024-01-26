@@ -5,8 +5,6 @@ non-spec dtypes
 
 import pytest
 
-from ._helpers import import_
-
 # Check the known dtypes by their string names
 
 def _spec_dtypes(library):

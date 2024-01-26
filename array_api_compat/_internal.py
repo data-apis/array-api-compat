@@ -44,14 +44,29 @@ specification for more details.
     return inner
 
 
-def _get_all_public_members(module, filter_=None):
-    """Get all public members of a module."""
-    try:
-        return getattr(module, '__all__')
-    except AttributeError:
-        pass
+def _get_all_public_members(module, exclude=None, extend_all=False):
+    """Get all public members of a module.
     
-    if filter_ is None:
-        filter_ = lambda name: name.startswith('_') # noqa: E731
+    Parameters
+    ----------
+    module : module
+        The module to get members from.
+    exclude : callable, optional
+        A callable that takes a name and returns True if the name should be
+        excluded from the list of members.
+    extend_all : bool, optional
+        If True, extend the module's __all__ attribute with the members of the
+        module derive from dir(module)
+    """
+    members = getattr(module, '__all__', [])
 
-    return map(filter_, dir(module))
+    if members and not extend_all:
+        return members
+
+    if exclude is None:
+        exclude = lambda name: name.startswith('_') # noqa: E731
+
+    members += [_ for _  in dir(module) if not exclude(_)]
+
+    # remove duplicates
+    return list(set(members))
