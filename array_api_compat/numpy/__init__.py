@@ -30,6 +30,7 @@ from ._aliases import (
     bool,
     concat,
     pow,
+    isdtype,
 )
 from .linalg import matrix_transpose, vecdot
 
@@ -69,6 +70,7 @@ __all__ += [
     "bool",
     "concat",
     "pow",
+    "isdtype",
 ]
 
 __all__ += [
