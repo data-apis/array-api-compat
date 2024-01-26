@@ -1,5 +1,5 @@
 from ._helpers import import_
-from array_api_compat import to_device, device
+from array_api_compat import to_device
 
 import pytest
 import numpy as np
