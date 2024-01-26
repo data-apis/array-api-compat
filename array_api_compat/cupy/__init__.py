@@ -1,8 +1,10 @@
+import cupy as _cp
 from cupy import *  # noqa: F401, F403
 
 # from cupy import * doesn't overwrite these builtin names
 from cupy import abs, max, min, round
 
+from .._internal import _get_all_public_members
 from ..common._helpers import (
     array_namespace,
     device,
@@ -33,6 +35,8 @@ from ._aliases import (
 from .linalg import matrix_transpose, vecdot
 
 __all__ = []
+
+__all__ += _get_all_public_members(_cp)
 
 __all__ += [
     "abs",

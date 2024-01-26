@@ -1,4 +1,5 @@
 from numpy import *  # noqa: F401, F403
+from numpy import __all__ as _numpy_all
 
 # from numpy import * doesn't overwrite these builtin names
 from numpy import abs, max, min, round
@@ -33,6 +34,8 @@ from ._aliases import (
 from .linalg import matrix_transpose, vecdot
 
 __all__ = []
+
+__all__ += _numpy_all
 
 __all__ += [
     "abs",
