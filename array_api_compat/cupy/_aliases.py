@@ -5,6 +5,7 @@ from functools import partial
 import cupy as cp
 
 from ..common import _aliases
+from ..common import _linalg
 
 from .._internal import get_xp
 
@@ -73,3 +74,28 @@ if hasattr(cp, 'isdtype'):
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
 
+
+cross = get_xp(cp)(_linalg.cross)
+outer = get_xp(cp)(_linalg.outer)
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+eigh = get_xp(cp)(_linalg.eigh)
+qr = get_xp(cp)(_linalg.qr)
+slogdet = get_xp(cp)(_linalg.slogdet)
+svd = get_xp(cp)(_linalg.svd)
+cholesky = get_xp(cp)(_linalg.cholesky)
+matrix_rank = get_xp(cp)(_linalg.matrix_rank)
+pinv = get_xp(cp)(_linalg.pinv)
+matrix_norm = get_xp(cp)(_linalg.matrix_norm)
+svdvals = get_xp(cp)(_linalg.svdvals)
+diagonal = get_xp(cp)(_linalg.diagonal)
+trace = get_xp(cp)(_linalg.trace)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(cp.linalg, 'vector_norm'):
+    vector_norm = cp.linalg.vector_norm
+else:
+    vector_norm = get_xp(cp)(_linalg.vector_norm)
