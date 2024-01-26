@@ -5,6 +5,7 @@ Internal helpers
 from functools import wraps
 from inspect import signature
 
+
 def get_xp(xp):
     """
     Decorator to automatically replace xp with the corresponding array module.
@@ -41,3 +42,16 @@ specification for more details.
         return wrapped_f
 
     return inner
+
+
+def get_all_public_members(module, filter_=None):
+    """Get all public members of a module."""
+    try:
+        return getattr(module, '__all__')
+    except AttributeError:
+        pass
+    
+    if filter_ is None:
+        filter_ = lambda name: name.startswith('_') # noqa: E731
+
+    return map(dir(module), filter_)
