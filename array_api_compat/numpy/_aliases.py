@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from functools import partial
 
+import numpy as np
+
 from ..common import _aliases
 
 from .._internal import get_xp
 
 asarray = asarray_numpy = partial(_aliases._asarray, namespace='numpy')
 asarray.__doc__ = _aliases._asarray.__doc__
-del partial
 
-import numpy as np
 bool = np.bool_
 
 # Basic renames
@@ -72,8 +72,3 @@ if hasattr(np, 'isdtype'):
     isdtype = np.isdtype
 else:
     isdtype = get_xp(np)(_aliases.isdtype)
-
-__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
-                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow']
