@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from functools import partial
 
+import cupy as cp
+
 from ..common import _aliases
 
 from .._internal import get_xp
 
 asarray = asarray_cupy = partial(_aliases._asarray, namespace='cupy')
 asarray.__doc__ = _aliases._asarray.__doc__
-del partial
 
-import cupy as cp
 bool = cp.bool_
 
 # Basic renames
@@ -73,7 +73,3 @@ if hasattr(cp, 'isdtype'):
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_cupy', 'bool', 'acos',
-                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow']
