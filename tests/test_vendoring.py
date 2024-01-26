@@ -13,6 +13,8 @@ def test_vendoring_cupy():
     uses_cupy._test_cupy()
 
 def test_vendoring_torch():
+    pytest.importorskip("torch")
+    
     from vendor_test import uses_torch
     uses_torch._test_torch()
 
