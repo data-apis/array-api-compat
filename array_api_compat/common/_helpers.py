@@ -7,8 +7,11 @@ users of the compat library.
 """
 from __future__ import annotations
 
-from typing import Optional, Union, Any
-from ._typing import Array, Device
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Optional, Union, Any
+    from ._typing import Array, Device  
 
 import sys
 import math

@@ -44,7 +44,7 @@ specification for more details.
     return inner
 
 
-def get_all_public_members(module, filter_=None):
+def _get_all_public_members(module, filter_=None):
     """Get all public members of a module."""
     try:
         return getattr(module, '__all__')
@@ -54,4 +54,4 @@ def get_all_public_members(module, filter_=None):
     if filter_ is None:
         filter_ = lambda name: name.startswith('_') # noqa: E731
 
-    return map(dir(module), filter_)
+    return map(filter_, dir(module))
