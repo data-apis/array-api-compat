@@ -2,19 +2,28 @@
 import torch
 from torch import *  # noqa: F401, F403
 
-for n in dir(torch):
+from .._internal import _get_all_public_members
+
+
+def filter_(name):
     if (
-        n.startswith("_")
-        or n.endswith("_")
-        or "cuda" in n
-        or "cpu" in n
-        or "backward" in n
+        name.startswith("_")
+        or name.endswith("_")
+        or "cuda" in name
+        or "cpu" in name
+        or "backward" in name
     ):
-        continue
-    exec(n + " = torch." + n)
+        return False
+    return True
 
 
-from ..common._helpers import (
+_torch_all = _get_all_public_members(torch, filter_=filter_)
+
+for _name in _torch_all:
+    globals()[_name] = getattr(torch, _name)
+
+
+from ..common._helpers import (  # noqa: E402
     array_namespace,
     device,
     get_namespace,
@@ -24,7 +33,7 @@ from ..common._helpers import (
 )
 
 # These imports may overwrite names from the import * above.
-from ._aliases import (
+from ._aliases import (  # noqa: E402
     add,
     all,
     any,
@@ -92,7 +101,11 @@ from ._aliases import (
     zeros,
 )
 
-__all__ = [
+__all__ = []
+
+__all__ += _torch_all
+
+__all__ += [
     "is_array_api_obj",
     "array_namespace",
     "get_namespace",
