@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 if TYPE_CHECKING:
-    from typing import Literal, Optional, Sequence, Tuple, Union
+    from typing import Literal, Optional, Tuple, Union
     from ._typing import ndarray
 
 import numpy as np
