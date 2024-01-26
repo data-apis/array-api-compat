@@ -1,12 +1,13 @@
-import cupy as cp
+import cupy as _cp
+
 from .._internal import _get_all_public_members
 
-_cupy_linalg_all = _get_all_public_members(cp.linalg)
+_cupy_linalg_all = _get_all_public_members(_cp.linalg)
 
-for name in _cupy_linalg_all:
-    globals()[name] = getattr(cp.linalg, name)
+for _name in _cupy_linalg_all:
+    globals()[_name] = getattr(_cp.linalg, _name)
 
-from ._aliases import ( # noqa: E402
+from ._aliases import (  # noqa: E402
     EighResult,
     QRResult,
     SlogdetResult,
