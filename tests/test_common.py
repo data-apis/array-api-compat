@@ -1,4 +1,3 @@
-from ._helpers import import_
 from array_api_compat import to_device
 
 import pytest
@@ -11,7 +10,7 @@ def test_to_device_host(library):
     # for DtoH transfers; ensure that we support a portable
     # shim for common array libs
     # see: https://github.com/scipy/scipy/issues/18286#issuecomment-1527552919
-    xp = import_('array_api_compat.' + library)
+    xp = pytest.importorskip('array_api_compat.' + library)
     expected = np.array([1, 2, 3])
     x = xp.asarray([1, 2, 3])
     x = to_device(x, "cpu")

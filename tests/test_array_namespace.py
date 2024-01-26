@@ -1,19 +1,18 @@
+import pytest
+
 import array_api_compat
 from array_api_compat import array_namespace
 
-from ._helpers import import_
-
-import pytest
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
-@pytest.mark.parametrize("api_version", [None, '2021.12'])
+@pytest.mark.parametrize("api_version", [None, "2021.12"])
 def test_array_namespace(library, api_version):
-    lib = import_(library)
+    lib = pytest.importorskip(library)
 
     array = lib.asarray([1.0, 2.0, 3.0])
     namespace = array_api_compat.array_namespace(array, api_version=api_version)
 
-    if 'array_api' in library:
+    if "array_api" in library:
         assert namespace == lib
     else:
         if library == "dask.array":
@@ -23,21 +22,22 @@ def test_array_namespace(library, api_version):
 
 
 def test_array_namespace_errors():
+    np = pytest.importorskip("numpy")
+
     pytest.raises(TypeError, lambda: array_namespace([1]))
     pytest.raises(TypeError, lambda: array_namespace())
 
-    import numpy as np
     x = np.asarray([1, 2])
-
     pytest.raises(TypeError, lambda: array_namespace((x, x)))
     pytest.raises(TypeError, lambda: array_namespace(x, (x, x)))
 
-    import torch
+
+def test_array_namespace_errors_torch():
+    torch = pytest.importorskip("torch")
+
     y = torch.asarray([1, 2])
-
     pytest.raises(TypeError, lambda: array_namespace(x, y))
-
-    pytest.raises(ValueError, lambda: array_namespace(x, api_version='2022.12'))
+    pytest.raises(ValueError, lambda: array_namespace(x, api_version="2022.12"))
 
 
 def test_get_namespace():

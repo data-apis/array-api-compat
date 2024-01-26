@@ -3,9 +3,9 @@ isdtype is not yet tested in the test suite, and it should extend properly to
 non-spec dtypes
 """
 
-from ._helpers import import_
-
 import pytest
+
+from ._helpers import import_
 
 # Check the known dtypes by their string names
 
@@ -66,7 +66,7 @@ def isdtype_(dtype_, kind):
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 def test_isdtype_spec_dtypes(library):
-    xp = import_('array_api_compat.' + library)
+    xp = pytest.importorskip('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
@@ -101,7 +101,7 @@ additional_dtypes = [
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 @pytest.mark.parametrize("dtype_", additional_dtypes)
 def test_isdtype_additional_dtypes(library, dtype_):
-    xp = import_('array_api_compat.' + library)
+    xp = pytest.importorskip('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
