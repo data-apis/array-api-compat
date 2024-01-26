@@ -4,11 +4,11 @@ from functools import partial
 
 import numpy as np
 
-from ..common import _aliases
-
 from .._internal import get_xp
+from ..common import _aliases
+from ..common import _linalg
 
-asarray = asarray_numpy = partial(_aliases._asarray, namespace='numpy')
+asarray = asarray_numpy = partial(_aliases._asarray, namespace="numpy")
 asarray.__doc__ = _aliases._asarray.__doc__
 
 bool = np.bool_
@@ -64,11 +64,37 @@ tensordot = get_xp(np)(_aliases.tensordot)
 
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
-if hasattr(np, 'vecdot'):
+if hasattr(np, "vecdot"):
     vecdot = np.vecdot
 else:
     vecdot = get_xp(np)(_aliases.vecdot)
-if hasattr(np, 'isdtype'):
+if hasattr(np, "isdtype"):
     isdtype = np.isdtype
 else:
     isdtype = get_xp(np)(_aliases.isdtype)
+
+
+cross = get_xp(np)(_linalg.cross)
+outer = get_xp(np)(_linalg.outer)
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+eigh = get_xp(np)(_linalg.eigh)
+qr = get_xp(np)(_linalg.qr)
+slogdet = get_xp(np)(_linalg.slogdet)
+svd = get_xp(np)(_linalg.svd)
+cholesky = get_xp(np)(_linalg.cholesky)
+matrix_rank = get_xp(np)(_linalg.matrix_rank)
+pinv = get_xp(np)(_linalg.pinv)
+matrix_norm = get_xp(np)(_linalg.matrix_norm)
+svdvals = get_xp(np)(_linalg.svdvals)
+diagonal = get_xp(np)(_linalg.diagonal)
+trace = get_xp(np)(_linalg.trace)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(np.linalg, "vector_norm"):
+    vector_norm = np.linalg.vector_norm
+else:
+    vector_norm = get_xp(np)(_linalg.vector_norm)
