@@ -17,6 +17,20 @@ to ensure they are not using functionality outside of the standard, but prefer
 this implementation for the default when working with NumPy arrays.
 
 """
-__version__ = '1.4.1'
+__version__ = "1.4.1"
 
-from .common import *
+from .common import (
+    array_namespace,
+    get_namespace,
+    is_array_api_obj,
+    size,
+    to_device,
+)
+
+__all__ = [
+    "array_namespace",
+    "get_namespace",
+    "is_array_api_obj",
+    "size",
+    "to_device",
+]
