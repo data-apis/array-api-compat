@@ -1,40 +1,63 @@
-from numpy.linalg import *
-from numpy.linalg import __all__ as linalg_all
+import numpy as _np
 
-from ..common import _linalg
-from .._internal import get_xp
-from ._aliases import (matmul, matrix_transpose, tensordot, vecdot)
+from .._internal import _get_all_public_members
 
-import numpy as np
+_numpy_linalg_all = _get_all_public_members(_np.linalg)
 
-cross = get_xp(np)(_linalg.cross)
-outer = get_xp(np)(_linalg.outer)
-EighResult = _linalg.EighResult
-QRResult = _linalg.QRResult
-SlogdetResult = _linalg.SlogdetResult
-SVDResult = _linalg.SVDResult
-eigh = get_xp(np)(_linalg.eigh)
-qr = get_xp(np)(_linalg.qr)
-slogdet = get_xp(np)(_linalg.slogdet)
-svd = get_xp(np)(_linalg.svd)
-cholesky = get_xp(np)(_linalg.cholesky)
-matrix_rank = get_xp(np)(_linalg.matrix_rank)
-pinv = get_xp(np)(_linalg.pinv)
-matrix_norm = get_xp(np)(_linalg.matrix_norm)
-svdvals = get_xp(np)(_linalg.svdvals)
-diagonal = get_xp(np)(_linalg.diagonal)
-trace = get_xp(np)(_linalg.trace)
+for _name in _numpy_linalg_all:
+    globals()[_name] = getattr(_np.linalg, _name)
 
-# These functions are completely new here. If the library already has them
-# (i.e., numpy 2.0), use the library version instead of our wrapper.
-if hasattr(np.linalg, 'vector_norm'):
-    vector_norm = np.linalg.vector_norm
-else:
-    vector_norm = get_xp(np)(_linalg.vector_norm)
 
-__all__ = linalg_all + _linalg.__all__
+from ._aliases import (  # noqa: E402
+    EighResult,
+    QRResult,
+    SlogdetResult,
+    SVDResult,
+    cholesky,
+    cross,
+    diagonal,
+    eigh,
+    matmul,
+    matrix_norm,
+    matrix_rank,
+    matrix_transpose,
+    outer,
+    pinv,
+    qr,
+    slogdet,
+    svd,
+    svdvals,
+    tensordot,
+    trace,
+    vecdot,
+    vector_norm,
+)
 
-del get_xp
-del np
-del linalg_all
-del _linalg
+__all__ = []
+
+__all__ += _numpy_linalg_all
+
+__all__ += [
+    "EighResult",
+    "QRResult",
+    "SlogdetResult",
+    "SVDResult",
+    "cholesky",
+    "cross",
+    "diagonal",
+    "eigh",
+    "matmul",
+    "matrix_norm",
+    "matrix_rank",
+    "matrix_transpose",
+    "outer",
+    "pinv",
+    "qr",
+    "slogdet",
+    "svd",
+    "svdvals",
+    "tensordot",
+    "trace",
+    "vecdot",
+    "vector_norm",
+]
