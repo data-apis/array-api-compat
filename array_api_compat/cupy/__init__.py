@@ -64,10 +64,10 @@ from ._aliases import (
     unique_inverse,
     unique_values,
     var,
+    vecdot,
     zeros,
     zeros_like,
 )
-from .linalg import matrix_transpose, vecdot
 
 __all__ = []
 
