@@ -1,19 +1,23 @@
+import numpy as np
 import pytest
+import torch
 
 import array_api_compat
 from array_api_compat import array_namespace
+
+from ._helpers import import_or_skip_cupy
 
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 @pytest.mark.parametrize("api_version", [None, "2021.12"])
 def test_array_namespace(library, api_version):
-    lib = pytest.importorskip(library)
+    xp = import_or_skip_cupy(library)
 
-    array = lib.asarray([1.0, 2.0, 3.0])
+    array = xp.asarray([1.0, 2.0, 3.0])
     namespace = array_api_compat.array_namespace(array, api_version=api_version)
 
     if "array_api" in library:
-        assert namespace == lib
+        assert namespace == xp
     else:
         if library == "dask.array":
             assert namespace == array_api_compat.dask.array
@@ -22,8 +26,6 @@ def test_array_namespace(library, api_version):
 
 
 def test_array_namespace_errors():
-    np = pytest.importorskip("numpy")
-
     pytest.raises(TypeError, lambda: array_namespace([1]))
     pytest.raises(TypeError, lambda: array_namespace())
 
@@ -33,9 +35,6 @@ def test_array_namespace_errors():
 
 
 def test_array_namespace_errors_torch():
-    torch = pytest.importorskip("torch")
-    np = pytest.importorskip("numpy")
-
     y = torch.asarray([1, 2])
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
