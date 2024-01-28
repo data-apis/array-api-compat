@@ -59,16 +59,6 @@ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
-# dask doesn't return int when input is already int for ceil/floor/trunc
-# Use $ to denote end of regex so we don't xfail other tests accidentally
-array_api_tests/test_operators_and_elementwise_functions.py::test_ceil
-# TODO: this xfails more than it should ... (e.g. test_floor_divide works)
-array_api_tests/test_operators_and_elementwise_functions.py::test_floor
-array_api_tests/test_operators_and_elementwise_functions.py::test_trunc
-
-# Dask doesn't raise an error for this test
-array_api_tests/test_searching_functions.py::test_nonzero_zerodim_error
-
 # Fails because shape is NaN since we don't materialize it yet
 array_api_tests/test_searching_functions.py::test_nonzero
 array_api_tests/test_set_functions.py::test_unique_all
@@ -79,7 +69,6 @@ array_api_tests/test_set_functions.py::test_unique_inverse
 array_api_tests/test_set_functions.py::test_unique_values
 
 # Linalg failures (signature failures/missing methods)
-
 
 # fails for ndim > 2
 array_api_tests/test_linalg.py::test_svdvals
@@ -138,10 +127,6 @@ array_api_tests/test_has_names.py::test_has_names[array_method-__dlpack_device__
 
 # Some cases unsupported by dask
 array_api_tests/test_manipulation_functions.py::test_roll
-
-# Dtype doesn't match (output is float32 but should be float64)
-array_api_tests/test_statistical_functions.py::test_prod
-array_api_tests/test_statistical_functions.py::test_sum
 
 # No mT on dask array
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
