@@ -9,8 +9,16 @@
 #| Draw 1 (key): (slice(None, None, None), slice(None, None, None))
 #| Draw 2 (value): dask.array<zeros_like, shape=(0, 2), dtype=bool, chunksize=(0, 2), chunktype=numpy.ndarray>
 
-# TODO: this also skips test_setitem_masking unnecessarily
+# Various shape mismatches e.g.
+ValueError: shape mismatch: value array of shape (0, 2) could not be broadcast to indexing result of shape (0, 2)
 array_api_tests/test_array_object.py::test_setitem
+
+# Fails since bad upcast from uint8 -> int64
+# MRE:
+# a = da.array(0, dtype="uint8")
+# b = da.array(False)
+# a[b] = 0
+array_api_tests/test_array_object.py::test_setitem_masking
 
 # Various indexing errors
 array_api_tests/test_array_object.py::test_getitem_masking

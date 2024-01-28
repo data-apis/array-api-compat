@@ -120,4 +120,9 @@ from dask.array import (
     concatenate as concat,
 )
 
-del da
+del da, partial
+
+__all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
+                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
+                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
+                              'bitwise_right_shift', 'concat', 'pow']

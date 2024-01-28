@@ -325,8 +325,10 @@ def _asarray(
         # copy=False is not yet implemented in xp.asarray
         raise NotImplementedError("copy=False is not yet implemented")
     if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
+        #print('hit me')
         if dtype is not None and obj.dtype != dtype:
             copy = True
+        #print(copy)
         if copy in COPY_TRUE:
             copy_kwargs = {}
             if namespace != "dask.array":
@@ -334,8 +336,14 @@ def _asarray(
             else:
                 # No copy kw in dask.asarray so we go thorugh np.asarray first
                 # (like dask also does) but copy after
+                if dtype is None:
+                    # Same dtype copy is no-op in dask
+                    #print("in here?")
+                    return obj.copy()
                 import numpy as np
+                #print(obj)
                 obj = np.asarray(obj).copy()
+                #print(obj)
             return xp.array(obj, dtype=dtype, **copy_kwargs)
         return obj
 
