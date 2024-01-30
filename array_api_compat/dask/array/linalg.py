@@ -10,8 +10,17 @@ import dask.array as da
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, Union, Tuple
-    from ...common._typing import ndarray, Device, Dtype
+    from typing import Union, Tuple
+    from ...common._typing import ndarray
+
+# cupy.linalg doesn't have __all__. If it is added, replace this with
+#
+# from cupy.linalg import __all__ as linalg_all
+_n = {}
+exec('from dask.array.linalg import *', _n)
+del _n['__builtins__']
+linalg_all = list(_n)
+del _n
 
 EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult
@@ -29,6 +38,10 @@ def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
 
 vector_norm = get_xp(da)(_linalg.vector_norm)
 diagonal = get_xp(da)(_linalg.diagonal)
+
+__all__ = linalg_all + ["EighResult", "QRResult", "SlogdetResult",
+                        "SVDResult", "qr", "cholesky", "matrix_rank", "matrix_norm",
+                        "svdvals", "vector_norm", "diagonal"]
 
 del get_xp
 del da
