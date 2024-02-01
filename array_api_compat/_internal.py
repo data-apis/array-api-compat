@@ -22,13 +22,16 @@ def get_xp(xp):
     arguments.
 
     """
+
     def inner(f):
         @wraps(f)
         def wrapped_f(*args, **kwargs):
             return f(*args, xp=xp, **kwargs)
 
         sig = signature(f)
-        new_sig = sig.replace(parameters=[sig.parameters[i] for i in sig.parameters if i != 'xp'])
+        new_sig = sig.replace(
+            parameters=[sig.parameters[i] for i in sig.parameters if i != "xp"]
+        )
 
         if wrapped_f.__doc__ is None:
             wrapped_f.__doc__ = f"""\
@@ -46,7 +49,7 @@ specification for more details.
 
 def _get_all_public_members(module, exclude=None, extend_all=False):
     """Get all public members of a module.
-    
+
     Parameters
     ----------
     module : module
@@ -58,15 +61,15 @@ def _get_all_public_members(module, exclude=None, extend_all=False):
         If True, extend the module's __all__ attribute with the members of the
         module derive from dir(module)
     """
-    members = getattr(module, '__all__', [])
+    members = getattr(module, "__all__", [])
 
     if members and not extend_all:
         return members
 
     if exclude is None:
-        exclude = lambda name: name.startswith('_') # noqa: E731
+        exclude = lambda name: name.startswith("_")  # noqa: E731
 
-    members += [_ for _  in dir(module) if not exclude(_)]
+    members = members + [_ for _ in dir(module) if not exclude(_)]
 
     # remove duplicates
     return list(set(members))
