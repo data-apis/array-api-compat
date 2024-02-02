@@ -5,8 +5,7 @@ from functools import partial
 import numpy as np
 
 from .._internal import get_xp
-from ..common import _aliases
-from ..common import _linalg
+from ..common import _aliases, _linalg
 
 asarray = asarray_numpy = partial(_aliases._asarray, namespace="numpy")
 asarray.__doc__ = _aliases._asarray.__doc__

@@ -40,8 +40,8 @@ __all__ += _numpy_linalg_all
 __all__ += [
     "EighResult",
     "QRResult",
-    "SlogdetResult",
     "SVDResult",
+    "SlogdetResult",
     "cholesky",
     "cross",
     "diagonal",

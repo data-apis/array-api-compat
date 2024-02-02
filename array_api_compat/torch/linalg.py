@@ -25,10 +25,10 @@ __all__ += _torch_linalg_all
 
 __all__ += [
     "matrix_transpose",
+    "outer",
     "solve",
     "sum",
-    "outer",
-    "trace",
     "tensordot",
+    "trace",
     "vecdot",
 ]
