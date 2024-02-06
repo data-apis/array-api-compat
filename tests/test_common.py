@@ -5,13 +5,17 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 def test_to_device_host(library):
     # different libraries have different semantics
     # for DtoH transfers; ensure that we support a portable
     # shim for common array libs
     # see: https://github.com/scipy/scipy/issues/18286#issuecomment-1527552919
-    xp = import_('array_api_compat.' + library)
+    if library == "jax.numpy":
+        xp = import_('jax.experimental.array_api')
+    else:
+        xp = import_('array_api_compat.' + library)
+
     expected = np.array([1, 2, 3])
     x = xp.asarray([1, 2, 3])
     x = to_device(x, "cpu")
