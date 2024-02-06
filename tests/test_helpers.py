@@ -1,5 +1,5 @@
 from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array,
-                              is_dask_array, is_array_api_obj)
+                              is_dask_array, is_jax_array, is_array_api_obj)
 
 from ._helpers import import_
 
@@ -10,6 +10,7 @@ is_functions = {
     'cupy': 'is_cupy_array',
     'torch': 'is_torch_array',
     'dask.array': 'is_dask_array',
+    'jax.numpy': 'is_jax_array',
 }
 
 @pytest.mark.parametrize('library', is_functions.keys())

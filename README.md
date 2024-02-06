@@ -2,7 +2,7 @@
 
 This is a small wrapper around common array libraries that is compatible with
 the [Array API standard](https://data-apis.org/array-api/latest/). Currently,
-NumPy, CuPy, PyTorch, and Dask are supported. If you want support for other array
+NumPy, CuPy, PyTorch, Dask, and JAX are supported. If you want support for other array
 libraries, or if you encounter any issues, please [open an
 issue](https://github.com/data-apis/array-api-compat/issues).
 
@@ -60,6 +60,12 @@ import array_api_compat.torch as torch
 import array_api_compat.dask as da
 ```
 
+> [!NOTE]
+> There is no `array_api_compat.jax` submodule. JAX support is contained
+> in JAX itself in the `jax.experimental.array_api` module. array-api-compat simply
+> wraps that submodule. The main JAX support in this module consists of
+> supporting it in the [helper functions](#helper-functions) defined below.
+
 Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
 namespace, except that functions that are part of the array API are wrapped so
 that they have the correct array API behavior. In each case, the array object
@@ -104,9 +110,9 @@ part of the specification but which are useful for using the array API:
   object.
 
 - `is_numpy_array(x)`, `is_cupy_array(x)`, `is_torch_array(x)`,
-  `is_dask_array(x)`: return `True` if `x` is an array from the corresponding
-  library. These functions do not import the underlying library if it has not
-  already been imported, so they are cheap to use.
+  `is_dask_array(x)`, `is_jax_array(x)`: return `True` if `x` is an array from
+  the corresponding library. These functions do not import the underlying
+  library if it has not already been imported, so they are cheap to use.
 
 - `array_namespace(*xs)`: Get the corresponding array API namespace for the
   arrays `xs`. For example, if the arrays are NumPy arrays, the returned
@@ -227,6 +233,12 @@ version.
   exactly match the spec for functions that are not wrapped at all.
 
 The minimum supported PyTorch version is 1.13.
+
+### JAX
+
+Unlike the other libraries supported here, JAX array API support is contained
+entirely in the JAX library. The JAX array API support is tracked at
+https://github.com/google/jax/issues/18353.
 
 ## Vendoring
 

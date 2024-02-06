@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import sys
 import math
+import inspect
 
 def is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
@@ -49,6 +50,15 @@ def is_dask_array(x):
 
     return isinstance(x, dask.array.Array)
 
+def is_jax_array(x):
+    # Avoid importing jax if it isn't already
+    if 'jax' not in sys.modules:
+        return False
+
+    import jax.numpy
+
+    return isinstance(x, jax.numpy.ndarray)
+
 def is_array_api_obj(x):
     """
     Check if x is an array API compatible array object.
@@ -57,6 +67,7 @@ def is_array_api_obj(x):
         or is_cupy_array(x) \
         or is_torch_array(x) \
         or is_dask_array(x) \
+        or is_jax_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
@@ -112,6 +123,13 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
                 namespaces.add(dask_namespace)
             else:
                 raise TypeError("_use_compat cannot be False if input array is a dask array!")
+        elif is_jax_array(x):
+            _check_api_version(api_version)
+            # jax.numpy is already an array namespace, but requires this
+            # side-effecting import for __array_namespace__ and some other
+            # things to be defined.
+            import jax.experimental.array_api as jnp
+            namespaces.add(jnp)
         elif hasattr(x, '__array_namespace__'):
             namespaces.add(x.__array_namespace__(api_version=api_version))
         else:
@@ -158,6 +176,15 @@ def device(x: "Array", /) -> "Device":
     """
     if is_numpy_array(x):
         return "cpu"
+    if is_jax_array(x):
+        # JAX has .device() as a method, but it is being deprecated so that it
+        # can become a property, in accordance with the standard. In order for
+        # this function to not break when JAX makes the flip, we check for
+        # both here.
+        if inspect.ismethod(x.device):
+            return x.device()
+        else:
+            return x.device
     return x.device
 
 # Based on cupy.array_api.Array.to_device
@@ -204,6 +231,12 @@ def _torch_to_device(x, device, /, stream=None):
         raise NotImplementedError
     return x.to(device)
 
+def _jax_to_device(x, device, /, stream=None):
+    import jax
+    if stream is not None:
+        raise NotImplementedError
+    return jax.device_put(x, device)
+
 def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
@@ -243,6 +276,8 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
         if device == 'cpu':
             return x
         raise ValueError(f"Unsupported device {device!r}")
+    elif is_jax_array(x):
+        return _jax_to_device(x, device, stream=stream)
     return x.to_device(device, stream=stream)
 
 def size(x):
@@ -255,4 +290,4 @@ def size(x):
 
 __all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device',
            'to_device', 'size', 'is_numpy_array', 'is_cupy_array',
-           'is_torch_array', 'is_dask_array']
+           'is_torch_array', 'is_dask_array', 'is_jax_array']

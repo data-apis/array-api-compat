@@ -64,9 +64,12 @@ def isdtype_(dtype_, kind):
     assert type(res) is bool
     return res
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 def test_isdtype_spec_dtypes(library):
-    xp = import_('array_api_compat.' + library)
+    if library == "jax.numpy":
+        xp = import_('jax.experimental.array_api')
+    else:
+        xp = import_('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
@@ -98,10 +101,13 @@ additional_dtypes = [
     'bfloat16',
 ]
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 @pytest.mark.parametrize("dtype_", additional_dtypes)
 def test_isdtype_additional_dtypes(library, dtype_):
-    xp = import_('array_api_compat.' + library)
+    if library == "jax.numpy":
+        xp = import_('jax.experimental.array_api')
+    else:
+        xp = import_('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
