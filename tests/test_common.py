@@ -5,7 +5,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 def test_to_device_host(library):
     # different libraries have different semantics
     # for DtoH transfers; ensure that we support a portable

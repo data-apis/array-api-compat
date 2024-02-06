@@ -5,8 +5,7 @@ from ._helpers import import_
 
 import pytest
 
-
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 @pytest.mark.parametrize("api_version", [None, '2021.12'])
 def test_array_namespace(library, api_version):
     lib = import_(library)
@@ -17,7 +16,10 @@ def test_array_namespace(library, api_version):
     if 'array_api' in library:
         assert namespace == lib
     else:
-        assert namespace == getattr(array_api_compat, library)
+        if library == "dask.array":
+            assert namespace == array_api_compat.dask.array
+        else:
+            assert namespace == getattr(array_api_compat, library)
 
 
 def test_array_namespace_errors():

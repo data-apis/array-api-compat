@@ -77,7 +77,7 @@ def matrix_rank(x: ndarray,
     # dimensional arrays.
     if x.ndim < 2:
         raise xp.linalg.LinAlgError("1-dimensional array given. Array must be at least two-dimensional")
-    S = xp.linalg.svd(x, compute_uv=False, **kwargs)
+    S = get_xp(xp)(svdvals)(x, **kwargs)
     if rtol is None:
         tol = S.max(axis=-1, keepdims=True) * max(x.shape[-2:]) * xp.finfo(S.dtype).eps
     else:

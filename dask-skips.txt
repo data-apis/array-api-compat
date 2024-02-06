@@ -1,0 +1,5 @@
+# FFT isn't conformant
+array_api_tests/test_fft.py
+
+# slow and not implemented in dask
+array_api_tests/test_linalg.py::test_matrix_power

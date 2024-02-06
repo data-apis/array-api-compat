@@ -303,6 +303,8 @@ def _asarray(
         import numpy as xp
     elif namespace == 'cupy':
         import cupy as xp
+    elif namespace == 'dask.array':
+        import dask.array as xp
     else:
         raise ValueError("Unrecognized namespace argument to asarray()")
 
@@ -322,11 +324,27 @@ def _asarray(
     if copy in COPY_FALSE:
         # copy=False is not yet implemented in xp.asarray
         raise NotImplementedError("copy=False is not yet implemented")
-    if isinstance(obj, xp.ndarray):
+    if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
+        #print('hit me')
         if dtype is not None and obj.dtype != dtype:
             copy = True
+        #print(copy)
         if copy in COPY_TRUE:
-            return xp.array(obj, copy=True, dtype=dtype)
+            copy_kwargs = {}
+            if namespace != "dask.array":
+                copy_kwargs["copy"] = True
+            else:
+                # No copy kw in dask.asarray so we go thorugh np.asarray first
+                # (like dask also does) but copy after
+                if dtype is None:
+                    # Same dtype copy is no-op in dask
+                    #print("in here?")
+                    return obj.copy()
+                import numpy as np
+                #print(obj)
+                obj = np.asarray(obj).copy()
+                #print(obj)
+            return xp.array(obj, dtype=dtype, **copy_kwargs)
         return obj
 
     return xp.asarray(obj, dtype=dtype, **kwargs)

@@ -1,0 +1,132 @@
+# This fails in dask
+# import dask.array as da
+# a = da.array([1]).reshape((1,1))
+# key = (0, slice(None, None, -1))
+# a[key] = da.array([1])
+
+# Failing hypothesis test case
+#x=dask.array<zeros_like, shape=(0, 2), dtype=bool, chunksize=(0, 2), chunktype=numpy.ndarray>
+#| Draw 1 (key): (slice(None, None, None), slice(None, None, None))
+#| Draw 2 (value): dask.array<zeros_like, shape=(0, 2), dtype=bool, chunksize=(0, 2), chunktype=numpy.ndarray>
+
+# Various shape mismatches e.g.
+ValueError: shape mismatch: value array of shape (0, 2) could not be broadcast to indexing result of shape (0, 2)
+array_api_tests/test_array_object.py::test_setitem
+
+# Fails since bad upcast from uint8 -> int64
+# MRE:
+# a = da.array(0, dtype="uint8")
+# b = da.array(False)
+# a[b] = 0
+array_api_tests/test_array_object.py::test_setitem_masking
+
+# Various indexing errors
+array_api_tests/test_array_object.py::test_getitem_masking
+
+# asarray(copy=False) is not yet implemented
+# copied from numpy xfails, TODO: should this pass with dask?
+array_api_tests/test_creation_functions.py::test_asarray_arrays
+
+# zero division error, and typeerror: tuple indices must be integers or slices not tuple
+array_api_tests/test_creation_functions.py::test_eye
+
+# finfo(float32).eps returns float32 but should return float
+array_api_tests/test_data_type_functions.py::test_finfo[float32]
+
+# out[-1]=dask.aray<getitem ...> but should be some floating number
+# (I think the test is not forcing the op to be computed?)
+array_api_tests/test_creation_functions.py::test_linspace
+
+# out=-0, but should be +0
+array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
+array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
+
+# output is nan but should be infinity
+array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
+
+# No sorting in dask
+array_api_tests/test_has_names.py::test_has_names[sorting-argsort]
+array_api_tests/test_has_names.py::test_has_names[sorting-sort]
+array_api_tests/test_sorting_functions.py::test_argsort
+array_api_tests/test_sorting_functions.py::test_sort
+array_api_tests/test_signatures.py::test_func_signature[argsort]
+array_api_tests/test_signatures.py::test_func_signature[sort]
+
+# Array methods and attributes not already on np.ndarray cannot be wrapped
+array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
+array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
+
+# Fails because shape is NaN since we don't materialize it yet
+array_api_tests/test_searching_functions.py::test_nonzero
+array_api_tests/test_set_functions.py::test_unique_all
+array_api_tests/test_set_functions.py::test_unique_counts
+
+# Different error but same cause as above, we're just trying to do ndindex on nan shape
+array_api_tests/test_set_functions.py::test_unique_inverse
+array_api_tests/test_set_functions.py::test_unique_values
+
+# Linalg failures (signature failures/missing methods)
+
+# fails for ndim > 2
+array_api_tests/test_linalg.py::test_svdvals
+array_api_tests/test_linalg.py::test_cholesky
+# dtype mismatch got uint64, but should be uint8, NPY_PROMOTION_STATE=weak doesn't help :(
+array_api_tests/test_linalg.py::test_tensordot
+# probably same reason for failing as numpy
+array_api_tests/test_linalg.py::test_trace
+
+# Linalg - these don't exist in dask
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cross]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.det]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigh]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigvalsh]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_power]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.pinv]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.slogdet]
+array_api_tests/test_linalg.py::test_cross
+array_api_tests/test_linalg.py::test_det
+array_api_tests/test_linalg.py::test_eigvalsh
+array_api_tests/test_linalg.py::test_pinv
+array_api_tests/test_linalg.py::test_slogdet
+array_api_tests/test_has_names.py::test_has_names[linalg-cross]
+array_api_tests/test_has_names.py::test_has_names[linalg-det]
+array_api_tests/test_has_names.py::test_has_names[linalg-eigh]
+array_api_tests/test_has_names.py::test_has_names[linalg-eigvalsh]
+array_api_tests/test_has_names.py::test_has_names[linalg-matrix_power]
+array_api_tests/test_has_names.py::test_has_names[linalg-pinv]
+array_api_tests/test_has_names.py::test_has_names[linalg-slogdet]
+
+array_api_tests/test_linalg.py::test_matrix_norm
+array_api_tests/test_linalg.py::test_matrix_rank
+
+# missing mode kw
+# https://github.com/dask/dask/issues/10388
+array_api_tests/test_linalg.py::test_qr
+
+# Constructing the input arrays fails to a weird shape error...
+array_api_tests/test_linalg.py::test_solve
+
+# missing full_matrics kw
+# https://github.com/dask/dask/issues/10389
+# also only supports 2-d inputs
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.svd]
+array_api_tests/test_linalg.py::test_svd
+
+# Missing dlpack stuff
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack_device__]
+array_api_tests/test_signatures.py::test_array_method_signature[to_device]
+array_api_tests/test_has_names.py::test_has_names[creation-from_dlpack]
+array_api_tests/test_has_names.py::test_has_names[array_method-__dlpack__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__dlpack_device__]
+
+# Some cases unsupported by dask
+array_api_tests/test_manipulation_functions.py::test_roll
+
+# No mT on dask array
+array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
