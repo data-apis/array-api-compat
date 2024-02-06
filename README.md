@@ -99,6 +99,11 @@ part of the specification but which are useful for using the array API:
 - `is_array_api_obj(x)`: Return `True` if `x` is an array API compatible array
   object.
 
+- `is_numpy_array(x)`, `is_cupy_array(x)`, `is_torch_array(x)`,
+  `is_dask_array(x)`: return `True` if `x` is an array from the corresponding
+  library. These functions do not import the underlying library if it has not
+  already been imported, so they are cheap to use.
+
 - `array_namespace(*xs)`: Get the corresponding array API namespace for the
   arrays `xs`. For example, if the arrays are NumPy arrays, the returned
   namespace will be `array_api_compat.numpy`. Note that this function will

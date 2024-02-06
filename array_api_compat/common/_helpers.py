@@ -10,7 +10,7 @@ from __future__ import annotations
 import sys
 import math
 
-def _is_numpy_array(x):
+def is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
     if 'numpy' not in sys.modules:
         return False
@@ -20,7 +20,7 @@ def _is_numpy_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (np.ndarray, np.generic))
 
-def _is_cupy_array(x):
+def is_cupy_array(x):
     # Avoid importing NumPy if it isn't already
     if 'cupy' not in sys.modules:
         return False
@@ -30,7 +30,7 @@ def _is_cupy_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (cp.ndarray, cp.generic))
 
-def _is_torch_array(x):
+def is_torch_array(x):
     # Avoid importing torch if it isn't already
     if 'torch' not in sys.modules:
         return False
@@ -40,7 +40,7 @@ def _is_torch_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
 
-def _is_dask_array(x):
+def is_dask_array(x):
     # Avoid importing dask if it isn't already
     if 'dask.array' not in sys.modules:
         return False
@@ -53,10 +53,10 @@ def is_array_api_obj(x):
     """
     Check if x is an array API compatible array object.
     """
-    return _is_numpy_array(x) \
-        or _is_cupy_array(x) \
-        or _is_torch_array(x) \
-        or _is_dask_array(x) \
+    return is_numpy_array(x) \
+        or is_cupy_array(x) \
+        or is_torch_array(x) \
+        or is_dask_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
@@ -81,7 +81,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     namespaces = set()
     for x in xs:
-        if _is_numpy_array(x):
+        if is_numpy_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import numpy as numpy_namespace
@@ -89,7 +89,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import numpy as np
                 namespaces.add(np)
-        elif _is_cupy_array(x):
+        elif is_cupy_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import cupy as cupy_namespace
@@ -97,7 +97,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import cupy as cp
                 namespaces.add(cp)
-        elif _is_torch_array(x):
+        elif is_torch_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import torch as torch_namespace
@@ -105,7 +105,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import torch
                 namespaces.add(torch)
-        elif _is_dask_array(x):
+        elif is_dask_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from ..dask import array as dask_namespace
@@ -156,7 +156,7 @@ def device(x: "Array", /) -> "Device":
     out: device
         a ``device`` object (see the "Device Support" section of the array API specification).
     """
-    if _is_numpy_array(x):
+    if is_numpy_array(x):
         return "cpu"
     return x.device
 
@@ -225,18 +225,18 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
     .. note::
        If ``stream`` is given, the copy operation should be enqueued on the provided ``stream``; otherwise, the copy operation should be enqueued on the default stream/queue. Whether the copy is performed synchronously or asynchronously is implementation-dependent. Accordingly, if synchronization is required to guarantee data safety, this must be clearly explained in a conforming library's documentation.
     """
-    if _is_numpy_array(x):
+    if is_numpy_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         if device == 'cpu':
             return x
         raise ValueError(f"Unsupported device {device!r}")
-    elif _is_cupy_array(x):
+    elif is_cupy_array(x):
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
-    elif _is_torch_array(x):
+    elif is_torch_array(x):
         return _torch_to_device(x, device, stream=stream)
-    elif _is_dask_array(x):
+    elif is_dask_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         # TODO: What if our array is on the GPU already?
@@ -253,4 +253,6 @@ def size(x):
         return None
     return math.prod(x.shape)
 
-__all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device', 'to_device', 'size']
+__all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device',
+           'to_device', 'size', 'is_numpy_array', 'is_cupy_array',
+           'is_torch_array', 'is_dask_array']
