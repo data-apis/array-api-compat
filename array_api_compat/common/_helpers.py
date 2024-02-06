@@ -125,9 +125,8 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
                 raise TypeError("_use_compat cannot be False if input array is a dask array!")
         elif is_jax_array(x):
             _check_api_version(api_version)
-            # jax.numpy is already an array namespace, but requires this
-            # side-effecting import for __array_namespace__ and some other
-            # things to be defined.
+            # jax.experimental.array_api is already an array namespace. We do
+            # not have a wrapper submodule for it.
             import jax.experimental.array_api as jnp
             namespaces.add(jnp)
         elif hasattr(x, '__array_namespace__'):
