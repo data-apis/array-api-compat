@@ -55,9 +55,9 @@ def is_jax_array(x):
     if 'jax' not in sys.modules:
         return False
 
-    import jax.numpy
+    import jax
 
-    return isinstance(x, jax.numpy.ndarray)
+    return isinstance(x, jax.Array)
 
 def is_array_api_obj(x):
     """
