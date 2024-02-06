@@ -153,7 +153,7 @@ def _check_device(xp, device):
         if device not in ["cpu", None]:
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
 
-# device() is not on numpy.ndarray and and to_device() is not on numpy.ndarray
+# device() is not on numpy.ndarray and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
 # because this library just reuses the respective ndarray classes without
 # wrapping or subclassing them. These helper functions can be used instead of
@@ -230,12 +230,6 @@ def _torch_to_device(x, device, /, stream=None):
         raise NotImplementedError
     return x.to(device)
 
-def _jax_to_device(x, device, /, stream=None):
-    import jax
-    if stream is not None:
-        raise NotImplementedError
-    return jax.device_put(x, device)
-
 def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
@@ -276,7 +270,9 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
             return x
         raise ValueError(f"Unsupported device {device!r}")
     elif is_jax_array(x):
-        return _jax_to_device(x, device, stream=stream)
+        # This import adds to_device to x
+        import jax.experimental.array_api
+        return x.to_device(device, stream=stream)
     return x.to_device(device, stream=stream)
 
 def size(x):
