@@ -59,7 +59,7 @@ def _get_all_public_members(module, exclude=None, extend_all=False):
         excluded from the list of members.
     extend_all : bool, optional
         If True, extend the module's __all__ attribute with the members of the
-        module derive from dir(module)
+        module derived from dir(module). To be used for libraries that do not have a complete __all__ list.
     """
     members = getattr(module, "__all__", [])
 
