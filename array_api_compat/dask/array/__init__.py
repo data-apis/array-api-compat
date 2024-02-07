@@ -1,22 +1,45 @@
+import dask.array as _da
 from dask.array import *  # noqa: F401, F403
-from dask.array import __all__ as _dask_array_all
-
 from dask.array import (
     # Element wise aliases
     arccos as acos,
+)
+from dask.array import (
     arccosh as acosh,
+)
+from dask.array import (
     arcsin as asin,
+)
+from dask.array import (
     arcsinh as asinh,
+)
+from dask.array import (
     arctan as atan,
+)
+from dask.array import (
     arctan2 as atan2,
+)
+from dask.array import (
     arctanh as atanh,
+)
+from dask.array import (
+    bool_ as bool,
+)
+from dask.array import (
     # Other
     concatenate as concat,
+)
+from dask.array import (
     invert as bitwise_invert,
+)
+from dask.array import (
     left_shift as bitwise_left_shift,
+)
+from dask.array import (
     power as pow,
+)
+from dask.array import (
     right_shift as bitwise_right_shift,
-    bool_ as bool,
 )
 
 # These imports may overwrite names from the import * above.
@@ -52,6 +75,7 @@ from ..common._helpers import (
     size,
     to_device,
 )
+from ..internal import _get_all_public_members
 from ._aliases import (
     UniqueAllResult,
     UniqueCountsResult,
@@ -92,7 +116,7 @@ from ._aliases import (
 
 __all__ = []
 
-__all__ += _dask_array_all
+__all__ += _get_all_public_members(_da)
 
 __all__ += [
     "can_cast",
