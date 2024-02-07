@@ -1,4 +1,5 @@
 from __future__ import annotations
+from functools import partial
 
 from ...common import _aliases
 from ...common._helpers import _check_device
@@ -6,32 +7,6 @@ from ...common._helpers import _check_device
 from ..._internal import get_xp
 
 import numpy as np
-from numpy import (
-    # Constants
-    e,
-    inf,
-    nan,
-    pi,
-    newaxis,
-    # Dtypes
-    bool_ as bool,
-    float32,
-    float64,
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    complex64,
-    complex128,
-    iinfo,
-    finfo,
-    can_cast,
-    result_type,
-)
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -75,7 +50,6 @@ def dask_arange(
 arange = get_xp(da)(dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
-from functools import partial
 asarray = partial(_aliases._asarray, namespace='dask.array')
 asarray.__doc__ = _aliases._asarray.__doc__
 
@@ -112,34 +86,3 @@ trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 tensordot = get_xp(np)(_aliases.tensordot)
 
-from dask.array import (
-    # Element wise aliases
-    arccos as acos,
-    arccosh as acosh,
-    arcsin as asin,
-    arcsinh as asinh,
-    arctan as atan,
-    arctan2 as atan2,
-    arctanh as atanh,
-    left_shift as bitwise_left_shift,
-    right_shift as bitwise_right_shift,
-    invert as bitwise_invert,
-    power as pow,
-    # Other
-    concatenate as concat,
-)
-
-# exclude these from all since
-_da_unsupported = ['sort', 'argsort']
-
-common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
-
-__all__ = common_aliases + ['asarray', 'bool', 'acos',
-                            'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                            'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                            'bitwise_right_shift', 'concat', 'pow',
-                            'e', 'inf', 'nan', 'pi', 'newaxis', 'float32', 'float64', 'int8',
-                            'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64',
-                            'complex64', 'complex128', 'iinfo', 'finfo', 'can_cast', 'result_type']
-
-del da, partial, common_aliases, _da_unsupported,
