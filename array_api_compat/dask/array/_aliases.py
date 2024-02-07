@@ -1,17 +1,18 @@
 from __future__ import annotations
+
 from functools import partial
-
-from ...common import _aliases
-from ...common._helpers import _check_device
-
-from ..._internal import get_xp
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from typing import TYPE_CHECKING
+from ..._internal import get_xp
+from ...common import _aliases, _linalg
+from ...common._helpers import _check_device
+
 if TYPE_CHECKING:
-    from typing import Optional, Union
-    from ...common._typing import ndarray, Device, Dtype
+    from typing import Optional, Tuple, Union
+
+    from ...common._typing import Device, Dtype, ndarray
 
 import dask.array as da
 
@@ -24,6 +25,7 @@ astype = _aliases.astype
 # not pass stop/step as keyword arguments, which will cause
 # an error with dask
 
+
 # TODO: delete the xp stuff, it shouldn't be necessary
 def dask_arange(
     start: Union[int, float],
@@ -34,7 +36,7 @@ def dask_arange(
     xp,
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
-    **kwargs
+    **kwargs,
 ) -> ndarray:
     _check_device(xp, device)
     args = [start]
@@ -47,10 +49,11 @@ def dask_arange(
     args.append(step)
     return xp.arange(*args, dtype=dtype, **kwargs)
 
+
 arange = get_xp(da)(dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
-asarray = partial(_aliases._asarray, namespace='dask.array')
+asarray = partial(_aliases._asarray, namespace="dask.array")
 asarray.__doc__ = _aliases._asarray.__doc__
 
 linspace = get_xp(da)(_aliases.linspace)
@@ -86,3 +89,22 @@ trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 tensordot = get_xp(np)(_aliases.tensordot)
 
+
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+qr = get_xp(da)(_linalg.qr)
+cholesky = get_xp(da)(_linalg.cholesky)
+matrix_rank = get_xp(da)(_linalg.matrix_rank)
+matrix_norm = get_xp(da)(_linalg.matrix_norm)
+
+
+def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
+    # TODO: can't avoid computing U or V for dask
+    _, s, _ = da.linalg.svd(x)
+    return s
+
+
+vector_norm = get_xp(da)(_linalg.vector_norm)
+diagonal = get_xp(da)(_linalg.diagonal)
