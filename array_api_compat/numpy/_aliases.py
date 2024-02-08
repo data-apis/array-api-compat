@@ -2,15 +2,14 @@ from __future__ import annotations
 
 from functools import partial
 
-from ..common import _aliases
+import numpy as np
 
 from .._internal import get_xp
+from ..common import _aliases, _linalg
 
-asarray = asarray_numpy = partial(_aliases._asarray, namespace='numpy')
+asarray = asarray_numpy = partial(_aliases._asarray, namespace="numpy")
 asarray.__doc__ = _aliases._asarray.__doc__
-del partial
 
-import numpy as np
 bool = np.bool_
 
 # Basic renames
@@ -64,16 +63,37 @@ tensordot = get_xp(np)(_aliases.tensordot)
 
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
-if hasattr(np, 'vecdot'):
+if hasattr(np, "vecdot"):
     vecdot = np.vecdot
 else:
     vecdot = get_xp(np)(_aliases.vecdot)
-if hasattr(np, 'isdtype'):
+if hasattr(np, "isdtype"):
     isdtype = np.isdtype
 else:
     isdtype = get_xp(np)(_aliases.isdtype)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
-                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow']
+
+cross = get_xp(np)(_linalg.cross)
+outer = get_xp(np)(_linalg.outer)
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+eigh = get_xp(np)(_linalg.eigh)
+qr = get_xp(np)(_linalg.qr)
+slogdet = get_xp(np)(_linalg.slogdet)
+svd = get_xp(np)(_linalg.svd)
+cholesky = get_xp(np)(_linalg.cholesky)
+matrix_rank = get_xp(np)(_linalg.matrix_rank)
+pinv = get_xp(np)(_linalg.pinv)
+matrix_norm = get_xp(np)(_linalg.matrix_norm)
+svdvals = get_xp(np)(_linalg.svdvals)
+diagonal = get_xp(np)(_linalg.diagonal)
+trace = get_xp(np)(_linalg.trace)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(np.linalg, "vector_norm"):
+    vector_norm = np.linalg.vector_norm
+else:
+    vector_norm = get_xp(np)(_linalg.vector_norm)

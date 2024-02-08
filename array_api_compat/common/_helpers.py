@@ -7,6 +7,12 @@ users of the compat library.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Optional, Union, Any
+    from ._typing import Array, Device  
+
 import sys
 import math
 
@@ -142,7 +148,7 @@ def _check_device(xp, device):
 # wrapping or subclassing them. These helper functions can be used instead of
 # the wrapper functions for libraries that need to support both NumPy/CuPy and
 # other libraries that use devices.
-def device(x: "Array", /) -> "Device":
+def device(x: Array, /) -> Device:
     """
     Hardware device the array data resides on.
 
@@ -204,7 +210,7 @@ def _torch_to_device(x, device, /, stream=None):
         raise NotImplementedError
     return x.to(device)
 
-def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
+def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] = None) -> Array:
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
@@ -252,5 +258,3 @@ def size(x):
     if None in x.shape:
         return None
     return math.prod(x.shape)
-
-__all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device', 'to_device', 'size']
