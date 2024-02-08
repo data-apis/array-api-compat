@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
 if TYPE_CHECKING:
-    from typing import Literal, Optional, Sequence, Tuple, Union
+    from typing import Literal, Optional, Tuple, Union
     from ._typing import ndarray
 
 import numpy as np
@@ -11,7 +11,7 @@ if np.__version__[0] == "2":
 else:
     from numpy.core.numeric import normalize_axis_tuple
 
-from ._aliases import matmul, matrix_transpose, tensordot, vecdot, isdtype
+from ._aliases import matrix_transpose, isdtype
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
@@ -150,9 +150,3 @@ def trace(x: ndarray, /, xp, *, offset: int = 0, dtype=None, **kwargs) -> ndarra
         elif x.dtype == xp.complex64:
             dtype = xp.complex128
     return xp.asarray(xp.trace(x, offset=offset, dtype=dtype, axis1=-2, axis2=-1, **kwargs))
-
-__all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
-           'QRResult', 'SlogdetResult', 'SVDResult', 'eigh', 'qr', 'slogdet',
-           'svd', 'cholesky', 'matrix_rank', 'pinv', 'matrix_norm',
-           'matrix_transpose', 'svdvals', 'vecdot', 'vector_norm', 'diagonal',
-           'trace']

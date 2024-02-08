@@ -3,9 +3,9 @@ isdtype is not yet tested in the test suite, and it should extend properly to
 non-spec dtypes
 """
 
-from ._helpers import import_
-
 import pytest
+
+from ._helpers import import_or_skip_cupy
 
 # Check the known dtypes by their string names
 
@@ -61,15 +61,15 @@ def isdtype_(dtype_, kind):
         res = dtype_categories[kind](dtype_)
     else:
         res = dtype_ == kind
-    assert type(res) is bool
+    assert type(res) is bool #  noqa: E721
     return res
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 def test_isdtype_spec_dtypes(library):
     if library == "jax.numpy":
-        xp = import_('jax.experimental.array_api')
+        xp = import_or_skip_cupy('jax.experimental.array_api')
     else:
-        xp = import_('array_api_compat.' + library)
+        xp = import_or_skip_cupy('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
@@ -105,9 +105,9 @@ additional_dtypes = [
 @pytest.mark.parametrize("dtype_", additional_dtypes)
 def test_isdtype_additional_dtypes(library, dtype_):
     if library == "jax.numpy":
-        xp = import_('jax.experimental.array_api')
+        xp = import_or_skip_cupy('jax.experimental.array_api')
     else:
-        xp = import_('array_api_compat.' + library)
+        xp = import_or_skip_cupy('array_api_compat.' + library)
 
     isdtype = xp.isdtype
 
