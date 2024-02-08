@@ -2,7 +2,7 @@ from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array,
                               is_dask_array, is_jax_array, is_array_api_obj,
                               device, to_device)
 
-from ._helpers import import_or_skip_cupy
+from ._helpers import import_
 
 import pytest
 import numpy as np
@@ -19,7 +19,7 @@ is_functions = {
 @pytest.mark.parametrize('library', is_functions.keys())
 @pytest.mark.parametrize('func', is_functions.values())
 def test_is_xp_array(library, func):
-    lib = import_or_skip_cupy(library)
+    lib = import_(library)
     is_func = globals()[func]
 
     x = lib.asarray([1, 2, 3])
@@ -33,10 +33,7 @@ def test_device(library):
     if library == "dask.array":
         pytest.xfail("device() needs to be fixed for dask")
 
-    if library == "jax.numpy":
-        xp = import_or_skip_cupy('jax.experimental.array_api')
-    else:
-        xp = import_or_skip_cupy('array_api_compat.' + library)
+    xp = import_(library, wrapper=True)
 
     # We can't test much for device() and to_device() other than that
     # x.to_device(x.device) works.
@@ -54,7 +51,7 @@ def test_to_device_host(library):
     # for DtoH transfers; ensure that we support a portable
     # shim for common array libs
     # see: https://github.com/scipy/scipy/issues/18286#issuecomment-1527552919
-    xp = import_or_skip_cupy('array_api_compat.' + library)
+    xp = import_(library, wrapper=True)
 
     expected = np.array([1, 2, 3])
     x = xp.asarray([1, 2, 3])

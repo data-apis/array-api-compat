@@ -5,13 +5,13 @@ import torch
 import array_api_compat
 from array_api_compat import array_namespace
 
-from ._helpers import import_or_skip_cupy
+from ._helpers import import_
 
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 @pytest.mark.parametrize("api_version", [None, "2021.12"])
 def test_array_namespace(library, api_version):
-    xp = import_or_skip_cupy(library)
+    xp = import_(library)
 
     array = xp.asarray([1.0, 2.0, 3.0])
     namespace = array_api_compat.array_namespace(array, api_version=api_version)

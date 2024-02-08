@@ -5,7 +5,7 @@ non-spec dtypes
 
 import pytest
 
-from ._helpers import import_or_skip_cupy
+from ._helpers import import_
 
 # Check the known dtypes by their string names
 
@@ -66,10 +66,7 @@ def isdtype_(dtype_, kind):
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 def test_isdtype_spec_dtypes(library):
-    if library == "jax.numpy":
-        xp = import_or_skip_cupy('jax.experimental.array_api')
-    else:
-        xp = import_or_skip_cupy('array_api_compat.' + library)
+    xp = import_(library, wrapper=True)
 
     isdtype = xp.isdtype
 
@@ -104,10 +101,7 @@ additional_dtypes = [
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 @pytest.mark.parametrize("dtype_", additional_dtypes)
 def test_isdtype_additional_dtypes(library, dtype_):
-    if library == "jax.numpy":
-        xp = import_or_skip_cupy('jax.experimental.array_api')
-    else:
-        xp = import_or_skip_cupy('array_api_compat.' + library)
+    xp = import_(library, wrapper=True)
 
     isdtype = xp.isdtype
 
