@@ -1,3 +1,6 @@
+import subprocess
+import sys
+
 import numpy as np
 import pytest
 import torch
@@ -7,8 +10,7 @@ from array_api_compat import array_namespace
 
 from ._helpers import import_
 
-
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 @pytest.mark.parametrize("api_version", [None, "2021.12"])
 def test_array_namespace(library, api_version):
     xp = import_(library)
@@ -21,9 +23,31 @@ def test_array_namespace(library, api_version):
     else:
         if library == "dask.array":
             assert namespace == array_api_compat.dask.array
+        elif library == "jax.numpy":
+            import jax.experimental.array_api
+            assert namespace == jax.experimental.array_api
         else:
             assert namespace == getattr(array_api_compat, library)
 
+    # Check that array_namespace works even if jax.experimental.array_api
+    # hasn't been imported yet (it monkeypatches __array_namespace__
+    # onto JAX arrays, but we should support them regardless). The only way to
+    # do this is to use a subprocess, since we cannot un-import it and another
+    # test probably already imported it.
+    if library == "jax.numpy":
+        code = f"""\
+import sys
+import jax.numpy
+import array_api_compat
+array = jax.numpy.asarray([1.0, 2.0, 3.0])
+
+assert 'jax.experimental.array_api' not in sys.modules
+namespace = array_api_compat.array_namespace(array, api_version={api_version!r})
+
+import jax.experimental.array_api
+assert namespace == jax.experimental.array_api
+"""
+        subprocess.run([sys.executable, "-c", code], check=True)
 
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
