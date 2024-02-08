@@ -48,19 +48,13 @@ def test_device(library):
     assert device(x) == device(x2)
 
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
+@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
 def test_to_device_host(library):
-    # Test that "cpu" device works. Note: this isn't actually supported by the
-    # standard yet. See https://github.com/data-apis/array-api/issues/626.
-
     # different libraries have different semantics
     # for DtoH transfers; ensure that we support a portable
     # shim for common array libs
     # see: https://github.com/scipy/scipy/issues/18286#issuecomment-1527552919
-    if library == "jax.numpy":
-        xp = import_('jax.experimental.array_api')
-    else:
-        xp = import_('array_api_compat.' + library)
+    xp = import_('array_api_compat.' + library)
 
     expected = np.array([1, 2, 3])
     x = xp.asarray([1, 2, 3])

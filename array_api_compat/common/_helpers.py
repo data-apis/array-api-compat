@@ -272,8 +272,6 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
     elif is_jax_array(x):
         # This import adds to_device to x
         import jax.experimental.array_api
-        if device == 'cpu':
-            device = jax.devices('cpu')[0]
         return x.to_device(device, stream=stream)
     return x.to_device(device, stream=stream)
 
