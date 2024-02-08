@@ -1,6 +1,7 @@
-from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array,
-                              is_dask_array, is_jax_array, is_array_api_obj,
-                              device, to_device)
+from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array, # noqa: F401
+                              is_dask_array, is_jax_array)
+
+from array_api_compat import is_array_api_obj, device, to_device
 
 from ._helpers import import_
 

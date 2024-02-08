@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Optional, Union, Any
-    from ._typing import Array, Device  
+    from ._typing import Array, Device
 
 import sys
 import math
@@ -277,7 +277,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         raise ValueError(f"Unsupported device {device!r}")
     elif is_jax_array(x):
         # This import adds to_device to x
-        import jax.experimental.array_api
+        import jax.experimental.array_api # noqa: F401
         return x.to_device(device, stream=stream)
     return x.to_device(device, stream=stream)
 
