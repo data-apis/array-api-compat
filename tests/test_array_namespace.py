@@ -34,7 +34,7 @@ def test_array_namespace(library, api_version):
     # onto JAX arrays, but we should support them regardless). The only way to
     # do this is to use a subprocess, since we cannot un-import it and another
     # test probably already imported it.
-    if library == "jax.numpy":
+    if library == "jax.numpy" and sys.version_info >= (3, 9):
         code = f"""\
 import sys
 import jax.numpy
