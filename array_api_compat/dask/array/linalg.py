@@ -7,7 +7,7 @@ from dask.array import (
 )
 from dask.array.linalg import *  # noqa: F401, F403
 
-from .._internal import _get_all_public_members
+from ..._internal import _get_all_public_members
 from ._aliases import (
     EighResult,
     QRResult,

@@ -125,11 +125,11 @@ part of the specification but which are useful for using the array API:
   [`x.device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.device.html)
   in the array API specification. Included because `numpy.ndarray` does not
   include the `device` attribute and this library does not wrap or extend the
-  array object. Note that for NumPy, `device(x)` is always `"cpu"`.
+  array object. Note that for NumPy and dask, `device(x)` is always `"cpu"`.
 
 - `to_device(x, device, /, *, stream=None)`: Equivalent to
   [`x.to_device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.to_device.html).
-  Included because neither NumPy's, CuPy's, nor PyTorch's array objects
+  Included because neither NumPy's, CuPy's, Dask's, nor PyTorch's array objects
   include this method. For NumPy, this function effectively does nothing since
   the only supported device is the CPU, but for CuPy, this method supports
   CuPy CUDA
@@ -239,6 +239,30 @@ The minimum supported PyTorch version is 1.13.
 Unlike the other libraries supported here, JAX array API support is contained
 entirely in the JAX library. The JAX array API support is tracked at
 https://github.com/google/jax/issues/18353.
+
+## Dask
+
+If you're using dask with numpy, many of the same limitations that apply to numpy
+will also apply to dask. Besides those differences, other limitations include missing
+sort functionality (no `sort` or `argsort`), and limited support for the optional `linalg`
+and `fft` extensions.
+
+In particular, the `fft` namespace is not compliant with the array API spec. Any functions
+that you find under the `fft` namespace are the original, unwrapped functions under [`dask.array.fft`](https://docs.dask.org/en/latest/array-api.html#fast-fourier-transforms), which may or may not be Array API compliant. Use at your own risk!
+
+For `linalg`, several methods are missing, for example:
+- `cross`
+- `det`
+- `eigh`
+- `eigvalsh`
+- `matrix_power`
+- `pinv`
+- `slogdet`
+- `matrix_norm`
+- `matrix_rank`
+Other methods may only be partially implemented or return incorrect results at times.
+
+The minimum supported Dask version is 2023.12.0.
 
 ## Vendoring
 

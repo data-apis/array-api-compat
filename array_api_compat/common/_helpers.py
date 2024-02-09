@@ -179,7 +179,9 @@ def device(x: Array, /) -> Device:
     out: device
         a ``device`` object (see the "Device Support" section of the array API specification).
     """
-    if is_numpy_array(x):
+    if is_numpy_array(x) or is_dask_array(x):
+        # TODO: dask technically can support GPU arrays
+        # Detecting the array backend isn't easy for dask, though, so just return CPU for now
         return "cpu"
     if is_jax_array(x):
         # JAX has .device() as a method, but it is being deprecated so that it

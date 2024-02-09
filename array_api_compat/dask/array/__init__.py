@@ -22,7 +22,7 @@ from dask.array import (
 from dask.array import (
     arctanh as atanh,
 )
-from dask.array import (
+from numpy import (
     bool_ as bool,
 )
 from dask.array import (
@@ -67,7 +67,7 @@ from numpy import (
     uint64,
 )
 
-from ..common._helpers import (
+from ...common._helpers import (
     array_namespace,
     device,
     get_namespace,
@@ -75,7 +75,7 @@ from ..common._helpers import (
     size,
     to_device,
 )
-from ..internal import _get_all_public_members
+from ..._internal import _get_all_public_members
 from ._aliases import (
     UniqueAllResult,
     UniqueCountsResult,
