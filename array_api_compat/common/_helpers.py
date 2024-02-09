@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 import sys
 import math
 import inspect
+import warnings
 
 def is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
@@ -77,8 +78,10 @@ def is_array_api_obj(x):
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
-    if api_version is not None and api_version != '2021.12':
-        raise ValueError("Only the 2021.12 version of the array API specification is currently supported")
+    if api_version == '2021.12':
+        warnings.warn("The 2021.12 version of the array API specification was requested but the returned namespace is actually version 2022.12")
+    if api_version is not None and api_version != '2022.12':
+        raise ValueError("Only the 2022.12 version of the array API specification is currently supported")
 
 def array_namespace(*xs, api_version=None, _use_compat=True):
     """
