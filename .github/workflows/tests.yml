@@ -15,7 +15,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest numpy torch dask[array]
+          python -m pip install pytest numpy torch dask[array] jax[cpu]
 
       - name: Run Tests
         run: |

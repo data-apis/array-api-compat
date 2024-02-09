@@ -14,7 +14,7 @@ from typing import NamedTuple
 from types import ModuleType
 import inspect
 
-from ._helpers import _check_device, _is_numpy_array, array_namespace
+from ._helpers import _check_device, is_numpy_array, array_namespace
 
 # These functions are modified from the NumPy versions.
 
@@ -310,7 +310,7 @@ def _asarray(
         raise ValueError("Unrecognized namespace argument to asarray()")
 
     _check_device(xp, device)
-    if _is_numpy_array(obj):
+    if is_numpy_array(obj):
         import numpy as np
         if hasattr(np, '_CopyMode'):
             # Not present in older NumPys
