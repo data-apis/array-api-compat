@@ -154,11 +154,6 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
 # backwards compatibility alias
 get_namespace = array_namespace
 
-def _check_device(xp, device):
-    if xp == sys.modules.get('numpy'):
-        if device not in ["cpu", None]:
-            raise ValueError(f"Unsupported device for NumPy: {device!r}")
-
 # device() is not on numpy.ndarray and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
 # because this library just reuses the respective ndarray classes without
