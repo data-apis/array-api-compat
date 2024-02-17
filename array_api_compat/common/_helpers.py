@@ -159,7 +159,16 @@ def _check_device(xp, device):
         if device not in ["cpu", None]:
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
 
-# device() is not on numpy.ndarray and to_device() is not on numpy.ndarray
+# Placeholder object to represent the dask device
+# when the array backend is not the CPU.
+# (since it is not easy to tell which device a dask array is on)
+class _dask_device:
+    def __repr__(self):
+        return "DASK_DEVICE"
+
+DASK_DEVICE = _dask_device()
+
+# device() is not on numpy.ndarray or dask.array and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
 # because this library just reuses the respective ndarray classes without
 # wrapping or subclassing them. These helper functions can be used instead of
@@ -179,11 +188,19 @@ def device(x: Array, /) -> Device:
     out: device
         a ``device`` object (see the "Device Support" section of the array API specification).
     """
-    if is_numpy_array(x) or is_dask_array(x):
-        # TODO: dask technically can support GPU arrays
-        # Detecting the array backend isn't easy for dask, though, so just return CPU for now
+    if is_numpy_array(x):
         return "cpu"
-    if is_jax_array(x):
+    elif is_dask_array(x):
+        # Peek at the metadata of the jax array to determine type
+        try:
+            import numpy as np
+            if isinstance(x._meta, np.ndarray):
+                # Must be on CPU since backed by numpy
+                return "cpu"
+        except ImportError:
+            pass
+        return DASK_DEVICE
+    elif is_jax_array(x):
         # JAX has .device() as a method, but it is being deprecated so that it
         # can become a property, in accordance with the standard. In order for
         # this function to not break when JAX makes the flip, we check for
