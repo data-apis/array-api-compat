@@ -543,5 +543,5 @@ def isdtype(
         # This will allow things that aren't required by the spec, like
         # isdtype(np.float64, float) or isdtype(np.int64, 'l'). Should we be
         # more strict here to match the type annotation? Note that the
-        # numpy.array_api implementation will be very strict.
+        # array_api_strict implementation will be very strict.
         return dtype == kind
