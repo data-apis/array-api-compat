@@ -11,6 +11,7 @@ for _name in _torch_linalg_all:
 outer = _torch.outer
 
 from ._aliases import (  # noqa: E402
+    cross,
     matrix_transpose,
     solve,
     sum,
@@ -24,6 +25,7 @@ __all__ = []
 __all__ += _torch_linalg_all
 
 __all__ += [
+    'cross',
     "matrix_transpose",
     "outer",
     "solve",

@@ -695,12 +695,18 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         axis = 0
     return torch.index_select(x, axis, indices, **kwargs)
 
-
-
 # Note: torch.linalg.cross does not default to axis=-1 (it defaults to the
 # first axis with size 3), see https://github.com/pytorch/pytorch/issues/58743
+
+# torch.cross also does not support broadcasting when it would add new
+# dimensions https://github.com/pytorch/pytorch/issues/39656
 def cross(x1: array, x2: array, /, *, axis: int = -1) -> array:
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
+    if not (-builtin_min(x1.ndim, x2.ndim) <= axis < builtin_max(x1.ndim, x2.ndim)):
+        raise ValueError(f"axis {axis} out of bounds for cross product of arrays with shapes {x1.shape} and {x2.shape}")
+    if not (x1.shape[axis] == x2.shape[axis] == 3):
+        raise ValueError(f"cross product axis must have size 3, got {x1.shape[axis]} and {x2.shape[axis]}")
+    x1, x2 = torch.broadcast_tensors(x1, x2)
     return torch.linalg.cross(x1, x2, dim=axis)
 
 def vecdot_linalg(x1: array, x2: array, /, *, axis: int = -1, **kwargs) -> array:
