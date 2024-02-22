@@ -7,7 +7,6 @@ import numpy as np
 
 from ..._internal import get_xp
 from ...common import _aliases, _linalg
-from ...common._helpers import _check_device
 
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Union
@@ -38,7 +37,6 @@ def dask_arange(
     device: Optional[Device] = None,
     **kwargs,
 ) -> ndarray:
-    _check_device(xp, device)
     args = [start]
     if stop is not None:
         args.append(stop)

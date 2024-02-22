@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 import sys
 import math
 import inspect
+import warnings
 
 def is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
@@ -154,11 +155,6 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
 # backwards compatibility alias
 get_namespace = array_namespace
 
-def _check_device(xp, device):
-    if xp == sys.modules.get('numpy'):
-        if device not in ["cpu", None]:
-            raise ValueError(f"Unsupported device for NumPy: {device!r}")
-
 # device() is not on numpy.ndarray and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
 # because this library just reuses the respective ndarray classes without
@@ -204,7 +200,15 @@ def _cupy_to_device(x, device, /, stream=None):
     elif device == "cpu":
         # allowing us to use `to_device(x, "cpu")`
         # is useful for portable test swapping between
-        # host and device backends
+        # host and device backends. This is deprecated. See
+        # https://github.com/data-apis/array-api-compat/issues/86.
+        # Implementations should prefer using the device keyword to
+        # from_dlpack() (starting from the 2023.12 version of the standard)
+        warnings.warn(
+            "Using `to_device(x, 'cpu')` on CuPy arrays is deprecated. Use the `device` keyword to `from_dlpack()` instead.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
         return x.get()
     elif not isinstance(device, _Device):
         raise ValueError(f"Unsupported device {device!r}")

@@ -13,8 +13,14 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 from types import ModuleType
 import inspect
+import sys
 
-from ._helpers import _check_device, is_numpy_array, array_namespace
+from ._helpers import is_numpy_array, array_namespace
+
+def _check_device(xp, device):
+    if xp == sys.modules.get('numpy'):
+        if device not in ["cpu", None]:
+            raise ValueError(f"Unsupported device for NumPy: {device!r}")
 
 # These functions are modified from the NumPy versions.
 
