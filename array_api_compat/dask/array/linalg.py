@@ -1,50 +1,48 @@
-import dask.array as _da
-from dask.array import (
-    matmul,
-    outer,
-    tensordot,
-    trace,
-)
-from dask.array.linalg import *  # noqa: F401, F403
+from __future__ import annotations
 
-from .._internal import _get_all_public_members
-from ._aliases import (
-    EighResult,
-    QRResult,
-    SlogdetResult,
-    SVDResult,
-    cholesky,
-    diagonal,
-    matrix_norm,
-    matrix_rank,
-    matrix_transpose,
-    qr,
-    svdvals,
-    vecdot,
-    vector_norm,
-)
+from dask.array.linalg import *
+from ...common import _linalg
+from ..._internal import get_xp
+from dask.array import matmul, tensordot, trace, outer
+from ._aliases import matrix_transpose, vecdot
 
-__all__ = [
-    "matmul",
-    "outer",
-    "tensordot",
-    "trace",
-]
+import dask.array as da
 
-__all__ += _get_all_public_members(_da.linalg)
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Union, Tuple
+    from ...common._typing import ndarray
 
-__all__ += [
-    "EighResult",
-    "QRResult",
-    "SVDResult",
-    "SlogdetResult",
-    "cholesky",
-    "diagonal",
-    "matrix_norm",
-    "matrix_rank",
-    "matrix_transpose",
-    "qr",
-    "svdvals",
-    "vecdot",
-    "vector_norm",
-]
+# cupy.linalg doesn't have __all__. If it is added, replace this with
+#
+# from cupy.linalg import __all__ as linalg_all
+_n = {}
+exec('from dask.array.linalg import *', _n)
+del _n['__builtins__']
+linalg_all = list(_n)
+del _n
+
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+qr = get_xp(da)(_linalg.qr)
+cholesky = get_xp(da)(_linalg.cholesky)
+matrix_rank = get_xp(da)(_linalg.matrix_rank)
+matrix_norm = get_xp(da)(_linalg.matrix_norm)
+
+def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
+    # TODO: can't avoid computing U or V for dask
+    _, s, _ =  svd(x)
+    return s
+
+vector_norm = get_xp(da)(_linalg.vector_norm)
+diagonal = get_xp(da)(_linalg.diagonal)
+
+__all__ = linalg_all + ["EighResult", "QRResult", "SlogdetResult",
+                        "SVDResult", "qr", "cholesky", "matrix_rank", "matrix_norm",
+                        "svdvals", "vector_norm", "diagonal"]
+
+del get_xp
+del da
+del _linalg
