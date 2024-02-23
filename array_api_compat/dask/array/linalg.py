@@ -25,6 +25,8 @@ if TYPE_CHECKING:
 _n = {}
 exec('from dask.array.linalg import *', _n)
 del _n['__builtins__']
+if 'annotations' in _n:
+    del _n['annotations']
 linalg_all = list(_n)
 del _n
 
