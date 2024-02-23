@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from functools import partial
 
-from ..common import _aliases
+import cupy as cp
 
+from ..common import _aliases
 from .._internal import get_xp
 
 asarray = asarray_cupy = partial(_aliases._asarray, namespace='cupy')
 asarray.__doc__ = _aliases._asarray.__doc__
 del partial
 
-import cupy as cp
 bool = cp.bool_
 
 # Basic renames

@@ -1,9 +1,11 @@
-from numpy.linalg import *
+from numpy.linalg import * # noqa: F403
 from numpy.linalg import __all__ as linalg_all
 
 from ..common import _linalg
 from .._internal import get_xp
-from ._aliases import (matmul, matrix_transpose, tensordot, vecdot)
+
+# These functions are in both the main and linalg namespaces
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot # noqa: F401
 
 import numpy as np
 

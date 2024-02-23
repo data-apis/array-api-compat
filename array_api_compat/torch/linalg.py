@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from torch import dtype as Dtype
     from typing import Optional
 
-from torch.linalg import *
+from torch.linalg import * # noqa: F403
 
 # torch.linalg doesn't define __all__
 # from torch.linalg import __all__ as linalg_all

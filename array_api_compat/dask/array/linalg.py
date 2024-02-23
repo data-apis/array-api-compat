@@ -1,9 +1,15 @@
 from __future__ import annotations
 
-from dask.array.linalg import *
+from dask.array.linalg import svd
 from ...common import _linalg
 from ..._internal import get_xp
-from dask.array import matmul, tensordot, trace, outer
+
+# Exports
+from dask.array.linalg import * # noqa: F403
+from dask.array import trace, outer
+
+# These functions are in both the main and linalg namespaces
+from dask.array import matmul, tensordot
 from ._aliases import matrix_transpose, vecdot
 
 import dask.array as da
@@ -39,9 +45,11 @@ def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
 vector_norm = get_xp(da)(_linalg.vector_norm)
 diagonal = get_xp(da)(_linalg.diagonal)
 
-__all__ = linalg_all + ["EighResult", "QRResult", "SlogdetResult",
-                        "SVDResult", "qr", "cholesky", "matrix_rank", "matrix_norm",
-                        "svdvals", "vector_norm", "diagonal"]
+__all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
+                        "matrix_transpose", "vecdot", "EighResult",
+                        "QRResult", "SlogdetResult", "SVDResult", "qr",
+                        "cholesky", "matrix_rank", "matrix_norm", "svdvals",
+                        "vector_norm", "diagonal"]
 
 del get_xp
 del da
