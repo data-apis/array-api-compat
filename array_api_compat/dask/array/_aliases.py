@@ -50,7 +50,7 @@ astype = _aliases.astype
 # an error with dask
 
 # TODO: delete the xp stuff, it shouldn't be necessary
-def dask_arange(
+def _dask_arange(
     start: Union[int, float],
     /,
     stop: Optional[Union[int, float]] = None,
@@ -72,7 +72,7 @@ def dask_arange(
     args.append(step)
     return xp.arange(*args, dtype=dtype, **kwargs)
 
-arange = get_xp(da)(dask_arange)
+arange = get_xp(da)(_dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
 from functools import partial
@@ -142,4 +142,4 @@ __all__ = common_aliases + ['asarray', 'bool', 'acos',
                             'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64',
                             'complex64', 'complex128', 'iinfo', 'finfo', 'can_cast', 'result_type']
 
-del da, partial, common_aliases, _da_unsupported,
+_all_ignore = ['get_xp', 'da', 'partial', 'common_aliases', 'np']

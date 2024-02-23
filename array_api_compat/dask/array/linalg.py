@@ -51,6 +51,4 @@ __all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
                         "cholesky", "matrix_rank", "matrix_norm", "svdvals",
                         "vector_norm", "diagonal"]
 
-del get_xp
-del da
-del _linalg
+_all_ignore = ['get_xp', 'da', 'linalg_all']

@@ -146,6 +146,9 @@ def zeros_like(
 
 # The functions here return namedtuples (np.unique() returns a normal
 # tuple).
+
+# Note that these named tuples aren't actually part of the standard namespace,
+# but I don't see any issue with exporting the names here regardless.
 class UniqueAllResult(NamedTuple):
     values: ndarray
     indices: ndarray

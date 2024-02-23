@@ -7,6 +7,8 @@ if TYPE_CHECKING:
     from torch import dtype as Dtype
     from typing import Optional
 
+from ._aliases import _fix_promotion, sum
+
 from torch.linalg import * # noqa: F403
 
 # torch.linalg doesn't define __all__
@@ -16,7 +18,7 @@ linalg_all = [i for i in dir(torch_linalg) if not i.startswith('_')]
 
 # outer is implemented in torch but aren't in the linalg namespace
 from torch import outer
-from ._aliases import _fix_promotion, matrix_transpose, tensordot, sum
+from ._aliases import matrix_transpose, tensordot
 
 # Note: torch.linalg.cross does not default to axis=-1 (it defaults to the
 # first axis with size 3), see https://github.com/pytorch/pytorch/issues/58743
@@ -58,5 +60,7 @@ def trace(x: array, /, *, offset: int = 0, dtype: Optional[Dtype] = None) -> arr
 
 __all__ = linalg_all + ['outer', 'trace', 'matrix_transpose', 'tensordot',
                         'vecdot', 'solve']
+
+_all_ignore = ['torch_linalg', 'sum']
 
 del linalg_all
