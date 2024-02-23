@@ -18,7 +18,8 @@ linalg_all = [i for i in dir(torch_linalg) if not i.startswith('_')]
 
 # outer is implemented in torch but aren't in the linalg namespace
 from torch import outer
-from ._aliases import matrix_transpose, tensordot
+# These functions are in both the main and linalg namespaces
+from ._aliases import matmul, matrix_transpose, tensordot
 
 # Note: torch.linalg.cross does not default to axis=-1 (it defaults to the
 # first axis with size 3), see https://github.com/pytorch/pytorch/issues/58743
@@ -58,7 +59,7 @@ def trace(x: array, /, *, offset: int = 0, dtype: Optional[Dtype] = None) -> arr
     # Use our wrapped sum to make sure it does upcasting correctly
     return sum(torch.diagonal(x, offset=offset, dim1=-2, dim2=-1), axis=-1, dtype=dtype)
 
-__all__ = linalg_all + ['outer', 'trace', 'matrix_transpose', 'tensordot',
+__all__ = linalg_all + ['outer', 'trace', 'matmul', 'matrix_transpose', 'tensordot',
                         'vecdot', 'solve']
 
 _all_ignore = ['torch_linalg', 'sum']
