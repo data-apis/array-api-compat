@@ -166,7 +166,7 @@ class _dask_device:
     def __repr__(self):
         return "DASK_DEVICE"
 
-DASK_DEVICE = _dask_device()
+_DASK_DEVICE = _dask_device()
 
 # device() is not on numpy.ndarray or dask.array and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
@@ -199,7 +199,7 @@ def device(x: Array, /) -> Device:
                 return "cpu"
         except ImportError:
             pass
-        return DASK_DEVICE
+        return _DASK_DEVICE
     elif is_jax_array(x):
         # JAX has .device() as a method, but it is being deprecated so that it
         # can become a property, in accordance with the standard. In order for
