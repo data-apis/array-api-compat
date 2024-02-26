@@ -112,7 +112,6 @@ array_api_tests/test_linalg.py::test_solve
 # missing full_matrics kw
 # https://github.com/dask/dask/issues/10389
 # also only supports 2-d inputs
-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.svd]
 array_api_tests/test_linalg.py::test_svd
 
 # Missing dlpack stuff

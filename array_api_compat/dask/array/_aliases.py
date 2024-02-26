@@ -12,7 +12,7 @@ from ...common._helpers import _check_device
 if TYPE_CHECKING:
     from typing import Optional, Tuple, Union
 
-    from ...common._typing import Device, Dtype, ndarray
+    from ...common._typing import Device, Dtype, Array
 
 import dask.array as da
 
@@ -37,7 +37,7 @@ def dask_arange(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     args = [start]
     if stop is not None:
@@ -99,8 +99,18 @@ cholesky = get_xp(da)(_linalg.cholesky)
 matrix_rank = get_xp(da)(_linalg.matrix_rank)
 matrix_norm = get_xp(da)(_linalg.matrix_norm)
 
+# Wrap the svd functions to not pass full_matrices to dask
+# when full_matrices=False (as that is the defualt behavior for dask),
+# and dask doesn't have the full_matrices keyword
+_svd = get_xp(da)(_linalg.svd)
 
-def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
+def svd(x: Array, full_matrices: bool = True, **kwargs) -> SVDResult:
+    if full_matrices:
+        return _svd(x, full_matrices=full_matrices, **kwargs)
+    return _svd(x, **kwargs)
+
+
+def svdvals(x: Array) -> Array:
     # TODO: can't avoid computing U or V for dask
     _, s, _ = da.linalg.svd(x)
     return s
