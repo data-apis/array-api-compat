@@ -16,4 +16,4 @@ jobs:
           pip install ruff
       # Update output format to enable automatic inline annotations.
       - name: Run Ruff
-        run: ruff check --output-format=github --select F822,PLC0414,RUF022 --preview .
+        run: ruff check --output-format=github .
