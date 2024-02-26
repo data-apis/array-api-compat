@@ -19,6 +19,7 @@ from ._aliases import (
     matrix_rank,
     matrix_transpose,
     qr,
+    svd,
     svdvals,
     vecdot,
     vector_norm,
