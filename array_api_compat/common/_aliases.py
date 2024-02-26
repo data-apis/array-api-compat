@@ -146,6 +146,9 @@ def zeros_like(
 
 # The functions here return namedtuples (np.unique() returns a normal
 # tuple).
+
+# Note that these named tuples aren't actually part of the standard namespace,
+# but I don't see any issue with exporting the names here regardless.
 class UniqueAllResult(NamedTuple):
     values: ndarray
     indices: ndarray
@@ -545,3 +548,11 @@ def isdtype(
         # more strict here to match the type annotation? Note that the
         # array_api_strict implementation will be very strict.
         return dtype == kind
+
+__all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
+           'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
+           'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
+           'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
+           'astype', 'std', 'var', 'permute_dims', 'reshape', 'argsort',
+           'sort', 'nonzero', 'sum', 'prod', 'ceil', 'floor', 'trunc',
+           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']

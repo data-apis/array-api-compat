@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 __all__ = [
+    "ndarray",
     "Device",
     "Dtype",
-    "ndarray",
 ]
 
 import sys
