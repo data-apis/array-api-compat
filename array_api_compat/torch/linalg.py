@@ -40,19 +40,18 @@ def vecdot(x1: array, x2: array, /, *, axis: int = -1, **kwargs) -> array:
 
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
 
+    # torch.linalg.vecdot incorrectly allows broadcasting along the contracted dimension
+    if x1.shape[axis] != x2.shape[axis]:
+        raise ValueError("x1 and x2 must have the same size along the given axis")
+
     # torch.linalg.vecdot doesn't support integer dtypes
     if isdtype(x1.dtype, 'integral') or isdtype(x2.dtype, 'integral'):
         if kwargs:
             raise RuntimeError("vecdot kwargs not supported for integral dtypes")
-        ndim = max(x1.ndim, x2.ndim)
-        x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
-        x2_shape = (1,)*(ndim - x2.ndim) + tuple(x2.shape)
-        if x1_shape[axis] != x2_shape[axis]:
-            raise ValueError("x1 and x2 must have the same size along the given axis")
 
-        x1_, x2_ = torch.broadcast_tensors(x1, x2)
-        x1_ = torch.moveaxis(x1_, axis, -1)
-        x2_ = torch.moveaxis(x2_, axis, -1)
+        x1_ = torch.moveaxis(x1, axis, -1)
+        x2_ = torch.moveaxis(x2, axis, -1)
+        x1_, x2_ = torch.broadcast_tensors(x1_, x2_)
 
         res = x1_[..., None, :] @ x2_[..., None]
         return res[..., 0, 0]
