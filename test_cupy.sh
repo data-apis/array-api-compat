@@ -26,4 +26,4 @@ mkdir -p $SCRIPT_DIR/.hypothesis
 ln -s $SCRIPT_DIR/.hypothesis .hypothesis
 
 export ARRAY_API_TESTS_MODULE=array_api_compat.cupy
-pytest ${PYTEST_ARGS} --xfails-file $SCRIPT_DIR/cupy-xfails.txt --skips-file $SCRIPT_DIR/cupy-skips.txt "$@"
+pytest ${PYTEST_ARGS} --xfails-file $SCRIPT_DIR/cupy-xfails.txt "$@"
