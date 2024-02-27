@@ -31,9 +31,6 @@ def test_is_xp_array(library, func):
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
 def test_device(library):
-    if library == "dask.array":
-        pytest.xfail("device() needs to be fixed for dask")
-
     xp = import_(library, wrapper=True)
 
     # We can't test much for device() and to_device() other than that

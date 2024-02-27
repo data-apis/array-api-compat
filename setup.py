@@ -8,7 +8,7 @@ import array_api_compat
 setup(
     name='array_api_compat',
     version=array_api_compat.__version__,
-    packages=find_packages(include=['array_api_compat*']),
+    packages=find_packages(include=["array_api_compat*"]),
     author="Consortium for Python Data API Standards",
     description="A wrapper around NumPy and other array libraries to make them compatible with the Array API standard",
     long_description=long_description,

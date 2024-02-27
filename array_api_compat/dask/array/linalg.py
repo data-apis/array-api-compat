@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dask.array.linalg import svd
 from ...common import _linalg
 from ..._internal import get_xp
 
@@ -16,8 +15,7 @@ import dask.array as da
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Union, Tuple
-    from ...common._typing import ndarray
+    from ...common._typing import Array
 
 # cupy.linalg doesn't have __all__. If it is added, replace this with
 #
@@ -39,7 +37,16 @@ cholesky = get_xp(da)(_linalg.cholesky)
 matrix_rank = get_xp(da)(_linalg.matrix_rank)
 matrix_norm = get_xp(da)(_linalg.matrix_norm)
 
-def svdvals(x: ndarray) -> Union[ndarray, Tuple[ndarray, ...]]:
+
+# Wrap the svd functions to not pass full_matrices to dask
+# when full_matrices=False (as that is the default behavior for dask),
+# and dask doesn't have the full_matrices keyword
+def svd(x: Array, full_matrices: bool = True, **kwargs) -> SVDResult:
+    if full_matrices:
+        raise ValueError("full_matrics=True is not supported by dask.")
+    return da.linalg.svd(x, **kwargs)
+
+def svdvals(x: Array) -> Array:
     # TODO: can't avoid computing U or V for dask
     _, s, _ =  svd(x)
     return s

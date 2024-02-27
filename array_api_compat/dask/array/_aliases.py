@@ -36,7 +36,8 @@ from numpy import (
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Union
-    from ...common._typing import ndarray, Device, Dtype
+
+    from ...common._typing import Device, Dtype, Array
 
 import dask.array as da
 
@@ -60,7 +61,7 @@ def _dask_arange(
     dtype: Optional[Dtype] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     args = [start]
     if stop is not None:
