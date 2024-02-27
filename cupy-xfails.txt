@@ -24,16 +24,8 @@ array_api_tests/test_has_names.py::test_has_names[array_method-__index__]
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
-# Some linalg tests depend on .mT instead of matrix_transpose()
-# and some require https://github.com/data-apis/array-api-tests/pull/101 to
-array_api_tests/test_linalg.py::test_eigvalsh
-array_api_tests/test_linalg.py::test_matrix_norm
-array_api_tests/test_linalg.py::test_matrix_power
 array_api_tests/test_linalg.py::test_solve
-array_api_tests/test_linalg.py::test_svd
-array_api_tests/test_linalg.py::test_svdvals
-# cupy uses 2023.12 trace() behavior https://github.com/data-apis/array-api/pull/502
-array_api_tests/test_linalg.py::test_trace
+
 # We cannot modify array methods
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x, s)]
