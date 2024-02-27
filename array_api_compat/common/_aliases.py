@@ -489,10 +489,7 @@ def tensordot(x1: ndarray,
     return xp.tensordot(x1, x2, axes=axes, **kwargs)
 
 def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
-    ndim = max(x1.ndim, x2.ndim)
-    x1_shape = (1,)*(ndim - x1.ndim) + tuple(x1.shape)
-    x2_shape = (1,)*(ndim - x2.ndim) + tuple(x2.shape)
-    if x1_shape[axis] != x2_shape[axis]:
+    if x1.shape[axis] != x2.shape[axis]:
         raise ValueError("x1 and x2 must have the same size along the given axis")
 
     if hasattr(xp, 'broadcast_tensors'):
@@ -500,9 +497,9 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     else:
         _broadcast = xp.broadcast_arrays
 
-    x1_, x2_ = _broadcast(x1, x2)
-    x1_ = xp.moveaxis(x1_, axis, -1)
-    x2_ = xp.moveaxis(x2_, axis, -1)
+    x1_ = xp.moveaxis(x1, axis, -1)
+    x2_ = xp.moveaxis(x2, axis, -1)
+    x1_, x2_ = _broadcast(x1_, x2_)
 
     res = x1_[..., None, :] @ x2_[..., None]
     return res[..., 0, 0]
