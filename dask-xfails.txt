@@ -78,6 +78,20 @@ array_api_tests/test_linalg.py::test_tensordot
 # probably same reason for failing as numpy
 array_api_tests/test_linalg.py::test_trace
 
+# AssertionError: out.dtype=uint64, but should be uint8 [tensordot(uint8, uint8)]
+array_api_tests/test_linalg.py::test_linalg_tensordot
+
+# AssertionError: out.shape=(1,), but should be () [linalg.vector_norm(keepdims=True)]
+array_api_tests/test_linalg.py::test_vector_norm
+
+# ZeroDivisionError in dask's normalize_chunks/auto_chunks internals
+array_api_tests/test_linalg.py::test_inv
+array_api_tests/test_linalg.py::test_matrix_power
+
+# did not raise error for invalid shapes
+array_api_tests/test_linalg.py::test_matmul
+array_api_tests/test_linalg.py::test_linalg_matmul
+
 # Linalg - these don't exist in dask
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cross]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.det]
@@ -88,6 +102,7 @@ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.pinv]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.slogdet]
 array_api_tests/test_linalg.py::test_cross
 array_api_tests/test_linalg.py::test_det
+array_api_tests/test_linalg.py::test_eigh
 array_api_tests/test_linalg.py::test_eigvalsh
 array_api_tests/test_linalg.py::test_pinv
 array_api_tests/test_linalg.py::test_slogdet
@@ -112,7 +127,6 @@ array_api_tests/test_linalg.py::test_solve
 # missing full_matrics kw
 # https://github.com/dask/dask/issues/10389
 # also only supports 2-d inputs
-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.svd]
 array_api_tests/test_linalg.py::test_svd
 
 # Missing dlpack stuff

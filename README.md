@@ -71,15 +71,16 @@ namespace, except that functions that are part of the array API are wrapped so
 that they have the correct array API behavior. In each case, the array object
 used will be the same array object from the wrapped library.
 
-## Difference between `array_api_compat` and `numpy.array_api`
+## Difference between `array_api_compat` and `array_api_strict`
 
-`numpy.array_api` is a strict minimal implementation of the Array API (see
+`array_api_strict` is a strict minimal implementation of the array API standard, formerly
+known as `numpy.array_api` (see
 [NEP 47](https://numpy.org/neps/nep-0047-array-api-standard.html)). For
-example, `numpy.array_api` does not include any functions that are not part of
+example, `array_api_strict` does not include any functions that are not part of
 the array API specification, and will explicitly disallow behaviors that are
 not required by the spec (e.g., [cross-kind type
 promotions](https://data-apis.org/array-api/latest/API_specification/type_promotion.html)).
-(`cupy.array_api` is similar to `numpy.array_api`)
+(`cupy.array_api` is similar to `array_api_strict`)
 
 `array_api_compat`, on the other hand, is just an extension of the
 corresponding array library namespaces with changes needed to be compliant
@@ -87,7 +88,7 @@ with the array API. It includes all additional library functions not mentioned
 in the spec, and allows any library behaviors not explicitly disallowed by it,
 such as cross-kind casting.
 
-In particular, unlike `numpy.array_api`, this package does not use a separate
+In particular, unlike `array_api_strict`, this package does not use a separate
 `Array` object, but rather just uses the corresponding array library array
 objects (`numpy.ndarray`, `cupy.ndarray`, `torch.Tensor`, etc.) directly. This
 is because those are the objects that are going to be passed as inputs to
@@ -96,7 +97,7 @@ functions by end users. This does mean that a few behaviors cannot be wrapped
 most things.
 
 Array consuming library authors coding against the array API may wish to test
-against `numpy.array_api` to ensure they are not using functionality outside
+against `array_api_strict` to ensure they are not using functionality outside
 of the standard, but prefer this implementation for the default behavior for
 end-users.
 
@@ -125,11 +126,11 @@ part of the specification but which are useful for using the array API:
   [`x.device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.device.html)
   in the array API specification. Included because `numpy.ndarray` does not
   include the `device` attribute and this library does not wrap or extend the
-  array object. Note that for NumPy, `device(x)` is always `"cpu"`.
+  array object. Note that for NumPy and dask, `device(x)` is always `"cpu"`.
 
 - `to_device(x, device, /, *, stream=None)`: Equivalent to
   [`x.to_device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.to_device.html).
-  Included because neither NumPy's, CuPy's, nor PyTorch's array objects
+  Included because neither NumPy's, CuPy's, Dask's, nor PyTorch's array objects
   include this method. For NumPy, this function effectively does nothing since
   the only supported device is the CPU, but for CuPy, this method supports
   CuPy CUDA
@@ -239,6 +240,30 @@ The minimum supported PyTorch version is 1.13.
 Unlike the other libraries supported here, JAX array API support is contained
 entirely in the JAX library. The JAX array API support is tracked at
 https://github.com/google/jax/issues/18353.
+
+## Dask
+
+If you're using dask with numpy, many of the same limitations that apply to numpy
+will also apply to dask. Besides those differences, other limitations include missing
+sort functionality (no `sort` or `argsort`), and limited support for the optional `linalg`
+and `fft` extensions.
+
+In particular, the `fft` namespace is not compliant with the array API spec. Any functions
+that you find under the `fft` namespace are the original, unwrapped functions under [`dask.array.fft`](https://docs.dask.org/en/latest/array-api.html#fast-fourier-transforms), which may or may not be Array API compliant. Use at your own risk!
+
+For `linalg`, several methods are missing, for example:
+- `cross`
+- `det`
+- `eigh`
+- `eigvalsh`
+- `matrix_power`
+- `pinv`
+- `slogdet`
+- `matrix_norm`
+- `matrix_rank`
+Other methods may only be partially implemented or return incorrect results at times.
+
+The minimum supported Dask version is 2023.12.0.
 
 ## Vendoring
 

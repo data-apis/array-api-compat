@@ -1,37 +1,32 @@
+from numpy.linalg import * # noqa: F403
+from numpy.linalg import __all__ as linalg_all
 import numpy as _np
 
-from .._internal import _get_all_public_members
+from ..common import _linalg
+from .._internal import get_xp
 
-_numpy_linalg_all = _get_all_public_members(_np.linalg)
+# These functions are in both the main and linalg namespaces
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot # noqa: F401
 
-for _name in _numpy_linalg_all:
-    globals()[_name] = getattr(_np.linalg, _name)
+import numpy as np
 
-
-from ._aliases import (  # noqa: E402
-    EighResult,
-    QRResult,
-    SlogdetResult,
-    SVDResult,
-    cholesky,
-    cross,
-    diagonal,
-    eigh,
-    matmul,
-    matrix_norm,
-    matrix_rank,
-    matrix_transpose,
-    outer,
-    pinv,
-    qr,
-    slogdet,
-    svd,
-    svdvals,
-    tensordot,
-    trace,
-    vecdot,
-    vector_norm,
-)
+cross = get_xp(np)(_linalg.cross)
+outer = get_xp(np)(_linalg.outer)
+EighResult = _linalg.EighResult
+QRResult = _linalg.QRResult
+SlogdetResult = _linalg.SlogdetResult
+SVDResult = _linalg.SVDResult
+eigh = get_xp(np)(_linalg.eigh)
+qr = get_xp(np)(_linalg.qr)
+slogdet = get_xp(np)(_linalg.slogdet)
+svd = get_xp(np)(_linalg.svd)
+cholesky = get_xp(np)(_linalg.cholesky)
+matrix_rank = get_xp(np)(_linalg.matrix_rank)
+pinv = get_xp(np)(_linalg.pinv)
+matrix_norm = get_xp(np)(_linalg.matrix_norm)
+svdvals = get_xp(np)(_linalg.svdvals)
+diagonal = get_xp(np)(_linalg.diagonal)
+trace = get_xp(np)(_linalg.trace)
 
 # Note: unlike np.linalg.solve, the array API solve() only accepts x2 as a
 # vector when it is exactly 1-dimensional. All other cases treat x2 as a stack
@@ -80,32 +75,16 @@ def solve(x1: _np.ndarray, x2: _np.ndarray, /) -> _np.ndarray:
 
     return wrap(r.astype(result_t, copy=False))
 
-__all__ = []
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(np.linalg, 'vector_norm'):
+    vector_norm = np.linalg.vector_norm
+else:
+    vector_norm = get_xp(np)(_linalg.vector_norm)
 
-__all__ += _numpy_linalg_all
+__all__ = linalg_all + _linalg.__all__ + ['solve']
 
-__all__ += [
-    "EighResult",
-    "QRResult",
-    "SVDResult",
-    "SlogdetResult",
-    "cholesky",
-    "cross",
-    "diagonal",
-    "eigh",
-    "matmul",
-    "matrix_norm",
-    "matrix_rank",
-    "matrix_transpose",
-    "outer",
-    "pinv",
-    "qr",
-    "slogdet",
-    "solve",
-    "svd",
-    "svdvals",
-    "tensordot",
-    "trace",
-    "vecdot",
-    "vector_norm",
-]
+del get_xp
+del np
+del linalg_all
+del _linalg

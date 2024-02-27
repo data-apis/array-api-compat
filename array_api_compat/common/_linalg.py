@@ -5,13 +5,15 @@ if TYPE_CHECKING:
     from typing import Literal, Optional, Tuple, Union
     from ._typing import ndarray
 
+import math
+
 import numpy as np
 if np.__version__[0] == "2":
     from numpy.lib.array_utils import normalize_axis_tuple
 else:
     from numpy.core.numeric import normalize_axis_tuple
 
-from ._aliases import matrix_transpose, isdtype
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot, isdtype
 from .._internal import get_xp
 
 # These are in the main NumPy namespace but not in numpy.linalg
@@ -110,7 +112,7 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
     # on a single dimension.
     if axis is None:
         # Note: xp.linalg.norm() doesn't handle 0-D arrays
-        x = x.ravel()
+        _x = x.ravel()
         _axis = 0
     elif isinstance(axis, tuple):
         # Note: The axis argument supports any number of axes, whereas
@@ -118,13 +120,14 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
         normalized_axis = normalize_axis_tuple(axis, x.ndim)
         rest = tuple(i for i in range(x.ndim) if i not in normalized_axis)
         newshape = axis + rest
-        x = xp.transpose(x, newshape).reshape(
-            (xp.prod([x.shape[i] for i in axis], dtype=int), *[x.shape[i] for i in rest]))
+        _x = xp.transpose(x, newshape).reshape(
+            (math.prod([x.shape[i] for i in axis]), *[x.shape[i] for i in rest]))
         _axis = 0
     else:
+        _x = x
         _axis = axis
 
-    res = xp.linalg.norm(x, axis=_axis, ord=ord)
+    res = xp.linalg.norm(_x, axis=_axis, ord=ord)
 
     if keepdims:
         # We can't reuse xp.linalg.norm(keepdims) because of the reshape hacks
@@ -150,3 +153,9 @@ def trace(x: ndarray, /, xp, *, offset: int = 0, dtype=None, **kwargs) -> ndarra
         elif x.dtype == xp.complex64:
             dtype = xp.complex128
     return xp.asarray(xp.trace(x, offset=offset, dtype=dtype, axis1=-2, axis2=-1, **kwargs))
+
+__all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
+           'QRResult', 'SlogdetResult', 'SVDResult', 'eigh', 'qr', 'slogdet',
+           'svd', 'cholesky', 'matrix_rank', 'pinv', 'matrix_norm',
+           'matrix_transpose', 'svdvals', 'vecdot', 'vector_norm', 'diagonal',
+           'trace']
