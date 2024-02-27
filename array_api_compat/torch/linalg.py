@@ -5,7 +5,8 @@ if TYPE_CHECKING:
     import torch
     array = torch.Tensor
     from torch import dtype as Dtype
-    from typing import Optional
+    from typing import Optional, Union, Tuple, Literal
+    inf = float('inf')
 
 from ._aliases import _fix_promotion, sum
 
@@ -66,8 +67,22 @@ def trace(x: array, /, *, offset: int = 0, dtype: Optional[Dtype] = None) -> arr
     # Use our wrapped sum to make sure it does upcasting correctly
     return sum(torch.diagonal(x, offset=offset, dim1=-2, dim2=-1), axis=-1, dtype=dtype)
 
-__all__ = linalg_all + ['outer', 'trace', 'matmul', 'matrix_transpose', 'tensordot',
-                        'vecdot', 'solve']
+def vector_norm(
+    x: array,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    **kwargs,
+) -> array:
+    # torch.vector_norm incorrectly treats axis=() the same as axis=None
+    if axis == ():
+        keepdims = True
+    return torch.linalg.vector_norm(x, ord=ord, axis=axis, keepdim=keepdims, **kwargs)
+
+__all__ = linalg_all + ['outer', 'matmul', 'matrix_transpose', 'tensordot',
+                        'cross', 'vecdot', 'solve', 'trace', 'vector_norm']
 
 _all_ignore = ['torch_linalg', 'sum']
 
