@@ -5,6 +5,8 @@ if TYPE_CHECKING:
     from typing import Literal, Optional, Tuple, Union
     from ._typing import ndarray
 
+import math
+
 import numpy as np
 if np.__version__[0] == "2":
     from numpy.lib.array_utils import normalize_axis_tuple
@@ -119,7 +121,7 @@ def vector_norm(x: ndarray, /, xp, *, axis: Optional[Union[int, Tuple[int, ...]]
         rest = tuple(i for i in range(x.ndim) if i not in normalized_axis)
         newshape = axis + rest
         _x = xp.transpose(x, newshape).reshape(
-            (xp.prod([x.shape[i] for i in axis], dtype=int), *[x.shape[i] for i in rest]))
+            (math.prod([x.shape[i] for i in axis]), *[x.shape[i] for i in rest]))
         _axis = 0
     else:
         _x = x
