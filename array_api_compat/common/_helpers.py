@@ -80,7 +80,7 @@ def is_array_api_obj(x):
 def _check_api_version(api_version):
     if api_version == '2021.12':
         warnings.warn("The 2021.12 version of the array API specification was requested but the returned namespace is actually version 2022.12")
-    if api_version is not None and api_version != '2022.12':
+    elif api_version is not None and api_version != '2022.12':
         raise ValueError("Only the 2022.12 version of the array API specification is currently supported")
 
 def array_namespace(*xs, api_version=None, _use_compat=True):
