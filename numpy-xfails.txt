@@ -10,12 +10,6 @@ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
-# linalg tests require https://github.com/data-apis/array-api-tests/pull/101
-# cleanups. Also some tests are using .mT
-array_api_tests/test_linalg.py::test_eigvalsh
-array_api_tests/test_linalg.py::test_solve
-array_api_tests/test_linalg.py::test_trace
-
 # Array methods and attributes not already on np.ndarray cannot be wrapped
 array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
 array_api_tests/test_signatures.py::test_array_method_signature[to_device]
