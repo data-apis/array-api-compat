@@ -132,7 +132,7 @@ def hfft(
 ) -> ndarray:
     res = xp.fft.hfft(x, n=n, axis=axis, norm=norm)
     if x.dtype in [xp.float32, xp.complex64]:
-        return res.astype(xp.complex64)
+        return res.astype(xp.float32)
     return res
 
 def ihfft(
