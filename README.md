@@ -2,7 +2,7 @@
 
 This is a small wrapper around common array libraries that is compatible with
 the [Array API standard](https://data-apis.org/array-api/latest/). Currently,
-NumPy, CuPy, and PyTorch are supported. If you want support for other array
+NumPy, CuPy, PyTorch, Dask, and JAX are supported. If you want support for other array
 libraries, or if you encounter any issues, please [open an
 issue](https://github.com/data-apis/array-api-compat/issues).
 
@@ -56,20 +56,31 @@ import array_api_compat.cupy as cp
 import array_api_compat.torch as torch
 ```
 
-Each will include all the functions from the normal NumPy/CuPy/PyTorch
+```py
+import array_api_compat.dask as da
+```
+
+> [!NOTE]
+> There is no `array_api_compat.jax` submodule. JAX support is contained
+> in JAX itself in the `jax.experimental.array_api` module. array-api-compat simply
+> wraps that submodule. The main JAX support in this module consists of
+> supporting it in the [helper functions](#helper-functions) defined below.
+
+Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
 namespace, except that functions that are part of the array API are wrapped so
 that they have the correct array API behavior. In each case, the array object
 used will be the same array object from the wrapped library.
 
-## Difference between `array_api_compat` and `numpy.array_api`
+## Difference between `array_api_compat` and `array_api_strict`
 
-`numpy.array_api` is a strict minimal implementation of the Array API (see
+`array_api_strict` is a strict minimal implementation of the array API standard, formerly
+known as `numpy.array_api` (see
 [NEP 47](https://numpy.org/neps/nep-0047-array-api-standard.html)). For
-example, `numpy.array_api` does not include any functions that are not part of
+example, `array_api_strict` does not include any functions that are not part of
 the array API specification, and will explicitly disallow behaviors that are
 not required by the spec (e.g., [cross-kind type
 promotions](https://data-apis.org/array-api/latest/API_specification/type_promotion.html)).
-(`cupy.array_api` is similar to `numpy.array_api`)
+(`cupy.array_api` is similar to `array_api_strict`)
 
 `array_api_compat`, on the other hand, is just an extension of the
 corresponding array library namespaces with changes needed to be compliant
@@ -77,7 +88,7 @@ with the array API. It includes all additional library functions not mentioned
 in the spec, and allows any library behaviors not explicitly disallowed by it,
 such as cross-kind casting.
 
-In particular, unlike `numpy.array_api`, this package does not use a separate
+In particular, unlike `array_api_strict`, this package does not use a separate
 `Array` object, but rather just uses the corresponding array library array
 objects (`numpy.ndarray`, `cupy.ndarray`, `torch.Tensor`, etc.) directly. This
 is because those are the objects that are going to be passed as inputs to
@@ -86,7 +97,7 @@ functions by end users. This does mean that a few behaviors cannot be wrapped
 most things.
 
 Array consuming library authors coding against the array API may wish to test
-against `numpy.array_api` to ensure they are not using functionality outside
+against `array_api_strict` to ensure they are not using functionality outside
 of the standard, but prefer this implementation for the default behavior for
 end-users.
 
@@ -99,6 +110,11 @@ part of the specification but which are useful for using the array API:
 - `is_array_api_obj(x)`: Return `True` if `x` is an array API compatible array
   object.
 
+- `is_numpy_array(x)`, `is_cupy_array(x)`, `is_torch_array(x)`,
+  `is_dask_array(x)`, `is_jax_array(x)`: return `True` if `x` is an array from
+  the corresponding library. These functions do not import the underlying
+  library if it has not already been imported, so they are cheap to use.
+
 - `array_namespace(*xs)`: Get the corresponding array API namespace for the
   arrays `xs`. For example, if the arrays are NumPy arrays, the returned
   namespace will be `array_api_compat.numpy`. Note that this function will
@@ -110,11 +126,11 @@ part of the specification but which are useful for using the array API:
   [`x.device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.device.html)
   in the array API specification. Included because `numpy.ndarray` does not
   include the `device` attribute and this library does not wrap or extend the
-  array object. Note that for NumPy, `device(x)` is always `"cpu"`.
+  array object. Note that for NumPy and dask, `device(x)` is always `"cpu"`.
 
 - `to_device(x, device, /, *, stream=None)`: Equivalent to
   [`x.to_device`](https://data-apis.org/array-api/latest/API_specification/generated/signatures.array_object.array.to_device.html).
-  Included because neither NumPy's, CuPy's, nor PyTorch's array objects
+  Included because neither NumPy's, CuPy's, Dask's, nor PyTorch's array objects
   include this method. For NumPy, this function effectively does nothing since
   the only supported device is the CPU, but for CuPy, this method supports
   CuPy CUDA
@@ -219,6 +235,36 @@ version.
 
 The minimum supported PyTorch version is 1.13.
 
+### JAX
+
+Unlike the other libraries supported here, JAX array API support is contained
+entirely in the JAX library. The JAX array API support is tracked at
+https://github.com/google/jax/issues/18353.
+
+## Dask
+
+If you're using dask with numpy, many of the same limitations that apply to numpy
+will also apply to dask. Besides those differences, other limitations include missing
+sort functionality (no `sort` or `argsort`), and limited support for the optional `linalg`
+and `fft` extensions.
+
+In particular, the `fft` namespace is not compliant with the array API spec. Any functions
+that you find under the `fft` namespace are the original, unwrapped functions under [`dask.array.fft`](https://docs.dask.org/en/latest/array-api.html#fast-fourier-transforms), which may or may not be Array API compliant. Use at your own risk!
+
+For `linalg`, several methods are missing, for example:
+- `cross`
+- `det`
+- `eigh`
+- `eigvalsh`
+- `matrix_power`
+- `pinv`
+- `slogdet`
+- `matrix_norm`
+- `matrix_rank`
+Other methods may only be partially implemented or return incorrect results at times.
+
+The minimum supported Dask version is 2023.12.0.
+
 ## Vendoring
 
 This library supports vendoring as an installation method. To vendor the
@@ -300,3 +346,54 @@ corresponding document does not yet exist for PyTorch, but you can examine the
 various comments in the
 [implementation](https://github.com/data-apis/array-api-compat/blob/main/array_api_compat/torch/_aliases.py)
 to see what functions and behaviors have been wrapped.
+
+
+## Releasing
+
+To release, first note that CuPy must be tested manually (it isn't tested on
+CI). Use the script
+
+```
+./test_cupy.sh
+```
+
+on a machine with a CUDA GPU.
+
+Once you are ready to release, create a PR with a release branch, so that you
+can verify that CI is passing. You must edit
+
+```
+array_api_compat/__init__.py
+```
+
+and update the version (the version is not computed from the tag because that
+would break vendorability). You should also edit
+
+```
+CHANGELOG.md
+```
+
+with the changes for the release.
+
+Then create a tag
+
+```
+git tag -a <version>
+```
+
+and push it to GitHub
+
+```
+git push origin <version>
+```
+
+Check that the `publish distributions` action works. Note that this action
+will run even if the other CI fails, so you must make sure that CI is passing
+*before* tagging.
+
+This does mean you can ignore CI failures, but ideally you should fix any
+failures or update the `*-xfails.txt` files before tagging, so that CI and the
+cupy tests pass. Otherwise it will be hard to tell what things are breaking in
+the future. It's also a good idea to remove any xpasses from those files (but
+be aware that some xfails are from flaky failures, so unless you know the
+underlying issue has been fixed, a xpass test is probably still xfail).

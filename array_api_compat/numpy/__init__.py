@@ -1,10 +1,10 @@
-from numpy import *
+from numpy import * # noqa: F403
 
 # from numpy import * doesn't overwrite these builtin names
-from numpy import abs, max, min, round
+from numpy import abs, max, min, round # noqa: F401
 
 # These imports may overwrite names from the import * above.
-from ._aliases import *
+from ._aliases import * # noqa: F403
 
 # Don't know why, but we have to do an absolute import to import linalg. If we
 # instead do
@@ -17,8 +17,8 @@ __import__(__package__ + '.linalg')
 
 __import__(__package__ + '.fft')
 
-from .linalg import matrix_transpose, vecdot
+from .linalg import matrix_transpose, vecdot # noqa: F401
 
-from ..common._helpers import *
+from ..common._helpers import * # noqa: F403
 
 __array_api_version__ = '2022.12'

@@ -1,4 +1,4 @@
-from cupy.linalg import *
+from cupy.linalg import * # noqa: F403
 # cupy.linalg doesn't have __all__. If it is added, replace this with
 #
 # from cupy.linalg import __all__ as linalg_all
@@ -10,9 +10,11 @@ del _n
 
 from ..common import _linalg
 from .._internal import get_xp
-from ._aliases import (matmul, matrix_transpose, tensordot, vecdot)
 
 import cupy as cp
+
+# These functions are in both the main and linalg namespaces
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot # noqa: F401
 
 cross = get_xp(cp)(_linalg.cross)
 outer = get_xp(cp)(_linalg.outer)
@@ -29,9 +31,15 @@ matrix_rank = get_xp(cp)(_linalg.matrix_rank)
 pinv = get_xp(cp)(_linalg.pinv)
 matrix_norm = get_xp(cp)(_linalg.matrix_norm)
 svdvals = get_xp(cp)(_linalg.svdvals)
-vector_norm = get_xp(cp)(_linalg.vector_norm)
 diagonal = get_xp(cp)(_linalg.diagonal)
 trace = get_xp(cp)(_linalg.trace)
+
+# These functions are completely new here. If the library already has them
+# (i.e., numpy 2.0), use the library version instead of our wrapper.
+if hasattr(cp.linalg, 'vector_norm'):
+    vector_norm = cp.linalg.vector_norm
+else:
+    vector_norm = get_xp(cp)(_linalg.vector_norm)
 
 __all__ = linalg_all + _linalg.__all__
 

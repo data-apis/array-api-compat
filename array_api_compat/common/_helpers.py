@@ -7,10 +7,17 @@ users of the compat library.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Optional, Union, Any
+    from ._typing import Array, Device
+
 import sys
 import math
+import inspect
 
-def _is_numpy_array(x):
+def is_numpy_array(x):
     # Avoid importing NumPy if it isn't already
     if 'numpy' not in sys.modules:
         return False
@@ -20,7 +27,7 @@ def _is_numpy_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (np.ndarray, np.generic))
 
-def _is_cupy_array(x):
+def is_cupy_array(x):
     # Avoid importing NumPy if it isn't already
     if 'cupy' not in sys.modules:
         return False
@@ -30,7 +37,7 @@ def _is_cupy_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, (cp.ndarray, cp.generic))
 
-def _is_torch_array(x):
+def is_torch_array(x):
     # Avoid importing torch if it isn't already
     if 'torch' not in sys.modules:
         return False
@@ -40,13 +47,33 @@ def _is_torch_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
 
+def is_dask_array(x):
+    # Avoid importing dask if it isn't already
+    if 'dask.array' not in sys.modules:
+        return False
+
+    import dask.array
+
+    return isinstance(x, dask.array.Array)
+
+def is_jax_array(x):
+    # Avoid importing jax if it isn't already
+    if 'jax' not in sys.modules:
+        return False
+
+    import jax
+
+    return isinstance(x, jax.Array)
+
 def is_array_api_obj(x):
     """
     Check if x is an array API compatible array object.
     """
-    return _is_numpy_array(x) \
-        or _is_cupy_array(x) \
-        or _is_torch_array(x) \
+    return is_numpy_array(x) \
+        or is_cupy_array(x) \
+        or is_torch_array(x) \
+        or is_dask_array(x) \
+        or is_jax_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
@@ -71,9 +98,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     namespaces = set()
     for x in xs:
-        if hasattr(x, '__array_namespace__'):
-            namespaces.add(x.__array_namespace__(api_version=api_version))
-        elif _is_numpy_array(x):
+        if is_numpy_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import numpy as numpy_namespace
@@ -81,7 +106,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import numpy as np
                 namespaces.add(np)
-        elif _is_cupy_array(x):
+        elif is_cupy_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import cupy as cupy_namespace
@@ -89,7 +114,7 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import cupy as cp
                 namespaces.add(cp)
-        elif _is_torch_array(x):
+        elif is_torch_array(x):
             _check_api_version(api_version)
             if _use_compat:
                 from .. import torch as torch_namespace
@@ -97,6 +122,21 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
             else:
                 import torch
                 namespaces.add(torch)
+        elif is_dask_array(x):
+            _check_api_version(api_version)
+            if _use_compat:
+                from ..dask import array as dask_namespace
+                namespaces.add(dask_namespace)
+            else:
+                raise TypeError("_use_compat cannot be False if input array is a dask array!")
+        elif is_jax_array(x):
+            _check_api_version(api_version)
+            # jax.experimental.array_api is already an array namespace. We do
+            # not have a wrapper submodule for it.
+            import jax.experimental.array_api as jnp
+            namespaces.add(jnp)
+        elif hasattr(x, '__array_namespace__'):
+            namespaces.add(x.__array_namespace__(api_version=api_version))
         else:
             # TODO: Support Python scalars?
             raise TypeError(f"{type(x).__name__} is not a supported array type")
@@ -119,13 +159,22 @@ def _check_device(xp, device):
         if device not in ["cpu", None]:
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
 
-# device() is not on numpy.ndarray and and to_device() is not on numpy.ndarray
+# Placeholder object to represent the dask device
+# when the array backend is not the CPU.
+# (since it is not easy to tell which device a dask array is on)
+class _dask_device:
+    def __repr__(self):
+        return "DASK_DEVICE"
+
+_DASK_DEVICE = _dask_device()
+
+# device() is not on numpy.ndarray or dask.array and to_device() is not on numpy.ndarray
 # or cupy.ndarray. They are not included in array objects of this library
 # because this library just reuses the respective ndarray classes without
 # wrapping or subclassing them. These helper functions can be used instead of
 # the wrapper functions for libraries that need to support both NumPy/CuPy and
 # other libraries that use devices.
-def device(x: "Array", /) -> "Device":
+def device(x: Array, /) -> Device:
     """
     Hardware device the array data resides on.
 
@@ -139,8 +188,27 @@ def device(x: "Array", /) -> "Device":
     out: device
         a ``device`` object (see the "Device Support" section of the array API specification).
     """
-    if _is_numpy_array(x):
+    if is_numpy_array(x):
         return "cpu"
+    elif is_dask_array(x):
+        # Peek at the metadata of the jax array to determine type
+        try:
+            import numpy as np
+            if isinstance(x._meta, np.ndarray):
+                # Must be on CPU since backed by numpy
+                return "cpu"
+        except ImportError:
+            pass
+        return _DASK_DEVICE
+    elif is_jax_array(x):
+        # JAX has .device() as a method, but it is being deprecated so that it
+        # can become a property, in accordance with the standard. In order for
+        # this function to not break when JAX makes the flip, we check for
+        # both here.
+        if inspect.ismethod(x.device):
+            return x.device()
+        else:
+            return x.device
     return x.device
 
 # Based on cupy.array_api.Array.to_device
@@ -187,7 +255,7 @@ def _torch_to_device(x, device, /, stream=None):
         raise NotImplementedError
     return x.to(device)
 
-def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, Any]]" = None) -> "Array":
+def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] = None) -> Array:
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
@@ -208,17 +276,28 @@ def to_device(x: "Array", device: "Device", /, *, stream: "Optional[Union[int, A
     .. note::
        If ``stream`` is given, the copy operation should be enqueued on the provided ``stream``; otherwise, the copy operation should be enqueued on the default stream/queue. Whether the copy is performed synchronously or asynchronously is implementation-dependent. Accordingly, if synchronization is required to guarantee data safety, this must be clearly explained in a conforming library's documentation.
     """
-    if _is_numpy_array(x):
+    if is_numpy_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         if device == 'cpu':
             return x
         raise ValueError(f"Unsupported device {device!r}")
-    elif _is_cupy_array(x):
+    elif is_cupy_array(x):
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
-    elif _is_torch_array(x):
+    elif is_torch_array(x):
         return _torch_to_device(x, device, stream=stream)
+    elif is_dask_array(x):
+        if stream is not None:
+            raise ValueError("The stream argument to to_device() is not supported")
+        # TODO: What if our array is on the GPU already?
+        if device == 'cpu':
+            return x
+        raise ValueError(f"Unsupported device {device!r}")
+    elif is_jax_array(x):
+        # This import adds to_device to x
+        import jax.experimental.array_api # noqa: F401
+        return x.to_device(device, stream=stream)
     return x.to_device(device, stream=stream)
 
 def size(x):
@@ -229,4 +308,18 @@ def size(x):
         return None
     return math.prod(x.shape)
 
-__all__ = ['is_array_api_obj', 'array_namespace', 'get_namespace', 'device', 'to_device', 'size']
+__all__ = [
+    "array_namespace",
+    "device",
+    "get_namespace",
+    "is_array_api_obj",
+    "is_cupy_array",
+    "is_dask_array",
+    "is_jax_array",
+    "is_numpy_array",
+    "is_torch_array",
+    "size",
+    "to_device",
+]
+
+_all_ignore = ['sys', 'math', 'inspect']

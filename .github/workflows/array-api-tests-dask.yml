@@ -1,0 +1,12 @@
+name: Array API Tests (Dask)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-dask:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: dask
+      module-name: dask.array
+      extra-requires: numpy
+      pytest-extra-args: --disable-deadline --max-examples=5
