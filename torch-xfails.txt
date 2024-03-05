@@ -190,16 +190,3 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_expm1
 array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
 array_api_tests/test_set_functions.py::test_unique_values
-
-# fft functions are not yet supported
-# (https://github.com/data-apis/array-api-compat/issues/67)
-array_api_tests/test_fft.py::test_fftn
-array_api_tests/test_fft.py::test_ifftn
-array_api_tests/test_fft.py::test_rfft
-array_api_tests/test_fft.py::test_irfft
-array_api_tests/test_fft.py::test_rfftn
-array_api_tests/test_fft.py::test_irfftn
-array_api_tests/test_fft.py::test_hfft
-array_api_tests/test_fft.py::test_ihfft
-array_api_tests/test_fft.py::test_shift_func[fftshift]
-array_api_tests/test_fft.py::test_shift_func[ifftshift]
