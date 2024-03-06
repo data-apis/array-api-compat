@@ -21,7 +21,7 @@ def test_all(library):
     import_(library, wrapper=True)
 
     for mod_name in sys.modules:
-        if 'array_api_compat.' + library not in mod_name:
+        if not mod_name.startswith('array_api_compat.' + library):
             continue
 
         module = sys.modules[mod_name]
