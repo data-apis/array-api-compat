@@ -82,3 +82,5 @@ __all__ = torch.fft.__all__ + [
     "fftshift",
     "ifftshift",
 ]
+
+_all_ignore = ['torch']

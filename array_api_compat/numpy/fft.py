@@ -1,4 +1,4 @@
-from numpy.fft import *
+from numpy.fft import * # noqa: F403
 from numpy.fft import __all__ as fft_all
 
 from ..common import _fft

@@ -1,4 +1,4 @@
-from cupy import *
+from cupy import * # noqa: F403
 
 # from cupy import * doesn't overwrite these builtin names
 from cupy import abs, max, min, round # noqa: F401

@@ -1,4 +1,4 @@
-from cupy.fft import *
+from cupy.fft import * # noqa: F403
 from cupy.fft import __all__ as fft_all
 
 from ..common import _fft
