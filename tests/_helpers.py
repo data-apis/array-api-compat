@@ -6,8 +6,6 @@ import pytest
 
 
 def import_(library, wrapper=False):
-    if library == 'cupy':
-        return pytest.importorskip(library)
     if 'jax' in library and sys.version_info < (3, 9):
         pytest.skip('JAX array API support does not support Python 3.8')
 
@@ -16,5 +14,7 @@ def import_(library, wrapper=False):
             library = 'jax.experimental.array_api'
         else:
             library = 'array_api_compat.' + library
+    elif library == 'cupy':
+        return pytest.importorskip(library)
 
     return import_module(library)
