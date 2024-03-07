@@ -80,6 +80,13 @@ array_api_tests/test_signatures.py::test_array_method_signature[__dlpack_device_
 # qr() doesn't support matrix stacks
 array_api_tests/test_linalg.py::test_qr
 
+# cross has some promotion bug that is fixed in newer numpy versions
+array_api_tests/test_linalg.py::test_cross
+
+# vector_norm with ord=-1 which has since been fixed
+# https://github.com/numpy/numpy/issues/21083
+array_api_tests/test_linalg.py::test_vector_norm
+
 # argmax and argmin do not support keepdims
 array_api_tests/test_searching_functions.py::test_argmax
 array_api_tests/test_searching_functions.py::test_argmin
