@@ -164,3 +164,9 @@ array_api_tests/test_special_cases.py::test_unary[sqrt(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[tan(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[tanh(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[trunc(x_i is -0) -> -0]
+
+# CuPy gives the wrong shape for n-dim fft funcs. See
+# https://github.com/data-apis/array-api-compat/pull/78#issuecomment-1984527870
+array_api_tests/test_fft.py::test_fftn
+array_api_tests/test_fft.py::test_ifftn
+array_api_tests/test_fft.py::test_rfftn
