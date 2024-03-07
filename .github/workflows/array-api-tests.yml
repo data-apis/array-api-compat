@@ -63,6 +63,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.extra-requires }}
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
+        python -m pip install hypothesis==6.97.1
     - name: Run the array API testsuite (${{ inputs.package-name }})
       if: "! ((matrix.python-version == '3.11' && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21')) || (matrix.python-version == '3.8' && inputs.package-name == 'numpy' && contains(inputs.xfails-file-extra, 'dev')))"
       env:
