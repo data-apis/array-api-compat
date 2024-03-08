@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import warnings
 
 import numpy as np
 import pytest
@@ -57,13 +58,24 @@ def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace((x, x)))
     pytest.raises(TypeError, lambda: array_namespace(x, (x, x)))
 
-
 def test_array_namespace_errors_torch():
     y = torch.asarray([1, 2])
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
-    pytest.raises(ValueError, lambda: array_namespace(x, api_version="2022.12"))
 
+def test_api_version():
+    x = np.asarray([1, 2])
+    np_ = import_("numpy", wrapper=True)
+    assert array_namespace(x, api_version="2022.12") == np_
+    assert array_namespace(x, api_version=None) == np_
+    assert array_namespace(x) == np_
+    # Should issue a warning
+    with warnings.catch_warnings(record=True) as w:
+        assert array_namespace(x, api_version="2021.12") == np_
+        assert len(w) == 1
+        assert "2021.12" in str(w[0].message)
+
+    pytest.raises(ValueError, lambda: array_namespace(x, api_version="2020.12"))
 
 def test_get_namespace():
     # Backwards compatible wrapper
