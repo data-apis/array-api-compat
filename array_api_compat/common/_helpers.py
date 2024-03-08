@@ -325,4 +325,4 @@ __all__ = [
     "to_device",
 ]
 
-_all_ignore = ['sys', 'math', 'inspect']
+_all_ignore = ['sys', 'math', 'inspect', 'warnings']
