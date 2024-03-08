@@ -15,6 +15,8 @@ from ._aliases import * # noqa: F403
 # dynamically so that the library can be vendored.
 __import__(__package__ + '.linalg')
 
+__import__(__package__ + '.fft')
+
 from .linalg import matrix_transpose, vecdot # noqa: F401
 
 from ..common._helpers import * # noqa: F403

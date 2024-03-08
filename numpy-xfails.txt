@@ -44,16 +44,3 @@ array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 # The test suite is incorrectly checking sums that have loss of significance
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
-
-# fft functions are not yet supported
-# (https://github.com/data-apis/array-api-compat/issues/67)
-array_api_tests/test_fft.py::test_fft
-array_api_tests/test_fft.py::test_ifft
-array_api_tests/test_fft.py::test_fftn
-array_api_tests/test_fft.py::test_ifftn
-array_api_tests/test_fft.py::test_rfft
-array_api_tests/test_fft.py::test_irfft
-array_api_tests/test_fft.py::test_rfftn
-array_api_tests/test_fft.py::test_irfftn
-array_api_tests/test_fft.py::test_hfft
-array_api_tests/test_fft.py::test_ihfft
