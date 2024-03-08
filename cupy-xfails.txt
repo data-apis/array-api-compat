@@ -44,6 +44,9 @@ array_api_tests/test_searching_functions.py::test_argmin
 array_api_tests/test_statistical_functions.py::test_min
 array_api_tests/test_statistical_functions.py::test_max
 
+# prod() sometimes doesn't give nan for 0*overflow
+array_api_tests/test_statistical_functions::test_prod
+
 # testsuite incorrectly thinks meshgrid doesn't have indexing argument
 # (https://github.com/data-apis/array-api-tests/issues/171)
 array_api_tests/test_signatures.py::test_func_signature[meshgrid]
