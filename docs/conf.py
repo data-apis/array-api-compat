@@ -15,7 +15,7 @@ copyright = '2024, Consortium for Python Data API Standards'
 author = 'Consortium for Python Data API Standards'
 
 import array_api_compat
-version = array_api_compat.__version__
+release = array_api_compat.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
