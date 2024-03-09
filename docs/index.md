@@ -71,14 +71,16 @@ namespace, except that functions that are part of the array API are wrapped so
 that they have the correct array API behavior. In each case, the array object
 used will be the same array object from the wrapped library.
 
+(array-api-strict)=
 ## Difference between `array_api_compat` and `array_api_strict`
 
-`array_api_strict` is a strict minimal implementation of the array API standard, formerly
-known as `numpy.array_api` (see
-[NEP 47](https://numpy.org/neps/nep-0047-array-api-standard.html)). For
-example, `array_api_strict` does not include any functions that are not part of
-the array API specification, and will explicitly disallow behaviors that are
-not required by the spec (e.g., [cross-kind type
+[`array_api_strict`](https://github.com/data-apis/array-api-strict) is a
+strict minimal implementation of the array API standard, formerly known as
+`numpy.array_api` (see [NEP
+47](https://numpy.org/neps/nep-0047-array-api-standard.html)). For example,
+`array_api_strict` does not include any functions that are not part of the
+array API specification, and will explicitly disallow behaviors that are not
+required by the spec (e.g., [cross-kind type
 promotions](https://data-apis.org/array-api/latest/API_specification/type_promotion.html)).
 (`cupy.array_api` is similar to `array_api_strict`)
 
@@ -101,6 +103,7 @@ against `array_api_strict` to ensure they are not using functionality outside
 of the standard, but prefer this implementation for the default behavior for
 end-users.
 
+(vendoring)=
 ## Vendoring
 
 This library supports vendoring as an installation method. To vendor the
@@ -122,6 +125,6 @@ Alternatively, the library may be installed as dependency on PyPI.
 :hidden:
 
 helper-functions.md
-differences.md
+supported-array-libraries.md
 dev/index.md
 ```

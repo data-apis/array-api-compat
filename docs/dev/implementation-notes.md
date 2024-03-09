@@ -1,5 +1,77 @@
 # Implementation Notes
 
+This page outlines some notes on the implementation of array-api-compat. These
+details are not important for users of the package, but they may be useful to
+contributors.
+
+## Special Considerations
+
+array-api-compat requires some special development considerations that are
+different from most other Python libraries. The goal of array-api-compat is to
+be a small library that packages can either vendor or add as a dependency to
+implement array API support. Consequently, certain design considerations
+should be taken into account:
+
+- *No Hard Dependencies.* Although array-api-compat "depends" on NumPy, CuPy,
+  PyTorch, etc., it does not hard depend on them. These libraries are not
+  imported unless either an array object is passed to `array_namespace()`, or
+  the specific `array_api_compat.<namespace>` sub-namespace is explicitly
+  imported.
+
+- *Vendorability.* array-api-compat should be [vendorable](vendoring). This
+  means that, for instance, all imports in the library are relative imports.
+  No code in the package specifically references the name `array_api_compat`
+  (we also support renaming the package to something else).
+  Vendorability support is tested in `tests/test_vendoring.py`.
+
+- *Pure Python.* To make array-api-compat as easy as possible to add as a
+  dependency, the code is all pure Python.
+
+- *Minimal Wrapping Only.* The wrapping functionality is minimal. This means
+  that if something is difficult to wrap using pure Python, or if trying to
+  support some array API behavior would require a significant amount of code,
+  we prefer to leave the behavior as an upstream issue for the array library,
+  and [document it as a known difference](../supported-array-libraries.md).
+
+  This also means that we do not at this point in time implement anything
+  other than wrappers for functions in the standard, and basic [helper
+  functions](../helper-functions.md) that would be useful for most users of
+  array-api-compat. The addition of functions that are not part of the array
+  API standard is currently out-of-scope for this package.
+
+- *No Monkey Patching.* `array-api-compat` should not attempt to modify anything
+  about the underlying library. It is a *wrapper* library only.
+
+- *No modifying the array object.* Due to the above restrictions, the array
+  (or tensor) object of the array library cannot be modified. Any behavior
+  that is built-in to the array object, such as the behavior of [array
+  methods](https://data-apis.org/array-api/latest/API_specification/array_object.html)
+  is therefore left unwrapped. Users can workaround issues by using
+  corresponding [elementwise
+  functions](https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html)
+  instead of operators, and using the [helper
+  functions](../helper-functions.md) provided by array-api-compat instead of
+  methods like `to_device`.
+
+- *Avoid Restricting Non-Standard Behavior.* All array libraries have
+  functions and behaviors that are outside of the scope of what is specified
+  by the standard. These behaviors should be left intact whenever possible,
+  unless the standard explicitly disallows something. This means
+
+  - All namespaces are *extended* with wrapper functions. You may notice the
+    extensive use of `import *` in various files in `array_api_compat`. While
+    this would normally be questionable, this is the [one actual legitimate
+    use-case for `import *`](https://peps.python.org/pep-0008/#imports), to
+    re-export names from an external namespace.
+
+  - All wrapper functions pass `**kwargs` through to the wrapped function.
+
+  The onus is on users of array-api-compat to ensure they are only using
+  portable array API behavior, e.g., by testing against [array-api-strict](array-api-strict).
+
+
+## Avoiding Code Duplication
+
 As noted before, the goal of this library is to reuse the NumPy and CuPy array
 objects, rather than wrapping or extending them. This means that the functions
 need to accept and return `np.ndarray` for NumPy and `cp.ndarray` for CuPy.
@@ -64,3 +136,25 @@ corresponding document does not yet exist for PyTorch, but you can examine the
 various comments in the
 [implementation](https://github.com/data-apis/array-api-compat/blob/main/array_api_compat/torch/_aliases.py)
 to see what functions and behaviors have been wrapped.
+
+## Tests
+
+The majority of the behavior for array-api-compat is tested by the
+[array-api-tests](https://github.com/data-apis/array-api-tests) test suite for
+the array API standard. There are also specific tests in
+[`tests/`](https://github.com/data-apis/array-api-compat/tree/main/tests).
+These tests should be limited to things that are not tested by the test suite,
+e.g., tests for [helper functions](../helper-functions.md) or for behavior that is
+not strictly required by the standard.
+
+array-api-tests is run against all supported libraries are tested on CI
+(except for JAX,
+[wrapping](jax-support)). This is achieved by a [reusable GitHub Actions
+Workflow](https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml).
+Most libraries have tests that must be xfailed or skipped for various reasons.
+These are defined in specific `<library>-xfails.txt` files and are
+automatically forwarded to array-api-tests.
+
+Array libraries that require a GPU to run (currently only CuPy) cannot be
+tested on CI. There is a helper script `test_cupy.sh` that can be used to
+manually test CuPy on a machine with a CUDA GPU.

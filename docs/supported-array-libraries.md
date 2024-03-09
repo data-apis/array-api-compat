@@ -1,16 +1,29 @@
-# Differences from the Array API Specification
+# Supported Array Libraries
 
-There are some known differences between this library and the array API
-specification:
+The following array libraries are supported. This page outlines the known
+differences between this library and the array API specification for the
+supported packages.
 
-## NumPy and CuPy
+Note that the [`array_namespace()`](helper-functions.md) helper will also
+support any array library that explicitly supports the array API by defining
+[`__array_namespace__`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.__array_namespace__.html).
+
+## [NumPy](https://numpy.org/) and [CuPy](https://cupy.dev/)
+
+NumPy 2.0 has full array API compatibility. This package is not strictly
+necessary for NumPy 2.0 support, but may still be useful for the support of
+other libraries, as well as for the [helper functions](helper-functions.md).
+
+For NumPy 1.26, as well as corresponding versions of CuPy, the following
+deviations from the standard should be noted:
 
 - The array methods `__array_namespace__`, `device` (for NumPy), `to_device`,
   and `mT` are not defined. This reuses `np.ndarray` and `cp.ndarray` and we
-  don't want to monkeypatch or wrap it. The helper functions `device()` and
-  `to_device()` are provided to work around these missing methods (see above).
-  `x.mT` can be replaced with `xp.linalg.matrix_transpose(x)`.
-  `array_namespace(x)` should be used instead of `x.__array_namespace__`.
+  don't want to monkey patch or wrap it. The [helper
+  functions](helper-functions.md) `device()` and `to_device()` are provided to
+  work around these missing methods. `x.mT` can be replaced with
+  `xp.linalg.matrix_transpose(x)`. `array_namespace(x)` should be used instead
+  of `x.__array_namespace__`.
 
 - Value-based casting for scalars will be in effect unless explicitly disabled
   with the environment variable `NPY_PROMOTION_STATE=weak` or
@@ -41,7 +54,7 @@ NumPy has a few issues:
 If any of these are an issue, it is recommended to bump your minimum NumPy
 version.
 
-## PyTorch
+## [PyTorch](https://pytorch.org/)
 
 - Like NumPy/CuPy, we do not wrap the `torch.Tensor` object. It is missing the
   `__array_namespace__` and `to_device` methods, so the corresponding helper
@@ -85,13 +98,14 @@ version.
 
 The minimum supported PyTorch version is 1.13.
 
-## JAX
+(jax-support)=
+## [JAX](https://jax.readthedocs.io/en/latest/)
 
 Unlike the other libraries supported here, JAX array API support is contained
 entirely in the JAX library. The JAX array API support is tracked at
 https://github.com/google/jax/issues/18353.
 
-## Dask
+## [Dask](https://www.dask.org/)
 
 If you're using dask with numpy, many of the same limitations that apply to numpy
 will also apply to dask. Besides those differences, other limitations include missing
