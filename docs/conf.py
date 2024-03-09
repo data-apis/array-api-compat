@@ -22,6 +22,8 @@ release = array_api_compat.__version__
 
 extensions = [
     'myst_parser',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
     'sphinx_copybutton',
 ]
 
@@ -30,8 +32,14 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 myst_enable_extensions = ["dollarmath", "linkify"]
 
+napoleon_use_rtype = False
+napoleon_use_param = False
+
 # Make sphinx give errors for bad cross-references
 nitpicky = True
+
+# Lets us use single backticks for code in RST
+default_role = 'code'
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

@@ -15,7 +15,7 @@ take some time.
 Currently all libraries here are implemented against the [2022.12
 version](https://data-apis.org/array-api/2022.12/) of the standard.
 
-## Install
+## Installation
 
 `array-api-compat` is available on both [PyPI](https://pypi.org/project/array-api-compat/)
 
@@ -32,7 +32,7 @@ conda install --channel conda-forge array-api-compat
 ## Usage
 
 The typical usage of this library will be to get the corresponding array API
-compliant namespace from the input arrays using `array_namespace()`, like
+compliant namespace from the input arrays using {func}`array_namespace()`, like
 
 ```py
 def your_function(x, y):
@@ -60,11 +60,12 @@ import array_api_compat.torch as torch
 import array_api_compat.dask as da
 ```
 
-> [!NOTE]
-> There is no `array_api_compat.jax` submodule. JAX support is contained
-> in JAX itself in the `jax.experimental.array_api` module. array-api-compat simply
-> wraps that submodule. The main JAX support in this module consists of
-> supporting it in the [helper functions](helper-functions) defined below.
+```{note}
+There is no `array_api_compat.jax` submodule. JAX support is contained in JAX
+itself in the `jax.experimental.array_api` module. array-api-compat simply
+wraps that submodule. The main JAX support in this module consists of
+supporting it in the [helper functions](helper-functions).
+```
 
 Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
 namespace, except that functions that are part of the array API are wrapped so
@@ -124,7 +125,7 @@ Alternatively, the library may be installed as dependency on PyPI.
 :titlesonly:
 :hidden:
 
-helper-functions.md
+helper-functions.rst
 supported-array-libraries.md
 dev/index.md
 ```

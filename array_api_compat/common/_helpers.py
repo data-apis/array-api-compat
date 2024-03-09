@@ -19,6 +19,24 @@ import inspect
 import warnings
 
 def is_numpy_array(x):
+    """
+    Return True if `x` is a NumPy array.
+
+    This function does not import NumPy if it has not already been imported
+    and is therefore cheap to use.
+
+    This also returns True for `ndarray` subclasses and NumPy scalar objects.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+    """
     # Avoid importing NumPy if it isn't already
     if 'numpy' not in sys.modules:
         return False
@@ -29,6 +47,24 @@ def is_numpy_array(x):
     return isinstance(x, (np.ndarray, np.generic))
 
 def is_cupy_array(x):
+    """
+    Return True if `x` is a CuPy array.
+
+    This function does not import CuPy if it has not already been imported
+    and is therefore cheap to use.
+
+    This also returns True for `cupy.ndarray` subclasses and CuPy scalar objects.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+    """
     # Avoid importing NumPy if it isn't already
     if 'cupy' not in sys.modules:
         return False
@@ -39,6 +75,22 @@ def is_cupy_array(x):
     return isinstance(x, (cp.ndarray, cp.generic))
 
 def is_torch_array(x):
+    """
+    Return True if `x` is a PyTorch tensor.
+
+    This function does not import PyTorch if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_dask_array
+    is_jax_array
+    """
     # Avoid importing torch if it isn't already
     if 'torch' not in sys.modules:
         return False
@@ -49,6 +101,22 @@ def is_torch_array(x):
     return isinstance(x, torch.Tensor)
 
 def is_dask_array(x):
+    """
+    Return True if `x` is a dask.array Array.
+
+    This function does not import dask if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_jax_array
+    """
     # Avoid importing dask if it isn't already
     if 'dask.array' not in sys.modules:
         return False
@@ -58,6 +126,23 @@ def is_dask_array(x):
     return isinstance(x, dask.array.Array)
 
 def is_jax_array(x):
+    """
+    Return True if `x` is a JAX array.
+
+    This function does not import JAX if it has not already been imported
+    and is therefore cheap to use.
+
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    """
     # Avoid importing jax if it isn't already
     if 'jax' not in sys.modules:
         return False
@@ -68,7 +153,17 @@ def is_jax_array(x):
 
 def is_array_api_obj(x):
     """
-    Check if x is an array API compatible array object.
+    Return True if `x` is an array API compatible array object.
+
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
     """
     return is_numpy_array(x) \
         or is_cupy_array(x) \
@@ -87,17 +182,57 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
-    `xs` should contain one or more arrays.
+    Parameters
+    ----------
+    xs: arrays
+        one or more arrays.
 
-    Typical usage is
+    api_version: str
+        The newest version of the spec that you need support for (currently
+        the compat library wrapped APIs support v2022.12).
 
-        def your_function(x, y):
-            xp = array_api_compat.array_namespace(x, y)
-            # Now use xp as the array library namespace
-            return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
+    Returns
+    -------
 
-    api_version should be the newest version of the spec that you need support
-    for (currently the compat library wrapped APIs only support v2021.12).
+    out: namespace
+        The array API compatible namespace corresponding to the arrays in `xs`.
+
+    Raises
+    ------
+    TypeError
+        If `xs` contains arrays from different array libraries or contains a
+        non-array.
+
+
+    Typical usage is to pass the arguments of a function to
+    `array_namespace()` at the top of a function to get the corresponding
+    array API namespace:
+
+    .. code:: python
+
+       def your_function(x, y):
+           xp = array_api_compat.array_namespace(x, y)
+           # Now use xp as the array library namespace
+           return xp.mean(x, axis=0) + 2*xp.std(y, axis=0)
+
+
+    Wrapped array namespaces can also be imported directly. For example,
+    `array_namespace(np.array(...))` will return `array_api_compat.numpy`.
+    This function will also work for any array library not wrapped by
+    array-api-compat if it explicitly defines `__array_namespace__
+    <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.__array_namespace__.html>`__
+    (the wrapped namespace is always preferred if it exists).
+
+    See Also
+    --------
+
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+
     """
     namespaces = set()
     for x in xs:
@@ -181,15 +316,33 @@ def device(x: Array, /) -> Device:
     """
     Hardware device the array data resides on.
 
+    This is equivalent to `x.device` according to the `standard
+    <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.device.html>`__.
+    This helper is included because some array libraries either do not have
+    the `device` attribute or include it with an incompatible API.
+
     Parameters
     ----------
     x: array
-        array instance from NumPy or an array API compatible library.
+        array instance from an array API compatible library.
 
     Returns
     -------
     out: device
-        a ``device`` object (see the "Device Support" section of the array API specification).
+        a ``device`` object (see the `Device Support <https://data-apis.org/array-api/latest/design_topics/device_support.html>`__
+        section of the array API specification).
+
+    Notes
+    -----
+
+    For NumPy the device is always `"cpu"`. For Dask, the device is always a
+    special `DASK_DEVICE` object.
+
+    See Also
+    --------
+
+    to_device : Move array data to a different device.
+
     """
     if is_numpy_array(x):
         return "cpu"
@@ -262,22 +415,52 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
+    This is equivalent to `x.to_device(device, stream=stream)` according to
+    the `standard
+    <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.to_device.html>`__.
+    This helper is included because some array libraries do not have the
+    `to_device` method.
+
     Parameters
     ----------
+
     x: array
-        array instance from NumPy or an array API compatible library.
+        array instance from an array API compatible library.
+
     device: device
-        a ``device`` object (see the "Device Support" section of the array API specification).
+        a ``device`` object (see the `Device Support <https://data-apis.org/array-api/latest/design_topics/device_support.html>`__
+        section of the array API specification).
+
     stream: Optional[Union[int, Any]]
-        stream object to use during copy. In addition to the types supported in ``array.__dlpack__``, implementations may choose to support any library-specific stream object with the caveat that any code using such an object would not be portable.
+        stream object to use during copy. In addition to the types supported
+        in ``array.__dlpack__``, implementations may choose to support any
+        library-specific stream object with the caveat that any code using
+        such an object would not be portable.
 
     Returns
     -------
-    out: array
-        an array with the same data and data type as ``x`` and located on the specified ``device``.
 
-    .. note::
-       If ``stream`` is given, the copy operation should be enqueued on the provided ``stream``; otherwise, the copy operation should be enqueued on the default stream/queue. Whether the copy is performed synchronously or asynchronously is implementation-dependent. Accordingly, if synchronization is required to guarantee data safety, this must be clearly explained in a conforming library's documentation.
+    out: array
+        an array with the same data and data type as ``x`` and located on the
+        specified ``device``.
+
+    Notes
+    -----
+
+    For NumPy, this function effectively does nothing since the only supported
+    device is the CPU. For CuPy, this method supports CuPy CUDA `Device
+    <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Device.html>`_
+    and `Stream
+    <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html>`_
+    objects. For PyTorch, this is the same as ``x.to(device)
+    <https://pytorch.org/docs/stable/generated/torch.Tensor.to.html>`_ (the
+    ``stream`` argument is not supported in PyTorch).
+
+    See Also
+    --------
+
+    device : Hardware device the array data resides on.
+
     """
     if is_numpy_array(x):
         if stream is not None:
@@ -305,7 +488,13 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
 
 def size(x):
     """
-    Return the total number of elements of x
+    Return the total number of elements of x.
+
+    This is equivalent to `x.size` according to the `standard
+    <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html>`__.
+    This helper is included because PyTorch defines `size` in an `incompatible
+    way <https://pytorch.org/docs/stable/generated/torch.Tensor.size.html>`__.
+
     """
     if None in x.shape:
         return None
