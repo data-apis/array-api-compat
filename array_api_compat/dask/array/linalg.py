@@ -16,6 +16,7 @@ import dask.array as da
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ...common._typing import Array
+    from typing import Literal
 
 # dask.array.linalg doesn't have __all__. If it is added, replace this with
 #
