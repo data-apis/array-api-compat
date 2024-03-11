@@ -349,7 +349,6 @@ def _asarray(
                 obj = np.asarray(obj).copy()
                 #print(obj)
             return xp.array(obj, dtype=dtype, **copy_kwargs)
-        return obj
 
     return xp.asarray(obj, dtype=dtype, **kwargs)
 
