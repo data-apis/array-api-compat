@@ -39,12 +39,20 @@ should be taken into account:
   array-api-compat. The addition of functions that are not part of the array
   API standard is currently out-of-scope for this package.
 
-- *No Monkey Patching.* `array-api-compat` should not attempt to modify anything
-  about the underlying library. It is a *wrapper* library only.
+- *No side-effects*. array_api_compat behavior should be localized to only the
+  specific code that imports and uses it. It should be invisible to end-users
+  or users of dependent codes. This specifically applies to the next two
+  points.
 
-- *No modifying the array object.* Due to the above restrictions, the array
-  (or tensor) object of the array library cannot be modified. Any behavior
-  that is built-in to the array object, such as the behavior of [array
+- *No Monkey Patching.* `array-api-compat` should not attempt to modify
+  anything about the underlying library. It is a *wrapper* library only.
+
+- *No modifying the array object.* The array (or tensor) object of the array
+  library cannot be modified. Attempting to wrap or subclass a library's array
+  object would break the localized wrapping goal.
+
+  Any behavior that is built-in to the array object, such as the behavior of
+  [array
   methods](https://data-apis.org/array-api/latest/API_specification/array_object.html)
   is therefore left unwrapped. Users can workaround issues by using
   corresponding [elementwise
@@ -53,10 +61,10 @@ should be taken into account:
   functions](../helper-functions.md) provided by array-api-compat instead of
   methods like `to_device`.
 
-- *Avoid Restricting Non-Standard Behavior.* All array libraries have
-  functions and behaviors that are outside of the scope of what is specified
-  by the standard. These behaviors should be left intact whenever possible,
-  unless the standard explicitly disallows something. This means
+- *Avoid Restricting Behavior Outside the Scope of the Standard.* All array
+  libraries have functions and behaviors that are outside of the scope of what
+  is specified by the standard. These behaviors should be left intact whenever
+  possible, unless the standard explicitly disallows something. This means
 
   - All namespaces are *extended* with wrapper functions. You may notice the
     extensive use of `import *` in various files in `array_api_compat`. While
@@ -72,18 +80,9 @@ should be taken into account:
 
 ## Avoiding Code Duplication
 
-As noted before, the goal of this library is to reuse the NumPy and CuPy array
-objects, rather than wrapping or extending them. This means that the functions
-need to accept and return `np.ndarray` for NumPy and `cp.ndarray` for CuPy.
-
-Each namespace (`array_api_compat.numpy`, `array_api_compat.cupy`, and
-`array_api_compat.torch`) is populated with the normal library namespace (like
-`from numpy import *`). Then specific functions are replaced with wrapped
-variants.
-
-Since NumPy and CuPy are nearly identical in behavior, most wrapping logic can
-be shared between them. Wrapped functions that have the same logic between
-NumPy and CuPy are in `array_api_compat/common/`.
+Since NumPy, CuPy, and to a degree, Dask, are nearly identical in behavior,
+most wrapping logic can be shared between them. Wrapped functions that have
+the same logic between multiple libraries are in `array_api_compat/common/`.
 These functions are defined like
 
 ```py
@@ -93,7 +92,7 @@ def acos(x, /, xp):
     return xp.arccos(x)
 ```
 
-The `xp` argument refers to the original array namespace (either `numpy` or
+The `xp` argument refers to the original array namespace (e.g., `numpy` or
 `cupy`). Then in the specific `array_api_compat/numpy/` and
 `array_api_compat/cupy/` namespaces, the `@get_xp` decorator is applied to
 these functions, which automatically removes the `xp` argument from the
@@ -123,37 +122,37 @@ import cupy as cp
 acos = get_xp(cp)(_aliases.acos)
 ```
 
-Since NumPy and CuPy are nearly identical in their behaviors, this allows
-writing the wrapping logic for both libraries only once.
-
-PyTorch uses a similar layout in `array_api_compat/torch/`, but it differs
-enough from NumPy/CuPy that very few common wrappers for those libraries are
-reused.
-
-See https://numpy.org/doc/stable/reference/array_api.html for a full list of
-changes from the base NumPy (the differences for CuPy are nearly identical). A
-corresponding document does not yet exist for PyTorch, but you can examine the
-various comments in the
-[implementation](https://github.com/data-apis/array-api-compat/blob/main/array_api_compat/torch/_aliases.py)
-to see what functions and behaviors have been wrapped.
+Most NumPy and CuPy are defined in this way, since their behaviors are nearly
+identical PyTorch uses a similar layout in `array_api_compat/torch/`, but it
+differs enough from NumPy/CuPy that very few common wrappers for those
+libraries are reused. Dask is close to NumPy in behavior and so most Dask
+functions also reuse the NumPy/CuPy common wrappers.
 
 ## Tests
 
 The majority of the behavior for array-api-compat is tested by the
 [array-api-tests](https://github.com/data-apis/array-api-tests) test suite for
-the array API standard. There are also specific tests in
+the array API standard. There are also array-api-compat specific tests in
 [`tests/`](https://github.com/data-apis/array-api-compat/tree/main/tests).
 These tests should be limited to things that are not tested by the test suite,
-e.g., tests for [helper functions](../helper-functions.md) or for behavior that is
-not strictly required by the standard.
+e.g., tests for [helper functions](../helper-functions.md) or for behavior
+that is not strictly required by the standard.
 
 array-api-tests is run against all supported libraries are tested on CI
-(except for JAX,
-[wrapping](jax-support)). This is achieved by a [reusable GitHub Actions
+([except for JAX](jax-support)). This is achieved by a [reusable GitHub Actions
 Workflow](https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml).
 Most libraries have tests that must be xfailed or skipped for various reasons.
 These are defined in specific `<library>-xfails.txt` files and are
 automatically forwarded to array-api-tests.
+
+You may often need to update these xfail files, either to add new xfails
+(e.g., because of new test suite features, or because a test that was
+previously thought to be passing actually flaky fails). Try to keep the xfails
+files organized, with comments pointing to upstream issues whenever possible.
+
+From time to time, xpass tests should be removed from the xfail files, but be
+aware that many xfail tests are flaky, so an xpass should only be removed if
+you know that the underlying issue has been fixed.
 
 Array libraries that require a GPU to run (currently only CuPy) cannot be
 tested on CI. There is a helper script `test_cupy.sh` that can be used to
