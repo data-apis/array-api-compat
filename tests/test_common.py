@@ -60,3 +60,16 @@ def test_to_device_host(library):
     # here is that we can test portably after calling
     # to_device(x, "cpu") to return to host
     assert_allclose(x, expected)
+
+
+@pytest.mark.parametrize("target_library,func", is_functions.items())
+@pytest.mark.parametrize("source_library", is_functions.keys())
+def test_asarray(source_library, target_library, func):
+    src_lib = import_(source_library, wrapper=True)
+    tgt_lib = import_(target_library, wrapper=True)
+    is_tgt_type = globals()[func]
+
+    a = src_lib.asarray([1, 2, 3])
+    b = tgt_lib.asarray(a)
+
+    assert is_tgt_type(b), f"Expected {b} to be a {tgt_lib.ndarray}, but was {type(b)}"
