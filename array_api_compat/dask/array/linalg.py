@@ -17,9 +17,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ...common._typing import Array
 
-# cupy.linalg doesn't have __all__. If it is added, replace this with
+# dask.array.linalg doesn't have __all__. If it is added, replace this with
 #
-# from cupy.linalg import __all__ as linalg_all
+# from dask.array.linalg import __all__ as linalg_all
 _n = {}
 exec('from dask.array.linalg import *', _n)
 del _n['__builtins__']
@@ -32,7 +32,15 @@ EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult
 SlogdetResult = _linalg.SlogdetResult
 SVDResult = _linalg.SVDResult
-qr = get_xp(da)(_linalg.qr)
+# TODO: use the QR wrapper once dask
+# supports the mode keyword on QR
+# https://github.com/dask/dask/issues/10388
+#qr = get_xp(da)(_linalg.qr)
+def qr(x: Array, mode: Literal['reduced', 'complete'] = 'reduced',
+       **kwargs) -> QRResult:
+    if mode != "reduced":
+        raise ValueError("dask arrays only support using mode='reduced'")
+    return QRResult(*da.linalg.qr(x, **kwargs))
 cholesky = get_xp(da)(_linalg.cholesky)
 matrix_rank = get_xp(da)(_linalg.matrix_rank)
 matrix_norm = get_xp(da)(_linalg.matrix_norm)
@@ -44,7 +52,7 @@ matrix_norm = get_xp(da)(_linalg.matrix_norm)
 def svd(x: Array, full_matrices: bool = True, **kwargs) -> SVDResult:
     if full_matrices:
         raise ValueError("full_matrics=True is not supported by dask.")
-    return da.linalg.svd(x, **kwargs)
+    return da.linalg.svd(x, coerce_signs=False, **kwargs)
 
 def svdvals(x: Array) -> Array:
     # TODO: can't avoid computing U or V for dask
