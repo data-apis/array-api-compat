@@ -64,7 +64,14 @@ def test_to_device_host(library):
 
 @pytest.mark.parametrize("target_library,func", is_functions.items())
 @pytest.mark.parametrize("source_library", is_functions.keys())
-def test_asarray(source_library, target_library, func):
+def test_asarray(source_library, target_library, func, request):
+    if source_library == "dask.array" and target_library == "torch":
+        # Allow rest of test to execute instead of immediately xfailing
+        # xref https://github.com/pandas-dev/pandas/issues/38902
+
+        # TODO: remove xfail once
+        # https://github.com/dask/dask/issues/8260 is resolved
+        request.node.add_marker(pytest.mark.xfail(reason="Bug in dask raising error on conversion"))
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
     is_tgt_type = globals()[func]
