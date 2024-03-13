@@ -452,7 +452,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Device.html>`_
     and `Stream
     <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html>`_
-    objects. For PyTorch, this is the same as ``x.to(device)
+    objects. For PyTorch, this is the same as `x.to(device)
     <https://pytorch.org/docs/stable/generated/torch.Tensor.to.html>`_ (the
     ``stream`` argument is not supported in PyTorch).
 

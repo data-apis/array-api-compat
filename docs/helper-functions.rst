@@ -13,15 +13,16 @@ array_namespace
 The `array_namespace()` function is the primary entry-point for array API
 consuming libraries.
 
+
 .. autofunction:: array_namespace
-   :canonical: array_api_compat.array_namespace
+.. autofunction:: is_array_api_obj
 
 Array Method Helpers
 --------------------
 
 array-api-compat does not attempt to wrap or monkey patch the array object for
 any library. Consequently, any API differences for the [array
-object](https://data-apis.org/array-api/latest/API_specification/array_object.htmlK
+object](https://data-apis.org/array-api/latest/API_specification/array_object.html)
 cannot be directly wrapped. Some libraries do not define some of these methods
 or define them differently. For these, helper functions are provided which can
 be used instead.
@@ -35,14 +36,13 @@ instead, which would be wrapped.
 .. autofunction:: to_device
 .. autofunction:: size
 
-Inspect Helpers
----------------
+Inspection Helpers
+------------------
 
 These convenience functions can be used to test if an array comes from a
 specific library without importing that library if it hasn't been imported
 yet.
 
-.. autofunction:: is_array_api_obj
 .. autofunction:: is_numpy_array
 .. autofunction:: is_cupy_array
 .. autofunction:: is_torch_array

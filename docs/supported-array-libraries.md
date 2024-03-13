@@ -4,8 +4,8 @@ The following array libraries are supported. This page outlines the known
 differences between this library and the array API specification for the
 supported packages.
 
-Note that the [`array_namespace()`](helper-functions.md) helper will also
-support any array library that explicitly supports the array API by defining
+Note that the {func}`~.array_namespace()` helper will also support any array
+library that explicitly supports the array API by defining
 [`__array_namespace__`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.__array_namespace__.html).
 
 Any reasonably popular array library is in-scope for array-api-compat,
@@ -17,7 +17,7 @@ complexity. If your favorite library is not supported, feel free to open an
 
 NumPy 2.0 has full array API compatibility. This package is not strictly
 necessary for NumPy 2.0 support, but may still be useful for the support of
-other libraries, as well as for the [helper functions](helper-functions.md).
+other libraries, as well as for the [helper functions](helper-functions.rst).
 
 For NumPy 1.26, as well as corresponding versions of CuPy, the following
 deviations from the standard should be noted:
@@ -25,10 +25,10 @@ deviations from the standard should be noted:
 - The array methods `__array_namespace__`, `device` (for NumPy), `to_device`,
   and `mT` are not defined. This reuses `np.ndarray` and `cp.ndarray` and we
   don't want to monkey patch or wrap it. The [helper
-  functions](helper-functions.md) `device()` and `to_device()` are provided to
-  work around these missing methods. `x.mT` can be replaced with
-  `xp.linalg.matrix_transpose(x)`. `array_namespace(x)` should be used instead
-  of `x.__array_namespace__`.
+  functions](helper-functions.rst) {func}`~.device()` and {func}`~.to_device()`
+  are provided to work around these missing methods. `x.mT` can be replaced
+  with `xp.linalg.matrix_transpose(x)`. {func}`~.array_namespace()` should be
+  used instead of `x.__array_namespace__`.
 
 - Value-based casting for scalars will be in effect unless explicitly disabled
   with the environment variable `NPY_PROMOTION_STATE=weak` or
@@ -63,14 +63,14 @@ version.
 
 - Like NumPy/CuPy, we do not wrap the `torch.Tensor` object. It is missing the
   `__array_namespace__` and `to_device` methods, so the corresponding helper
-  functions `array_namespace()` and `to_device()` in this library should be
-  used instead (see above).
+  functions {func}`~.array_namespace()` and {func}`~.to_device()` in this
+  library should be used instead.
 
 - The `x.size` attribute on `torch.Tensor` is a function that behaves
   differently from
   [`x.size`](https://data-apis.org/array-api/draft/API_specification/generated/array_api.array.size.html)
-  in the spec. Use the `size(x)` helper function as a portable workaround (see
-  above).
+  in the spec. Use the {func}`~.size()` helper function as a portable
+  workaround.
 
 - PyTorch does not have unsigned integer types other than `uint8`, and no
   attempt is made to implement them here.
@@ -95,8 +95,7 @@ version.
   [`var()`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.var.html#array_api.var)
   do not support floating-point `correction`.
 
-- The `stream` argument of the `to_device()` helper (see above) is not
-  supported.
+- The `stream` argument of the {func}`~.to_device()` helper is not supported.
 
 - As with NumPy, type annotations and positional-only arguments may not
   exactly match the spec for functions that are not wrapped at all.

@@ -23,7 +23,7 @@ version](https://data-apis.org/array-api/2022.12/) of the standard.
 python -m pip install array-api-compat
 ```
 
-and [Conda-forge](https://anaconda.org/conda-forge/array-api-compat)
+and [conda-forge](https://anaconda.org/conda-forge/array-api-compat)
 
 ```
 conda install --channel conda-forge array-api-compat
@@ -32,7 +32,7 @@ conda install --channel conda-forge array-api-compat
 ## Usage
 
 The typical usage of this library will be to get the corresponding array API
-compliant namespace from the input arrays using {func}`array_namespace()`, like
+compliant namespace from the input arrays using {func}`~.array_namespace()`, like
 
 ```py
 def your_function(x, y):

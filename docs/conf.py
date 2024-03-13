@@ -37,6 +37,12 @@ napoleon_use_param = False
 
 # Make sphinx give errors for bad cross-references
 nitpicky = True
+# autodoc wants to make cross-references for every type hint. But a lot of
+# them don't actually refer to anything that we have a document for.
+nitpick_ignore = [
+    ("py:class", "Array"),
+    ("py:class", "Device"),
+]
 
 # Lets us use single backticks for code in RST
 default_role = 'code'

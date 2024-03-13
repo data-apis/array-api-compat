@@ -14,9 +14,9 @@ should be taken into account:
 
 - *No Hard Dependencies.* Although array-api-compat "depends" on NumPy, CuPy,
   PyTorch, etc., it does not hard depend on them. These libraries are not
-  imported unless either an array object is passed to `array_namespace()`, or
-  the specific `array_api_compat.<namespace>` sub-namespace is explicitly
-  imported.
+  imported unless either an array object is passed to
+  {func}`~.array_namespace()`, or the specific `array_api_compat.<namespace>`
+  sub-namespace is explicitly imported.
 
 - *Vendorability.* array-api-compat should be [vendorable](vendoring). This
   means that, for instance, all imports in the library are relative imports.
@@ -35,7 +35,7 @@ should be taken into account:
 
   This also means that we do not at this point in time implement anything
   other than wrappers for functions in the standard, and basic [helper
-  functions](../helper-functions.md) that would be useful for most users of
+  functions](../helper-functions.rst) that would be useful for most users of
   array-api-compat. The addition of functions that are not part of the array
   API standard is currently out-of-scope for this package.
 
@@ -59,7 +59,7 @@ should be taken into account:
   functions](https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html)
   instead of
   [operators](https://data-apis.org/array-api/latest/API_specification/array_object.html#operators),
-  and by using the [helper functions](../helper-functions.md) provided by
+  and by using the [helper functions](../helper-functions.rst) provided by
   array-api-compat instead of attributes or methods like `x.to_device()`.
 
 - *Avoid Restricting Behavior that is Outside the Scope of the Standard.* All
@@ -145,7 +145,7 @@ The majority of the behavior for array-api-compat is tested by the
 the array API standard. There are also array-api-compat specific tests in
 [`tests/`](https://github.com/data-apis/array-api-compat/tree/main/tests).
 These tests should be limited to things that are not tested by the test suite,
-e.g., tests for [helper functions](../helper-functions.md) or for behavior
+e.g., tests for [helper functions](../helper-functions.rst) or for behavior
 that is not strictly required by the standard.
 
 array-api-tests is run against all supported libraries are tested on CI
