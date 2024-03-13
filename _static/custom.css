@@ -1,0 +1,12 @@
+/* Makes the text look better on Mac retina displays (the Furo CSS disables*/
+/* subpixel antialiasing). */
+body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+/* Disable the fancy scrolling behavior when jumping to headers (this is too
+   slow for long pages) */
+html {
+    scroll-behavior: auto;
+}
