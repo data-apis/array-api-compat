@@ -126,7 +126,7 @@ Alternatively, the library may be installed as dependency on PyPI.
 At this time, the scope of array-api-compat is limited to wrapping array
 libraries so that they can comply with the [array API
 standard](https://data-apis.org/array-api/latest/API_specification/index.html).
-This includes a small set of [helper functions](helper-functions.md) which may
+This includes a small set of [helper functions](helper-functions.rst) which may
 be useful to most users of array-api-compat, for instance, functions that
 provide meta-functionality to aid in supporting the array API, or functions
 that are necessary to work around wrapping limitations for certain libraries.
