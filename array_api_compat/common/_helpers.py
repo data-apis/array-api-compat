@@ -448,13 +448,11 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     -----
 
     For NumPy, this function effectively does nothing since the only supported
-    device is the CPU. For CuPy, this method supports CuPy CUDA `Device
-    <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Device.html>`_
-    and `Stream
-    <https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html>`_
-    objects. For PyTorch, this is the same as `x.to(device)
-    <https://pytorch.org/docs/stable/generated/torch.Tensor.to.html>`_ (the
-    ``stream`` argument is not supported in PyTorch).
+    device is the CPU. For CuPy, this method supports CuPy CUDA
+    :external+cupy:class:`Device <cupy.cuda.Device>` and
+    :external+cupy:class:`Stream <cupy.cuda.Stream>` objects. For PyTorch,
+    this is the same as :external+torch:meth:`x.to(device) <torch.Tensor.to>`
+    (the ``stream`` argument is not supported in PyTorch).
 
     See Also
     --------
@@ -492,8 +490,8 @@ def size(x):
 
     This is equivalent to `x.size` according to the `standard
     <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html>`__.
-    This helper is included because PyTorch defines `size` in an `incompatible
-    way <https://pytorch.org/docs/stable/generated/torch.Tensor.size.html>`__.
+    This helper is included because PyTorch defines `size` in an
+    :external+torch:meth:`incompatible way <torch.Tensor.size>`.
 
     """
     if None in x.shape:

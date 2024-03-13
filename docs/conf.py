@@ -24,8 +24,16 @@ extensions = [
     'myst_parser',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'sphinx.ext.intersphinx',
     'sphinx_copybutton',
 ]
+
+intersphinx_mapping = {
+    'cupy': ('https://docs.cupy.dev/en/stable', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+}
+# Require :external: to reference intersphinx.
+intersphinx_disabled_reftypes = ['*']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
