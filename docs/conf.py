@@ -10,7 +10,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('..'))
 
-project = 'Array API Compat'
+project = 'array-api-compat'
 copyright = '2024, Consortium for Python Data API Standards'
 author = 'Consortium for Python Data API Standards'
 
