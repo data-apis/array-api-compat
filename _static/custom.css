@@ -1,0 +1,6 @@
+/* Makes the text look better on Mac retina displays (the Furo CSS disables*/
+/* subpixel antialiasing). */
+body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}

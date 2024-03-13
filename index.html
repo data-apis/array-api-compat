@@ -1,0 +1,430 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Helper Functions" href="helper-functions.html" />
+
+    <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+        <title>array-api-compat 1.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=055cfc83" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">array-api-compat 1.5 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  
+  <span class="sidebar-brand-text">array-api-compat 1.5 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="helper-functions.html">Helper Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supported-array-libraries.html">Supported Array Libraries</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dev/index.html">Development Notes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Development Notes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev/implementation-notes.html">Implementation Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev/releasing.html">Releasing</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="array-api-compatibility-library">
+<h1>Array API compatibility library<a class="headerlink" href="#array-api-compatibility-library" title="Link to this heading">#</a></h1>
+<p>This is a small wrapper around common array libraries that is compatible with
+the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API standard</a>. Currently,
+NumPy, CuPy, PyTorch, Dask, and JAX are supported. If you want support for other array
+libraries, or if you encounter any issues, please <a class="reference external" href="https://github.com/data-apis/array-api-compat/issues">open an
+issue</a>.</p>
+<p>Note that some of the functionality in this library is backwards incompatible
+with the corresponding wrapped libraries. The end-goal is to eventually make
+each array library itself fully compatible with the array API, but this
+requires making backwards incompatible changes in many cases, so this will
+take some time.</p>
+<p>Currently all libraries here are implemented against the <a class="reference external" href="https://data-apis.org/array-api/2022.12/">2022.12
+version</a> of the standard.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">array-api-compat</span></code> is available on both <a class="reference external" href="https://pypi.org/project/array-api-compat/">PyPI</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">array</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">compat</span>
+</pre></div>
+</div>
+<p>and <a class="reference external" href="https://anaconda.org/conda-forge/array-api-compat">conda-forge</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">array</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">compat</span>
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>The typical usage of this library will be to get the corresponding array API
+compliant namespace from the input arrays using <a class="reference internal" href="helper-functions.html#array_api_compat.array_namespace" title="array_api_compat.array_namespace"><code class="xref py py-func docutils literal notranslate"><span class="pre">array_namespace()</span></code></a>, like</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">your_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">xp</span> <span class="o">=</span> <span class="n">array_api_compat</span><span class="o">.</span><span class="n">array_namespace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="c1"># Now use xp as the array library namespace</span>
+    <span class="k">return</span> <span class="n">xp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">xp</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you wish to have library-specific code-paths, you can import the
+corresponding wrapped namespace for each library, like</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">array_api_compat.numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">array_api_compat.cupy</span> <span class="k">as</span> <span class="nn">cp</span>
+</pre></div>
+</div>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">array_api_compat.torch</span> <span class="k">as</span> <span class="nn">torch</span>
+</pre></div>
+</div>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">array_api_compat.dask</span> <span class="k">as</span> <span class="nn">da</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is no <code class="docutils literal notranslate"><span class="pre">array_api_compat.jax</span></code> submodule. JAX support is contained in JAX
+itself in the <code class="docutils literal notranslate"><span class="pre">jax.experimental.array_api</span></code> module. array-api-compat simply
+wraps that submodule. The main JAX support in this module consists of
+supporting it in the <a class="reference internal" href="helper-functions.html"><span class="doc std std-doc">helper functions</span></a>.</p>
+</div>
+<p>Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
+namespace, except that functions that are part of the array API are wrapped so
+that they have the correct array API behavior. In each case, the array object
+used will be the same array object from the wrapped library.</p>
+</section>
+<section id="difference-between-array-api-compat-and-array-api-strict">
+<span id="array-api-strict"></span><h2>Difference between <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> and <code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code><a class="headerlink" href="#difference-between-array-api-compat-and-array-api-strict" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/data-apis/array-api-strict"><code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code></a> is a
+strict minimal implementation of the array API standard, formerly known as
+<code class="docutils literal notranslate"><span class="pre">numpy.array_api</span></code> (see <a class="reference external" href="https://numpy.org/neps/nep-0047-array-api-standard.html">NEP
+47</a>). For example,
+<code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code> does not include any functions that are not part of the
+array API specification, and will explicitly disallow behaviors that are not
+required by the spec (e.g., <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/type_promotion.html">cross-kind type
+promotions</a>).
+(<code class="docutils literal notranslate"><span class="pre">cupy.array_api</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code>)</p>
+<p><code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code>, on the other hand, is just an extension of the
+corresponding array library namespaces with changes needed to be compliant
+with the array API. It includes all additional library functions not mentioned
+in the spec, and allows any library behaviors not explicitly disallowed by it,
+such as cross-kind casting.</p>
+<p>In particular, unlike <code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code>, this package does not use a separate
+<code class="docutils literal notranslate"><span class="pre">Array</span></code> object, but rather just uses the corresponding array library array
+objects (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">cupy.ndarray</span></code>, <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, etc.) directly. This
+is because those are the objects that are going to be passed as inputs to
+functions by end users. This does mean that a few behaviors cannot be wrapped
+(see below), but most of the array API functional, so this does not affect
+most things.</p>
+<p>Array consuming library authors coding against the array API may wish to test
+against <code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code> to ensure they are not using functionality outside
+of the standard, but prefer this implementation for the default behavior for
+end-users.</p>
+</section>
+<section id="vendoring">
+<span id="id1"></span><h2>Vendoring<a class="headerlink" href="#vendoring" title="Link to this heading">#</a></h2>
+<p>This library supports vendoring as an installation method. To vendor the
+library, simply copy <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> into the appropriate place in the
+library, like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">R</span> <span class="n">array_api_compat</span><span class="o">/</span> <span class="n">mylib</span><span class="o">/</span><span class="n">vendored</span><span class="o">/</span><span class="n">array_api_compat</span>
+</pre></div>
+</div>
+<p>You may also rename it to something else if you like (nowhere in the code
+references the name “array_api_compat”).</p>
+<p>Alternatively, the library may be installed as dependency on PyPI.</p>
+</section>
+<section id="scope">
+<span id="id2"></span><h2>Scope<a class="headerlink" href="#scope" title="Link to this heading">#</a></h2>
+<p>At this time, the scope of array-api-compat is limited to wrapping array
+libraries so that they can comply with the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/index.html">array API
+standard</a>.
+This includes a small set of <a class="reference internal" href="helper-functions.html"><span class="std std-doc">helper functions</span></a> which may
+be useful to most users of array-api-compat, for instance, functions that
+provide meta-functionality to aid in supporting the array API, or functions
+that are necessary to work around wrapping limitations for certain libraries.</p>
+<p>Things that are out-of-scope include:</p>
+<ul class="simple">
+<li><p>functions that have not yet been
+standardized (although note that functions that are in a draft version of the
+standard are <em>in scope</em>),</p></li>
+<li><p>functions that are complicated to implement correctly/maintain,</p></li>
+<li><p>anything that requires the use of non-Python code.</p></li>
+</ul>
+<p>If you want a function that is not in array-api-compat that isn’t part of the
+standard, you should request it either for <a class="reference external" href="https://github.com/data-apis/array-api/issues">inclusion in the
+standard</a> or in specific array
+libraries.</p>
+<p>Why is the scope limited in this way? Firstly, we want to keep
+array-api-compat as primarily a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Polyfill_(programming)">polyfill</a> compatibility
+shim. The goal is to let consuming libraries use the array API today, even
+with array libraries that do not yet fully support it. In an ideal world—one that we hope to eventually see in the future—array-api-compat would be
+unnecessary, because every array library would fully support the standard.</p>
+<p>The inclusion of non-standardized functions in array-api-compat would
+undermine this goal. But much more importantly, it would also undermine the
+goals of the <a class="reference external" href="https://data-apis.org/">Data APIs Consortium</a>. The Consortium
+creates the array API standard via the consensus of stakeholders from various
+array libraries and users. If a not-yet-standardized function were included in
+array-api-compat, it would become <em>de facto</em> standard, bypassing the decision
+making processes of the Consortium.</p>
+<p>Secondly, we want to keep array-api-compat as minimal as possible, so that it
+is easy for libraries to add as a (possibly vendored) dependency.</p>
+<p>Thirdly, array-api-compat has a relatively small development team. Pull
+requests to array-api-compat would not necessarily receive the same stringent
+level of scrutiny that changes to established array libraries like NumPy or
+PyTorch would. For wrapped standard functions, this is fine, since the
+wrappers typically just clean up a few small inconsistencies from the
+standard, leaving the complexity of the implementation to the base array
+library function. Furthermore, standard functions are tested by the rigorous
+<a class="reference external" href="https://github.com/data-apis/array-api-tests">array-api-tests</a> test suite.
+For this reason, functions that require complex implementations are generally
+out-of-scope and should be preferred to be implemented in upstream array
+libraries.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="helper-functions.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Helper Functions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Consortium for Python Data API Standards
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/data-apis/array-api-compat" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Array API compatibility library</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#difference-between-array-api-compat-and-array-api-strict">Difference between <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> and <code class="docutils literal notranslate"><span class="pre">array_api_strict</span></code></a></li>
+<li><a class="reference internal" href="#vendoring">Vendoring</a></li>
+<li><a class="reference internal" href="#scope">Scope</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=aaadad1f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>
