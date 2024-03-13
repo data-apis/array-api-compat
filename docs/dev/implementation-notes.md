@@ -39,32 +39,34 @@ should be taken into account:
   array-api-compat. The addition of functions that are not part of the array
   API standard is currently out-of-scope for this package.
 
-- *No side-effects*. array_api_compat behavior should be localized to only the
+- *No Side-effects*. array-api-compat behavior should be localized to only the
   specific code that imports and uses it. It should be invisible to end-users
-  or users of dependent codes. This specifically applies to the next two
+  or users of dependent codes. This in particular implies to the next two
   points.
 
 - *No Monkey Patching.* `array-api-compat` should not attempt to modify
   anything about the underlying library. It is a *wrapper* library only.
 
-- *No modifying the array object.* The array (or tensor) object of the array
-  library cannot be modified. Attempting to wrap or subclass a library's array
-  object would break the localized wrapping goal.
+- *No Modifying the Array Object.* The array (or tensor) object of the array
+  library cannot be modified. This also precludes the creation of array
+  subclasses or wrapper classes.
 
   Any behavior that is built-in to the array object, such as the behavior of
   [array
-  methods](https://data-apis.org/array-api/latest/API_specification/array_object.html)
+  methods](https://data-apis.org/array-api/latest/API_specification/array_object.html),
   is therefore left unwrapped. Users can workaround issues by using
   corresponding [elementwise
   functions](https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html)
-  instead of operators, and using the [helper
-  functions](../helper-functions.md) provided by array-api-compat instead of
-  methods like `to_device`.
+  instead of
+  [operators](https://data-apis.org/array-api/latest/API_specification/array_object.html#operators),
+  and by using the [helper functions](../helper-functions.md) provided by
+  array-api-compat instead of attributes or methods like `x.to_device()`.
 
-- *Avoid Restricting Behavior Outside the Scope of the Standard.* All array
-  libraries have functions and behaviors that are outside of the scope of what
-  is specified by the standard. These behaviors should be left intact whenever
-  possible, unless the standard explicitly disallows something. This means
+- *Avoid Restricting Behavior that is Outside the Scope of the Standard.* All
+  array libraries have functions and behaviors that are outside of the scope
+  of what is specified by the standard. These behaviors should be left intact
+  whenever possible, unless the standard explicitly disallows something. This
+  means
 
   - All namespaces are *extended* with wrapper functions. You may notice the
     extensive use of `import *` in various files in `array_api_compat`. While
@@ -74,8 +76,16 @@ should be taken into account:
 
   - All wrapper functions pass `**kwargs` through to the wrapped function.
 
-  The onus is on users of array-api-compat to ensure they are only using
-  portable array API behavior, e.g., by testing against [array-api-strict](array-api-strict).
+  - Input types not supported by the standard should work if they work in the
+    underlying wrapped function (for instance, Python scalars or `np.ndarray`
+    subclasses).
+
+  By keeping underlying behaviors intact, it is easier for libraries to swap
+  out NumPy or other array libraries for array-api-compat, and it is easier
+  for libraries to write array library-specific code paths.
+
+  The onus is on users of array-api-compat to ensure their array API code is
+  portable, e.g., by testing against [array-api-strict](array-api-strict).
 
 
 ## Avoiding Code Duplication
