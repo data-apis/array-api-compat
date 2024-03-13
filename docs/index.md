@@ -120,6 +120,61 @@ references the name "array_api_compat").
 
 Alternatively, the library may be installed as dependency on PyPI.
 
+(scope)=
+## Scope
+
+At this time, the scope of array-api-compat is limited to wrapping array
+libraries so that they can comply with the [array API
+standard](https://data-apis.org/array-api/latest/API_specification/index.html).
+This includes a small set of [helper functions](helper-functions.md) which may
+be useful to most users of array-api-compat, for instance, functions that
+provide meta-functionality to aid in supporting the array API, or functions
+that are necessary to work around wrapping limitations for certain libraries.
+
+Things that are out-of-scope include:
+
+- functions that have not yet been
+standardized (although note that functions that are in a draft version of the
+standard are *in scope*),
+
+- functions that are complicated to implement correctly/maintain,
+
+- anything that requires the use of non-Python code.
+
+If you want a function that is not in array-api-compat that isn't part of the
+standard, you should request it either for [inclusion in the
+standard](https://github.com/data-apis/array-api/issues) or in specific array
+libraries.
+
+Why is the scope limited in this way? Firstly, we want to keep
+array-api-compat as primarily a
+[polyfill](https://en.wikipedia.org/wiki/Polyfill_(programming)) compatibility
+shim. The goal is to let consuming libraries use the array API today, even
+with array libraries that do not yet fully support it. In an ideal world---one that we hope to eventually see in the future---array-api-compat would be
+unnecessary, because every array library would fully support the standard.
+
+The inclusion of non-standardized functions in array-api-compat would
+undermine this goal. But much more importantly, it would also undermine the
+goals of the [Data APIs Consortium](https://data-apis.org/). The Consortium
+creates the array API standard via the consensus of stakeholders from various
+array libraries and users. If a not-yet-standardized function were included in
+array-api-compat, it would become *de facto* standard, bypassing the decision
+making processes of the Consortium.
+
+Secondly, we want to keep array-api-compat as minimal as possible, so that it
+is easy for libraries to add as a (possibly vendored) dependency.
+
+Thirdly, array-api-compat has a relatively small development team. Pull
+requests to array-api-compat would not necessarily receive the same stringent
+level of scrutiny that changes to established array libraries like NumPy or
+PyTorch would. For wrapped standard functions, this is fine, since the
+wrappers typically just clean up a few small inconsistencies from the
+standard, leaving the complexity of the implementation to the base array
+library function. Furthermore, standard functions are tested by the rigorous
+[array-api-tests](https://github.com/data-apis/array-api-tests) test suite.
+For this reason, functions that require complex implementations are generally
+out-of-scope and should be preferred to be implemented in upstream array
+libraries.
 
 ```{toctree}
 :titlesonly:

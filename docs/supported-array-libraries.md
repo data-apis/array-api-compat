@@ -8,6 +8,11 @@ Note that the [`array_namespace()`](helper-functions.md) helper will also
 support any array library that explicitly supports the array API by defining
 [`__array_namespace__`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.__array_namespace__.html).
 
+Any reasonably popular array library is in-scope for array-api-compat,
+assuming it is possible to wrap it to support the array API without too much
+complexity. If your favorite library is not supported, feel free to open an
+[issue or pull request](https://github.com/data-apis/array-api-compat/issues).
+
 ## [NumPy](https://numpy.org/) and [CuPy](https://cupy.dev/)
 
 NumPy 2.0 has full array API compatibility. This package is not strictly
