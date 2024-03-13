@@ -70,3 +70,9 @@ html_theme_options = {
         },
     ],
 }
+
+# Logo
+
+html_favicon = "_static/favicon.png"
+
+# html_logo = "_static/logo.svg"
