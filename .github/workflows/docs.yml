@@ -24,7 +24,7 @@ jobs:
       # https://github.com/JamesIves/github-pages-deploy-action/tree/dev#using-an-ssh-deploy-key-
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
-        if: ${{ github.ref == 'refs/heads/docs' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           folder: docs/_build/html
           ssh-key: ${{ secrets.DEPLOY_KEY }}
