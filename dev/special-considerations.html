@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Tests" href="tests.html" /><link rel="prev" title="Special Considerations" href="special-considerations.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Implementation Notes" href="implementation-notes.html" /><link rel="prev" title="Development Notes" href="index.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.png"/><!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>Implementation Notes - array-api-compat 1.5 documentation</title>
+        <title>Special Considerations - array-api-compat 1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -160,8 +160,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../helper-functions.html">Helper Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../supported-array-libraries.html">Supported Array Libraries</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Development Notes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Development Notes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="special-considerations.html">Special Considerations</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Implementation Notes</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Special Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation-notes.html">Implementation Notes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="releasing.html">Releasing</a></li>
 </ul>
@@ -200,48 +200,81 @@
           </label>
         </div>
         <article role="main">
-          <section class="tex2jax_ignore mathjax_ignore" id="implementation-notes">
-<h1>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">#</a></h1>
-<p>Since NumPy, CuPy, and to a degree, Dask, are nearly identical in behavior,
-most wrapping logic can be shared between them. Wrapped functions that have
-the same logic between multiple libraries are in <code class="docutils literal notranslate"><span class="pre">array_api_compat/common/</span></code>.
-These functions are defined like</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># In array_api_compat/common/_aliases.py</span>
-
-<span class="k">def</span> <span class="nf">acos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">xp</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">xp</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">xp</span></code> argument refers to the original array namespace (e.g., <code class="docutils literal notranslate"><span class="pre">numpy</span></code> or
-<code class="docutils literal notranslate"><span class="pre">cupy</span></code>). Then in the specific <code class="docutils literal notranslate"><span class="pre">array_api_compat/numpy/</span></code> and
-<code class="docutils literal notranslate"><span class="pre">array_api_compat/cupy/</span></code> namespaces, the <code class="docutils literal notranslate"><span class="pre">&#64;get_xp</span></code> decorator is applied to
-these functions, which automatically removes the <code class="docutils literal notranslate"><span class="pre">xp</span></code> argument from the
-function signature and replaces it with the corresponding array library, like</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># In array_api_compat/numpy/_aliases.py</span>
-
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">_aliases</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">acos</span> <span class="o">=</span> <span class="n">get_xp</span><span class="p">(</span><span class="n">np</span><span class="p">)(</span><span class="n">_aliases</span><span class="o">.</span><span class="n">acos</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This <code class="docutils literal notranslate"><span class="pre">acos</span></code> now has the signature <code class="docutils literal notranslate"><span class="pre">acos(x,</span> <span class="pre">/)</span></code> and calls <code class="docutils literal notranslate"><span class="pre">numpy.arccos</span></code>.</p>
-<p>Similarly, for CuPy:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="c1"># In array_api_compat/cupy/_aliases.py</span>
-
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">_aliases</span>
-
-<span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
-
-<span class="n">acos</span> <span class="o">=</span> <span class="n">get_xp</span><span class="p">(</span><span class="n">cp</span><span class="p">)(</span><span class="n">_aliases</span><span class="o">.</span><span class="n">acos</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Most NumPy and CuPy are defined in this way, since their behaviors are nearly
-identical PyTorch uses a similar layout in <code class="docutils literal notranslate"><span class="pre">array_api_compat/torch/</span></code>, but it
-differs enough from NumPy/CuPy that very few common wrappers for those
-libraries are reused. Dask is close to NumPy in behavior and so most Dask
-functions also reuse the NumPy/CuPy common wrappers.</p>
+          <section class="tex2jax_ignore mathjax_ignore" id="special-considerations">
+<h1>Special Considerations<a class="headerlink" href="#special-considerations" title="Link to this heading">#</a></h1>
+<p>array-api-compat requires some special development considerations that are
+different from most other Python libraries. The goal of array-api-compat is to
+be a small library that packages can either vendor or add as a dependency to
+implement array API support. Consequently, certain design considerations
+should be taken into account:</p>
+<ul>
+<li><p><strong>No Hard Dependencies.</strong> Although array-api-compat “depends” on NumPy, CuPy,
+PyTorch, etc., it does not hard depend on them. These libraries are not
+imported unless either an array object is passed to
+<a class="reference internal" href="../helper-functions.html#array_api_compat.array_namespace" title="array_api_compat.array_namespace"><code class="xref py py-func docutils literal notranslate"><span class="pre">array_namespace()</span></code></a>, or the specific <code class="docutils literal notranslate"><span class="pre">array_api_compat.&lt;namespace&gt;</span></code>
+sub-namespace is explicitly imported.</p></li>
+<li><p><strong>Vendorability.</strong> array-api-compat should be <a class="reference internal" href="../index.html#vendoring"><span class="std std-ref">vendorable</span></a>. This
+means that, for instance, all imports in the library are relative imports.
+No code in the package specifically references the name <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code>
+(we also support renaming the package to something else).
+Vendorability support is tested in <code class="docutils literal notranslate"><span class="pre">tests/test_vendoring.py</span></code>.</p></li>
+<li><p><strong>Pure Python.</strong> To make array-api-compat as easy as possible to add as a
+dependency, the code is all pure Python.</p></li>
+<li><p><strong>Minimal Wrapping Only.</strong> The wrapping functionality is minimal. This means
+that if something is difficult to wrap using pure Python, or if trying to
+support some array API behavior would require a significant amount of code,
+we prefer to leave the behavior as an upstream issue for the array library,
+and <a class="reference internal" href="../supported-array-libraries.html"><span class="std std-doc">document it as a known difference</span></a>.</p>
+<p>This also means that we do not at this point in time implement anything
+other than wrappers for functions in the standard, and basic <a class="reference internal" href="../helper-functions.html"><span class="std std-doc">helper
+functions</span></a> that would be useful for most users of
+array-api-compat. The addition of functions that are not part of the array
+API standard is currently out-of-scope for this package (see the
+<a class="reference internal" href="../index.html#scope"><span class="std std-ref">Scope</span></a> section of the documentation).</p>
+</li>
+<li><p><strong>No Side-Effects</strong>. array-api-compat behavior should be localized to only the
+specific code that imports and uses it. It should be invisible to end-users
+or users of dependent codes. This in particular implies to the next two
+points.</p></li>
+<li><p><strong>No Monkey Patching.</strong> <code class="docutils literal notranslate"><span class="pre">array-api-compat</span></code> should not attempt to modify
+anything about the underlying library. It is a <em>wrapper</em> library only.</p></li>
+<li><p><strong>No Modifying the Array Object.</strong> The array (or tensor) object of the array
+library cannot be modified. This also precludes the creation of array
+subclasses or wrapper classes.</p>
+<p>Any non-standard behavior that is built-in to the array object, such as the
+behavior of <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">array
+methods</a>,
+is therefore left unwrapped. Users can workaround issues by using
+corresponding <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html">elementwise
+functions</a>
+instead of
+<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html#operators">operators</a>,
+and by using the <a class="reference internal" href="../helper-functions.html"><span class="std std-doc">helper functions</span></a> provided by
+array-api-compat instead of attributes or methods like <code class="docutils literal notranslate"><span class="pre">x.to_device()</span></code>.</p>
+</li>
+<li><p><strong>Avoid Restricting Behavior that is Outside the Scope of the Standard.</strong> All
+array libraries have functions and behaviors that are outside of the scope
+of what is specified by the standard. These behaviors should be left intact
+whenever possible, unless the standard explicitly disallows something. This
+means</p>
+<ul class="simple">
+<li><p>All namespaces are <em>extended</em> with wrapper functions. You may notice the
+extensive use of <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">*</span></code> in various files in <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code>. While
+this would normally be questionable, this is the <a class="reference external" href="https://peps.python.org/pep-0008/#imports">one actual legitimate
+use-case for <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">*</span></code></a>, to
+re-export names from an external namespace.</p></li>
+<li><p>All wrapper functions pass <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> through to the wrapped function.</p></li>
+<li><p>Input types not supported by the standard should work if they work in the
+underlying wrapped function (for instance, Python scalars or <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>
+subclasses).</p></li>
+</ul>
+<p>By keeping underlying behaviors intact, it is easier for libraries to swap
+out NumPy or other array libraries for array-api-compat, and it is easier
+for libraries to write array library-specific code paths.</p>
+<p>The onus is on users of array-api-compat to ensure their array API code is
+portable, e.g., by testing against <a class="reference internal" href="../index.html#array-api-strict"><span class="std std-ref">array-api-strict</span></a>.</p>
+</li>
+</ul>
 </section>
 
         </article>
@@ -249,23 +282,23 @@ functions also reuse the NumPy/CuPy common wrappers.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tests.html">
+          <a class="next-page" href="implementation-notes.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Tests</div>
+                <div class="title">Implementation Notes</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="special-considerations.html">
+          <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Special Considerations</div>
+                <div class="title">Development Notes</div>
                 
               </div>
             </a>

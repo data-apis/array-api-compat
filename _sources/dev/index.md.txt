@@ -6,6 +6,8 @@ It is recommended that contributors read through this documentation.
 ```{toctree}
 :titlesonly:
 
+special-considerations.md
 implementation-notes.md
+tests.md
 releasing.md
 ```

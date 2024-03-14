@@ -160,7 +160,9 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Helper Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supported-array-libraries.html">Supported Array Libraries</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="dev/index.html">Development Notes</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Development Notes</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev/special-considerations.html">Special Considerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev/implementation-notes.html">Implementation Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev/tests.html">Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev/releasing.html">Releasing</a></li>
 </ul>
 </li>
@@ -203,8 +205,8 @@
 <p>In addition to the wrapped library namespaces and functions in the array API
 specification, there are several helper functions included here that aren’t
 part of the specification but which are useful for using the array API:</p>
-<section id="array-namespace">
-<h2>array_namespace<a class="headerlink" href="#array-namespace" title="Link to this heading">#</a></h2>
+<section id="entry-point-helpers">
+<h2>Entry-point Helpers<a class="headerlink" href="#entry-point-helpers" title="Link to this heading">#</a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">array_namespace()</span></code> function is the primary entry-point for array API
 consuming libraries.</p>
 <dl class="py function">
@@ -261,14 +263,13 @@ array-api-compat if it explicitly defines <a class="reference external" href="ht
 <section id="array-method-helpers">
 <h2>Array Method Helpers<a class="headerlink" href="#array-method-helpers" title="Link to this heading">#</a></h2>
 <p>array-api-compat does not attempt to wrap or monkey patch the array object for
-any library. Consequently, any API differences for the [array
-object](<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">https://data-apis.org/array-api/latest/API_specification/array_object.html</a>)
+any library. Consequently, any API differences for the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">array object</a>
 cannot be directly wrapped. Some libraries do not define some of these methods
 or define them differently. For these, helper functions are provided which can
 be used instead.</p>
 <p>Note that if you have a compatibility issue with an operator method (like
-<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, i.e., <code class="code docutils literal notranslate"><span class="pre">+</span></code>) you can prefer to use the corresponding [elementwise
-function](<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html">https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html</a>)
+<code class="code docutils literal notranslate"><span class="pre">__add__</span></code>, i.e., <code class="code docutils literal notranslate"><span class="pre">+</span></code>) you can prefer to use the corresponding <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html">elementwise
+function</a>
 instead, which would be wrapped.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="array_api_compat.device">
@@ -482,7 +483,7 @@ and is therefore cheap to use.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Helper Functions</a><ul>
-<li><a class="reference internal" href="#array-namespace">array_namespace</a><ul>
+<li><a class="reference internal" href="#entry-point-helpers">Entry-point Helpers</a><ul>
 <li><a class="reference internal" href="#array_api_compat.array_namespace"><code class="docutils literal notranslate"><span class="pre">array_namespace()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_array_api_obj"><code class="docutils literal notranslate"><span class="pre">is_array_api_obj()</span></code></a></li>
 </ul>
