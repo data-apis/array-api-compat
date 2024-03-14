@@ -21,15 +21,16 @@ Array Method Helpers
 --------------------
 
 array-api-compat does not attempt to wrap or monkey patch the array object for
-any library. Consequently, any API differences for the [array
-object](https://data-apis.org/array-api/latest/API_specification/array_object.html)
+any library. Consequently, any API differences for the `array object
+<https://data-apis.org/array-api/latest/API_specification/array_object.html>`__
 cannot be directly wrapped. Some libraries do not define some of these methods
 or define them differently. For these, helper functions are provided which can
 be used instead.
 
 Note that if you have a compatibility issue with an operator method (like
-`__add__`, i.e., `+`) you can prefer to use the corresponding [elementwise
-function](https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html)
+`__add__`, i.e., `+`) you can prefer to use the corresponding `elementwise
+function
+<https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html>`__
 instead, which would be wrapped.
 
 .. autofunction:: device
