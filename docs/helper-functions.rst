@@ -7,8 +7,8 @@ In addition to the wrapped library namespaces and functions in the array API
 specification, there are several helper functions included here that aren't
 part of the specification but which are useful for using the array API:
 
-array_namespace
----------------
+Entry-point Helpers
+-------------------
 
 The `array_namespace()` function is the primary entry-point for array API
 consuming libraries.
