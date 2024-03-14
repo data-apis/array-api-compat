@@ -1,0 +1,6 @@
+furo
+linkify-it-py
+myst-parser
+sphinx
+sphinx-copybutton
+sphinx-autobuild
