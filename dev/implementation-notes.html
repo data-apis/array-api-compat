@@ -232,9 +232,10 @@ and <a class="reference internal" href="../supported-array-libraries.html"><span
 other than wrappers for functions in the standard, and basic <a class="reference internal" href="../helper-functions.html"><span class="std std-doc">helper
 functions</span></a> that would be useful for most users of
 array-api-compat. The addition of functions that are not part of the array
-API standard is currently out-of-scope for this package.</p>
+API standard is currently out-of-scope for this package (see the
+<a class="reference internal" href="../index.html#scope"><span class="std std-ref">Scope</span></a> section of the documentation).</p>
 </li>
-<li><p><em>No Side-effects</em>. array-api-compat behavior should be localized to only the
+<li><p><em>No Side-Effects</em>. array-api-compat behavior should be localized to only the
 specific code that imports and uses it. It should be invisible to end-users
 or users of dependent codes. This in particular implies to the next two
 points.</p></li>
@@ -243,8 +244,8 @@ anything about the underlying library. It is a <em>wrapper</em> library only.</p
 <li><p><em>No Modifying the Array Object.</em> The array (or tensor) object of the array
 library cannot be modified. This also precludes the creation of array
 subclasses or wrapper classes.</p>
-<p>Any behavior that is built-in to the array object, such as the behavior of
-<a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">array
+<p>Any non-standard behavior that is built-in to the array object, such as the
+behavior of <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/array_object.html">array
 methods</a>,
 is therefore left unwrapped. Users can workaround issues by using
 corresponding <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/elementwise_functions.html">elementwise
