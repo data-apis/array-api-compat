@@ -6,22 +6,22 @@ be a small library that packages can either vendor or add as a dependency to
 implement array API support. Consequently, certain design considerations
 should be taken into account:
 
-- *No Hard Dependencies.* Although array-api-compat "depends" on NumPy, CuPy,
+- **No Hard Dependencies.** Although array-api-compat "depends" on NumPy, CuPy,
   PyTorch, etc., it does not hard depend on them. These libraries are not
   imported unless either an array object is passed to
   {func}`~.array_namespace()`, or the specific `array_api_compat.<namespace>`
   sub-namespace is explicitly imported.
 
-- *Vendorability.* array-api-compat should be [vendorable](vendoring). This
+- **Vendorability.** array-api-compat should be [vendorable](vendoring). This
   means that, for instance, all imports in the library are relative imports.
   No code in the package specifically references the name `array_api_compat`
   (we also support renaming the package to something else).
   Vendorability support is tested in `tests/test_vendoring.py`.
 
-- *Pure Python.* To make array-api-compat as easy as possible to add as a
+- **Pure Python.** To make array-api-compat as easy as possible to add as a
   dependency, the code is all pure Python.
 
-- *Minimal Wrapping Only.* The wrapping functionality is minimal. This means
+- **Minimal Wrapping Only.** The wrapping functionality is minimal. This means
   that if something is difficult to wrap using pure Python, or if trying to
   support some array API behavior would require a significant amount of code,
   we prefer to leave the behavior as an upstream issue for the array library,
@@ -34,15 +34,15 @@ should be taken into account:
   API standard is currently out-of-scope for this package (see the
   [Scope](scope) section of the documentation).
 
-- *No Side-Effects*. array-api-compat behavior should be localized to only the
+- **No Side-Effects**. array-api-compat behavior should be localized to only the
   specific code that imports and uses it. It should be invisible to end-users
   or users of dependent codes. This in particular implies to the next two
   points.
 
-- *No Monkey Patching.* `array-api-compat` should not attempt to modify
+- **No Monkey Patching.** `array-api-compat` should not attempt to modify
   anything about the underlying library. It is a *wrapper* library only.
 
-- *No Modifying the Array Object.* The array (or tensor) object of the array
+- **No Modifying the Array Object.** The array (or tensor) object of the array
   library cannot be modified. This also precludes the creation of array
   subclasses or wrapper classes.
 
@@ -57,7 +57,7 @@ should be taken into account:
   and by using the [helper functions](../helper-functions.rst) provided by
   array-api-compat instead of attributes or methods like `x.to_device()`.
 
-- *Avoid Restricting Behavior that is Outside the Scope of the Standard.* All
+- **Avoid Restricting Behavior that is Outside the Scope of the Standard.** All
   array libraries have functions and behaviors that are outside of the scope
   of what is specified by the standard. These behaviors should be left intact
   whenever possible, unless the standard explicitly disallows something. This
