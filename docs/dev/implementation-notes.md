@@ -37,9 +37,10 @@ should be taken into account:
   other than wrappers for functions in the standard, and basic [helper
   functions](../helper-functions.rst) that would be useful for most users of
   array-api-compat. The addition of functions that are not part of the array
-  API standard is currently out-of-scope for this package.
+  API standard is currently out-of-scope for this package (see the
+  [Scope](scope) section of the documentation).
 
-- *No Side-effects*. array-api-compat behavior should be localized to only the
+- *No Side-Effects*. array-api-compat behavior should be localized to only the
   specific code that imports and uses it. It should be invisible to end-users
   or users of dependent codes. This in particular implies to the next two
   points.
@@ -51,8 +52,8 @@ should be taken into account:
   library cannot be modified. This also precludes the creation of array
   subclasses or wrapper classes.
 
-  Any behavior that is built-in to the array object, such as the behavior of
-  [array
+  Any non-standard behavior that is built-in to the array object, such as the
+  behavior of [array
   methods](https://data-apis.org/array-api/latest/API_specification/array_object.html),
   is therefore left unwrapped. Users can workaround issues by using
   corresponding [elementwise

@@ -66,11 +66,11 @@ version.
   functions {func}`~.array_namespace()` and {func}`~.to_device()` in this
   library should be used instead.
 
-- The `x.size` attribute on `torch.Tensor` is a function that behaves
-  differently from
+- The {external+torch:meth}`x.size() <torch.Tensor.size>` attribute on
+  `torch.Tensor` is a method that behaves differently from the
   [`x.size`](https://data-apis.org/array-api/draft/API_specification/generated/array_api.array.size.html)
-  in the spec. Use the {func}`~.size()` helper function as a portable
-  workaround.
+  attribute in the spec. Use the {func}`~.size()` helper function as a
+  portable workaround.
 
 - PyTorch does not have unsigned integer types other than `uint8`, and no
   attempt is made to implement them here.
