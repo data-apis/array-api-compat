@@ -10,7 +10,8 @@ should be taken into account:
   PyTorch, etc., it does not hard depend on them. These libraries are not
   imported unless either an array object is passed to
   {func}`~.array_namespace()`, or the specific `array_api_compat.<namespace>`
-  sub-namespace is explicitly imported.
+  sub-namespace is explicitly imported. This is tested (as best as possible)
+  in `tests/test_no_dependencies.py`.
 
 - **Vendorability.** array-api-compat should be [vendorable](vendoring). This
   means that, for instance, all imports in the library are relative imports.
