@@ -89,6 +89,7 @@ array_api_tests/test_set_functions.py::test_unique_values
 # The test suite is incorrectly checking sums that have loss of significance
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
+array_api_tests/test_statistical_functions.py::test_prod
 
 # NumPy 1.21 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
 # type promotion issues
