@@ -3,7 +3,7 @@ from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array, # n
 
 from array_api_compat import is_array_api_obj, device, to_device
 
-from ._helpers import import_
+from ._helpers import import_, wrapped_libraries, all_libraries
 
 import pytest
 import numpy as np
@@ -29,7 +29,7 @@ def test_is_xp_array(library, func):
 
     assert is_array_api_obj(x)
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
+@pytest.mark.parametrize("library", all_libraries)
 def test_device(library):
     xp = import_(library, wrapper=True)
 
@@ -43,7 +43,7 @@ def test_device(library):
     assert device(x) == device(x2)
 
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", wrapped_libraries)
 def test_to_device_host(library):
     # different libraries have different semantics
     # for DtoH transfers; ensure that we support a portable

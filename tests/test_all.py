@@ -12,11 +12,11 @@ used inside of a function. Note that names starting with an underscore are autom
 
 import sys
 
-from ._helpers import import_
+from ._helpers import import_, wrapped_libraries
 
 import pytest
 
-@pytest.mark.parametrize("library", ["common", "cupy", "numpy", "torch", "dask.array"])
+@pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):
     import_(library, wrapper=True)
 

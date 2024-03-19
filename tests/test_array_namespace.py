@@ -9,9 +9,9 @@ import torch
 import array_api_compat
 from array_api_compat import array_namespace
 
-from ._helpers import import_
+from ._helpers import import_, all_libraries
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
+@pytest.mark.parametrize("library", all_libraries)
 @pytest.mark.parametrize("api_version", [None, "2021.12"])
 def test_array_namespace(library, api_version):
     xp = import_(library)
