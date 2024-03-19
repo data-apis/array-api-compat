@@ -325,31 +325,30 @@ def _asarray(
     else:
         COPY_FALSE = (False,)
         COPY_TRUE = (True,)
-    if copy in COPY_FALSE:
+    if copy in COPY_FALSE and namespace != "dask.array":
         # copy=False is not yet implemented in xp.asarray
         raise NotImplementedError("copy=False is not yet implemented")
-    if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)) or hasattr(obj, "__array__"):
-        #print('hit me')
+    if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)):
         if dtype is not None and obj.dtype != dtype:
             copy = True
-        #print(copy)
         if copy in COPY_TRUE:
-            copy_kwargs = {}
-            if namespace != "dask.array":
-                copy_kwargs["copy"] = True
-            else:
-                # No copy kw in dask.asarray so we go thorugh np.asarray first
-                # (like dask also does) but copy after
-                if dtype is None:
-                    # Same dtype copy is no-op in dask
-                    #print("in here?")
-                    return obj.copy()
-                import numpy as np
-                #print(obj)
-                obj = np.asarray(obj).copy()
-                #print(obj)
-            return xp.array(obj, dtype=dtype, **copy_kwargs)
+            return xp.array(obj, copy=True, dtype=dtype)
         return obj
+    elif namespace == "dask.array":
+        if copy in COPY_TRUE:
+            if dtype is None:
+                return obj.copy()
+            # Go through numpy, since dask copy is no-op by default
+            import numpy as np
+            obj = np.array(obj, dtype=dtype, copy=True)
+            return xp.array(obj, dtype=dtype)
+        else:
+            import dask.array as da
+            import numpy as np
+            if not isinstance(obj, da.Array):
+                obj = np.asarray(obj, dtype=dtype)
+                return da.from_array(obj)
+            return obj
 
     return xp.asarray(obj, dtype=dtype, **kwargs)
 
