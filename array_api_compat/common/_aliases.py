@@ -291,9 +291,11 @@ def _asarray(
     """
     Array API compatibility wrapper for asarray().
 
-    See the corresponding documentation in NumPy/CuPy and/or the array API
+    See the corresponding documentation in the array library and/or the array API
     specification for more details.
 
+    'namespace' may be an array module namespace. This is needed to support
+    conversion of sequences of Python scalars.
     """
     if namespace is None:
         try:
