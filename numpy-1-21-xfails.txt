@@ -138,6 +138,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imu
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[multiply(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[not_equal(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x, s)]
