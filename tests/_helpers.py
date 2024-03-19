@@ -6,7 +6,7 @@ import pytest
 
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + "jax.numpy"
+all_libraries = wrapped_libraries + ["jax.numpy"]
 
 def import_(library, wrapper=False):
     if 'jax' in library and sys.version_info < (3, 9):
