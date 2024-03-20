@@ -115,11 +115,17 @@ def test_asarray_copy(library):
     a[0] = 0
     assert all(b[0] == 0)
 
-    a = asarray([1])
+    a = asarray([1.0], dtype=xp.float32)
     b = asarray(a, dtype=xp.float64, copy=None)
     assert is_lib_func(b)
-    a[0] = 0
-    assert all(b[0] == 1)
+    a[0] = 0.0
+    assert all(b[0] == 1.0)
+
+    a = asarray([1.0], dtype=xp.float64)
+    b = asarray(a, dtype=xp.float64, copy=None)
+    assert is_lib_func(b)
+    a[0] = 0.0
+    assert all(b[0] == 0.0)
 
     # Python built-in types
     for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
