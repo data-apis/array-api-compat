@@ -72,6 +72,9 @@ def test_asarray(source_library, target_library, request):
         # TODO: remove xfail once
         # https://github.com/dask/dask/issues/8260 is resolved
         request.node.add_marker(pytest.mark.xfail(reason="Bug in dask raising error on conversion"))
+    if source_library == "cupy" and target_library != "cupy":
+        # cupy explicitly disallows implicit conversions to CPU
+        pytest.skip(reason="cupy does not support implicit conversion to CPU")
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
     is_tgt_type = globals()[is_functions[target_library]]
