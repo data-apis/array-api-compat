@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.5.1 (2024-03-21)
+
+## Minor Changes
+
+- Add [HTML documentation](https://data-apis.org/array-api-compat/). Includes
+  new documentation on the [module scope](scope) and new [developer
+  documentation](dev/index.md).
+
+- Fix `array_api_compat.numpy.asarray(torch.Tensor)` to return a NumPy array.
+
+- Allow Python scalars in torch functions.
+
+- Fix the `torch.std` wrapper when correction is an `int`.
+
 ## 1.5 (2024-03-07)
 
 ### Major Changes
