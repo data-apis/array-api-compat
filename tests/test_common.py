@@ -7,6 +7,7 @@ from ._helpers import import_, wrapped_libraries, all_libraries
 
 import pytest
 import numpy as np
+import array
 from numpy.testing import assert_allclose
 
 is_functions = {
@@ -64,7 +65,7 @@ def test_to_device_host(library):
 
 @pytest.mark.parametrize("target_library,func", is_functions.items())
 @pytest.mark.parametrize("source_library", is_functions.keys())
-def test_asarray(source_library, target_library, func, request):
+def test_asarray_cross_library(source_library, target_library, func, request):
     if source_library == "dask.array" and target_library == "torch":
         # Allow rest of test to execute instead of immediately xfailing
         # xref https://github.com/pandas-dev/pandas/issues/38902
@@ -80,3 +81,67 @@ def test_asarray(source_library, target_library, func, request):
     b = tgt_lib.asarray(a)
 
     assert is_tgt_type(b), f"Expected {b} to be a {tgt_lib.ndarray}, but was {type(b)}"
+
+@pytest.mark.parametrize("library", wrapped_libraries)
+def test_asarray_copy(library):
+    # Note, we have this test here because the test suite currently doesn't
+    # test the copy flag to asarray() very rigorously. Once
+    # https://github.com/data-apis/array-api-tests/issues/241 is fixed we
+    # should be able to delete this.
+    xp = import_(library, wrapper=True)
+    asarray = xp.asarray
+    is_lib_func = globals()[is_functions[library]]
+    all = xp.all
+
+    a = asarray([1])
+    b = asarray(a, copy=True)
+    assert is_lib_func(b)
+    a[0] = 0
+    assert all(b[0] == 1)
+    assert all(a[0] == 0)
+
+    a = asarray([1])
+    b = asarray(a, copy=False)
+    assert is_lib_func(b)
+    a[0] = 0
+    assert all(b[0] == 0)
+
+    a = asarray([1])
+    pytest.raises(ValueError, lambda: asarray(a, copy=False, dtype=xp.float64))
+
+    a = asarray([1])
+    b = asarray(a, copy=None)
+    assert is_lib_func(b)
+    a[0] = 0
+    assert all(b[0] == 0)
+
+    a = asarray([1])
+    b = asarray(a, dtype=xp.float64, copy=None)
+    assert is_lib_func(b)
+    a[0] = 0
+    assert all(b[0] == 1)
+
+    # Python built-in types
+    for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
+        asarray(obj, copy=True) # No error
+        asarray(obj, copy=None) # No error
+        pytest.raises(ValueError, lambda: asarray(obj, copy=False))
+
+    # Use the standard library array to test the buffer protocol
+    a = array.array('f', [1.0])
+    b = asarray(a, copy=True)
+    assert is_lib_func(b)
+    a[0] = 0.0
+    assert all(b[0] == 1.0)
+
+    a = array.array('f', [1.0])
+    b = asarray(a, copy=False)
+    assert is_lib_func(b)
+    a[0] = 0.0
+    assert all(b[0] == 0.0)
+
+    a = array.array('f', [1.0])
+    b = asarray(a, copy=None)
+    assert is_lib_func(b)
+    a[0] = 0.0
+    assert all(b[0] == 0.0)
