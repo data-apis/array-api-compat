@@ -93,6 +93,11 @@ def test_asarray_copy(library):
     is_lib_func = globals()[is_functions[library]]
     all = xp.all
 
+    if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :
+        supports_copy_false = False
+    else:
+        supports_copy_false = True
+
     a = asarray([1])
     b = asarray(a, copy=True)
     assert is_lib_func(b)
@@ -101,13 +106,20 @@ def test_asarray_copy(library):
     assert all(a[0] == 0)
 
     a = asarray([1])
-    b = asarray(a, copy=False)
-    assert is_lib_func(b)
-    a[0] = 0
-    assert all(b[0] == 0)
+    if supports_copy_false:
+        b = asarray(a, copy=False)
+        assert is_lib_func(b)
+        a[0] = 0
+        assert all(b[0] == 0)
+    else:
+        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False))
 
     a = asarray([1])
-    pytest.raises(ValueError, lambda: asarray(a, copy=False, dtype=xp.float64))
+    if supports_copy_false:
+        pytest.raises(ValueError, lambda: asarray(a, copy=False,
+                                                  dtype=xp.float64))
+    else:
+        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False, dtype=xp.float64))
 
     a = asarray([1])
     b = asarray(a, copy=None)
@@ -131,7 +143,10 @@ def test_asarray_copy(library):
     for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
         asarray(obj, copy=True) # No error
         asarray(obj, copy=None) # No error
-        pytest.raises(ValueError, lambda: asarray(obj, copy=False))
+        if supports_copy_false:
+            pytest.raises(ValueError, lambda: asarray(obj, copy=False))
+        else:
+            pytest.raises(NotImplementedError, lambda: asarray(obj, copy=False))
 
     # Use the standard library array to test the buffer protocol
     a = array.array('f', [1.0])
@@ -141,10 +156,13 @@ def test_asarray_copy(library):
     assert all(b[0] == 1.0)
 
     a = array.array('f', [1.0])
-    b = asarray(a, copy=False)
-    assert is_lib_func(b)
-    a[0] = 0.0
-    assert all(b[0] == 0.0)
+    if supports_copy_false:
+        b = asarray(a, copy=False)
+        assert is_lib_func(b)
+        a[0] = 0.0
+        assert all(b[0] == 0.0)
+    else:
+        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False))
 
     a = array.array('f', [1.0])
     b = asarray(a, copy=None)

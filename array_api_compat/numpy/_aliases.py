@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from functools import partial
-
 from ..common import _aliases
 
 from .._internal import get_xp
 
-asarray = asarray_numpy = partial(_aliases._asarray, namespace='numpy')
-asarray.__doc__ = _aliases._asarray.__doc__
-del partial
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Optional, Union
+    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
 import numpy as np
 bool = np.bool_
@@ -62,6 +61,65 @@ matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
 
+def _supports_buffer_protocol(obj):
+    try:
+        memoryview(obj)
+    except TypeError:
+        return False
+    return True
+
+# asarray also adds the copy keyword, which is not present in numpy 1.0.
+# asarray() is different enough between numpy, cupy, and dask, the logic
+# complicated enough that it's easier to define it separately for each module
+# rather than trying to combine everything into one function in common/
+def asarray(
+    obj: Union[
+        ndarray,
+        bool,
+        int,
+        float,
+        NestedSequence[bool | int | float],
+        SupportsBufferProtocol,
+    ],
+    /,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    copy: "Optional[Union[bool, np._CopyMode]]" = None,
+    **kwargs,
+) -> ndarray:
+    """
+    Array API compatibility wrapper for asarray().
+
+    See the corresponding documentation in the array library and/or the array API
+    specification for more details.
+
+    'namespace' may be an array module namespace. This is needed to support
+    conversion of sequences of Python scalars.
+    """
+    if np.__version__[0] >= '2':
+        # NumPy 2.0 asarray() is completely array API compatible. No need for
+        # the complicated logic below
+        return np.asarray(obj, dtype=dtype, device=device, copy=copy, **kwargs)
+
+    if device not in ["cpu", None]:
+        raise ValueError(f"Unsupported device for NumPy: {device!r}")
+
+    if hasattr(np, '_CopyMode'):
+        if copy is None:
+            copy = np._CopyMode.IF_NEEDED
+        elif copy is False:
+            copy = np._CopyMode.NEVER
+        elif copy is True:
+            copy = np._CopyMode.ALWAYS
+    else:
+        # Not present in older NumPys. In this case, we cannot really support
+        # copy=False.
+        if copy is False:
+            raise NotImplementedError("asarray(copy=False) requires a newer version of NumPy.")
+
+    return np.array(obj, copy=copy, dtype=dtype, **kwargs)
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, 'vecdot'):
@@ -73,7 +131,7 @@ if hasattr(np, 'isdtype'):
 else:
     isdtype = get_xp(np)(_aliases.isdtype)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_numpy', 'bool', 'acos',
+__all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',
                               'atanh', 'bitwise_left_shift', 'bitwise_invert',
                               'bitwise_right_shift', 'concat', 'pow']
