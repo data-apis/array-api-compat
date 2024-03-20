@@ -37,6 +37,9 @@ array_api_tests/test_data_type_functions.py::test_finfo[float32]
 # (I think the test is not forcing the op to be computed?)
 array_api_tests/test_creation_functions.py::test_linspace
 
+# out.shape=(2,) but should be (1,)
+array_api_tests/test_indexing_functions.py::test_take
+
 # out=-0, but should be +0
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
