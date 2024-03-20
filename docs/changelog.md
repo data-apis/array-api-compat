@@ -14,6 +14,8 @@
 
 - Fix the `torch.std` wrapper when correction is an `int`.
 
+- Fix issues with `qr` and `svd` in the Dask wrappers.
+
 ## 1.5 (2024-03-07)
 
 ### Major Changes
