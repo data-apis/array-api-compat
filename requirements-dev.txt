@@ -1,0 +1,6 @@
+array-api-strict
+dask[array]
+jax[cpu]
+numpy
+pytest
+torch
