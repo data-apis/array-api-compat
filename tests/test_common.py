@@ -95,6 +95,8 @@ def test_asarray_copy(library):
 
     if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :
         supports_copy_false = False
+    elif library == 'cupy':
+        supports_copy_false = False
     else:
         supports_copy_false = True
 
