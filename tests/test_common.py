@@ -170,4 +170,8 @@ def test_asarray_copy(library):
     b = asarray(a, copy=None)
     assert is_lib_func(b)
     a[0] = 0.0
-    assert all(b[0] == 0.0)
+    if library == 'cupy':
+        # A copy is required for libraries where the default device is not CPU
+        assert all(b[0] == 1.0)
+    else:
+        assert all(b[0] == 0.0)
