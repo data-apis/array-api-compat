@@ -8,8 +8,8 @@ jobs:
     environment:
       name: docs-build-and-deploy
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: Install Dependencies
         run: |
           python -m pip install -r docs/requirements.txt

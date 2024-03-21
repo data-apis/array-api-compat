@@ -21,7 +21,7 @@ and update the version (the version is not computed from the tag because that
 would break vendorability). You should also edit
 
 ```
-CHANGELOG.md
+docs/changelog.md
 ```
 
 with the changes for the release.

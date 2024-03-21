@@ -63,9 +63,9 @@ def test_to_device_host(library):
     assert_allclose(x, expected)
 
 
-@pytest.mark.parametrize("target_library,func", is_functions.items())
+@pytest.mark.parametrize("target_library", is_functions.keys())
 @pytest.mark.parametrize("source_library", is_functions.keys())
-def test_asarray_cross_library(source_library, target_library, func, request):
+def test_asarray_cross_library(source_library, target_library, request):
     if source_library == "dask.array" and target_library == "torch":
         # Allow rest of test to execute instead of immediately xfailing
         # xref https://github.com/pandas-dev/pandas/issues/38902
@@ -73,9 +73,12 @@ def test_asarray_cross_library(source_library, target_library, func, request):
         # TODO: remove xfail once
         # https://github.com/dask/dask/issues/8260 is resolved
         request.node.add_marker(pytest.mark.xfail(reason="Bug in dask raising error on conversion"))
+    if source_library == "cupy" and target_library != "cupy":
+        # cupy explicitly disallows implicit conversions to CPU
+        pytest.skip(reason="cupy does not support implicit conversion to CPU")
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
-    is_tgt_type = globals()[func]
+    is_tgt_type = globals()[is_functions[target_library]]
 
     a = src_lib.asarray([1, 2, 3])
     b = tgt_lib.asarray(a)
