@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from functools import partial
-
 import cupy as cp
 
 from ..common import _aliases
 from .._internal import get_xp
 
-asarray = asarray_cupy = partial(_aliases._asarray, namespace='cupy')
-asarray.__doc__ = _aliases._asarray.__doc__
-del partial
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Optional, Union
+    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
 bool = cp.bool_
 
@@ -62,6 +61,42 @@ matmul = get_xp(cp)(_aliases.matmul)
 matrix_transpose = get_xp(cp)(_aliases.matrix_transpose)
 tensordot = get_xp(cp)(_aliases.tensordot)
 
+# asarray also adds the copy keyword, which is not present in numpy 1.0.
+def asarray(
+    obj: Union[
+        ndarray,
+        bool,
+        int,
+        float,
+        NestedSequence[bool | int | float],
+        SupportsBufferProtocol,
+    ],
+    /,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    copy: Optional[bool] = None,
+    **kwargs,
+) -> ndarray:
+    """
+    Array API compatibility wrapper for asarray().
+
+    See the corresponding documentation in the array library and/or the array API
+    specification for more details.
+
+    'namespace' may be an array module namespace. This is needed to support
+    conversion of sequences of Python scalars.
+    """
+    with cp.cuda.Device(device):
+        # cupy is like NumPy 1.26 (except without _CopyMode). See the comments
+        # in asarray in numpy/_aliases.py.
+        if copy is None:
+            copy = False
+        elif copy is False:
+            raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
+
+        return cp.array(obj, copy=copy, dtype=dtype, **kwargs)
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -73,7 +108,7 @@ if hasattr(cp, 'isdtype'):
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
 
-__all__ = _aliases.__all__ + ['asarray', 'asarray_cupy', 'bool', 'acos',
+__all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',
                               'atanh', 'bitwise_left_shift', 'bitwise_invert',
                               'bitwise_right_shift', 'concat', 'pow']
