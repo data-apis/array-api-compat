@@ -6,17 +6,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    import numpy as np
     from typing import Optional, Sequence, Tuple, Union
     from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
 
 from typing import NamedTuple
-from types import ModuleType
 import inspect
 
-from ._helpers import _check_device, is_numpy_array, array_namespace
+from ._helpers import _check_device
 
 # These functions are modified from the NumPy versions.
+
+# Creation functions add the device keyword (which does nothing for NumPy)
 
 def arange(
     start: Union[int, float],
@@ -267,92 +267,6 @@ def var(
 # Unlike transpose(), the axes argument to permute_dims() is required.
 def permute_dims(x: ndarray, /, axes: Tuple[int, ...], xp) -> ndarray:
     return xp.transpose(x, axes)
-
-# Creation functions add the device keyword (which does nothing for NumPy)
-
-# asarray also adds the copy keyword
-def _asarray(
-    obj: Union[
-        ndarray,
-        bool,
-        int,
-        float,
-        NestedSequence[bool | int | float],
-        SupportsBufferProtocol,
-    ],
-    /,
-    *,
-    dtype: Optional[Dtype] = None,
-    device: Optional[Device] = None,
-    copy: "Optional[Union[bool, np._CopyMode]]" = None,
-    namespace = None,
-    **kwargs,
-) -> ndarray:
-    """
-    Array API compatibility wrapper for asarray().
-
-    See the corresponding documentation in the array library and/or the array API
-    specification for more details.
-
-    'namespace' may be an array module namespace. This is needed to support
-    conversion of sequences of Python scalars.
-    """
-    if namespace is None:
-        try:
-            xp = array_namespace(obj, _use_compat=False)
-        except ValueError:
-            # TODO: What about lists of arrays?
-            raise ValueError("A namespace must be specified for asarray() with non-array input")
-    elif isinstance(namespace, ModuleType):
-        xp = namespace
-    elif namespace == 'numpy':
-        import numpy as xp
-    elif namespace == 'cupy':
-        import cupy as xp
-    elif namespace == 'dask.array':
-        import dask.array as xp
-    else:
-        raise ValueError("Unrecognized namespace argument to asarray()")
-
-    _check_device(xp, device)
-    if is_numpy_array(obj):
-        import numpy as np
-        if hasattr(np, '_CopyMode'):
-            # Not present in older NumPys
-            COPY_FALSE = (False, np._CopyMode.IF_NEEDED)
-            COPY_TRUE = (True, np._CopyMode.ALWAYS)
-        else:
-            COPY_FALSE = (False,)
-            COPY_TRUE = (True,)
-    else:
-        COPY_FALSE = (False,)
-        COPY_TRUE = (True,)
-    if copy in COPY_FALSE and namespace != "dask.array":
-        # copy=False is not yet implemented in xp.asarray
-        raise NotImplementedError("copy=False is not yet implemented")
-    if (hasattr(xp, "ndarray") and isinstance(obj, xp.ndarray)):
-        if dtype is not None and obj.dtype != dtype:
-            copy = True
-        if copy in COPY_TRUE:
-            return xp.array(obj, copy=True, dtype=dtype)
-        return obj
-    elif namespace == "dask.array":
-        if copy in COPY_TRUE:
-            if dtype is None:
-                return obj.copy()
-            # Go through numpy, since dask copy is no-op by default
-            import numpy as np
-            obj = np.array(obj, dtype=dtype, copy=True)
-            return xp.array(obj, dtype=dtype)
-        else:
-            import dask.array as da
-            import numpy as np
-            if not isinstance(obj, da.Array):
-                obj = np.asarray(obj, dtype=dtype)
-                return da.from_array(obj)
-            return obj
-
-    return xp.asarray(obj, dtype=dtype, **kwargs)
 
 # np.reshape calls the keyword argument 'newshape' instead of 'shape'
 def reshape(x: ndarray,

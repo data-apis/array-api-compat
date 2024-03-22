@@ -94,11 +94,11 @@ def test_asarray_copy(library):
     xp = import_(library, wrapper=True)
     asarray = xp.asarray
     is_lib_func = globals()[is_functions[library]]
-    all = xp.all
+    all = xp.all if library != 'dask.array' else lambda x: xp.all(x).compute()
 
     if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :
         supports_copy_false = False
-    elif library == 'cupy':
+    elif library in ['cupy', 'dask.array']:
         supports_copy_false = False
     else:
         supports_copy_false = True
@@ -133,14 +133,18 @@ def test_asarray_copy(library):
     assert all(b[0] == 0)
 
     a = asarray([1.0], dtype=xp.float32)
+    assert a.dtype == xp.float32
     b = asarray(a, dtype=xp.float64, copy=None)
     assert is_lib_func(b)
+    assert b.dtype == xp.float64
     a[0] = 0.0
     assert all(b[0] == 1.0)
 
     a = asarray([1.0], dtype=xp.float64)
+    assert a.dtype == xp.float64
     b = asarray(a, dtype=xp.float64, copy=None)
     assert is_lib_func(b)
+    assert b.dtype == xp.float64
     a[0] = 0.0
     assert all(b[0] == 0.0)
 
