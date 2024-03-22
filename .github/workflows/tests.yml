@@ -21,14 +21,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest torch dask[array] jax[cpu]
           if [ "${{ matrix.numpy-version }}" == "dev" ]; then
-            python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+            PIP_EXTRA='numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
           elif [ "${{ matrix.numpy-version }}" == "1.21" ]; then
-            python -m pip install numpy==1.21.*
+            PIP_EXTRA='numpy==1.21.*'
           else
-            python -m pip install numpy==1.26.*
+            PIP_EXTRA='numpy==1.26.*'
           fi
+          python -m pip install pytest torch dask[array] jax[cpu] $PIP_EXTRA
 
       - name: Run Tests
         run: |
