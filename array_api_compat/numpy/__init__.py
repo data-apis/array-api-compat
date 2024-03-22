@@ -23,7 +23,7 @@ from ..common._helpers import * # noqa: F403
 
 try:
     # Used in asarray(). Not present in older versions.
-    from numpy import _CopyMode
+    from numpy import _CopyMode # noqa: F401
 except ImportError:
     pass
 

@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Sequence, Tuple, Union
-    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
+    from ._typing import ndarray, Device, Dtype
 
 from typing import NamedTuple
 import inspect
