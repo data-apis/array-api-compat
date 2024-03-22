@@ -7,12 +7,12 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
         numpy-version: ['1.21', '1.26', 'dev']
+        exclude:
+          - python-version: '3.11'
+            numpy-version: '1.21'
+          - python-version: '3.8'
+            numpy-version: 'dev'
       fail-fast: true
-      exclude:
-        - python-version: '3.11'
-          numpy-version: '1.21'
-        - python-version: '3.8'
-          numpy-version: 'dev'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
