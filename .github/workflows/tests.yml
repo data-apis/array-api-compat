@@ -6,7 +6,13 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11']
+        numpy-version: ['1.21', '1.26', 'dev']
       fail-fast: true
+      exclude:
+        - python-version: '3.11'
+          numpy-version: '1.21'
+        - python-version: '3.8'
+          numpy-version: 'dev'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,7 +21,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest numpy torch dask[array] jax[cpu]
+          python -m pip install pytest torch dask[array] jax[cpu]
+          if [ "${{ matrix.numpy-version }}" == "dev" ]; then
+            python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+          elif [ "${{ matrix.numpy-version }}" == "1.21" ]; then
+            python -m pip install numpy==1.21.*
+          else
+            python -m pip install numpy==1.26.*
+          fi
 
       - name: Run Tests
         run: |
