@@ -93,9 +93,6 @@ def asarray(
 
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
-
-    'namespace' may be an array module namespace. This is needed to support
-    conversion of sequences of Python scalars.
     """
     if np.__version__[0] >= '2':
         # NumPy 2.0 asarray() is completely array API compatible. No need for

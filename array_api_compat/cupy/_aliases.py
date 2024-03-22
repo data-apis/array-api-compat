@@ -85,9 +85,6 @@ def asarray(
 
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
-
-    'namespace' may be an array module namespace. This is needed to support
-    conversion of sequences of Python scalars.
     """
     with cp.cuda.Device(device):
         # cupy is like NumPy 1.26 (except without _CopyMode). See the comments
