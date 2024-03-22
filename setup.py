@@ -18,6 +18,9 @@ setup(
     extras_require={
         "numpy": "numpy",
         "cupy": "cupy",
+        "jax": "jax",
+        "pytorch": "pytorch",
+        "dask": "dask",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
