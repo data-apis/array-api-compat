@@ -1,0 +1,5 @@
+dask[array]
+jax[cpu]
+numpy
+pytest
+torch
