@@ -33,7 +33,7 @@ jobs:
       - name: Run Tests
         run: |
           if [[ "${{ matrix.numpy-version }}" == "1.21" || "${{ matrix.numpy-version }}" == "dev" ]]; then
-             PYTEST_EXTRA=(-k "numpy and not jax")
+             PYTEST_EXTRA=(-k "numpy and not jax and not torch and not dask")
           fi
           pytest -v "${PYTEST_EXTRA[@]}"
 
