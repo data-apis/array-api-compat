@@ -10,6 +10,8 @@ jobs:
         exclude:
           - python-version: '3.11'
             numpy-version: '1.21'
+          - python-version: '3.12'
+            numpy-version: '1.21'
       fail-fast: true
     steps:
       - uses: actions/checkout@v4
