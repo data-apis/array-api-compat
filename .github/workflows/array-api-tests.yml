@@ -57,7 +57,7 @@ jobs:
     - name: Install dependencies
       # NumPy 1.21 doesn't support Python 3.11. There doesn't seem to be a way
       # to put this in the numpy 1.21 config file.
-      if: "!((matrix.python-version == '3.11' || matrix.python-version == '3.12') && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
+      if: "! (matrix.python-version == '3.11' || matrix.python-version == '3.12') && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21')"
       run: |
         python -m pip install --upgrade pip
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.extra-requires }}
