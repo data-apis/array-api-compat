@@ -31,7 +31,7 @@ jobs:
       - name: Run Tests
         run: |
           if [ "${{ matrix.numpy-version }}" == "1.21" ]; then
-             PYTEST_EXTRA='-k numpy'
+             PYTEST_EXTRA="-k 'numpy and not jax'"
           fi
           pytest $PYTEST_EXTRA
 
