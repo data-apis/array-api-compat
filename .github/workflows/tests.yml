@@ -38,4 +38,4 @@ jobs:
           pytest -v "${PYTEST_EXTRA[@]}"
 
           # Make sure it installs
-          python setup.py install
+          python -m pip install .
