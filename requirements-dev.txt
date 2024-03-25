@@ -3,3 +3,4 @@ jax[cpu]
 numpy
 pytest
 torch
+setuptools
