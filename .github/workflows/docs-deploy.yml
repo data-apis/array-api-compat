@@ -11,11 +11,13 @@ jobs:
     environment:
       name: docs-deploy
     steps:
+      - uses: actions/checkout@v4
       - name: Download Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: docs-build.yml
           name: docs-build
+          path: docs/_build/html
 
       # Note, the gh-pages deployment requires setting up a SSH deploy key.
       # See
@@ -23,6 +25,6 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: .
+          folder: docs/_build/html
           ssh-key: ${{ secrets.DEPLOY_KEY }}
           force: no
