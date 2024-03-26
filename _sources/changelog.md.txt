@@ -5,7 +5,7 @@
 ## Minor Changes
 
 - Add [HTML documentation](https://data-apis.org/array-api-compat/). Includes
-  new documentation on the [module scope](scope) and new [developer
+  new documentation on the [scope of the package](scope) and new [developer
   documentation](dev/index.md).
 
 - Fix `array_api_compat.numpy.asarray(torch.Tensor)` to return a NumPy array.
