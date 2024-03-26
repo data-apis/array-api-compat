@@ -12,8 +12,9 @@ jobs:
       name: docs-deploy
     steps:
       - name: Download Artifact
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: docs-build.yml
           name: docs-build
 
       # Note, the gh-pages deployment requires setting up a SSH deploy key.
