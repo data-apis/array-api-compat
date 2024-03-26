@@ -1,0 +1,27 @@
+name: Docs Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: docs-deploy
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-build
+
+      # Note, the gh-pages deployment requires setting up a SSH deploy key.
+      # See
+      # https://github.com/JamesIves/github-pages-deploy-action/tree/dev#using-an-ssh-deploy-key-
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          force: no
