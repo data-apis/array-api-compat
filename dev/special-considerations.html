@@ -208,7 +208,7 @@ different from most other Python libraries. The goal of array-api-compat is to
 be a small library that packages can either vendor or add as a dependency to
 implement array API support. Consequently, certain design considerations
 should be taken into account:</p>
-<ul>
+<ul id="no-dependencies">
 <li><p><strong>No Hard Dependencies.</strong> Although array-api-compat “depends” on NumPy, CuPy,
 PyTorch, etc., it does not hard depend on them. These libraries are not
 imported unless either an array object is passed to

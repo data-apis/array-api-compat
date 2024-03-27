@@ -209,7 +209,9 @@ the array API standard. There are also array-api-compat specific tests in
 <a class="reference external" href="https://github.com/data-apis/array-api-compat/tree/main/tests"><code class="docutils literal notranslate"><span class="pre">tests/</span></code></a>.
 These tests should be limited to things that are not tested by the test suite,
 e.g., tests for <a class="reference internal" href="../helper-functions.html"><span class="std std-doc">helper functions</span></a> or for behavior
-that is not strictly required by the standard.</p>
+that is not strictly required by the standard. To run these tests, install the
+dependencies from <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code> (array-api-compat has <a class="reference internal" href="special-considerations.html#no-dependencies"><span class="std std-ref">no hard
+runtime dependencies</span></a>).</p>
 <p>array-api-tests is run against all supported libraries are tested on CI
 (<a class="reference internal" href="../supported-array-libraries.html#jax-support"><span class="std std-ref">except for JAX</span></a>). This is achieved by a <a class="reference external" href="https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml">reusable GitHub Actions
 Workflow</a>.
