@@ -213,7 +213,8 @@ should be taken into account:</p>
 PyTorch, etc., it does not hard depend on them. These libraries are not
 imported unless either an array object is passed to
 <a class="reference internal" href="../helper-functions.html#array_api_compat.array_namespace" title="array_api_compat.array_namespace"><code class="xref py py-func docutils literal notranslate"><span class="pre">array_namespace()</span></code></a>, or the specific <code class="docutils literal notranslate"><span class="pre">array_api_compat.&lt;namespace&gt;</span></code>
-sub-namespace is explicitly imported.</p></li>
+sub-namespace is explicitly imported. This is tested (as best as possible)
+in <code class="docutils literal notranslate"><span class="pre">tests/test_no_dependencies.py</span></code>.</p></li>
 <li><p><strong>Vendorability.</strong> array-api-compat should be <a class="reference internal" href="../index.html#vendoring"><span class="std std-ref">vendorable</span></a>. This
 means that, for instance, all imports in the library are relative imports.
 No code in the package specifically references the name <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code>
