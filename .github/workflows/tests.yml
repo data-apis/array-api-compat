@@ -5,7 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        numpy-version: ['1.21', '1.26', 'dev']
+        exclude:
+          - python-version: '3.11'
+            numpy-version: '1.21'
+          - python-version: '3.12'
+            numpy-version: '1.21'
       fail-fast: true
     steps:
       - uses: actions/checkout@v4
@@ -15,11 +21,21 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
+          if [ "${{ matrix.numpy-version }}" == "dev" ]; then
+            PIP_EXTRA='numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
+          elif [ "${{ matrix.numpy-version }}" == "1.21" ]; then
+            PIP_EXTRA='numpy==1.21.*'
+          else
+            PIP_EXTRA='numpy==1.26.*'
+          fi
+          python -m pip install -r requirements-dev.txt $PIP_EXTRA
 
       - name: Run Tests
         run: |
-          pytest
+          if [[ "${{ matrix.numpy-version }}" == "1.21" || "${{ matrix.numpy-version }}" == "dev" ]]; then
+             PYTEST_EXTRA=(-k "numpy and not jax and not torch and not dask")
+          fi
+          pytest -v "${PYTEST_EXTRA[@]}"
 
           # Make sure it installs
-          python setup.py install
+          python -m pip install .

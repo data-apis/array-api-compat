@@ -384,6 +384,8 @@ def std(x: array,
         _correction = int(correction)
         if correction != _correction:
             raise NotImplementedError("float correction in torch std() is not yet supported")
+    else:
+        _correction = correction
 
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():

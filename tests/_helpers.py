@@ -1,14 +1,11 @@
 from importlib import import_module
 
-import sys
-
 import pytest
 
+wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
+all_libraries = wrapped_libraries + ["jax.numpy"]
 
 def import_(library, wrapper=False):
-    if 'jax' in library and sys.version_info < (3, 9):
-        pytest.skip('JAX array API support does not support Python 3.8')
-
     if library == 'cupy':
         pytest.importorskip(library)
     if wrapper:

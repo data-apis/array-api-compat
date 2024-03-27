@@ -182,5 +182,6 @@ libraries.
 
 helper-functions.rst
 supported-array-libraries.md
+changelog.md
 dev/index.md
 ```
