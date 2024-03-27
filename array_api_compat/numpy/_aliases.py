@@ -94,11 +94,6 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    if np.__version__[0] >= '2':
-        # NumPy 2.0 asarray() is completely array API compatible. No need for
-        # the complicated logic below
-        return np.asarray(obj, dtype=dtype, device=device, copy=copy, **kwargs)
-
     if device not in ["cpu", None]:
         raise ValueError(f"Unsupported device for NumPy: {device!r}")
 

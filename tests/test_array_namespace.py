@@ -9,24 +9,29 @@ import torch
 import array_api_compat
 from array_api_compat import array_namespace
 
-from ._helpers import import_, all_libraries
+from ._helpers import import_, all_libraries, wrapped_libraries
 
-@pytest.mark.parametrize("library", all_libraries)
-@pytest.mark.parametrize("api_version", [None, "2021.12"])
-def test_array_namespace(library, api_version):
+@pytest.mark.parametrize("use_compat", [True, False, None])
+@pytest.mark.parametrize("api_version", [None, "2021.12", "2022.12"])
+@pytest.mark.parametrize("library", all_libraries + ['array_api_strict'])
+def test_array_namespace(library, api_version, use_compat):
     xp = import_(library)
 
     array = xp.asarray([1.0, 2.0, 3.0])
-    namespace = array_api_compat.array_namespace(array, api_version=api_version)
+    if use_compat is True and library in ['array_api_strict', 'jax.numpy']:
+        pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
+        return
+    namespace = array_api_compat.array_namespace(array, api_version=api_version, use_compat=use_compat)
 
-    if "array_api" in library:
-        assert namespace == xp
+    if use_compat is False or use_compat is None and library not in wrapped_libraries:
+        if library == "jax.numpy" and use_compat is None:
+            import jax.experimental.array_api
+            assert namespace == jax.experimental.array_api
+        else:
+            assert namespace == xp
     else:
         if library == "dask.array":
             assert namespace == array_api_compat.dask.array
-        elif library == "jax.numpy":
-            import jax.experimental.array_api
-            assert namespace == jax.experimental.array_api
         else:
             assert namespace == getattr(array_api_compat, library)
 
@@ -64,14 +69,14 @@ def test_array_namespace_errors_torch():
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
 def test_api_version():
-    x = np.asarray([1, 2])
-    np_ = import_("numpy", wrapper=True)
-    assert array_namespace(x, api_version="2022.12") == np_
-    assert array_namespace(x, api_version=None) == np_
-    assert array_namespace(x) == np_
+    x = torch.asarray([1, 2])
+    torch_ = import_("torch", wrapper=True)
+    assert array_namespace(x, api_version="2022.12") == torch_
+    assert array_namespace(x, api_version=None) == torch_
+    assert array_namespace(x) == torch_
     # Should issue a warning
     with warnings.catch_warnings(record=True) as w:
-        assert array_namespace(x, api_version="2021.12") == np_
+        assert array_namespace(x, api_version="2021.12") == torch_
         assert len(w) == 1
         assert "2021.12" in str(w[0].message)
 
