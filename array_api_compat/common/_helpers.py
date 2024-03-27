@@ -248,10 +248,10 @@ def array_namespace(*xs, api_version=None, use_compat=None):
     namespaces = set()
     for x in xs:
         if is_numpy_array(x):
-            _check_api_version(api_version)
             from .. import numpy as numpy_namespace
             import numpy as np
             if use_compat is True:
+                _check_api_version(api_version)
                 namespaces.add(numpy_namespace)
             elif use_compat is False:
                 namespaces.add(np)
@@ -263,32 +263,32 @@ def array_namespace(*xs, api_version=None, use_compat=None):
                 else:
                     namespaces.add(numpy_namespace)
         elif is_cupy_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from .. import cupy as cupy_namespace
                 namespaces.add(cupy_namespace)
             else:
                 import cupy as cp
                 namespaces.add(cp)
         elif is_torch_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from .. import torch as torch_namespace
                 namespaces.add(torch_namespace)
             else:
                 import torch
                 namespaces.add(torch)
         elif is_dask_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from ..dask import array as dask_namespace
                 namespaces.add(dask_namespace)
             else:
                 import dask.array as da
                 namespaces.add(da)
         elif is_jax_array(x):
-            _check_api_version(api_version)
             if use_compat is True:
+                _check_api_version(api_version)
                 raise ValueError("JAX does not have an array-api-compat wrapper")
             elif use_compat is False:
                 import jax.numpy as jnp

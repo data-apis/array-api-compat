@@ -12,7 +12,7 @@ from array_api_compat import array_namespace
 from ._helpers import import_, all_libraries, wrapped_libraries
 
 @pytest.mark.parametrize("use_compat", [True, False, None])
-@pytest.mark.parametrize("api_version", [None, "2021.12"])
+@pytest.mark.parametrize("api_version", [None, "2021.12", "2022.12"])
 @pytest.mark.parametrize("library", all_libraries + ['array_api_strict'])
 def test_array_namespace(library, api_version, use_compat):
     xp = import_(library)
@@ -69,14 +69,14 @@ def test_array_namespace_errors_torch():
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
 def test_api_version():
-    x = np.asarray([1, 2])
-    np_ = import_("numpy", wrapper=True)
-    assert array_namespace(x, api_version="2022.12") == np_
-    assert array_namespace(x, api_version=None) == np_
-    assert array_namespace(x) == np_
+    x = torch.asarray([1, 2])
+    torch_ = import_("torch", wrapper=True)
+    assert array_namespace(x, api_version="2022.12") == torch_
+    assert array_namespace(x, api_version=None) == torch_
+    assert array_namespace(x) == torch_
     # Should issue a warning
     with warnings.catch_warnings(record=True) as w:
-        assert array_namespace(x, api_version="2021.12") == np_
+        assert array_namespace(x, api_version="2021.12") == torch_
         assert len(w) == 1
         assert "2021.12" in str(w[0].message)
 
