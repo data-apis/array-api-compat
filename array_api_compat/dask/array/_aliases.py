@@ -37,7 +37,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Union
 
-    from ...common._typing import Device, Dtype, Array
+    from ...common._typing import Device, Dtype, Array, NestedSequence, SupportsBufferProtocol
 
 import dask.array as da
 
@@ -76,10 +76,6 @@ def _dask_arange(
 arange = get_xp(da)(_dask_arange)
 eye = get_xp(da)(_aliases.eye)
 
-from functools import partial
-asarray = partial(_aliases._asarray, namespace='dask.array')
-asarray.__doc__ = _aliases._asarray.__doc__
-
 linspace = get_xp(da)(_aliases.linspace)
 eye = get_xp(da)(_aliases.eye)
 UniqueAllResult = get_xp(da)(_aliases.UniqueAllResult)
@@ -112,6 +108,47 @@ floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 tensordot = get_xp(np)(_aliases.tensordot)
+
+
+# asarray also adds the copy keyword, which is not present in numpy 1.0.
+def asarray(
+    obj: Union[
+        Array,
+        bool,
+        int,
+        float,
+        NestedSequence[bool | int | float],
+        SupportsBufferProtocol,
+    ],
+    /,
+    *,
+    dtype: Optional[Dtype] = None,
+    device: Optional[Device] = None,
+    copy: "Optional[Union[bool, np._CopyMode]]" = None,
+    **kwargs,
+) -> Array:
+    """
+    Array API compatibility wrapper for asarray().
+
+    See the corresponding documentation in the array library and/or the array API
+    specification for more details.
+    """
+    if copy is False:
+        # copy=False is not yet implemented in dask
+        raise NotImplementedError("copy=False is not yet implemented")
+    elif copy is True:
+        if isinstance(obj, da.Array) and dtype is None:
+            return obj.copy()
+        # Go through numpy, since dask copy is no-op by default
+        obj = np.array(obj, dtype=dtype, copy=True)
+        return da.array(obj, dtype=dtype)
+    else:
+        if not isinstance(obj, da.Array) or dtype is not None and obj.dtype != dtype:
+            obj = np.asarray(obj, dtype=dtype)
+            return da.from_array(obj)
+        return obj
+
+    return da.asarray(obj, dtype=dtype, **kwargs)
 
 from dask.array import (
     # Element wise aliases
