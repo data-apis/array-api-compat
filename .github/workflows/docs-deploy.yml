@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  docs-deploy:
     runs-on: ubuntu-latest
     environment:
       name: docs-deploy
