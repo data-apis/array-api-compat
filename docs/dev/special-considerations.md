@@ -6,6 +6,7 @@ be a small library that packages can either vendor or add as a dependency to
 implement array API support. Consequently, certain design considerations
 should be taken into account:
 
+(no-dependencies)=
 - **No Hard Dependencies.** Although array-api-compat "depends" on NumPy, CuPy,
   PyTorch, etc., it does not hard depend on them. These libraries are not
   imported unless either an array object is passed to

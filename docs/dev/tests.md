@@ -6,7 +6,9 @@ the array API standard. There are also array-api-compat specific tests in
 [`tests/`](https://github.com/data-apis/array-api-compat/tree/main/tests).
 These tests should be limited to things that are not tested by the test suite,
 e.g., tests for [helper functions](../helper-functions.rst) or for behavior
-that is not strictly required by the standard.
+that is not strictly required by the standard. To run these tests, install the
+dependencies from `requirements-dev.txt` (array-api-compat has [no hard
+runtime dependencies](no-dependencies)).
 
 array-api-tests is run against all supported libraries are tested on CI
 ([except for JAX](jax-support)). This is achieved by a [reusable GitHub Actions

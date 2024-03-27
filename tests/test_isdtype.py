@@ -5,7 +5,7 @@ non-spec dtypes
 
 import pytest
 
-from ._helpers import import_
+from ._helpers import import_, wrapped_libraries
 
 # Check the known dtypes by their string names
 
@@ -64,7 +64,7 @@ def isdtype_(dtype_, kind):
     assert type(res) is bool #  noqa: E721
     return res
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
+@pytest.mark.parametrize("library", wrapped_libraries)
 def test_isdtype_spec_dtypes(library):
     xp = import_(library, wrapper=True)
 
@@ -98,7 +98,7 @@ additional_dtypes = [
     'bfloat16',
 ]
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array", "jax.numpy"])
+@pytest.mark.parametrize("library", wrapped_libraries)
 @pytest.mark.parametrize("dtype_", additional_dtypes)
 def test_isdtype_additional_dtypes(library, dtype_):
     xp = import_(library, wrapper=True)
