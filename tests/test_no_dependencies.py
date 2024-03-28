@@ -11,8 +11,6 @@ imported from the other tests.
 import sys
 import subprocess
 
-from ._helpers import import_
-
 import pytest
 
 class Array:
@@ -54,6 +52,9 @@ def _test_dependency(mod):
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array",
                                      "jax.numpy", "array_api_strict"])
 def test_numpy_dependency(library):
+    # This import is here because it imports numpy
+    from ._helpers import import_
+
     # This unfortunately won't go through any of the pytest machinery. We
     # reraise the exception as an AssertionError so that pytest will show it
     # in a semi-reasonable way
