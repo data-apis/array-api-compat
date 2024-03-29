@@ -178,7 +178,7 @@ def _check_api_version(api_version):
     elif api_version is not None and api_version != '2022.12':
         raise ValueError("Only the 2022.12 version of the array API specification is currently supported")
 
-def array_namespace(*xs, api_version=None, _use_compat=True):
+def array_namespace(*xs, api_version=None, use_compat=None):
     """
     Get the array API compatible namespace for the arrays `xs`.
 
@@ -190,6 +190,12 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     api_version: str
         The newest version of the spec that you need support for (currently
         the compat library wrapped APIs support v2022.12).
+
+    use_compat: bool or None
+        If None (the default), the native namespace will be returned if it is
+        already array API compatible, otherwise a compat wrapper is used. If
+        True, the compat library wrapped library will be returned. If False,
+        the native library namespace is returned.
 
     Returns
     -------
@@ -234,46 +240,66 @@ def array_namespace(*xs, api_version=None, _use_compat=True):
     is_jax_array
 
     """
+    if use_compat not in [None, True, False]:
+        raise ValueError("use_compat must be None, True, or False")
+
+    _use_compat = use_compat in [None, True]
+
     namespaces = set()
     for x in xs:
         if is_numpy_array(x):
-            _check_api_version(api_version)
-            if _use_compat:
-                from .. import numpy as numpy_namespace
+            from .. import numpy as numpy_namespace
+            import numpy as np
+            if use_compat is True:
+                _check_api_version(api_version)
                 namespaces.add(numpy_namespace)
-            else:
-                import numpy as np
+            elif use_compat is False:
                 namespaces.add(np)
+            else:
+                # numpy 2.0 has __array_namespace__ and is fully array API
+                # compatible.
+                if hasattr(x, '__array_namespace__'):
+                    namespaces.add(x.__array_namespace__(api_version=api_version))
+                else:
+                    namespaces.add(numpy_namespace)
         elif is_cupy_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from .. import cupy as cupy_namespace
                 namespaces.add(cupy_namespace)
             else:
                 import cupy as cp
                 namespaces.add(cp)
         elif is_torch_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from .. import torch as torch_namespace
                 namespaces.add(torch_namespace)
             else:
                 import torch
                 namespaces.add(torch)
         elif is_dask_array(x):
-            _check_api_version(api_version)
             if _use_compat:
+                _check_api_version(api_version)
                 from ..dask import array as dask_namespace
                 namespaces.add(dask_namespace)
             else:
-                raise TypeError("_use_compat cannot be False if input array is a dask array!")
+                import dask.array as da
+                namespaces.add(da)
         elif is_jax_array(x):
-            _check_api_version(api_version)
-            # jax.experimental.array_api is already an array namespace. We do
-            # not have a wrapper submodule for it.
-            import jax.experimental.array_api as jnp
+            if use_compat is True:
+                _check_api_version(api_version)
+                raise ValueError("JAX does not have an array-api-compat wrapper")
+            elif use_compat is False:
+                import jax.numpy as jnp
+            else:
+                # jax.experimental.array_api is already an array namespace. We do
+                # not have a wrapper submodule for it.
+                import jax.experimental.array_api as jnp
             namespaces.add(jnp)
         elif hasattr(x, '__array_namespace__'):
+            if use_compat is True:
+                raise ValueError("The given array does not have an array-api-compat wrapper")
             namespaces.add(x.__array_namespace__(api_version=api_version))
         else:
             # TODO: Support Python scalars?
