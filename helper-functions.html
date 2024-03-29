@@ -212,7 +212,7 @@ part of the specification but which are useful for using the array API:</p>
 consuming libraries.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="array_api_compat.array_namespace">
-<span class="sig-prename descclassname"><span class="pre">array_api_compat.</span></span><span class="sig-name descname"><span class="pre">array_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_use_compat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#array_api_compat.array_namespace" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">array_api_compat.</span></span><span class="sig-name descname"><span class="pre">array_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_compat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#array_api_compat.array_namespace" title="Link to this definition">#</a></dt>
 <dd><p>Get the array API compatible namespace for the arrays <code class="code docutils literal notranslate"><span class="pre">xs</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -220,6 +220,10 @@ consuming libraries.</p>
 <li><p><strong>xs</strong> (<em>arrays</em>) – one or more arrays.</p></li>
 <li><p><strong>api_version</strong> (<em>str</em>) – The newest version of the spec that you need support for (currently
 the compat library wrapped APIs support v2022.12).</p></li>
+<li><p><strong>use_compat</strong> (<em>bool or None</em>) – If None (the default), the native namespace will be returned if it is
+already array API compatible, otherwise a compat wrapper is used. If
+True, the compat library wrapped library will be returned. If False,
+the native library namespace is returned.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
