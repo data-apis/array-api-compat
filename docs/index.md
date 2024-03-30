@@ -75,7 +75,7 @@ used will be the same array object from the wrapped library.
 (array-api-strict)=
 ## Difference between `array_api_compat` and `array_api_strict`
 
-[`array_api_strict`](https://github.com/data-apis/array-api-strict) is a
+[`array_api_strict`](https://data-apis.org/array-api-strict/) is a
 strict minimal implementation of the array API standard, formerly known as
 `numpy.array_api` (see [NEP
 47](https://numpy.org/neps/nep-0047-array-api-standard.html)). For example,

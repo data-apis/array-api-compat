@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.6 (????-??-??)
+
+## Major Changes
+
+- Drop support for Python 3.8.
+
+- NumPy 2.0 is now left completely unwrapped.
+
+- New flag `use_compat` to {func}`~.array_namespace` to force the use or
+  non-use of the compat wrapper namespace. The default is to return a compat
+  namespace when it is appropiate.
+
+- Fix the `copy` flag to `asarray` for NumPy, CuPy, and Dask.
+
+- Fix the `device` flag to `asarray` for CuPy.
+
+- Fix various issues with `asarray` for Dask.
+
+## Minor Changes
+
+- Test Python 3.12 on CI.
+
+- Add more tests for {func}`~.array_namespace`.
+
+- Add more tests for `asarray`.
+
+- Add a test that there are no hard dependencies.
+
 ## 1.5.1 (2024-03-20)
 
 ## Minor Changes
@@ -36,9 +64,9 @@
 
 ### Minor Changes
 
-- Allow `'2022.12'` as the `api_version` in `array_namespace()`. `'2021.12'`
-  is also supported but will issue a warning since the returned namespace will
-  still be a 2022.12 compliant one.
+- Allow `'2022.12'` as the `api_version` in {func}`~.array_namespace()`.
+  `'2021.12'` is also supported but will issue a warning since the returned
+  namespace will still be a 2022.12 compliant one.
 
 - Add wrapper for numpy.linalg.solve, which broadcasts the inputs according to
   the standard.

@@ -10,7 +10,7 @@ pytest
 
 tmpdir=$(mktemp -d)
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-export PYTHONPATH=$SCRIPT_DIR
+export PYTHONPATH="$PYTHONPATH:$SCRIPT_DIR"
 
 PYTEST_ARGS="--max-examples 200 -v -rxXfE --ci --hypothesis-disable-deadline"
 
