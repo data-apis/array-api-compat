@@ -18,6 +18,20 @@ import math
 import inspect
 import warnings
 
+def _is_jax_zero_gradient_array(x):
+    """Return True if `x` is a zero-gradient array.
+
+    These arrays are a design quirk of Jax that may one day be removed.
+    See https://github.com/google/jax/issues/20620.
+    """
+    if 'numpy' not in sys.modules or 'jax' not in sys.modules:
+        return False
+
+    import numpy as np
+    import jax
+
+    return isinstance(x, np.ndarray) and x.dtype == jax.float0
+
 def is_numpy_array(x):
     """
     Return True if `x` is a NumPy array.
@@ -44,7 +58,8 @@ def is_numpy_array(x):
     import numpy as np
 
     # TODO: Should we reject ndarray subclasses?
-    return isinstance(x, (np.ndarray, np.generic))
+    return (isinstance(x, (np.ndarray, np.generic))
+            and not _is_jax_zero_gradient_array(x))
 
 def is_cupy_array(x):
     """
@@ -149,7 +164,7 @@ def is_jax_array(x):
 
     import jax
 
-    return isinstance(x, jax.Array)
+    return isinstance(x, jax.Array) or _is_jax_zero_gradient_array(x)
 
 def is_array_api_obj(x):
     """
