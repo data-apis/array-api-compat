@@ -2,6 +2,7 @@ import subprocess
 import sys
 import warnings
 
+import jax
 import numpy as np
 import pytest
 import torch
@@ -54,6 +55,12 @@ import jax.experimental.array_api
 assert namespace == jax.experimental.array_api
 """
         subprocess.run([sys.executable, "-c", code], check=True)
+
+def test_jax_zero_gradient():
+    jx = jax.numpy.arange(4)
+    jax_zero = jax.vmap(jax.grad(jax.numpy.float32, allow_int=True))(jx)
+    assert (array_api_compat.get_namespace(jax_zero) is
+            array_api_compat.get_namespace(jx))
 
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
