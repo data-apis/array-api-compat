@@ -50,6 +50,7 @@ def is_numpy_array(x):
     is_torch_array
     is_dask_array
     is_jax_array
+    is_sparse_array
     """
     # Avoid importing NumPy if it isn't already
     if 'numpy' not in sys.modules:
@@ -79,6 +80,7 @@ def is_cupy_array(x):
     is_torch_array
     is_dask_array
     is_jax_array
+    is_sparse_array
     """
     # Avoid importing NumPy if it isn't already
     if 'cupy' not in sys.modules:
@@ -105,6 +107,7 @@ def is_torch_array(x):
     is_cupy_array
     is_dask_array
     is_jax_array
+    is_sparse_array
     """
     # Avoid importing torch if it isn't already
     if 'torch' not in sys.modules:
@@ -131,6 +134,7 @@ def is_dask_array(x):
     is_cupy_array
     is_torch_array
     is_jax_array
+    is_sparse_array
     """
     # Avoid importing dask if it isn't already
     if 'dask.array' not in sys.modules:
@@ -157,6 +161,7 @@ def is_jax_array(x):
     is_cupy_array
     is_torch_array
     is_dask_array
+    is_sparse_array
     """
     # Avoid importing jax if it isn't already
     if 'jax' not in sys.modules:
@@ -165,6 +170,35 @@ def is_jax_array(x):
     import jax
 
     return isinstance(x, jax.Array) or _is_jax_zero_gradient_array(x)
+
+
+def is_sparse_array(x) -> bool:
+    """
+    Return True if `x` is a `sparse` array.
+
+    This function does not import `sparse` if it has not already been imported
+    and is therefore cheap to use.
+
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+    """
+    # Avoid importing jax if it isn't already
+    if 'sparse' not in sys.modules:
+        return False
+
+    import sparse
+
+    # TODO: Account for other backends.
+    return isinstance(x, sparse.SparseArray)
 
 def is_array_api_obj(x):
     """
@@ -185,6 +219,7 @@ def is_array_api_obj(x):
         or is_torch_array(x) \
         or is_dask_array(x) \
         or is_jax_array(x) \
+        or is_sparse_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
@@ -253,6 +288,7 @@ def array_namespace(*xs, api_version=None, use_compat=None):
     is_torch_array
     is_dask_array
     is_jax_array
+    is_sparse_array
 
     """
     if use_compat not in [None, True, False]:
@@ -312,6 +348,13 @@ def array_namespace(*xs, api_version=None, use_compat=None):
                 # not have a wrapper submodule for it.
                 import jax.experimental.array_api as jnp
             namespaces.add(jnp)
+        elif is_sparse_array(x):
+            if use_compat is True:
+                _check_api_version(api_version)
+                raise ValueError("`sparse` does not have an array-api-compat wrapper")
+            else:
+                import sparse
+            namespaces.add(sparse)
         elif hasattr(x, '__array_namespace__'):
             if use_compat is True:
                 raise ValueError("The given array does not have an array-api-compat wrapper")
@@ -406,7 +449,22 @@ def device(x: Array, /) -> Device:
             return x.device()
         else:
             return x.device
+    elif is_sparse_array(x):
+        # `sparse` will gain `.device`, so check for this first.
+        x_device = getattr(x, 'device', None)
+        if x_device is not None:
+            return x_device
+        # Everything but DOK has this attr.
+        try:
+            inner = x.data
+        except AttributeError:
+            return "cpu"
+        # Return the device of the constituent array
+        return device(inner)
     return x.device
+
+# Prevent shadowing, used below
+_device = device
 
 # Based on cupy.array_api.Array.to_device
 def _cupy_to_device(x, device, /, stream=None):
@@ -523,6 +581,10 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         # This import adds to_device to x
         import jax.experimental.array_api # noqa: F401
         return x.to_device(device, stream=stream)
+    elif is_sparse_array(x) and device == _device(x):
+        # Perform trivial check to return the same array if
+        # device is same instead of err-ing.
+        return x
     return x.to_device(device, stream=stream)
 
 def size(x):
@@ -549,6 +611,7 @@ __all__ = [
     "is_jax_array",
     "is_numpy_array",
     "is_torch_array",
+    "is_sparse_array",
     "size",
     "to_device",
 ]
