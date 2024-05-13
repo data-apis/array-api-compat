@@ -354,6 +354,8 @@ def array_namespace(*xs, api_version=None, use_compat=None):
                 raise ValueError("`sparse` does not have an array-api-compat wrapper")
             else:
                 import sparse
+            # `sparse` is already an array namespace. We do not have a wrapper
+            # submodule for it.
             namespaces.add(sparse)
         elif hasattr(x, '__array_namespace__'):
             if use_compat is True:
