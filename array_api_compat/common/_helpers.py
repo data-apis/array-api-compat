@@ -174,7 +174,7 @@ def is_jax_array(x):
 
 def is_sparse_array(x) -> bool:
     """
-    Return True if `x` is a `sparse` array.
+    Return True if `x` is an array from the `sparse` package.
 
     This function does not import `sparse` if it has not already been imported
     and is therefore cheap to use.
