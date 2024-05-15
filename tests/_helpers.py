@@ -14,7 +14,9 @@ if sys.version_info >= (3, 10):
     all_libraries.append('sparse')
 
 def import_(library, wrapper=False):
-    if library == 'cupy':
+    # CuPy requires a GPU
+    # `sparse` has a dependency conflict with NumPy 1.21
+    if library in {'cupy', 'sparse'}:
         pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
