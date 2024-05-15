@@ -1,5 +1,5 @@
 from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array, # noqa: F401
-                              is_dask_array, is_jax_array)
+                              is_dask_array, is_jax_array, is_pydata_sparse)
 
 from array_api_compat import is_array_api_obj, device, to_device
 
@@ -16,6 +16,7 @@ is_functions = {
     'torch': 'is_torch_array',
     'dask.array': 'is_dask_array',
     'jax.numpy': 'is_jax_array',
+    'sparse': 'is_pydata_sparse',
 }
 
 @pytest.mark.parametrize('library', is_functions.keys())
@@ -76,6 +77,8 @@ def test_asarray_cross_library(source_library, target_library, request):
     if source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
+    elif source_library == "sparse" and target_library != "sparse":
+        pytest.skip(reason="`sparse` does not allow implicit densification")
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
     is_tgt_type = globals()[is_functions[target_library]]
