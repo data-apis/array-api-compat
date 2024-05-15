@@ -1,4 +1,5 @@
 from importlib import import_module
+import sys
 
 import pytest
 
@@ -7,6 +8,10 @@ all_libraries = wrapped_libraries + ["numpy", "jax.numpy", "sparse"]
 import numpy as np
 if np.__version__[0] == '1':
     wrapped_libraries.append("numpy")
+
+# `sparse` added array API support as of Python 3.10.
+if sys.version_info >= (3, 10):
+    all_libraries.append('sparse')
 
 def import_(library, wrapper=False):
     if library == 'cupy':
