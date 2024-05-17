@@ -19,7 +19,7 @@ def test_array_namespace(library, api_version, use_compat):
     xp = import_(library)
 
     array = xp.asarray([1.0, 2.0, 3.0])
-    if use_compat is True and library in ['array_api_strict', 'jax.numpy']:
+    if use_compat is True and library in {'array_api_strict', 'jax.numpy', 'sparse'}:
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
     namespace = array_api_compat.array_namespace(array, api_version=api_version, use_compat=use_compat)
