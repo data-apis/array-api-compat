@@ -132,3 +132,6 @@ For `linalg`, several methods are missing, for example:
 Other methods may only be partially implemented or return incorrect results at times.
 
 The minimum supported Dask version is 2023.12.0.
+
+## [`sparse`](https://sparse.pydata.org/en/stable/)
+Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
