@@ -78,7 +78,23 @@ def vector_norm(
 ) -> array:
     # torch.vector_norm incorrectly treats axis=() the same as axis=None
     if axis == ():
-        keepdims = True
+        out = kwargs.get('out')
+        if out is None:
+            dtype = None
+            if x.dtype == torch.complex64:
+                dtype = torch.float32
+            elif x.dtype == torch.complex128:
+                dtype = torch.float64
+
+            out = torch.zeros_like(x, dtype=dtype)
+
+        # The norm of a single scalar works out to abs(x) in every case except
+        # for ord=0, which is x != 0.
+        if ord == 0:
+            out[:] = (x != 0)
+        else:
+            out[:] = torch.abs(x)
+        return out
     return torch.linalg.vector_norm(x, ord=ord, axis=axis, keepdim=keepdims, **kwargs)
 
 __all__ = linalg_all + ['outer', 'matmul', 'matrix_transpose', 'tensordot',
