@@ -33,7 +33,7 @@ def _test_dependency(mod):
 
     # array-api-strict is an example of an array API library that isn't
     # wrapped by array-api-compat.
-    if "strict" not in mod:
+    if "strict" not in mod and mod != "sparse":
         is_mod_array = getattr(array_api_compat, f"is_{mod.split('.')[0]}_array")
         assert not is_mod_array(a)
         assert mod not in sys.modules
@@ -50,7 +50,7 @@ def _test_dependency(mod):
 # Y (except most array libraries actually do themselves depend on numpy).
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array",
-                                     "jax.numpy", "array_api_strict"])
+                                     "jax.numpy", "sparse", "array_api_strict"])
 def test_numpy_dependency(library):
     # This import is here because it imports numpy
     from ._helpers import import_

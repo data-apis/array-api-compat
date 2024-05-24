@@ -4,3 +4,4 @@ jax[cpu]
 numpy
 pytest
 torch
+sparse >=0.15.1

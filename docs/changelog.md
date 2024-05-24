@@ -4,6 +4,14 @@
 
 ## Major Changes
 
+- Add support for `sparse`. Note that unlike other array libraries,
+  array-api-compat does not contain any wrappers for `sparse` functions. All
+  `sparse` array API support is in `sparse` itself. Thus, there is no
+  `array_api_compat.sparse` submodule, and
+  `array_namespace(<pydata/sparse array>)` returns the `sparse` module.
+
+- Added the function `is_pydata_sparse(x)`.
+
 - Drop support for Python 3.8.
 
 - NumPy 2.0 is now left completely unwrapped.
