@@ -133,5 +133,7 @@ Other methods may only be partially implemented or return incorrect results at t
 
 The minimum supported Dask version is 2023.12.0.
 
-## [`sparse`](https://sparse.pydata.org/en/stable/)
+(sparse-support)=
+## [Sparse](https://sparse.pydata.org/en/stable/)
+
 Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
