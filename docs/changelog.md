@@ -12,6 +12,18 @@
 
 - Added the function `is_pydata_sparse_array(x)`.
 
+## Minor Changes
+
+- Fix JAX `float0` arrays. See https://github.com/google/jax/issues/20620.
+  ([@NeilGirdhar](https://github.com/NeilGirdhar))
+
+- Fix `torch.linalg.vector_norm()` when `axis=()`.
+
+- Fix `torch.linalg.solve()` to apply the array API standard rules for when
+  `x2` should be treated as a vector vs. a matrix.
+
+- Fix PyTorch test failures on CI by skipping uint16, uint32, uint64 tests.
+
 ## 1.6 (2024-03-29)
 
 ## Major Changes
