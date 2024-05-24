@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6 (2024-03-29)
+## 1.7 (2024-05-24)
 
 ## Major Changes
 
@@ -10,7 +10,11 @@
   `array_api_compat.sparse` submodule, and
   `array_namespace(<pydata/sparse array>)` returns the `sparse` module.
 
-- Added the function `is_pydata_sparse(x)`.
+- Added the function `is_pydata_sparse_array(x)`.
+
+## 1.6 (2024-03-29)
+
+## Major Changes
 
 - Drop support for Python 3.8.
 
