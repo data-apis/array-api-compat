@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.1 (2024-05-28)
+
+## Minor Changes
+
+- Fix a typo in setup.py ([@sunpoet](https://github.com/sunpoet)).
+
 ## 1.7 (2024-05-24)
 
 ## Major Changes
