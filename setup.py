@@ -21,7 +21,7 @@ setup(
         "jax": "jax",
         "pytorch": "pytorch",
         "dask": "dask",
-        "sprase": "sparse >=0.15.1",
+        "sparse": "sparse >=0.15.1",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
