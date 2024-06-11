@@ -235,7 +235,8 @@ def array_namespace(*xs, api_version=None, use_compat=None):
     Parameters
     ----------
     xs: arrays
-        one or more arrays.
+        one or more arrays. xs can also be Python scalars (bool, int, float,
+        or complex), which are ignored.
 
     api_version: str
         The newest version of the spec that you need support for (currently
@@ -298,7 +299,9 @@ def array_namespace(*xs, api_version=None, use_compat=None):
 
     namespaces = set()
     for x in xs:
-        if is_numpy_array(x):
+        if isinstance(x, (bool, int, float, complex)):
+            continue
+        elif is_numpy_array(x):
             from .. import numpy as numpy_namespace
             import numpy as np
             if use_compat is True:

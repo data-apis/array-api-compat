@@ -92,3 +92,17 @@ def test_api_version():
 def test_get_namespace():
     # Backwards compatible wrapper
     assert array_api_compat.get_namespace is array_api_compat.array_namespace
+
+def test_python_scalars():
+    a = torch.asarray([1, 2])
+    xp = import_("torch", wrapper=True)
+
+    pytest.raises(TypeError, lambda: array_namespace(1))
+    pytest.raises(TypeError, lambda: array_namespace(1.0))
+    pytest.raises(TypeError, lambda: array_namespace(1j))
+    pytest.raises(TypeError, lambda: array_namespace(True))
+
+    assert array_namespace(a, 1) == xp
+    assert array_namespace(a, 1.0) == xp
+    assert array_namespace(a, 1j) == xp
+    assert array_namespace(a, True) == xp
