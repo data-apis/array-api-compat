@@ -2,13 +2,13 @@
 
 ## 1.7.1 (2024-05-28)
 
-## Minor Changes
+### Minor Changes
 
 - Fix a typo in setup.py ([@sunpoet](https://github.com/sunpoet)).
 
 ## 1.7 (2024-05-24)
 
-## Major Changes
+### Major Changes
 
 - Add support for `sparse`. Note that unlike other array libraries,
   array-api-compat does not contain any wrappers for `sparse` functions. All
@@ -18,7 +18,7 @@
 
 - Added the function `is_pydata_sparse_array(x)`.
 
-## Minor Changes
+### Minor Changes
 
 - Fix JAX `float0` arrays. See https://github.com/google/jax/issues/20620.
   ([@NeilGirdhar](https://github.com/NeilGirdhar))
@@ -32,7 +32,7 @@
 
 ## 1.6 (2024-03-29)
 
-## Major Changes
+### Major Changes
 
 - Drop support for Python 3.8.
 
@@ -48,7 +48,7 @@
 
 - Fix various issues with `asarray` for Dask.
 
-## Minor Changes
+### Minor Changes
 
 - Test Python 3.12 on CI.
 
@@ -60,7 +60,7 @@
 
 ## 1.5.1 (2024-03-20)
 
-## Minor Changes
+### Minor Changes
 
 - Add [HTML documentation](https://data-apis.org/array-api-compat/). Includes
   new documentation on the [scope of the package](scope) and new [developer
