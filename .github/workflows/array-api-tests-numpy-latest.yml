@@ -1,0 +1,9 @@
+name: Array API Tests (NumPy Latest)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-numpy-latest:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: numpy
