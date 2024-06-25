@@ -31,4 +31,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    url="https://data-apis.org/array-api-compat/",
 )
