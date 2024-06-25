@@ -8,5 +8,5 @@ jobs:
     with:
       package-name: dask
       module-name: dask.array
-      extra-requires: numpy
+      extra-requires: numpy==2.0rc2
       pytest-extra-args: --disable-deadline --max-examples=5
