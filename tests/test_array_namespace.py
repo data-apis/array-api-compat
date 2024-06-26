@@ -101,8 +101,10 @@ def test_python_scalars():
     pytest.raises(TypeError, lambda: array_namespace(1.0))
     pytest.raises(TypeError, lambda: array_namespace(1j))
     pytest.raises(TypeError, lambda: array_namespace(True))
+    pytest.raises(TypeError, lambda: array_namespace(None))
 
     assert array_namespace(a, 1) == xp
     assert array_namespace(a, 1.0) == xp
     assert array_namespace(a, 1j) == xp
     assert array_namespace(a, True) == xp
+    assert array_namespace(a, None) == xp
