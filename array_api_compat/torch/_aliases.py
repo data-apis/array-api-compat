@@ -155,6 +155,7 @@ bitwise_left_shift = _two_arg(torch.bitwise_left_shift)
 bitwise_or = _two_arg(torch.bitwise_or)
 bitwise_right_shift = _two_arg(torch.bitwise_right_shift)
 bitwise_xor = _two_arg(torch.bitwise_xor)
+copysign = _two_arg(torch.copysign)
 divide = _two_arg(torch.divide)
 # Also a rename. torch.equal does not broadcast
 equal = _two_arg(torch.eq)
@@ -702,9 +703,9 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
 
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'newaxis', 'add', 'atan2', 'bitwise_and', 'bitwise_left_shift',
-           'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'divide',
-           'equal', 'floor_divide', 'greater', 'greater_equal', 'less',
-           'less_equal', 'logaddexp', 'multiply', 'not_equal', 'pow',
+           'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'copysign',
+           'divide', 'equal', 'floor_divide', 'greater', 'greater_equal',
+           'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal', 'pow',
            'remainder', 'subtract', 'max', 'min', 'sort', 'prod', 'sum',
            'any', 'all', 'mean', 'std', 'var', 'concat', 'squeeze',
            'broadcast_to', 'flip', 'roll', 'nonzero', 'where', 'reshape',
