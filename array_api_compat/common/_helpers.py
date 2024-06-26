@@ -48,6 +48,7 @@ def is_numpy_array(x):
     is_array_api_obj
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
@@ -78,11 +79,12 @@ def is_cupy_array(x):
     is_array_api_obj
     is_numpy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing NumPy if it isn't already
+    # Avoid importing CuPy if it isn't already
     if 'cupy' not in sys.modules:
         return False
 
@@ -118,6 +120,33 @@ def is_torch_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
 
+def is_ndonnx_array(x):
+    """
+    Return True if `x` is a ndonnx Array.
+
+    This function does not import ndonnx if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_ndonnx_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    # Avoid importing torch if it isn't already
+    if 'ndonnx' not in sys.modules:
+        return False
+
+    import ndonnx as ndx
+
+    return isinstance(x, ndx.Array)  
+
 def is_dask_array(x):
     """
     Return True if `x` is a dask.array Array.
@@ -133,6 +162,7 @@ def is_dask_array(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_jax_array
     is_pydata_sparse_array
     """
@@ -160,6 +190,7 @@ def is_jax_array(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_pydata_sparse_array
     """
@@ -188,6 +219,7 @@ def is_pydata_sparse_array(x) -> bool:
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     """
@@ -211,6 +243,7 @@ def is_array_api_obj(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     """
@@ -613,6 +646,7 @@ __all__ = [
     "is_jax_array",
     "is_numpy_array",
     "is_torch_array",
+    "is_ndonnx_array",
     "is_pydata_sparse_array",
     "size",
     "to_device",
