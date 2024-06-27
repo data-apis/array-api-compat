@@ -150,6 +150,28 @@ def asarray(
 
     return da.asarray(obj, dtype=dtype, **kwargs)
 
+
+def top_k(
+    x: Array,
+    k: int,
+    /,
+    axis: Optional[int] = None,
+    *,
+    largest: bool = True,
+) -> tuple[Array, Array]:
+
+    if not largest:
+        k = -k
+
+    # For now, perform the computation twice,
+    # since an equivalent to numpy's `take_along_axis`
+    # does not exist.
+    # See https://github.com/dask/dask/issues/3663.
+    args = da.argtopk(x, k, axis=axis).compute()
+    vals = da.topk(x, k, axis=axis).compute()
+    return vals, args
+
+
 from dask.array import (
     # Element wise aliases
     arccos as acos,
@@ -178,6 +200,7 @@ __all__ = common_aliases + ['asarray', 'bool', 'acos',
                             'bitwise_right_shift', 'concat', 'pow',
                             'e', 'inf', 'nan', 'pi', 'newaxis', 'float32', 'float64', 'int8',
                             'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64',
-                            'complex64', 'complex128', 'iinfo', 'finfo', 'can_cast', 'result_type']
+                            'complex64', 'complex128', 'iinfo', 'finfo', 'can_cast', 'result_type',
+                            'top_k']
 
 _all_ignore = ['get_xp', 'da', 'partial', 'common_aliases', 'np']
