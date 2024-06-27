@@ -700,6 +700,8 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         axis = 0
     return torch.index_select(x, axis, indices, **kwargs)
 
+top_k = torch.topk
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'newaxis', 'add', 'atan2', 'bitwise_and', 'bitwise_left_shift',
            'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'divide',
@@ -713,6 +715,6 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take']
+           'take', 'top_k']
 
 _all_ignore = ['torch', 'get_xp']

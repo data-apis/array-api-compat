@@ -61,6 +61,35 @@ matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
 
+
+def top_k(a, k, /, axis=-1, *, largest=True):
+    if k <= 0:
+        raise ValueError(f'k(={k}) provided must be positive.')
+
+    positive_axis: int
+    _arr = np.asanyarray(a)
+    if axis is None:
+        arr = _arr.ravel()
+        positive_axis = 0
+    else:
+        arr = _arr
+        positive_axis = axis if axis > 0 else axis % arr.ndim
+
+    slice_start = (np.s_[:],) * positive_axis
+    if largest:
+        indices_array = np.argpartition(arr, -k, axis=axis)
+        slice = slice_start + (np.s_[-k:],)
+        topk_indices = indices_array[slice]
+    else:
+        indices_array = np.argpartition(arr, k-1, axis=axis)
+        slice = slice_start + (np.s_[:k],)
+        topk_indices = indices_array[slice]
+
+    topk_values = np.take_along_axis(arr, topk_indices, axis=axis)
+
+    return (topk_values, topk_indices)
+
+
 def _supports_buffer_protocol(obj):
     try:
         memoryview(obj)
@@ -126,6 +155,6 @@ else:
 __all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',
                               'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow']
+                              'bitwise_right_shift', 'concat', 'pow', 'top_k']
 
 _all_ignore = ['np', 'get_xp']

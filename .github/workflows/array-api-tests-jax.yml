@@ -1,0 +1,13 @@
+name: Array API Tests (JAX)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-jax:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: jax
+      # See https://github.com/google/jax/issues/22137 for reason behind skipped dtypes
+      extra-env-vars: |
+        JAX_ENABLE_X64=1
+        ARRAY_API_TESTS_SKIP_DTYPES=uint8,uint16,uint32,uint64
