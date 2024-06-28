@@ -63,6 +63,78 @@ def svdvals(x: Array) -> Array:
 vector_norm = get_xp(da)(_linalg.vector_norm)
 diagonal = get_xp(da)(_linalg.diagonal)
 
+# Calculate determinant via PLU decomp
+def det(x: Array) -> Array:
+    import scipy.linalg
+
+    # L has det 1 so don't need to worry about it
+    p, _, u = da.linalg.lu(x)
+
+    # TODO: numerical stability?
+    u_det = da.prod(da.diag(u))
+
+    # Now, time to calculate determinant of p
+
+    # (from reading the source code)
+    # We know that dask lu decomp forces square chunks
+    # We also know that the P matrix will only be non-zero
+    # for a block i, j if and only if i = j
+
+    # So we will calculate the determinant of each block on
+    # the diagonal (of blocks)
+
+    # This isn't ideal, but hopefully still lets out of core work
+    # properly since each block should be able to fit in memory
+
+    blocks_shape = p.blocks.shape
+    n_row_blocks = blocks_shape[0]
+
+    p_det = 1
+    for i in range(n_row_blocks):
+        p_det *= scipy.linalg.det(p.blocks[i, i].compute())
+    return p_det * u_det
+
+SlogdetResult = _linalg.SlogdetResult
+
+# Calculate determinant via PLU decomp
+def slogdet(x: Array) -> Array:
+    import scipy.linalg
+
+    # L has det 1 so don't need to worry about it
+    p, _, u = da.linalg.lu(x)
+
+    u_diag = da.diag(u)
+    neg_cnt = (u_diag < 0).sum()
+
+    u_logabsdet = da.sum(da.log(da.abs(u_diag)))
+
+    # Now, time to calculate determinant of p
+
+    # (from reading the source code)
+    # We know that dask lu decomp forces square chunks
+    # We also know that the P matrix will only be non-zero
+    # for a block i, j if and only if i = j
+
+    # So we will calculate the determinant of each block on
+    # the diagonal (of blocks)
+
+    # This isn't ideal, but hopefully still lets out of core work
+    # properly since each block should be able to fit in memory
+
+    blocks_shape = p.blocks.shape
+    n_row_blocks = blocks_shape[0]
+
+    sign = 1
+    for i in range(n_row_blocks):
+        sign *= scipy.linalg.det(p.blocks[i, i].compute())
+
+    if neg_cnt % 2 != 0:
+        sign *= -1
+    return SlogdetResult(sign, u_logabsdet)
+
+
+
+
 __all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
                         "matrix_transpose", "vecdot", "EighResult",
                         "QRResult", "SlogdetResult", "SVDResult", "qr",

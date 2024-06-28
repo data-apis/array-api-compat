@@ -80,6 +80,9 @@ array_api_tests/test_linalg.py::test_cholesky
 array_api_tests/test_linalg.py::test_tensordot
 # probably same reason for failing as numpy
 array_api_tests/test_linalg.py::test_trace
+# our version depends on dask's LU, which doesn't support ndim > 2
+array_api_tests/test_linalg.py::test_det
+array_api_tests/test_linalg.py::test_slogdet
 
 # AssertionError: out.dtype=uint64, but should be uint8 [tensordot(uint8, uint8)]
 array_api_tests/test_linalg.py::test_linalg_tensordot
@@ -97,18 +100,14 @@ array_api_tests/test_linalg.py::test_linalg_matmul
 
 # Linalg - these don't exist in dask
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.cross]
-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.det]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigh]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.eigvalsh]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.matrix_power]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.pinv]
-array_api_tests/test_signatures.py::test_extension_func_signature[linalg.slogdet]
 array_api_tests/test_linalg.py::test_cross
-array_api_tests/test_linalg.py::test_det
 array_api_tests/test_linalg.py::test_eigh
 array_api_tests/test_linalg.py::test_eigvalsh
 array_api_tests/test_linalg.py::test_pinv
-array_api_tests/test_linalg.py::test_slogdet
 array_api_tests/test_has_names.py::test_has_names[linalg-cross]
 array_api_tests/test_has_names.py::test_has_names[linalg-det]
 array_api_tests/test_has_names.py::test_has_names[linalg-eigh]
