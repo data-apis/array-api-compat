@@ -301,6 +301,15 @@ def clip(
 
     # but an answer of 0 might be preferred. See
     # https://github.com/numpy/numpy/issues/24976 for more discussion on this issue.
+
+
+    # At least handle the case of Python integers correctly (see
+    # https://github.com/numpy/numpy/pull/26892).
+    if type(min) is int and min <= xp.iinfo(x.dtype).min:
+        min = None
+    if type(max) is int and max >= xp.iinfo(x.dtype).max:
+        max = None
+
     if out is None:
         out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape), copy=True)
     if min is not None:
