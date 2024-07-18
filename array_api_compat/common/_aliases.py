@@ -315,11 +315,12 @@ def clip(
     if min is not None:
         a = xp.broadcast_to(xp.asarray(min), result_shape)
         ia = (out < a) | xp.isnan(a)
-        out[ia] = a[ia]
+        # torch requires an explicit cast here
+        out[ia] = wrapped_xp.astype(a[ia], out.dtype)
     if max is not None:
         b = xp.broadcast_to(xp.asarray(max), result_shape)
         ib = (out > b) | xp.isnan(b)
-        out[ib] = b[ib]
+        out[ib] = wrapped_xp.astype(b[ib], out.dtype)
     # Return a scalar for 0-D
     return out[()]
 
