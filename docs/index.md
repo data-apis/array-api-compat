@@ -118,7 +118,7 @@ cp -R array_api_compat/ mylib/vendored/array_api_compat
 You may also rename it to something else if you like (nowhere in the code
 references the name "array_api_compat").
 
-Alternatively, the library may be installed as dependency on PyPI.
+Alternatively, the library may be installed as dependency from PyPI.
 
 (scope)=
 ## Scope
