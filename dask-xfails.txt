@@ -150,3 +150,8 @@ array_api_tests/test_manipulation_functions.py::test_roll
 
 # No mT on dask array
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
+
+# The test suite is incorrectly checking sums that have loss of significance
+# (https://github.com/data-apis/array-api-tests/issues/168)
+array_api_tests/test_statistical_functions.py::test_sum
+array_api_tests/test_statistical_functions.py::test_prod
