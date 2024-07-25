@@ -50,3 +50,4 @@ yet.
 .. autofunction:: is_dask_array
 .. autofunction:: is_jax_array
 .. autofunction:: is_pydata_sparse_array
+.. autofunction:: is_ndonnx_array
