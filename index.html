@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Helper Functions" href="helper-functions.html" />
 
     <link rel="shortcut icon" href="_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.07.18 -->
-        <title>array-api-compat 1.7.1 documentation</title>
+        <title>array-api-compat 1.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=613ab9ff" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">array-api-compat 1.7.1 documentation</div></a>
+      <a href="#"><div class="brand">array-api-compat 1.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,7 +192,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">array-api-compat 1.7.1 documentation</span>
+  <span class="sidebar-brand-text">array-api-compat 1.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -255,9 +255,9 @@
 <h1>Array API compatibility library<a class="headerlink" href="#array-api-compatibility-library" title="Link to this heading">¶</a></h1>
 <p>This is a small wrapper around common array libraries that is compatible with
 the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API standard</a>. Currently,
-NumPy, CuPy, PyTorch, Dask, JAX, and Sparse are supported. If you want support
-for other array libraries, or if you encounter any issues, please <a class="reference external" href="https://github.com/data-apis/array-api-compat/issues">open an
-issue</a>.</p>
+NumPy, CuPy, PyTorch, Dask, JAX, ndonnx, and Sparse are supported. If you want
+support for other array libraries, or if you encounter any issues, please
+<a class="reference external" href="https://github.com/data-apis/array-api-compat/issues">open an issue</a>.</p>
 <p>Note that some of the functionality in this library is backwards incompatible
 with the corresponding wrapped libraries. The end-goal is to eventually make
 each array library itself fully compatible with the array API, but this
@@ -302,10 +302,11 @@ corresponding wrapped namespace for each library, like</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There is no <code class="docutils literal notranslate"><span class="pre">array_api_compat.jax</span></code> submodule. JAX support is contained in JAX
-itself in the <code class="docutils literal notranslate"><span class="pre">jax.experimental.array_api</span></code> module. array-api-compat simply
-wraps that submodule. The main JAX support in this module consists of
-supporting it in the <a class="reference internal" href="helper-functions.html"><span class="doc std std-doc">helper functions</span></a>.</p>
+<p>There are no <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> submodules for JAX, sparse, or ndonnx. These
+support for these libraries is contained in the libraries themselves (JAX
+support is in the <code class="docutils literal notranslate"><span class="pre">jax.experimental.array_api</span></code> module). The
+array-api-compat support for these libraries consists of supporting them in
+the <a class="reference internal" href="helper-functions.html"><span class="doc std std-doc">helper functions</span></a>.</p>
 </div>
 <p>Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
 namespace, except that functions that are part of the array API are wrapped so
@@ -350,7 +351,7 @@ library, like</p>
 </div>
 <p>You may also rename it to something else if you like (nowhere in the code
 references the name “array_api_compat”).</p>
-<p>Alternatively, the library may be installed as dependency on PyPI.</p>
+<p>Alternatively, the library may be installed as dependency from PyPI.</p>
 </section>
 <section id="scope">
 <span id="id2"></span><h2>Scope<a class="headerlink" href="#scope" title="Link to this heading">¶</a></h2>
@@ -473,7 +474,7 @@ libraries.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=a77542ef"></script>
+</div><script src="_static/documentation_options.js?v=d13700ae"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

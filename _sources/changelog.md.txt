@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.8 (2024-07-24)
+
+### Major Changes
+
+- Add support for [ndonnx](https://github.com/Quantco/ndonnx). Array API
+  support itself lives in the ndonnx library, but this adds the
+  {func}`~.is_ndonnx_array` helper function.
+  ([@adityagoel4512](https://github.com/adityagoel4512)).
+
+- Partial support for the [2023.12 version of the
+  standard](https://data-apis.org/array-api/latest/changelog.html#v2023-12).
+  This includes
+  - Wrappers for `clip()`.
+  - torch wrapper for `copysign()` with correct type promotion.
+
+  Note that many of the new functions in the 2023.12 version of the standard
+  are already fully implemented in upstream libraries and will already work.
+
 ## 1.7.1 (2024-05-28)
 
 ### Minor Changes
