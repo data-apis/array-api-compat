@@ -81,8 +81,6 @@ array_api_tests/test_linalg.py::test_svdvals
 array_api_tests/test_linalg.py::test_cholesky
 # dtype mismatch got uint64, but should be uint8, NPY_PROMOTION_STATE=weak doesn't help :(
 array_api_tests/test_linalg.py::test_tensordot
-# probably same reason for failing as numpy
-array_api_tests/test_linalg.py::test_trace
 
 # AssertionError: out.dtype=uint64, but should be uint8 [tensordot(uint8, uint8)]
 array_api_tests/test_linalg.py::test_linalg_tensordot
