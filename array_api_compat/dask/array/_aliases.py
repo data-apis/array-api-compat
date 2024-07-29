@@ -102,8 +102,6 @@ matrix_transpose = get_xp(da)(_aliases.matrix_transpose)
 vecdot = get_xp(da)(_aliases.vecdot)
 
 nonzero = get_xp(da)(_aliases.nonzero)
-sum = get_xp(np)(_aliases.sum)
-prod = get_xp(np)(_aliases.prod)
 ceil = get_xp(np)(_aliases.ceil)
 floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)

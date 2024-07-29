@@ -389,42 +389,6 @@ def nonzero(x: ndarray, /, xp, **kwargs) -> Tuple[ndarray, ...]:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
     return xp.nonzero(x, **kwargs)
 
-# sum() and prod() should always upcast when dtype=None
-def sum(
-    x: ndarray,
-    /,
-    xp,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Dtype] = None,
-    keepdims: bool = False,
-    **kwargs,
-) -> ndarray:
-    # `xp.sum` already upcasts integers, but not floats or complexes
-    if dtype is None:
-        if x.dtype == xp.float32:
-            dtype = xp.float64
-        elif x.dtype == xp.complex64:
-            dtype = xp.complex128
-    return xp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, **kwargs)
-
-def prod(
-    x: ndarray,
-    /,
-    xp,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Dtype] = None,
-    keepdims: bool = False,
-    **kwargs,
-) -> ndarray:
-    if dtype is None:
-        if x.dtype == xp.float32:
-            dtype = xp.float64
-        elif x.dtype == xp.complex64:
-            dtype = xp.complex128
-    return xp.prod(x, dtype=dtype, axis=axis, keepdims=keepdims, **kwargs)
-
 # ceil, floor, and trunc return integers for integer inputs
 
 def ceil(x: ndarray, /, xp, **kwargs) -> ndarray:
@@ -525,6 +489,6 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'astype', 'std', 'var', 'clip', 'permute_dims', 'reshape', 'argsort',
-           'sort', 'nonzero', 'sum', 'prod', 'ceil', 'floor', 'trunc',
-           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
+           'astype', 'std', 'var', 'clip', 'permute_dims', 'reshape',
+           'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc', 'matmul',
+           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
