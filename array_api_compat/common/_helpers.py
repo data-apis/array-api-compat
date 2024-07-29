@@ -342,8 +342,8 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             else:
                 # numpy 2.0 has __array_namespace__ and is fully array API
                 # compatible.
-                if hasattr(x, '__array_namespace__'):
-                    namespaces.add(x.__array_namespace__(api_version=api_version))
+                if hasattr(np.empty(0), '__array_namespace__'):
+                    namespaces.add(np.empty(0).__array_namespace__(api_version=api_version))
                 else:
                     namespaces.add(numpy_namespace)
         elif is_cupy_array(x):

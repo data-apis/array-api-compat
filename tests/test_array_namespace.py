@@ -36,6 +36,13 @@ def test_array_namespace(library, api_version, use_compat):
         else:
             assert namespace == getattr(array_api_compat, library)
 
+    if library == "numpy":
+        # check that the same namespace is returned for NumPy scalars
+        scalar_namespace = array_api_compat.array_namespace(
+            xp.float64(0.0), api_version=api_version, use_compat=use_compat
+        )
+        assert scalar_namespace == namespace
+
     # Check that array_namespace works even if jax.experimental.array_api
     # hasn't been imported yet (it monkeypatches __array_namespace__
     # onto JAX arrays, but we should support them regardless). The only way to
