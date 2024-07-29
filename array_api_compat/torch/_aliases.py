@@ -162,6 +162,7 @@ equal = _two_arg(torch.eq)
 floor_divide = _two_arg(torch.floor_divide)
 greater = _two_arg(torch.greater)
 greater_equal = _two_arg(torch.greater_equal)
+hypot = _two_arg(torch.hypot)
 less = _two_arg(torch.less)
 less_equal = _two_arg(torch.less_equal)
 logaddexp = _two_arg(torch.logaddexp)
@@ -707,15 +708,15 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'newaxis', 'add', 'atan2', 'bitwise_and', 'bitwise_left_shift',
            'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'copysign',
            'divide', 'equal', 'floor_divide', 'greater', 'greater_equal',
-           'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal', 'pow',
-           'remainder', 'subtract', 'max', 'min', 'clip', 'sort', 'prod',
-           'sum', 'any', 'all', 'mean', 'std', 'var', 'concat', 'squeeze',
-           'broadcast_to', 'flip', 'roll', 'nonzero', 'where', 'reshape',
-           'arange', 'eye', 'linspace', 'full', 'ones', 'zeros', 'empty',
-           'tril', 'triu', 'expand_dims', 'astype', 'broadcast_arrays',
-           'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
-           'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take']
+           'hypot', 'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal',
+           'pow', 'remainder', 'subtract', 'max', 'min', 'clip', 'sort',
+           'prod', 'sum', 'any', 'all', 'mean', 'std', 'var', 'concat',
+           'squeeze', 'broadcast_to', 'flip', 'roll', 'nonzero', 'where',
+           'reshape', 'arange', 'eye', 'linspace', 'full', 'ones', 'zeros',
+           'empty', 'tril', 'triu', 'expand_dims', 'astype',
+           'broadcast_arrays', 'UniqueAllResult', 'UniqueCountsResult',
+           'UniqueInverseResult', 'unique_all', 'unique_counts',
+           'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
+           'vecdot', 'tensordot', 'isdtype', 'take']
 
 _all_ignore = ['torch', 'get_xp']
