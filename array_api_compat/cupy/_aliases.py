@@ -112,10 +112,16 @@ if hasattr(cp, 'vecdot'):
     vecdot = cp.vecdot
 else:
     vecdot = get_xp(cp)(_aliases.vecdot)
+
 if hasattr(cp, 'isdtype'):
     isdtype = cp.isdtype
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
+
+if hasattr(cp, 'unstack'):
+    unstack = cp.unstack
+else:
+    unstack = get_xp(cp)(_aliases.unstack)
 
 __all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',

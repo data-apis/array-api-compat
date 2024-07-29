@@ -4,7 +4,8 @@ from functools import wraps as _wraps
 from builtins import all as _builtin_all, any as _builtin_any
 
 from ..common._aliases import (matrix_transpose as _aliases_matrix_transpose,
-                               vecdot as _aliases_vecdot, clip as _aliases_clip)
+                               vecdot as _aliases_vecdot, clip as
+                               _aliases_clip, unstack as _aliases_unstack,)
 from .._internal import get_xp
 
 import torch
@@ -191,6 +192,7 @@ def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
     return torch.amin(x, axis, keepdims=keepdims)
 
 clip = get_xp(torch)(_aliases_clip)
+unstack = get_xp(torch)(_aliases_unstack)
 
 # torch.sort also returns a tuple
 # https://github.com/pytorch/pytorch/issues/70921
@@ -709,7 +711,7 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'copysign',
            'divide', 'equal', 'floor_divide', 'greater', 'greater_equal',
            'hypot', 'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal',
-           'pow', 'remainder', 'subtract', 'max', 'min', 'clip', 'sort',
+           'pow', 'remainder', 'subtract', 'max', 'min', 'clip', 'unstack', 'sort',
            'prod', 'sum', 'any', 'all', 'mean', 'std', 'var', 'concat',
            'squeeze', 'broadcast_to', 'flip', 'roll', 'nonzero', 'where',
            'reshape', 'arange', 'eye', 'linspace', 'full', 'ones', 'zeros',

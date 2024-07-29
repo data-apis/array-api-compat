@@ -117,10 +117,16 @@ if hasattr(np, 'vecdot'):
     vecdot = np.vecdot
 else:
     vecdot = get_xp(np)(_aliases.vecdot)
+
 if hasattr(np, 'isdtype'):
     isdtype = np.isdtype
 else:
     isdtype = get_xp(np)(_aliases.isdtype)
+
+if hasattr(np, 'unstack'):
+    unstack = np.unstack
+else:
+    unstack = get_xp(np)(_aliases.unstack)
 
 __all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',

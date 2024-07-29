@@ -42,6 +42,7 @@ if TYPE_CHECKING:
 import dask.array as da
 
 isdtype = get_xp(np)(_aliases.isdtype)
+unstack = get_xp(da)(_aliases.unstack)
 astype = _aliases.astype
 
 # Common aliases

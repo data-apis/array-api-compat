@@ -485,10 +485,16 @@ def isdtype(
         # array_api_strict implementation will be very strict.
         return dtype == kind
 
+# unstack is a new function in the 2023.12 array API standard
+def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
+    if x.ndim == 0:
+        raise ValueError("Input array must be at least 1-d.")
+    return tuple(xp.moveaxis(x, axis, 0))
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'astype', 'std', 'var', 'clip', 'permute_dims', 'reshape',
            'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc', 'matmul',
-           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
+           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype', 'unstack']
