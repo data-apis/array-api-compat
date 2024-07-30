@@ -9,3 +9,4 @@ jobs:
       package-name: numpy
       extra-requires: '--pre --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
       xfails-file-extra: '-dev'
+      pytest-extra-args: '-k test_sort --hypothesis-verbosity=verbose -s'
