@@ -32,6 +32,7 @@ array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
+array_api_tests/test_statistical_functions.py::test_cumulative_sum
 
 # The test suite cannot properly get the signature for vecdot
 # https://github.com/numpy/numpy/pull/26237
