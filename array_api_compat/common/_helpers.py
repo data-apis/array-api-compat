@@ -145,7 +145,7 @@ def is_ndonnx_array(x):
 
     import ndonnx as ndx
 
-    return isinstance(x, ndx.Array)  
+    return isinstance(x, ndx.Array)
 
 def is_dask_array(x):
     """
@@ -340,12 +340,9 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             elif use_compat is False:
                 namespaces.add(np)
             else:
-                # numpy 2.0 has __array_namespace__ and is fully array API
+                # numpy 2.0+ have __array_namespace__, however, they are not yet fully array API
                 # compatible.
-                if hasattr(np.empty(0), '__array_namespace__'):
-                    namespaces.add(np.empty(0).__array_namespace__(api_version=api_version))
-                else:
-                    namespaces.add(numpy_namespace)
+                namespaces.add(numpy_namespace)
         elif is_cupy_array(x):
             if _use_compat:
                 _check_api_version(api_version)
