@@ -377,7 +377,7 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             elif use_compat is False:
                 import jax.numpy as jnp
             else:
-                # JAX v0.4.32 and newer implements the array API directly.
+                # JAX v0.4.32 and newer implements the array API directly in jax.numpy.
                 # For older JAX versions, it is available via jax.experimental.array_api.
                 import jax.numpy
                 if hasattr(jax.numpy, "__array_api_version__"):
@@ -617,9 +617,10 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
             return x
         raise ValueError(f"Unsupported device {device!r}")
     elif is_jax_array(x):
-        # This import adds to_device to x
-        import jax.experimental.array_api # noqa: F401
-        return x.to_device(device, stream=stream)
+        if not hasattr(x, "__array_namespace__"):
+            # In JAX v0.4.31 and older, this import adds to_device method to x.
+            import jax.experimental.array_api # noqa: F401
+            return x.to_device(device, stream=stream)
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.

@@ -63,7 +63,8 @@ import array_api_compat.dask as da
 ```{note}
 There are no `array_api_compat` submodules for JAX, sparse, or ndonnx. These
 support for these libraries is contained in the libraries themselves (JAX
-support is in the `jax.experimental.array_api` module). The
+support is in the `jax.numpy` module in JAX v0.4.32 or newer, and in the
+`jax.experimental.array_api` module for older JAX versions). The
 array-api-compat support for these libraries consists of supporting them in
 the [helper functions](helper-functions).
 ```

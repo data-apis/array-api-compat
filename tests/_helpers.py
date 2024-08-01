@@ -18,7 +18,11 @@ def import_(library, wrapper=False):
         pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
-            library = 'jax.experimental.array_api'
+            # JAX v0.4.32 implements the array API directly in jax.numpy
+            # Older jax versions use jax.experimental.array_api
+            jax_numpy = import_module("jax.numpy")
+            if not hasattr(jax_numpy, "__array_api_version__"):
+                library = 'jax.experimental.array_api'
         elif library.startswith('sparse'):
             library = 'sparse'
         else:
