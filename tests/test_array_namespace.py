@@ -26,6 +26,7 @@ def test_array_namespace(library, api_version, use_compat):
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and use_compat is None:
+            import jax.numpy
             if hasattr(jax.numpy, "__array_api_version__"):
                 # JAX v0.4.32 or later uses jax.numpy directly
                 assert namespace == jax.numpy
