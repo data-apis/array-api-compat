@@ -377,9 +377,13 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             elif use_compat is False:
                 import jax.numpy as jnp
             else:
-                # jax.experimental.array_api is already an array namespace. We do
-                # not have a wrapper submodule for it.
-                import jax.experimental.array_api as jnp
+                # JAX v0.4.32 and newer implements the array API directly.
+                # For older JAX versions, it is available via jax.experimental.array_api.
+                import jax.numpy
+                if hasattr(jax.numpy, "__array_api_version__"):
+                    jnp = jax.numpy
+                else:
+                    import jax.experimental.array_api as jnp
             namespaces.add(jnp)
         elif is_pydata_sparse_array(x):
             if use_compat is True:
