@@ -620,7 +620,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         if not hasattr(x, "__array_namespace__"):
             # In JAX v0.4.31 and older, this import adds to_device method to x.
             import jax.experimental.array_api # noqa: F401
-            return x.to_device(device, stream=stream)
+        return x.to_device(device, stream=stream)
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.
