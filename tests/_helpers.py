@@ -4,7 +4,7 @@ import sys
 import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + ["jax.numpy", "sparse"]
+all_libraries = wrapped_libraries + ["jax.numpy"]
 
 # `sparse` added array API support as of Python 3.10.
 if sys.version_info >= (3, 10):
