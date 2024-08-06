@@ -145,6 +145,9 @@ def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
 # Basic renames
 bitwise_invert = torch.bitwise_not
 newaxis = None
+# torch.conj sets the conjugation bit, which breaks conversion to other
+# libraries. See https://github.com/data-apis/array-api-compat/issues/173
+conj = torch.conj_physical
 
 # Two-arg elementwise functions
 # These require a wrapper to do the correct type promotion on 0-D tensors
