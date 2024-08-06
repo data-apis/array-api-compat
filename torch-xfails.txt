@@ -169,7 +169,6 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity 
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i < 0) -> -0]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_unary[sign(x_i is NaN) -> NaN]
 
 # Float correction is not supported by pytorch
 # (https://github.com/data-apis/array-api-tests/issues/168)
@@ -186,7 +185,6 @@ array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
 
 # These functions do not yet support complex numbers
-array_api_tests/test_operators_and_elementwise_functions.py::test_sign
 array_api_tests/test_operators_and_elementwise_functions.py::test_expm1
 array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
