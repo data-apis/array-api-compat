@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-        numpy-version: ['1.21', '1.26', 'dev']
+        numpy-version: ['1.21', '1.26', '2.0', 'dev']
         exclude:
           - python-version: '3.11'
             numpy-version: '1.21'
