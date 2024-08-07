@@ -53,8 +53,6 @@ reshape = get_xp(cp)(_aliases.reshape)
 argsort = get_xp(cp)(_aliases.argsort)
 sort = get_xp(cp)(_aliases.sort)
 nonzero = get_xp(cp)(_aliases.nonzero)
-sum = get_xp(cp)(_aliases.sum)
-prod = get_xp(cp)(_aliases.prod)
 ceil = get_xp(cp)(_aliases.ceil)
 floor = get_xp(cp)(_aliases.floor)
 trunc = get_xp(cp)(_aliases.trunc)
@@ -114,10 +112,16 @@ if hasattr(cp, 'vecdot'):
     vecdot = cp.vecdot
 else:
     vecdot = get_xp(cp)(_aliases.vecdot)
+
 if hasattr(cp, 'isdtype'):
     isdtype = cp.isdtype
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
+
+if hasattr(cp, 'unstack'):
+    unstack = cp.unstack
+else:
+    unstack = get_xp(cp)(_aliases.unstack)
 
 __all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',

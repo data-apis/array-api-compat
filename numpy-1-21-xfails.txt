@@ -119,6 +119,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[bitwise_xor(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_copysign
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[divide(x1, x2)]
@@ -131,11 +132,13 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[f
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater[greater(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[greater_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_hypot
 array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_less[less(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[less_equal(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_logaddexp
+array_api_tests/test_operators_and_elementwise_functions.py::test_minimum
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
@@ -246,3 +249,21 @@ array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is +0 and x2_i
 array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is -0 and x2_i < 0) -> -0]
 array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is -0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
+
+# 2023.12 support
+array_api_tests/test_has_names.py::test_has_names[statistical-cumulative_sum]
+array_api_tests/test_has_names.py::test_has_names[info-__array_namespace_info__]
+array_api_tests/test_inspection_functions.py::test_array_namespace_info
+array_api_tests/test_inspection_functions.py::test_array_namespace_info_dtypes
+array_api_tests/test_searching_functions.py::test_searchsorted
+array_api_tests/test_signatures.py::test_func_signature[cumulative_sum]
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_func_signature[astype]
+array_api_tests/test_signatures.py::test_func_signature[__array_namespace_info__]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+array_api_tests/test_signatures.py::test_info_func_signature[capabilities]
+array_api_tests/test_signatures.py::test_info_func_signature[default_device]
+array_api_tests/test_signatures.py::test_info_func_signature[default_dtypes]
+array_api_tests/test_signatures.py::test_info_func_signature[devices]
+array_api_tests/test_signatures.py::test_info_func_signature[dtypes]
+array_api_tests/test_statistical_functions.py::test_cumulative_sum
