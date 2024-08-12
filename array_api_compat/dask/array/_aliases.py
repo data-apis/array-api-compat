@@ -89,7 +89,6 @@ unique_values = get_xp(da)(_aliases.unique_values)
 permute_dims = get_xp(da)(_aliases.permute_dims)
 std = get_xp(da)(_aliases.std)
 var = get_xp(da)(_aliases.var)
-clip = get_xp(da)(_aliases.clip)
 empty = get_xp(da)(_aliases.empty)
 empty_like = get_xp(da)(_aliases.empty_like)
 full = get_xp(da)(_aliases.full)
@@ -166,6 +165,43 @@ from dask.array import (
     # Other
     concatenate as concat,
 )
+
+# dask.array.clip does not work unless all three arguments are provided.
+# Furthermore, the masking workaround in common._aliases.clip cannot work with
+# dask (meaning uint64 promoting to float64 is going to just be unfixed for
+# now).
+@get_xp(da)
+def clip(
+    x: Array,
+    /,
+    min: Optional[Union[int, float, Array]] = None,
+    max: Optional[Union[int, float, Array]] = None,
+    *,
+    xp,
+) -> Array:
+    def _isscalar(a):
+        return isinstance(a, (int, float, type(None)))
+    min_shape = () if _isscalar(min) else min.shape
+    max_shape = () if _isscalar(max) else max.shape
+
+    # TODO: This won't handle dask unknown shapes
+    import numpy as np
+    result_shape = np.broadcast_shapes(x.shape, min_shape, max_shape)
+
+    if min is not None:
+        min = xp.broadcast_to(xp.asarray(min), result_shape)
+    if max is not None:
+        max = xp.broadcast_to(xp.asarray(max), result_shape)
+
+    if min is None and max is None:
+        return xp.positive(x)
+
+    if min is None:
+        return astype(xp.minimum(x, max), x.dtype)
+    if max is None:
+        return astype(xp.maximum(x, min), x.dtype)
+
+    return astype(xp.minimum(xp.maximum(x, min), max), x.dtype)
 
 # exclude these from all since
 _da_unsupported = ['sort', 'argsort']

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device
+from ._helpers import array_namespace, _check_device, device, is_torch_array
 
 # These functions are modified from the NumPy versions.
 
@@ -281,9 +281,10 @@ def clip(
         return isinstance(a, (int, float, type(None)))
     min_shape = () if _isscalar(min) else min.shape
     max_shape = () if _isscalar(max) else max.shape
-    result_shape = xp.broadcast_shapes(x.shape, min_shape, max_shape)
 
     wrapped_xp = array_namespace(x)
+
+    result_shape = xp.broadcast_shapes(x.shape, min_shape, max_shape)
 
     # np.clip does type promotion but the array API clip requires that the
     # output have the same dtype as x. We do this instead of just downcasting
@@ -305,20 +306,26 @@ def clip(
 
     # At least handle the case of Python integers correctly (see
     # https://github.com/numpy/numpy/pull/26892).
-    if type(min) is int and min <= xp.iinfo(x.dtype).min:
+    if type(min) is int and min <= wrapped_xp.iinfo(x.dtype).min:
         min = None
-    if type(max) is int and max >= xp.iinfo(x.dtype).max:
+    if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
         max = None
 
     if out is None:
-        out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape), copy=True)
+        out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape),
+                                 copy=True, device=device(x))
     if min is not None:
-        a = xp.broadcast_to(xp.asarray(min), result_shape)
+        if is_torch_array(x) and x.dtype == xp.float64 and _isscalar(min):
+            # Avoid loss of precision due to torch defaulting to float32
+            min = wrapped_xp.asarray(min, dtype=xp.float64)
+        a = xp.broadcast_to(wrapped_xp.asarray(min, device=device(x)), result_shape)
         ia = (out < a) | xp.isnan(a)
         # torch requires an explicit cast here
         out[ia] = wrapped_xp.astype(a[ia], out.dtype)
     if max is not None:
-        b = xp.broadcast_to(xp.asarray(max), result_shape)
+        if is_torch_array(x) and x.dtype == xp.float64 and _isscalar(max):
+            max = wrapped_xp.asarray(max, dtype=xp.float64)
+        b = xp.broadcast_to(wrapped_xp.asarray(max, device=device(x)), result_shape)
         ib = (out > b) | xp.isnan(b)
         out[ib] = wrapped_xp.astype(b[ib], out.dtype)
     # Return a scalar for 0-D
