@@ -138,6 +138,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_less[less(x1, 
 array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[less_equal(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_logaddexp
+array_api_tests/test_operators_and_elementwise_functions.py::test_maximum
 array_api_tests/test_operators_and_elementwise_functions.py::test_minimum
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x, s)]
