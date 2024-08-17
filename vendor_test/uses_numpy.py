@@ -1,6 +1,11 @@
 # Basic test that vendoring works
 
-from .vendored._compat import numpy as np_compat
+from .vendored._compat import (
+    is_numpy_array,
+    is_numpy_namespace,
+    numpy as np_compat,
+)
+
 
 import numpy as np
 
@@ -16,3 +21,6 @@ def _test_numpy():
     assert isinstance(res, np.ndarray)
 
     np.testing.assert_allclose(res, [1., 2., 9.])
+
+    assert is_numpy_array(res)
+    assert is_numpy_namespace(np) and is_numpy_namespace(np_compat)

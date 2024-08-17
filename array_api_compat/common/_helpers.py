@@ -276,7 +276,7 @@ def is_numpy_namespace(xp) -> bool:
     is_pydata_sparse_namespace
     is_array_api_strict_namespace
     """
-    return xp.__name__ in {'numpy', _compat_module_name + '.numpy'}
+    return xp.__name__ in {'numpy', _compat_module_name() + '.numpy'}
 
 def is_cupy_namespace(xp) -> bool:
     """
@@ -296,7 +296,7 @@ def is_cupy_namespace(xp) -> bool:
     is_pydata_sparse_namespace
     is_array_api_strict_namespace
     """
-    return xp.__name__ in {'cupy', _compat_module_name + '.cupy'}
+    return xp.__name__ in {'cupy', _compat_module_name() + '.cupy'}
 
 def is_torch_namespace(xp) -> bool:
     """
@@ -316,7 +316,7 @@ def is_torch_namespace(xp) -> bool:
     is_pydata_sparse_namespace
     is_array_api_strict_namespace
     """
-    return xp.__name__ in {'torch', _compat_module_name + '.torch'}
+    return xp.__name__ in {'torch', _compat_module_name() + '.torch'}
     
 
 def is_ndonnx_namespace(xp):
@@ -355,7 +355,7 @@ def is_dask_namespace(xp):
     is_pydata_sparse_namespace
     is_array_api_strict_namespace
     """
-    return xp.__name__ in {'dask.array', _compat_module_name + '.dask.array'}
+    return xp.__name__ in {'dask.array', _compat_module_name() + '.dask.array'}
 
 def is_jax_namespace(xp):
     """
