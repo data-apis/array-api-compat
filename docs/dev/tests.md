@@ -11,7 +11,8 @@ dependencies from `requirements-dev.txt` (array-api-compat has [no hard
 runtime dependencies](no-dependencies)).
 
 array-api-tests is run against all supported libraries are tested on CI
-([except for JAX](jax-support)). This is achieved by a [reusable GitHub Actions
+([except for JAX](jax-support) and [Sparse](sparse-support)). This is achieved
+by a [reusable GitHub Actions
 Workflow](https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml).
 Most libraries have tests that must be xfailed or skipped for various reasons.
 These are defined in specific `<library>-xfails.txt` files and are

@@ -47,6 +47,7 @@ unique_values = get_xp(np)(_aliases.unique_values)
 astype = _aliases.astype
 std = get_xp(np)(_aliases.std)
 var = get_xp(np)(_aliases.var)
+clip = get_xp(np)(_aliases.clip)
 permute_dims = get_xp(np)(_aliases.permute_dims)
 reshape = get_xp(np)(_aliases.reshape)
 argsort = get_xp(np)(_aliases.argsort)

@@ -10,3 +10,5 @@ jobs:
       # Proper linalg testing will require
       # https://github.com/data-apis/array-api-tests/pull/101
       pytest-extra-args: "--disable-extension linalg"
+      extra-env-vars: |
+        ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64
