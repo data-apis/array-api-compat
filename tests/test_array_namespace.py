@@ -26,8 +26,14 @@ def test_array_namespace(library, api_version, use_compat):
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and use_compat is None:
-            import jax.experimental.array_api
-            assert namespace == jax.experimental.array_api
+            import jax.numpy
+            if hasattr(jax.numpy, "__array_api_version__"):
+                # JAX v0.4.32 or later uses jax.numpy directly
+                assert namespace == jax.numpy
+            else:
+                # JAX v0.4.31 or earlier uses jax.experimental.array_api
+                import jax.experimental.array_api
+                assert namespace == jax.experimental.array_api
         else:
             assert namespace == xp
     else:
@@ -35,6 +41,13 @@ def test_array_namespace(library, api_version, use_compat):
             assert namespace == array_api_compat.dask.array
         else:
             assert namespace == getattr(array_api_compat, library)
+
+    if library == "numpy":
+        # check that the same namespace is returned for NumPy scalars
+        scalar_namespace = array_api_compat.array_namespace(
+            xp.float64(0.0), api_version=api_version, use_compat=use_compat
+        )
+        assert scalar_namespace == namespace
 
     # Check that array_namespace works even if jax.experimental.array_api
     # hasn't been imported yet (it monkeypatches __array_namespace__
@@ -51,8 +64,11 @@ array = jax.numpy.asarray([1.0, 2.0, 3.0])
 assert 'jax.experimental.array_api' not in sys.modules
 namespace = array_api_compat.array_namespace(array, api_version={api_version!r})
 
-import jax.experimental.array_api
-assert namespace == jax.experimental.array_api
+if hasattr(jax.numpy, '__array_api_version__'):
+    assert namespace == jax.numpy
+else:
+    import jax.experimental.array_api
+    assert namespace == jax.experimental.array_api
 """
         subprocess.run([sys.executable, "-c", code], check=True)
 

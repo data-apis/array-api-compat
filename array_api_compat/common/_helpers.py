@@ -48,9 +48,10 @@ def is_numpy_array(x):
     is_array_api_obj
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
-    is_pydata_sparse
+    is_pydata_sparse_array
     """
     # Avoid importing NumPy if it isn't already
     if 'numpy' not in sys.modules:
@@ -78,11 +79,12 @@ def is_cupy_array(x):
     is_array_api_obj
     is_numpy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
-    is_pydata_sparse
+    is_pydata_sparse_array
     """
-    # Avoid importing NumPy if it isn't already
+    # Avoid importing CuPy if it isn't already
     if 'cupy' not in sys.modules:
         return False
 
@@ -107,7 +109,7 @@ def is_torch_array(x):
     is_cupy_array
     is_dask_array
     is_jax_array
-    is_pydata_sparse
+    is_pydata_sparse_array
     """
     # Avoid importing torch if it isn't already
     if 'torch' not in sys.modules:
@@ -117,6 +119,33 @@ def is_torch_array(x):
 
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
+
+def is_ndonnx_array(x):
+    """
+    Return True if `x` is a ndonnx Array.
+
+    This function does not import ndonnx if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_ndonnx_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    # Avoid importing torch if it isn't already
+    if 'ndonnx' not in sys.modules:
+        return False
+
+    import ndonnx as ndx
+
+    return isinstance(x, ndx.Array)
 
 def is_dask_array(x):
     """
@@ -133,8 +162,9 @@ def is_dask_array(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_jax_array
-    is_pydata_sparse
+    is_pydata_sparse_array
     """
     # Avoid importing dask if it isn't already
     if 'dask.array' not in sys.modules:
@@ -160,8 +190,9 @@ def is_jax_array(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
-    is_pydata_sparse
+    is_pydata_sparse_array
     """
     # Avoid importing jax if it isn't already
     if 'jax' not in sys.modules:
@@ -172,7 +203,7 @@ def is_jax_array(x):
     return isinstance(x, jax.Array) or _is_jax_zero_gradient_array(x)
 
 
-def is_pydata_sparse(x) -> bool:
+def is_pydata_sparse_array(x) -> bool:
     """
     Return True if `x` is an array from the `sparse` package.
 
@@ -188,6 +219,7 @@ def is_pydata_sparse(x) -> bool:
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     """
@@ -211,6 +243,7 @@ def is_array_api_obj(x):
     is_numpy_array
     is_cupy_array
     is_torch_array
+    is_ndonnx_array
     is_dask_array
     is_jax_array
     """
@@ -219,7 +252,7 @@ def is_array_api_obj(x):
         or is_torch_array(x) \
         or is_dask_array(x) \
         or is_jax_array(x) \
-        or is_pydata_sparse(x) \
+        or is_pydata_sparse_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _check_api_version(api_version):
@@ -288,7 +321,7 @@ def array_namespace(*xs, api_version=None, use_compat=None):
     is_torch_array
     is_dask_array
     is_jax_array
-    is_pydata_sparse
+    is_pydata_sparse_array
 
     """
     if use_compat not in [None, True, False]:
@@ -307,12 +340,9 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             elif use_compat is False:
                 namespaces.add(np)
             else:
-                # numpy 2.0 has __array_namespace__ and is fully array API
+                # numpy 2.0+ have __array_namespace__, however, they are not yet fully array API
                 # compatible.
-                if hasattr(x, '__array_namespace__'):
-                    namespaces.add(x.__array_namespace__(api_version=api_version))
-                else:
-                    namespaces.add(numpy_namespace)
+                namespaces.add(numpy_namespace)
         elif is_cupy_array(x):
             if _use_compat:
                 _check_api_version(api_version)
@@ -344,11 +374,15 @@ def array_namespace(*xs, api_version=None, use_compat=None):
             elif use_compat is False:
                 import jax.numpy as jnp
             else:
-                # jax.experimental.array_api is already an array namespace. We do
-                # not have a wrapper submodule for it.
-                import jax.experimental.array_api as jnp
+                # JAX v0.4.32 and newer implements the array API directly in jax.numpy.
+                # For older JAX versions, it is available via jax.experimental.array_api.
+                import jax.numpy
+                if hasattr(jax.numpy, "__array_api_version__"):
+                    jnp = jax.numpy
+                else:
+                    import jax.experimental.array_api as jnp
             namespaces.add(jnp)
-        elif is_pydata_sparse(x):
+        elif is_pydata_sparse_array(x):
             if use_compat is True:
                 _check_api_version(api_version)
                 raise ValueError("`sparse` does not have an array-api-compat wrapper")
@@ -451,7 +485,7 @@ def device(x: Array, /) -> Device:
             return x.device()
         else:
             return x.device
-    elif is_pydata_sparse(x):
+    elif is_pydata_sparse_array(x):
         # `sparse` will gain `.device`, so check for this first.
         x_device = getattr(x, 'device', None)
         if x_device is not None:
@@ -580,10 +614,11 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
             return x
         raise ValueError(f"Unsupported device {device!r}")
     elif is_jax_array(x):
-        # This import adds to_device to x
-        import jax.experimental.array_api # noqa: F401
+        if not hasattr(x, "__array_namespace__"):
+            # In JAX v0.4.31 and older, this import adds to_device method to x.
+            import jax.experimental.array_api # noqa: F401
         return x.to_device(device, stream=stream)
-    elif is_pydata_sparse(x) and device == _device(x):
+    elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.
         return x
@@ -613,7 +648,8 @@ __all__ = [
     "is_jax_array",
     "is_numpy_array",
     "is_torch_array",
-    "is_pydata_sparse",
+    "is_ndonnx_array",
+    "is_pydata_sparse_array",
     "size",
     "to_device",
 ]

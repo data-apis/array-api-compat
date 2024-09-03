@@ -1,8 +1,32 @@
 # Changelog
 
-## 1.6 (2024-03-29)
+## 1.8 (2024-07-24)
 
-## Major Changes
+### Major Changes
+
+- Add support for [ndonnx](https://github.com/Quantco/ndonnx). Array API
+  support itself lives in the ndonnx library, but this adds the
+  {func}`~.is_ndonnx_array` helper function.
+  ([@adityagoel4512](https://github.com/adityagoel4512)).
+
+- Partial support for the [2023.12 version of the
+  standard](https://data-apis.org/array-api/latest/changelog.html#v2023-12).
+  This includes
+  - Wrappers for `clip()`.
+  - torch wrapper for `copysign()` with correct type promotion.
+
+  Note that many of the new functions in the 2023.12 version of the standard
+  are already fully implemented in upstream libraries and will already work.
+
+## 1.7.1 (2024-05-28)
+
+### Minor Changes
+
+- Fix a typo in setup.py ([@sunpoet](https://github.com/sunpoet)).
+
+## 1.7 (2024-05-24)
+
+### Major Changes
 
 - Add support for `sparse`. Note that unlike other array libraries,
   array-api-compat does not contain any wrappers for `sparse` functions. All
@@ -10,7 +34,23 @@
   `array_api_compat.sparse` submodule, and
   `array_namespace(<pydata/sparse array>)` returns the `sparse` module.
 
-- Added the function `is_pydata_sparse(x)`.
+- Added the function `is_pydata_sparse_array(x)`.
+
+### Minor Changes
+
+- Fix JAX `float0` arrays. See https://github.com/google/jax/issues/20620.
+  ([@NeilGirdhar](https://github.com/NeilGirdhar))
+
+- Fix `torch.linalg.vector_norm()` when `axis=()`.
+
+- Fix `torch.linalg.solve()` to apply the array API standard rules for when
+  `x2` should be treated as a vector vs. a matrix.
+
+- Fix PyTorch test failures on CI by skipping uint16, uint32, uint64 tests.
+
+## 1.6 (2024-03-29)
+
+### Major Changes
 
 - Drop support for Python 3.8.
 
@@ -26,7 +66,7 @@
 
 - Fix various issues with `asarray` for Dask.
 
-## Minor Changes
+### Minor Changes
 
 - Test Python 3.12 on CI.
 
@@ -38,7 +78,7 @@
 
 ## 1.5.1 (2024-03-20)
 
-## Minor Changes
+### Minor Changes
 
 - Add [HTML documentation](https://data-apis.org/array-api-compat/). Includes
   new documentation on the [scope of the package](scope) and new [developer

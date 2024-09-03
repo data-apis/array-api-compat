@@ -1,5 +1,5 @@
 from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array, # noqa: F401
-                              is_dask_array, is_jax_array, is_pydata_sparse)
+                              is_dask_array, is_jax_array, is_pydata_sparse_array)
 
 from array_api_compat import is_array_api_obj, device, to_device
 
@@ -16,7 +16,7 @@ is_functions = {
     'torch': 'is_torch_array',
     'dask.array': 'is_dask_array',
     'jax.numpy': 'is_jax_array',
-    'sparse': 'is_pydata_sparse',
+    'sparse': 'is_pydata_sparse_array',
 }
 
 @pytest.mark.parametrize('library', is_functions.keys())
