@@ -108,6 +108,13 @@ def asarray(
 
         return cp.array(obj, dtype=dtype, **kwargs)
 
+def sign(x: ndarray, /) -> ndarray:
+    # CuPy sign() does not propagate nans. See
+    # https://github.com/data-apis/array-api-compat/issues/136
+    out = cp.sign(x)
+    out[cp.isnan(x)] = cp.nan
+    return out
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -122,6 +129,6 @@ else:
 __all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
                               'acosh', 'asin', 'asinh', 'atan', 'atan2',
                               'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow']
+                              'bitwise_right_shift', 'concat', 'pow', 'sign']
 
 _all_ignore = ['cp', 'get_xp']
