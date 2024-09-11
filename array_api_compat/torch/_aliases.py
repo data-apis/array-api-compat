@@ -8,6 +8,8 @@ from ..common._aliases import (matrix_transpose as _aliases_matrix_transpose,
                                _aliases_clip, unstack as _aliases_unstack,)
 from .._internal import get_xp
 
+from ._info import __array_namespace_info__
+
 import torch
 
 from typing import TYPE_CHECKING
@@ -724,12 +726,13 @@ def sign(x: array, /) -> array:
         return out
 
 
-__all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
-           'newaxis', 'conj', 'add', 'atan2', 'bitwise_and', 'bitwise_left_shift',
-           'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'copysign',
-           'divide', 'equal', 'floor_divide', 'greater', 'greater_equal',
-           'hypot', 'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal',
-           'pow', 'remainder', 'subtract', 'max', 'min', 'clip', 'unstack', 'sort',
+__all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
+           'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
+           'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
+           'bitwise_right_shift', 'bitwise_xor', 'copysign', 'divide',
+           'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
+           'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal', 'pow',
+           'remainder', 'subtract', 'max', 'min', 'clip', 'unstack', 'sort',
            'prod', 'sum', 'any', 'all', 'mean', 'std', 'var', 'concat',
            'squeeze', 'broadcast_to', 'flip', 'roll', 'nonzero', 'where',
            'reshape', 'arange', 'eye', 'linspace', 'full', 'ones', 'zeros',
