@@ -1,5 +1,9 @@
-from array_api_compat import (is_numpy_array, is_cupy_array, is_torch_array, # noqa: F401
-                              is_dask_array, is_jax_array, is_pydata_sparse_array)
+from array_api_compat import (  # noqa: F401
+    is_numpy_array, is_cupy_array, is_torch_array,
+    is_dask_array, is_jax_array, is_pydata_sparse_array,
+    is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
+    is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
+)
 
 from array_api_compat import is_array_api_obj, device, to_device
 
@@ -10,7 +14,7 @@ import numpy as np
 import array
 from numpy.testing import assert_allclose
 
-is_functions = {
+is_array_functions = {
     'numpy': 'is_numpy_array',
     'cupy': 'is_cupy_array',
     'torch': 'is_torch_array',
@@ -19,17 +23,37 @@ is_functions = {
     'sparse': 'is_pydata_sparse_array',
 }
 
-@pytest.mark.parametrize('library', is_functions.keys())
-@pytest.mark.parametrize('func', is_functions.values())
+is_namespace_functions = {
+    'numpy': 'is_numpy_namespace',
+    'cupy': 'is_cupy_namespace',
+    'torch': 'is_torch_namespace',
+    'dask.array': 'is_dask_namespace',
+    'jax.numpy': 'is_jax_namespace',
+    'sparse': 'is_pydata_sparse_namespace',
+}
+
+
+@pytest.mark.parametrize('library', is_array_functions.keys())
+@pytest.mark.parametrize('func', is_array_functions.values())
 def test_is_xp_array(library, func):
     lib = import_(library)
     is_func = globals()[func]
 
     x = lib.asarray([1, 2, 3])
 
-    assert is_func(x) == (func == is_functions[library])
+    assert is_func(x) == (func == is_array_functions[library])
 
     assert is_array_api_obj(x)
+
+
+@pytest.mark.parametrize('library', is_namespace_functions.keys())
+@pytest.mark.parametrize('func', is_namespace_functions.values())
+def test_is_xp_namespace(library, func):
+    lib = import_(library)
+    is_func = globals()[func]
+
+    assert is_func(lib) == (func == is_namespace_functions[library])
+
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_device(library):
@@ -64,8 +88,8 @@ def test_to_device_host(library):
     assert_allclose(x, expected)
 
 
-@pytest.mark.parametrize("target_library", is_functions.keys())
-@pytest.mark.parametrize("source_library", is_functions.keys())
+@pytest.mark.parametrize("target_library", is_array_functions.keys())
+@pytest.mark.parametrize("source_library", is_array_functions.keys())
 def test_asarray_cross_library(source_library, target_library, request):
     if source_library == "dask.array" and target_library == "torch":
         # Allow rest of test to execute instead of immediately xfailing
@@ -81,7 +105,7 @@ def test_asarray_cross_library(source_library, target_library, request):
         pytest.skip(reason="`sparse` does not allow implicit densification")
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
-    is_tgt_type = globals()[is_functions[target_library]]
+    is_tgt_type = globals()[is_array_functions[target_library]]
 
     a = src_lib.asarray([1, 2, 3])
     b = tgt_lib.asarray(a)
@@ -96,7 +120,7 @@ def test_asarray_copy(library):
     # should be able to delete this.
     xp = import_(library, wrapper=True)
     asarray = xp.asarray
-    is_lib_func = globals()[is_functions[library]]
+    is_lib_func = globals()[is_array_functions[library]]
     all = xp.all if library != 'dask.array' else lambda x: xp.all(x).compute()
 
     if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :

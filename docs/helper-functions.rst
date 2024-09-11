@@ -40,7 +40,7 @@ instead, which would be wrapped.
 Inspection Helpers
 ------------------
 
-These convenience functions can be used to test if an array comes from a
+These convenience functions can be used to test if an array or namespace comes from a
 specific library without importing that library if it hasn't been imported
 yet.
 
@@ -51,3 +51,11 @@ yet.
 .. autofunction:: is_jax_array
 .. autofunction:: is_pydata_sparse_array
 .. autofunction:: is_ndonnx_array
+.. autofunction:: is_numpy_namespace
+.. autofunction:: is_cupy_namespace
+.. autofunction:: is_torch_namespace
+.. autofunction:: is_dask_namespace
+.. autofunction:: is_jax_namespace
+.. autofunction:: is_pydata_sparse_namespace
+.. autofunction:: is_ndonnx_namespace
+.. autofunction:: is_array_api_strict_namespace

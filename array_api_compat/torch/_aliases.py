@@ -709,6 +709,21 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         axis = 0
     return torch.index_select(x, axis, indices, **kwargs)
 
+def sign(x: array, /) -> array:
+    # torch sign() does not support complex numbers and does not propagate
+    # nans. See https://github.com/data-apis/array-api-compat/issues/136
+    if x.dtype.is_complex:
+        out = x/torch.abs(x)
+        # sign(0) = 0 but the above formula would give nan
+        out[x == 0+0j] = 0+0j
+        return out
+    else:
+        out = torch.sign(x)
+        if x.dtype.is_floating_point:
+            out[torch.isnan(x)] = torch.nan
+        return out
+
+
 __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'newaxis', 'conj', 'add', 'atan2', 'bitwise_and', 'bitwise_left_shift',
            'bitwise_or', 'bitwise_right_shift', 'bitwise_xor', 'copysign',
@@ -722,6 +737,6 @@ __all__ = ['result_type', 'can_cast', 'permute_dims', 'bitwise_invert',
            'broadcast_arrays', 'UniqueAllResult', 'UniqueCountsResult',
            'UniqueInverseResult', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',
-           'vecdot', 'tensordot', 'isdtype', 'take']
+           'vecdot', 'tensordot', 'isdtype', 'take', 'sign']
 
 _all_ignore = ['torch', 'get_xp']
