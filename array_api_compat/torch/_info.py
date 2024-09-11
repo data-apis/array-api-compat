@@ -7,25 +7,7 @@ https://data-apis.org/array-api/latest/API_specification/inspection.html for
 more details.
 
 """
-from torch import (
-    asarray,
-    get_default_dtype,
-    device,
-    empty,
-    bool,
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    float32,
-    float64,
-    complex64,
-    complex128,
-)
+import torch
 
 from functools import cache
 
@@ -130,7 +112,7 @@ class __array_namespace_info__:
         'cpu'
 
         """
-        return device("cpu")
+        return torch.device("cpu")
 
     def default_dtypes(self, *, device=None):
         """
@@ -165,9 +147,9 @@ class __array_namespace_info__:
          'indexing': torch.int64}
 
         """
-        default_floating = get_default_dtype()
-        default_complex = complex64 if default_floating == float32 else complex128
-        default_integral = asarray(0, device=device).dtype
+        default_floating = torch.get_default_dtype()
+        default_complex = torch.complex64 if default_floating == torch.float32 else torch.complex128
+        default_integral = torch.asarray(0, device=device).dtype
         return {
             "real floating": default_floating,
             "complex floating": default_complex,
@@ -175,70 +157,22 @@ class __array_namespace_info__:
             "indexing": default_integral,
         }
 
-    @cache
-    def dtypes(self, *, device=None, kind=None):
-        """
-        The array API data types supported by PyTorch.
-
-        Note that this function only returns data types that are defined by
-        the array API.
-
-        Parameters
-        ----------
-        device : str, optional
-            The device to get the data types for.
-        kind : str or tuple of str, optional
-            The kind of data types to return. If ``None``, all data types are
-            returned. If a string, only data types of that kind are returned.
-            If a tuple, a dictionary containing the union of the given kinds
-            is returned. The following kinds are supported:
-
-            - ``'bool'``: boolean data types (i.e., ``bool``).
-            - ``'signed integer'``: signed integer data types (i.e., ``int8``,
-              ``int16``, ``int32``, ``int64``).
-            - ``'unsigned integer'``: unsigned integer data types (i.e.,
-              ``uint8``, ``uint16``, ``uint32``, ``uint64``).
-            - ``'integral'``: integer data types. Shorthand for ``('signed
-              integer', 'unsigned integer')``.
-            - ``'real floating'``: real-valued floating-point data types
-              (i.e., ``float32``, ``float64``).
-            - ``'complex floating'``: complex floating-point data types (i.e.,
-              ``complex64``, ``complex128``).
-            - ``'numeric'``: numeric data types. Shorthand for ``('integral',
-              'real floating', 'complex floating')``.
-
-        Returns
-        -------
-        dtypes : dict
-            A dictionary mapping the names of data types to the corresponding
-            PyTorch data types.
-
-        See Also
-        --------
-        __array_namespace_info__.capabilities,
-        __array_namespace_info__.default_device,
-        __array_namespace_info__.default_dtypes,
-        __array_namespace_info__.devices
-
-        Examples
-        --------
-        >>> info = np.__array_namespace_info__()
-        >>> info.dtypes(kind='signed integer')
-        {'int8': numpy.int8,
-         'int16': numpy.int16,
-         'int32': numpy.int32,
-         'int64': numpy.int64}
-
-        """
-        res = self._dtypes(kind)
-        for k, v in res.copy().items():
-            try:
-                empty((0,), dtype=v, device=device)
-            except:
-                del res[k]
-        return res
 
     def _dtypes(self, kind):
+        bool = torch.bool
+        int8 = torch.int8
+        int16 = torch.int16
+        int32 = torch.int32
+        int64 = torch.int64
+        uint8 = getattr(torch, "uint8", None)
+        uint16 = getattr(torch, "uint16", None)
+        uint32 = getattr(torch, "uint32", None)
+        uint64 = getattr(torch, "uint64", None)
+        float32 = torch.float32
+        float64 = torch.float64
+        complex64 = torch.complex64
+        complex128 = torch.complex128
+
         if kind is None:
             return {
                 "bool": bool,
@@ -315,6 +249,72 @@ class __array_namespace_info__:
         raise ValueError(f"unsupported kind: {kind!r}")
 
     @cache
+    def dtypes(self, *, device=None, kind=None):
+        """
+        The array API data types supported by PyTorch.
+
+        Note that this function only returns data types that are defined by
+        the array API.
+
+        Parameters
+        ----------
+        device : str, optional
+            The device to get the data types for.
+        kind : str or tuple of str, optional
+            The kind of data types to return. If ``None``, all data types are
+            returned. If a string, only data types of that kind are returned.
+            If a tuple, a dictionary containing the union of the given kinds
+            is returned. The following kinds are supported:
+
+            - ``'bool'``: boolean data types (i.e., ``bool``).
+            - ``'signed integer'``: signed integer data types (i.e., ``int8``,
+              ``int16``, ``int32``, ``int64``).
+            - ``'unsigned integer'``: unsigned integer data types (i.e.,
+              ``uint8``, ``uint16``, ``uint32``, ``uint64``).
+            - ``'integral'``: integer data types. Shorthand for ``('signed
+              integer', 'unsigned integer')``.
+            - ``'real floating'``: real-valued floating-point data types
+              (i.e., ``float32``, ``float64``).
+            - ``'complex floating'``: complex floating-point data types (i.e.,
+              ``complex64``, ``complex128``).
+            - ``'numeric'``: numeric data types. Shorthand for ``('integral',
+              'real floating', 'complex floating')``.
+
+        Returns
+        -------
+        dtypes : dict
+            A dictionary mapping the names of data types to the corresponding
+            PyTorch data types.
+
+        See Also
+        --------
+        __array_namespace_info__.capabilities,
+        __array_namespace_info__.default_device,
+        __array_namespace_info__.default_dtypes,
+        __array_namespace_info__.devices
+
+        Examples
+        --------
+        >>> info = np.__array_namespace_info__()
+        >>> info.dtypes(kind='signed integer')
+        {'int8': numpy.int8,
+         'int16': numpy.int16,
+         'int32': numpy.int32,
+         'int64': numpy.int64}
+
+        """
+        res = self._dtypes(kind)
+        for k, v in res.copy().items():
+            if v is None:
+                del res[k]
+                continue
+            try:
+                torch.empty((0,), dtype=v, device=device)
+            except:
+                del res[k]
+        return res
+
+    @cache
     def devices(self):
         """
         The devices supported by PyTorch.
@@ -343,7 +343,7 @@ class __array_namespace_info__:
         # message of torch.device to get the list of all possible types of
         # device:
         try:
-            device('notadevice')
+            torch.device('notadevice')
         except RuntimeError as e:
             # The error message is something like:
             # "Expected one of cpu, cuda, ipu, xpu, mkldnn, opengl, opencl, ideep, hip, ve, fpga, ort, xla, lazy, vulkan, mps, meta, hpu, mtia, privateuseone device type at start of device string: notadevice"
@@ -358,7 +358,7 @@ class __array_namespace_info__:
             i = 0
             while True:
                 try:
-                    a = empty((0,), device=device(device_name, index=i))
+                    a = torch.empty((0,), device=torch.device(device_name, index=i))
                     if a.device in devices:
                         break
                     devices.append(a.device)
