@@ -164,10 +164,10 @@ class __array_namespace_info__:
         int16 = torch.int16
         int32 = torch.int32
         int64 = torch.int64
-        uint8 = getattr(torch, "uint8", None)
-        uint16 = getattr(torch, "uint16", None)
-        uint32 = getattr(torch, "uint32", None)
-        uint64 = getattr(torch, "uint64", None)
+        uint8 = torch.uint8
+        # uint16, uint32, and uint64 are present in newer versions of pytorch,
+        # but they aren't generally supported by the array API functions, so
+        # we omit them from this function.
         float32 = torch.float32
         float64 = torch.float64
         complex64 = torch.complex64
@@ -181,9 +181,6 @@ class __array_namespace_info__:
                 "int32": int32,
                 "int64": int64,
                 "uint8": uint8,
-                "uint16": uint16,
-                "uint32": uint32,
-                "uint64": uint64,
                 "float32": float32,
                 "float64": float64,
                 "complex64": complex64,
@@ -201,9 +198,6 @@ class __array_namespace_info__:
         if kind == "unsigned integer":
             return {
                 "uint8": uint8,
-                "uint16": uint16,
-                "uint32": uint32,
-                "uint64": uint64,
             }
         if kind == "integral":
             return {
@@ -212,9 +206,6 @@ class __array_namespace_info__:
                 "int32": int32,
                 "int64": int64,
                 "uint8": uint8,
-                "uint16": uint16,
-                "uint32": uint32,
-                "uint64": uint64,
             }
         if kind == "real floating":
             return {
@@ -233,9 +224,6 @@ class __array_namespace_info__:
                 "int32": int32,
                 "int64": int64,
                 "uint8": uint8,
-                "uint16": uint16,
-                "uint32": uint32,
-                "uint64": uint64,
                 "float32": float32,
                 "float64": float64,
                 "complex64": complex64,
@@ -305,9 +293,6 @@ class __array_namespace_info__:
         """
         res = self._dtypes(kind)
         for k, v in res.copy().items():
-            if v is None:
-                del res[k]
-                continue
             try:
                 torch.empty((0,), dtype=v, device=device)
             except:
