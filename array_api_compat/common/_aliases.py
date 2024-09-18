@@ -264,6 +264,36 @@ def var(
 ) -> ndarray:
     return xp.var(x, axis=axis, ddof=correction, keepdims=keepdims, **kwargs)
 
+# cumulative_sum is renamed from cumsum, and adds the include_initial keyword
+# argument
+
+def cumulative_sum(
+    x: ndarray,
+    /,
+    xp,
+    *,
+    axis: Optional[int] = None,
+    dtype: Optional[Dtype] = None,
+    include_initial: bool = False,
+    **kwargs
+) -> ndarray:
+    # TODO: The standard is not clear about what should happen when x.ndim == 0.
+    if axis is None:
+        if x.ndim > 1:
+            raise ValueError("axis must be specified in cumulative_sum for more than one dimension")
+        axis = 0
+
+    res = xp.cumsum(x, axis=axis, dtype=dtype, **kwargs)
+
+    # np.cumsum does not support include_initial
+    if include_initial:
+        initial_shape = list(x.shape)
+        initial_shape[axis] = 1
+        res = xp.concatenate(
+            [xp.zeros_like(res, shape=initial_shape), res],
+            axis=axis,
+        )
+    return res
 
 # The min and max argument names in clip are different and not optional in numpy, and type
 # promotion behavior is different.
@@ -502,6 +532,7 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'astype', 'std', 'var', 'clip', 'permute_dims', 'reshape',
-           'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc', 'matmul',
-           'matrix_transpose', 'tensordot', 'vecdot', 'isdtype', 'unstack']
+           'astype', 'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
+           'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
+           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
+           'unstack']
