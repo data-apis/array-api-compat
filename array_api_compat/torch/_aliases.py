@@ -4,8 +4,11 @@ from functools import wraps as _wraps
 from builtins import all as _builtin_all, any as _builtin_any
 
 from ..common._aliases import (matrix_transpose as _aliases_matrix_transpose,
-                               vecdot as _aliases_vecdot, clip as
-                               _aliases_clip, unstack as _aliases_unstack,)
+                               vecdot as _aliases_vecdot,
+                               clip as _aliases_clip,
+                               unstack as _aliases_unstack,
+                               cumulative_sum as _aliases_cumulative_sum,
+                               )
 from .._internal import get_xp
 
 from ._info import __array_namespace_info__
@@ -198,6 +201,7 @@ def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
 
 clip = get_xp(torch)(_aliases_clip)
 unstack = get_xp(torch)(_aliases_unstack)
+cumulative_sum = get_xp(torch)(_aliases_cumulative_sum)
 
 # torch.sort also returns a tuple
 # https://github.com/pytorch/pytorch/issues/70921
@@ -732,11 +736,11 @@ __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'bitwise_right_shift', 'bitwise_xor', 'copysign', 'divide',
            'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
            'less', 'less_equal', 'logaddexp', 'multiply', 'not_equal', 'pow',
-           'remainder', 'subtract', 'max', 'min', 'clip', 'unstack', 'sort',
-           'prod', 'sum', 'any', 'all', 'mean', 'std', 'var', 'concat',
-           'squeeze', 'broadcast_to', 'flip', 'roll', 'nonzero', 'where',
-           'reshape', 'arange', 'eye', 'linspace', 'full', 'ones', 'zeros',
-           'empty', 'tril', 'triu', 'expand_dims', 'astype',
+           'remainder', 'subtract', 'max', 'min', 'clip', 'unstack',
+           'cumulative_sum', 'sort', 'prod', 'sum', 'any', 'all', 'mean',
+           'std', 'var', 'concat', 'squeeze', 'broadcast_to', 'flip', 'roll',
+           'nonzero', 'where', 'reshape', 'arange', 'eye', 'linspace', 'full',
+           'ones', 'zeros', 'empty', 'tril', 'triu', 'expand_dims', 'astype',
            'broadcast_arrays', 'UniqueAllResult', 'UniqueCountsResult',
            'UniqueInverseResult', 'unique_all', 'unique_counts',
            'unique_inverse', 'unique_values', 'matmul', 'matrix_transpose',

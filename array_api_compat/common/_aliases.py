@@ -277,6 +277,8 @@ def cumulative_sum(
     include_initial: bool = False,
     **kwargs
 ) -> ndarray:
+    wrapped_xp = array_namespace(x)
+
     # TODO: The standard is not clear about what should happen when x.ndim == 0.
     if axis is None:
         if x.ndim > 1:
@@ -290,7 +292,7 @@ def cumulative_sum(
         initial_shape = list(x.shape)
         initial_shape[axis] = 1
         res = xp.concatenate(
-            [xp.zeros_like(res, shape=initial_shape), res],
+            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
             axis=axis,
         )
     return res
