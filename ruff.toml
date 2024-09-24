@@ -9,5 +9,9 @@ select = [
 "PLC0414"
 ]
 
-# Ignore module import not at top of file
-ignore = ["E402"]
+ignore = [
+  # Module import not at top of file
+  "E402",
+  # Do not use bare `except`
+  "E722"
+]
