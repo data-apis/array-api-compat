@@ -149,7 +149,7 @@ class __array_namespace_info__:
         """
         default_floating = torch.get_default_dtype()
         default_complex = torch.complex64 if default_floating == torch.float32 else torch.complex128
-        default_integral = torch.asarray(0, device=device).dtype
+        default_integral = torch.int64
         return {
             "real floating": default_floating,
             "complex floating": default_complex,
