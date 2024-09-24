@@ -147,6 +147,10 @@ class __array_namespace_info__:
          'indexing': torch.int64}
 
         """
+        # Note: if the default is set to float64, the devices like MPS that
+        # don't support float64 will error. We still return the default_dtype
+        # value here because this error doesn't represent a different default
+        # per-device.
         default_floating = torch.get_default_dtype()
         default_complex = torch.complex64 if default_floating == torch.float32 else torch.complex128
         default_integral = torch.int64
