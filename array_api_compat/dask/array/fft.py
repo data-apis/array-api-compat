@@ -1,8 +1,8 @@
 from dask.array.fft import * # noqa: F403
 from numpy.fft import __all__ as fft_all
 
-from ..common import _fft
-from .._internal import get_xp
+from ...common import _fft
+from ..._internal import get_xp
 
 import dask.array as da
 
