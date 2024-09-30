@@ -194,3 +194,9 @@ array_api_tests/test_set_functions.py::test_unique_values
 array_api_tests/test_has_names.py::test_has_names[manipulation-repeat]
 array_api_tests/test_manipulation_functions.py::test_repeat
 array_api_tests/test_signatures.py::test_func_signature[repeat]
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+# Argument 'max_version' missing from signature
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[astype]
