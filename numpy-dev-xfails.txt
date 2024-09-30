@@ -21,3 +21,5 @@ array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
 # 2023.12 support
 # Argument 'device' missing from signature
 array_api_tests/test_signatures.py::test_func_signature[astype]
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
