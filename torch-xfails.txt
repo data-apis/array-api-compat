@@ -189,3 +189,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_expm1
 array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
 array_api_tests/test_set_functions.py::test_unique_values
+
+# 2023.12 support
+array_api_tests/test_has_names.py::test_has_names[manipulation-repeat]
+array_api_tests/test_manipulation_functions.py::test_repeat
+array_api_tests/test_signatures.py::test_func_signature[repeat]
