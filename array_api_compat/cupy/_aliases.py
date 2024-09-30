@@ -5,6 +5,8 @@ import cupy as cp
 from ..common import _aliases
 from .._internal import get_xp
 
+from ._info import __array_namespace_info__
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Union
@@ -47,14 +49,13 @@ unique_values = get_xp(cp)(_aliases.unique_values)
 astype = _aliases.astype
 std = get_xp(cp)(_aliases.std)
 var = get_xp(cp)(_aliases.var)
+cumulative_sum = get_xp(cp)(_aliases.cumulative_sum)
 clip = get_xp(cp)(_aliases.clip)
 permute_dims = get_xp(cp)(_aliases.permute_dims)
 reshape = get_xp(cp)(_aliases.reshape)
 argsort = get_xp(cp)(_aliases.argsort)
 sort = get_xp(cp)(_aliases.sort)
 nonzero = get_xp(cp)(_aliases.nonzero)
-sum = get_xp(cp)(_aliases.sum)
-prod = get_xp(cp)(_aliases.prod)
 ceil = get_xp(cp)(_aliases.ceil)
 floor = get_xp(cp)(_aliases.floor)
 trunc = get_xp(cp)(_aliases.trunc)
@@ -121,14 +122,21 @@ if hasattr(cp, 'vecdot'):
     vecdot = cp.vecdot
 else:
     vecdot = get_xp(cp)(_aliases.vecdot)
+
 if hasattr(cp, 'isdtype'):
     isdtype = cp.isdtype
 else:
     isdtype = get_xp(cp)(_aliases.isdtype)
 
-__all__ = _aliases.__all__ + ['asarray', 'bool', 'acos',
-                              'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                              'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                              'bitwise_right_shift', 'concat', 'pow', 'sign']
+if hasattr(cp, 'unstack'):
+    unstack = cp.unstack
+else:
+    unstack = get_xp(cp)(_aliases.unstack)
+
+__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'bool',
+                              'acos', 'acosh', 'asin', 'asinh', 'atan',
+                              'atan2', 'atanh', 'bitwise_left_shift',
+                              'bitwise_invert', 'bitwise_right_shift',
+                              'concat', 'pow', 'sign']
 
 _all_ignore = ['cp', 'get_xp']

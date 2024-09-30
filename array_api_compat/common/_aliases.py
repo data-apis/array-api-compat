@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device
+from ._helpers import array_namespace, _check_device, device, is_torch_array
 
 # These functions are modified from the NumPy versions.
 
@@ -264,6 +264,38 @@ def var(
 ) -> ndarray:
     return xp.var(x, axis=axis, ddof=correction, keepdims=keepdims, **kwargs)
 
+# cumulative_sum is renamed from cumsum, and adds the include_initial keyword
+# argument
+
+def cumulative_sum(
+    x: ndarray,
+    /,
+    xp,
+    *,
+    axis: Optional[int] = None,
+    dtype: Optional[Dtype] = None,
+    include_initial: bool = False,
+    **kwargs
+) -> ndarray:
+    wrapped_xp = array_namespace(x)
+
+    # TODO: The standard is not clear about what should happen when x.ndim == 0.
+    if axis is None:
+        if x.ndim > 1:
+            raise ValueError("axis must be specified in cumulative_sum for more than one dimension")
+        axis = 0
+
+    res = xp.cumsum(x, axis=axis, dtype=dtype, **kwargs)
+
+    # np.cumsum does not support include_initial
+    if include_initial:
+        initial_shape = list(x.shape)
+        initial_shape[axis] = 1
+        res = xp.concatenate(
+            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
+            axis=axis,
+        )
+    return res
 
 # The min and max argument names in clip are different and not optional in numpy, and type
 # promotion behavior is different.
@@ -281,9 +313,10 @@ def clip(
         return isinstance(a, (int, float, type(None)))
     min_shape = () if _isscalar(min) else min.shape
     max_shape = () if _isscalar(max) else max.shape
-    result_shape = xp.broadcast_shapes(x.shape, min_shape, max_shape)
 
     wrapped_xp = array_namespace(x)
+
+    result_shape = xp.broadcast_shapes(x.shape, min_shape, max_shape)
 
     # np.clip does type promotion but the array API clip requires that the
     # output have the same dtype as x. We do this instead of just downcasting
@@ -305,20 +338,26 @@ def clip(
 
     # At least handle the case of Python integers correctly (see
     # https://github.com/numpy/numpy/pull/26892).
-    if type(min) is int and min <= xp.iinfo(x.dtype).min:
+    if type(min) is int and min <= wrapped_xp.iinfo(x.dtype).min:
         min = None
-    if type(max) is int and max >= xp.iinfo(x.dtype).max:
+    if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
         max = None
 
     if out is None:
-        out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape), copy=True)
+        out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape),
+                                 copy=True, device=device(x))
     if min is not None:
-        a = xp.broadcast_to(xp.asarray(min), result_shape)
+        if is_torch_array(x) and x.dtype == xp.float64 and _isscalar(min):
+            # Avoid loss of precision due to torch defaulting to float32
+            min = wrapped_xp.asarray(min, dtype=xp.float64)
+        a = xp.broadcast_to(wrapped_xp.asarray(min, device=device(x)), result_shape)
         ia = (out < a) | xp.isnan(a)
         # torch requires an explicit cast here
         out[ia] = wrapped_xp.astype(a[ia], out.dtype)
     if max is not None:
-        b = xp.broadcast_to(xp.asarray(max), result_shape)
+        if is_torch_array(x) and x.dtype == xp.float64 and _isscalar(max):
+            max = wrapped_xp.asarray(max, dtype=xp.float64)
+        b = xp.broadcast_to(wrapped_xp.asarray(max, device=device(x)), result_shape)
         ib = (out > b) | xp.isnan(b)
         out[ib] = wrapped_xp.astype(b[ib], out.dtype)
     # Return a scalar for 0-D
@@ -388,42 +427,6 @@ def nonzero(x: ndarray, /, xp, **kwargs) -> Tuple[ndarray, ...]:
     if x.ndim == 0:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
     return xp.nonzero(x, **kwargs)
-
-# sum() and prod() should always upcast when dtype=None
-def sum(
-    x: ndarray,
-    /,
-    xp,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Dtype] = None,
-    keepdims: bool = False,
-    **kwargs,
-) -> ndarray:
-    # `xp.sum` already upcasts integers, but not floats or complexes
-    if dtype is None:
-        if x.dtype == xp.float32:
-            dtype = xp.float64
-        elif x.dtype == xp.complex64:
-            dtype = xp.complex128
-    return xp.sum(x, axis=axis, dtype=dtype, keepdims=keepdims, **kwargs)
-
-def prod(
-    x: ndarray,
-    /,
-    xp,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    dtype: Optional[Dtype] = None,
-    keepdims: bool = False,
-    **kwargs,
-) -> ndarray:
-    if dtype is None:
-        if x.dtype == xp.float32:
-            dtype = xp.float64
-        elif x.dtype == xp.complex64:
-            dtype = xp.complex128
-    return xp.prod(x, dtype=dtype, axis=axis, keepdims=keepdims, **kwargs)
 
 # ceil, floor, and trunc return integers for integer inputs
 
@@ -521,10 +524,17 @@ def isdtype(
         # array_api_strict implementation will be very strict.
         return dtype == kind
 
+# unstack is a new function in the 2023.12 array API standard
+def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
+    if x.ndim == 0:
+        raise ValueError("Input array must be at least 1-d.")
+    return tuple(xp.moveaxis(x, axis, 0))
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'astype', 'std', 'var', 'clip', 'permute_dims', 'reshape', 'argsort',
-           'sort', 'nonzero', 'sum', 'prod', 'ceil', 'floor', 'trunc',
-           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype']
+           'astype', 'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
+           'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
+           'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
+           'unstack']

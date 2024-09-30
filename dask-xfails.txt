@@ -48,9 +48,6 @@ array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0
 array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 
-# The clip helper uses boolean indexing
-array_api_tests/test_operators_and_elementwise_functions.py::test_clip
-
 # No sorting in dask
 array_api_tests/test_has_names.py::test_has_names[sorting-argsort]
 array_api_tests/test_has_names.py::test_has_names[sorting-sort]
@@ -81,8 +78,6 @@ array_api_tests/test_linalg.py::test_svdvals
 array_api_tests/test_linalg.py::test_cholesky
 # dtype mismatch got uint64, but should be uint8, NPY_PROMOTION_STATE=weak doesn't help :(
 array_api_tests/test_linalg.py::test_tensordot
-# probably same reason for failing as numpy
-array_api_tests/test_linalg.py::test_trace
 
 # AssertionError: out.dtype=uint64, but should be uint8 [tensordot(uint8, uint8)]
 array_api_tests/test_linalg.py::test_linalg_tensordot
@@ -155,3 +150,8 @@ array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
+
+# 2023.12 support
+array_api_tests/test_manipulation_functions.py::test_repeat
+array_api_tests/test_searching_functions.py::test_searchsorted
+array_api_tests/test_signatures.py::test_func_signature[astype]

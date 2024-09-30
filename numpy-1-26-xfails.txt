@@ -45,3 +45,9 @@ array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
+
+# 2023.12 support
+array_api_tests/test_searching_functions.py::test_searchsorted
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_func_signature[astype]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
