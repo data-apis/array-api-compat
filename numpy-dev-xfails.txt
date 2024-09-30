@@ -17,3 +17,7 @@ array_api_tests/test_statistical_functions.py::test_cumulative_sum
 # https://github.com/numpy/numpy/pull/26237
 array_api_tests/test_signatures.py::test_func_signature[vecdot]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
+
+# 2023.12 support
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[astype]
