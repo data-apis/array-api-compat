@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.9 (2024-10-??)
+
+### Major Changes
+
+- New helper functions to determine if a namespace is from a given library
+  ({func}`~.is_numpy_namespace`, {func}`~.is_torch_namespace`, etc.).
+
+- More support for the [2023.12 version of the
+  standard](https://data-apis.org/array-api/latest/changelog.html#v2023-12).
+  This includes
+  - Wrappers for `cumulative_sum()`.
+  - Wrappers for `unstack()`.
+  - Update floating-point type promotion in `sum()`, `prod()`, and `trace()`
+    to be inline with the 2023.12 specification (32-bit types no longer
+    promote to 64-bit when `dtype=None`).
+  - Add the [inspection
+    APIs](https://data-apis.org/array-api/latest/API_specification/inspection.html)
+    to the wrapped namespaces. These can be accessed with
+    `xp.__array_namespace_info__()`.
+  - Various fixes to the `clip()` wrappers.
+
+- `torch.conj` now wrapps `torch.conj_physical`, which makes a copy rather
+  than setting the conjugation bit, as arrays with the conjugation bit set do
+  not support some APIs.
+
+- `torch.sign` is now wrapped to support complex numbers and propogate nans
+  properly.
+
+### Minor Changes
+
+- Support for JAX 0.4.32 and newer which implements the array API directly in
+  `jax.numpy`.
+
+- `hypot`, `minimum`, and `maximum` (new in 2023.12) are wrapped in PyTorch to
+  support proper scalar type promotion.
+
 ## 1.8 (2024-07-24)
 
 ### Major Changes
