@@ -1,6 +1,7 @@
 # Basic test that vendoring works
 
 from .vendored._compat.dask import array as dask_compat
+from .vendored._compat import is_dask_array, is_dask_namespace
 
 import dask.array as da
 import numpy as np
@@ -17,3 +18,6 @@ def _test_dask():
     assert isinstance(res, da.Array)
 
     np.testing.assert_allclose(res, [1., 2., 9.])
+
+    assert is_dask_array(res)
+    assert is_dask_namespace(da) and is_dask_namespace(dask_compat)

@@ -5,6 +5,8 @@ from ...common._helpers import _check_device
 
 from ..._internal import get_xp
 
+from ._info import __array_namespace_info__
+
 import numpy as np
 from numpy import (
     # Dtypes
@@ -23,6 +25,7 @@ if TYPE_CHECKING:
 import dask.array as da
 
 isdtype = get_xp(np)(_aliases.isdtype)
+unstack = get_xp(da)(_aliases.unstack)
 astype = _aliases.astype
 
 # Common aliases
@@ -69,7 +72,7 @@ unique_values = get_xp(da)(_aliases.unique_values)
 permute_dims = get_xp(da)(_aliases.permute_dims)
 std = get_xp(da)(_aliases.std)
 var = get_xp(da)(_aliases.var)
-clip = get_xp(da)(_aliases.clip)
+cumulative_sum = get_xp(da)(_aliases.cumulative_sum)
 empty = get_xp(da)(_aliases.empty)
 empty_like = get_xp(da)(_aliases.empty_like)
 full = get_xp(da)(_aliases.full)
@@ -83,8 +86,6 @@ matrix_transpose = get_xp(da)(_aliases.matrix_transpose)
 vecdot = get_xp(da)(_aliases.vecdot)
 
 nonzero = get_xp(da)(_aliases.nonzero)
-sum = get_xp(np)(_aliases.sum)
-prod = get_xp(np)(_aliases.prod)
 ceil = get_xp(np)(_aliases.ceil)
 floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)
@@ -149,12 +150,49 @@ from dask.array import (
     concatenate as concat,
 )
 
+# dask.array.clip does not work unless all three arguments are provided.
+# Furthermore, the masking workaround in common._aliases.clip cannot work with
+# dask (meaning uint64 promoting to float64 is going to just be unfixed for
+# now).
+@get_xp(da)
+def clip(
+    x: Array,
+    /,
+    min: Optional[Union[int, float, Array]] = None,
+    max: Optional[Union[int, float, Array]] = None,
+    *,
+    xp,
+) -> Array:
+    def _isscalar(a):
+        return isinstance(a, (int, float, type(None)))
+    min_shape = () if _isscalar(min) else min.shape
+    max_shape = () if _isscalar(max) else max.shape
+
+    # TODO: This won't handle dask unknown shapes
+    import numpy as np
+    result_shape = np.broadcast_shapes(x.shape, min_shape, max_shape)
+
+    if min is not None:
+        min = xp.broadcast_to(xp.asarray(min), result_shape)
+    if max is not None:
+        max = xp.broadcast_to(xp.asarray(max), result_shape)
+
+    if min is None and max is None:
+        return xp.positive(x)
+
+    if min is None:
+        return astype(xp.minimum(x, max), x.dtype)
+    if max is None:
+        return astype(xp.maximum(x, min), x.dtype)
+
+    return astype(xp.minimum(xp.maximum(x, min), max), x.dtype)
+
 # exclude these from all since
 _da_unsupported = ['sort', 'argsort']
 
 common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
 
-__all__ = common_aliases + ['asarray', 'acos',
+__all__ = common_aliases + ['__array_namespace_info__', 'asarray', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
                     'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type']

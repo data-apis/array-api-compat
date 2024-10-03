@@ -11,8 +11,17 @@ array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0
 # (https://github.com/data-apis/array-api-tests/issues/168)
 array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
+array_api_tests/test_statistical_functions.py::test_cumulative_sum
 
 # The test suite cannot properly get the signature for vecdot
 # https://github.com/numpy/numpy/pull/26237
 array_api_tests/test_signatures.py::test_func_signature[vecdot]
 array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
+
+# 2023.12 support
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[astype]
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+# uint64 repeats not supported
+array_api_tests/test_manipulation_functions.py::test_repeat

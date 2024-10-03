@@ -1,6 +1,10 @@
 # Basic test that vendoring works
 
-from .vendored._compat import torch as torch_compat
+from .vendored._compat import (
+    is_torch_array,
+    is_torch_namespace,
+    torch as torch_compat,
+)
 
 import torch
 
@@ -20,3 +24,7 @@ def _test_torch():
     assert isinstance(res, torch.Tensor)
 
     torch.testing.assert_allclose(res, [[1., 2., 3.]])
+
+    assert is_torch_array(res)
+    assert is_torch_namespace(torch) and is_torch_namespace(torch_compat)
+
