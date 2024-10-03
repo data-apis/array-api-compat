@@ -161,6 +161,7 @@ array_api_tests/test_special_cases.py::test_unary[floor(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[log1p(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[round(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[sin(x_i is -0) -> -0]
+array_api_tests/test_special_cases.py::test_unary[signbit(x_i is -0) -> True]
 array_api_tests/test_special_cases.py::test_unary[sinh(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[sqrt(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[tan(x_i is -0) -> -0]
@@ -172,3 +173,10 @@ array_api_tests/test_special_cases.py::test_unary[trunc(x_i is -0) -> -0]
 array_api_tests/test_fft.py::test_fftn
 array_api_tests/test_fft.py::test_ifftn
 array_api_tests/test_fft.py::test_rfftn
+
+# 2023.12 support
+# cupy.ndaray cannot be specified as `repeats` argument.
+array_api_tests/test_manipulation_functions.py::test_repeat
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_func_signature[astype]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
