@@ -7,26 +7,7 @@ from ..._internal import get_xp
 
 import numpy as np
 from numpy import (
-    # Constants
-    e,
-    inf,
-    nan,
-    pi,
-    newaxis,
     # Dtypes
-    bool_ as bool,
-    float32,
-    float64,
-    int8,
-    int16,
-    int32,
-    int64,
-    uint8,
-    uint16,
-    uint32,
-    uint64,
-    complex64,
-    complex128,
     iinfo,
     finfo,
     can_cast,
@@ -173,12 +154,9 @@ _da_unsupported = ['sort', 'argsort']
 
 common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
 
-__all__ = common_aliases + ['asarray', 'bool', 'acos',
-                            'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                            'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                            'bitwise_right_shift', 'concat', 'pow',
-                            'e', 'inf', 'nan', 'pi', 'newaxis', 'float32', 'float64', 'int8',
-                            'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64',
-                            'complex64', 'complex128', 'iinfo', 'finfo', 'can_cast', 'result_type']
+__all__ = common_aliases + ['asarray', 'acos',
+                    'acosh', 'asin', 'asinh', 'atan', 'atan2',
+                    'atanh', 'bitwise_left_shift', 'bitwise_invert',
+                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type']
 
-_all_ignore = ['get_xp', 'da', 'partial', 'common_aliases', 'np']
+del get_xp, da, common_aliases, np
