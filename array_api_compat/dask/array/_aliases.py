@@ -152,11 +152,11 @@ from dask.array import (
 # exclude these from all since
 _da_unsupported = ['sort', 'argsort']
 
-common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
+_common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
 
-__all__ = common_aliases + ['asarray', 'acos',
+__all__ = _common_aliases + ['asarray', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
                     'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type']
 
-del get_xp, da, common_aliases, np
+_all_ignore = ["get_xp", "da", "np"]
