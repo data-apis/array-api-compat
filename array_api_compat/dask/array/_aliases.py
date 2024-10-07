@@ -187,7 +187,7 @@ def clip(
 
     return astype(xp.minimum(xp.maximum(x, min), max), x.dtype)
 
-# exclude these from all since
+# exclude these from all since dask.array has no sorting functions
 _da_unsupported = ['sort', 'argsort']
 
 _common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
