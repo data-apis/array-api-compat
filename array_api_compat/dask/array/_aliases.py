@@ -12,6 +12,9 @@ from numpy import (
     # Dtypes
     iinfo,
     finfo,
+    float64,
+    int8,
+    float32,
     can_cast,
     result_type,
 )
@@ -195,6 +198,7 @@ _common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsup
 __all__ = _common_aliases + ['__array_namespace_info__', 'asarray', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type']
+                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type',
+                    'float64', 'int8', 'float32']
 
 _all_ignore = ["get_xp", "da", "np"]
