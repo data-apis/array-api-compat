@@ -169,7 +169,6 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity 
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i < 0) -> -0]
 array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_unary[sign(x_i is NaN) -> NaN]
 
 # Float correction is not supported by pytorch
 # (https://github.com/data-apis/array-api-tests/issues/168)
@@ -186,8 +185,18 @@ array_api_tests/test_statistical_functions.py::test_sum
 array_api_tests/test_statistical_functions.py::test_prod
 
 # These functions do not yet support complex numbers
-array_api_tests/test_operators_and_elementwise_functions.py::test_sign
 array_api_tests/test_operators_and_elementwise_functions.py::test_expm1
 array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
 array_api_tests/test_set_functions.py::test_unique_values
+
+# 2023.12 support
+array_api_tests/test_has_names.py::test_has_names[manipulation-repeat]
+array_api_tests/test_manipulation_functions.py::test_repeat
+array_api_tests/test_signatures.py::test_func_signature[repeat]
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+# Argument 'max_version' missing from signature
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+# Argument 'device' missing from signature
+array_api_tests/test_signatures.py::test_func_signature[astype]

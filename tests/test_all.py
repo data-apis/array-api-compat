@@ -32,6 +32,8 @@ def test_all(library):
             continue
 
         dir_names = [n for n in dir(module) if not n.startswith('_')]
+        if '__array_namespace_info__' in dir(module):
+            dir_names.append('__array_namespace_info__')
         ignore_all_names = getattr(module, '_all_ignore', [])
         ignore_all_names += ['annotations', 'TYPE_CHECKING']
         dir_names = set(dir_names) - set(ignore_all_names)

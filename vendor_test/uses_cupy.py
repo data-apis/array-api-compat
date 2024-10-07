@@ -1,6 +1,10 @@
 # Basic test that vendoring works
 
-from .vendored._compat import cupy as cp_compat
+from .vendored._compat import (
+    cupy as cp_compat,
+    is_cupy_array,
+    is_cupy_namespace,
+)
 
 import cupy as cp
 
@@ -16,3 +20,6 @@ def _test_cupy():
     assert isinstance(res, cp.ndarray)
 
     cp.testing.assert_allclose(res, [1., 2., 9.])
+
+    assert is_cupy_array(res)
+    assert is_cupy_namespace(cp) and is_cupy_namespace(cp_compat)
