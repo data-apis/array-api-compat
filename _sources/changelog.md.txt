@@ -30,6 +30,10 @@
 
 ### Minor Changes
 
+- NumPy 2.0 is now wrapped again. Previously it was unwrapped because it has
+  full 2022.12 array API support but it now requires wrapping again for
+  2023.12 support.
+
 - Support for JAX 0.4.32 and newer which implements the array API directly in
   `jax.numpy`.
 

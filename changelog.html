@@ -286,6 +286,9 @@ properly.</p></li>
 <section id="minor-changes">
 <h3>Minor Changes<a class="headerlink" href="#minor-changes" title="Link to this heading">¶</a></h3>
 <ul class="simple">
+<li><p>NumPy 2.0 is now wrapped again. Previously it was unwrapped because it has
+full 2022.12 array API support but it now requires wrapping again for
+2023.12 support.</p></li>
 <li><p>Support for JAX 0.4.32 and newer which implements the array API directly in
 <code class="docutils literal notranslate"><span class="pre">jax.numpy</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hypot</span></code>, <code class="docutils literal notranslate"><span class="pre">minimum</span></code>, and <code class="docutils literal notranslate"><span class="pre">maximum</span></code> (new in 2023.12) are wrapped in PyTorch to
