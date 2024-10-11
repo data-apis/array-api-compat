@@ -208,7 +208,10 @@ _common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsup
 __all__ = _common_aliases + ['__array_namespace_info__', 'asarray', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast', 'result_type',
-                    'float64', 'int8', 'float32']
+                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast',
+                    'result_type', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'complex64', 'complex128', 'iinfo', 'finfo',
+                    'can_cast', 'result_type']
 
 _all_ignore = ["get_xp", "da", "np"]
