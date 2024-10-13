@@ -7,6 +7,7 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: dask
+      package-version: '>= 2024.9.0'
       module-name: dask.array
       extra-requires: numpy
       pytest-extra-args: --disable-deadline --max-examples=5
