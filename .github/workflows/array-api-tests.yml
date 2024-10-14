@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         # min version of dask we needs drops support for python 3.9
-        python-version: ${{ inputs.package-name == 'dask' && ['3.10', '3.11', '3.12'] || ['3.9', '3.10', '3.11', '3.12'] }}
+        python-version: ${{ inputs.package-name == 'dask' && fromJson('[''3.10'', ''3.11'', ''3.12'']') || fromJson('[''3.9'', ''3.10'', ''3.11'', ''3.12'']') }}
 
     steps:
     - name: Checkout array-api-compat
