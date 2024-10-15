@@ -1,7 +1,7 @@
 from dask.array.fft import * # noqa: F403
-# cupy.fft doesn't have __all__. If it is added, replace this with
+# dask.array.fft doesn't have __all__. If it is added, replace this with
 #
-# from cupy.fft import __all__ as linalg_all
+# from dask.array.fft import __all__ as linalg_all
 _n = {}
 exec('from dask.array.fft import *', _n)
 del _n['__builtins__']
