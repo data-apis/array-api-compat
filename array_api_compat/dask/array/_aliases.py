@@ -9,13 +9,9 @@ from ._info import __array_namespace_info__
 
 import numpy as np
 from numpy import (
-    # Constants
-    e,
-    inf,
-    nan,
-    pi,
-    newaxis,
     # Dtypes
+    iinfo,
+    finfo,
     bool_ as bool,
     float32,
     float64,
@@ -29,8 +25,6 @@ from numpy import (
     uint64,
     complex64,
     complex128,
-    iinfo,
-    finfo,
     can_cast,
     result_type,
 )
@@ -206,19 +200,18 @@ def clip(
 
     return astype(xp.minimum(xp.maximum(x, min), max), x.dtype)
 
-# exclude these from all since
+# exclude these from all since dask.array has no sorting functions
 _da_unsupported = ['sort', 'argsort']
 
-common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
+_common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
 
-__all__ = common_aliases + ['__array_namespace_info__', 'asarray', 'bool',
-                            'acos', 'acosh', 'asin', 'asinh', 'atan', 'atan2',
-                            'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                            'bitwise_right_shift', 'concat', 'pow', 'e',
-                            'inf', 'nan', 'pi', 'newaxis', 'float32',
-                            'float64', 'int8', 'int16', 'int32', 'int64',
-                            'uint8', 'uint16', 'uint32', 'uint64',
-                            'complex64', 'complex128', 'iinfo', 'finfo',
-                            'can_cast', 'result_type']
+__all__ = _common_aliases + ['__array_namespace_info__', 'asarray', 'acos',
+                    'acosh', 'asin', 'asinh', 'atan', 'atan2',
+                    'atanh', 'bitwise_left_shift', 'bitwise_invert',
+                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast',
+                    'result_type', 'bool', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
+                    'uint8', 'uint16', 'uint32', 'uint64',
+                    'complex64', 'complex128', 'iinfo', 'finfo',
+                    'can_cast', 'result_type']
 
-_all_ignore = ['get_xp', 'da', 'partial', 'common_aliases', 'np']
+_all_ignore = ["get_xp", "da", "np"]

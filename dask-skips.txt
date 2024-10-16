@@ -1,17 +1,2 @@
-# FFT isn't conformant
-array_api_tests/test_fft.py
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.fft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.ifft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.fftn]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.ifftn]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.rfft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.irfft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.rfftn]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.irfftn]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.hfft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.ihfft]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.fftfreq]
-array_api_tests/test_signatures.py::test_extension_func_signature[fft.rfftfreq]
-
 # slow and not implemented in dask
 array_api_tests/test_linalg.py::test_matrix_power
