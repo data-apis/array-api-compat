@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device, device, is_torch_array
+from ._helpers import array_namespace, _check_device, device, is_torch_array, is_cupy_namespace
 
 # These functions are modified from the NumPy versions.
 
@@ -541,7 +541,8 @@ def sign(x: ndarray, /, xp, **kwargs) -> ndarray:
         out = xp.sign(x, **kwargs)
     # CuPy sign() does not propagate nans. See
     # https://github.com/data-apis/array-api-compat/issues/136
-    out[xp.isnan(x)] = xp.nan
+    if is_cupy_namespace(xp) and isdtype(x.dtype, 'real floating', xp=xp):
+        out[xp.isnan(x)] = xp.nan
     return out[()]
 
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
