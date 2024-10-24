@@ -532,14 +532,17 @@ def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
 
 # numpy 1.26 does not use the standard definition for sign on complex numbers
 
-def sign(x: array, /, xp, **kwargs) -> array:
+def sign(x: ndarray, /, xp, **kwargs) -> ndarray:
     if isdtype(x.dtype, 'complex floating', xp=xp):
         out = (x/xp.abs(x, **kwargs))[...]
         # sign(0) = 0 but the above formula would give nan
         out[x == 0+0j] = 0+0j
-        return out[()]
     else:
-        return xp.sign(x, **kwargs)
+        out = xp.sign(x, **kwargs)
+    # CuPy sign() does not propagate nans. See
+    # https://github.com/data-apis/array-api-compat/issues/136
+    out[xp.isnan(x)] = xp.nan
+    return out[()]
 
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
