@@ -62,6 +62,7 @@ trunc = get_xp(cp)(_aliases.trunc)
 matmul = get_xp(cp)(_aliases.matmul)
 matrix_transpose = get_xp(cp)(_aliases.matrix_transpose)
 tensordot = get_xp(cp)(_aliases.tensordot)
+sign = get_xp(cp)(_aliases.sign)
 
 _copy_default = object()
 

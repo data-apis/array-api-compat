@@ -104,7 +104,7 @@ floor = get_xp(np)(_aliases.floor)
 trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 tensordot = get_xp(np)(_aliases.tensordot)
-
+sign = get_xp(np)(_aliases.sign)
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(

@@ -530,6 +530,17 @@ def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
         raise ValueError("Input array must be at least 1-d.")
     return tuple(xp.moveaxis(x, axis, 0))
 
+# numpy 1.26 does not use the standard definition for sign on complex numbers
+
+def sign(x: array, /, xp, **kwargs) -> array:
+    if isdtype(x.dtype, 'complex floating', xp=xp):
+        out = (x/xp.abs(x, **kwargs))[...]
+        # sign(0) = 0 but the above formula would give nan
+        out[x == 0+0j] = 0+0j
+        return out[()]
+    else:
+        return xp.sign(x, **kwargs)
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
@@ -537,4 +548,4 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'astype', 'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
-           'unstack']
+           'unstack', 'sign']
