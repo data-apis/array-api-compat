@@ -56,6 +56,10 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x1
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
 
+# inverse trig functions are too inaccurate on CPU
+array_api_tests/test_operators_and_elementwise_functions.py::test_acos
+array_api_tests/test_operators_and_elementwise_functions.py::test_atan
+array_api_tests/test_operators_and_elementwise_functions.py::test_asin
 
 # overflow near float max
 array_api_tests/test_operators_and_elementwise_functions.py::test_log1p
