@@ -317,7 +317,7 @@ def is_torch_namespace(xp) -> bool:
     is_array_api_strict_namespace
     """
     return xp.__name__ in {'torch', _compat_module_name() + '.torch'}
-    
+
 
 def is_ndonnx_namespace(xp):
     """
@@ -415,10 +415,11 @@ def is_array_api_strict_namespace(xp):
     return xp.__name__ == 'array_api_strict'
 
 def _check_api_version(api_version):
-    if api_version == '2021.12':
-        warnings.warn("The 2021.12 version of the array API specification was requested but the returned namespace is actually version 2022.12")
-    elif api_version is not None and api_version != '2022.12':
-        raise ValueError("Only the 2022.12 version of the array API specification is currently supported")
+    if api_version in ['2021.12', '2022.12']:
+        warnings.warn(f"The {api_version} version of the array API specification was requested but the returned namespace is actually version 2023.12")
+    elif api_version is not None and api_version not in ['2021.12', '2022.12',
+                                                         '2023.12']:
+        raise ValueError("Only the 2023.12 version of the array API specification is currently supported")
 
 def array_namespace(*xs, api_version=None, use_compat=None):
     """
@@ -431,7 +432,7 @@ def array_namespace(*xs, api_version=None, use_compat=None):
 
     api_version: str
         The newest version of the spec that you need support for (currently
-        the compat library wrapped APIs support v2022.12).
+        the compat library wrapped APIs support v2023.12).
 
     use_compat: bool or None
         If None (the default), the native namespace will be returned if it is
