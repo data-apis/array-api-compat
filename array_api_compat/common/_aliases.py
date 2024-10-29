@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device, device, is_torch_array
+from ._helpers import array_namespace, _check_device, device, is_torch_array, is_cupy_namespace
 
 # These functions are modified from the NumPy versions.
 
@@ -530,6 +530,21 @@ def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
         raise ValueError("Input array must be at least 1-d.")
     return tuple(xp.moveaxis(x, axis, 0))
 
+# numpy 1.26 does not use the standard definition for sign on complex numbers
+
+def sign(x: ndarray, /, xp, **kwargs) -> ndarray:
+    if isdtype(x.dtype, 'complex floating', xp=xp):
+        out = (x/xp.abs(x, **kwargs))[...]
+        # sign(0) = 0 but the above formula would give nan
+        out[x == 0+0j] = 0+0j
+    else:
+        out = xp.sign(x, **kwargs)
+    # CuPy sign() does not propagate nans. See
+    # https://github.com/data-apis/array-api-compat/issues/136
+    if is_cupy_namespace(xp) and isdtype(x.dtype, 'real floating', xp=xp):
+        out[xp.isnan(x)] = xp.nan
+    return out[()]
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
@@ -537,4 +552,4 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'astype', 'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
-           'unstack']
+           'unstack', 'sign']

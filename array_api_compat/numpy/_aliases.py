@@ -62,6 +62,7 @@ trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
+sign = get_xp(np)(_aliases.sign)
 
 def _supports_buffer_protocol(obj):
     try:

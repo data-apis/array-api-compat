@@ -62,6 +62,7 @@ trunc = get_xp(cp)(_aliases.trunc)
 matmul = get_xp(cp)(_aliases.matmul)
 matrix_transpose = get_xp(cp)(_aliases.matrix_transpose)
 tensordot = get_xp(cp)(_aliases.tensordot)
+sign = get_xp(cp)(_aliases.sign)
 
 _copy_default = object()
 
@@ -108,13 +109,6 @@ def asarray(
             kwargs['copy'] = copy
 
         return cp.array(obj, dtype=dtype, **kwargs)
-
-def sign(x: ndarray, /) -> ndarray:
-    # CuPy sign() does not propagate nans. See
-    # https://github.com/data-apis/array-api-compat/issues/136
-    out = cp.sign(x)
-    out[cp.isnan(x)] = cp.nan
-    return out
 
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
