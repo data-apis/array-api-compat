@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.9.1 (2024-10-29)
+
+### Major Changes
+
+- `__array_api_version__` for the wrapped APIs is now set to `2023.12`.
+
+### Minor Changes
+
+- Wrap `sign` so that it always uses the standard definition for complex
+  numbers, and always propagates nans.
+
+- Wrap dask.array.fft.
+
+- Readd `python_requires` to the package metadata.
+
 ## 1.9 (2024-10-??)
 
 ### Major Changes
