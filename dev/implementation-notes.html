@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d9f9fa6c" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=dc4c535e" />
     
     
 
@@ -293,6 +293,17 @@ identical PyTorch uses a similar layout in <code class="docutils literal notrans
 differs enough from NumPy/CuPy that very few common wrappers for those
 libraries are reused. Dask is close to NumPy in behavior and so most Dask
 functions also reuse the NumPy/CuPy common wrappers.</p>
+<p>Occasionally, a wrapper implementation will need to reference another wrapper
+implementation, rather than the base <code class="docutils literal notranslate"><span class="pre">xp</span></code> version. The easiest way to do this
+is to call <code class="docutils literal notranslate"><span class="pre">array_namespace</span></code>, like</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">wrapped_xp</span> <span class="o">=</span> <span class="n">array_namespace</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">wrapped_xp</span><span class="o">.</span><span class="n">wrapped_func</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also, if there is a very minor difference required for wrapping, say, CuPy and
+NumPy, they can still use a common implementation in <code class="docutils literal notranslate"><span class="pre">common/_aliases.py</span></code> and
+use the <code class="docutils literal notranslate"><span class="pre">is_*_namespace()</span></code> or <code class="docutils literal notranslate"><span class="pre">is_*_function()</span></code> <a class="reference internal" href="../helper-functions.html"><span class="std std-doc">helper
+functions</span></a> to branch as necessary.</p>
 </section>
 
         </article>

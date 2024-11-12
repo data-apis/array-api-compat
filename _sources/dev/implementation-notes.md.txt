@@ -47,3 +47,17 @@ identical PyTorch uses a similar layout in `array_api_compat/torch/`, but it
 differs enough from NumPy/CuPy that very few common wrappers for those
 libraries are reused. Dask is close to NumPy in behavior and so most Dask
 functions also reuse the NumPy/CuPy common wrappers.
+
+Occasionally, a wrapper implementation will need to reference another wrapper
+implementation, rather than the base `xp` version. The easiest way to do this
+is to call `array_namespace`, like
+
+```py
+wrapped_xp = array_namespace(x)
+wrapped_xp.wrapped_func(...)
+```
+
+Also, if there is a very minor difference required for wrapping, say, CuPy and
+NumPy, they can still use a common implementation in `common/_aliases.py` and
+use the `is_*_namespace()` or `is_*_function()` [helper
+functions](../helper-functions.rst) to branch as necessary.

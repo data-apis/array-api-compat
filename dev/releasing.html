@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d9f9fa6c" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=dc4c535e" />
     
     
 
@@ -253,46 +253,89 @@
         <article role="main" id="furo-main-content">
           <section class="tex2jax_ignore mathjax_ignore" id="releasing">
 <h1>Releasing<a class="headerlink" href="#releasing" title="Link to this heading">¶</a></h1>
-<p>To release, first make sure that all CI tests are passing on <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
-<p>Note that CuPy must be tested manually (it isn’t tested on CI). Use the script</p>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Create a PR with a release branch</strong></p>
+<p>This makes it easy to verify that CI is passing, and also gives you a place
+to push up updates to the changelog and any last minute fixes for the
+release.</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Double check the release branch is fully merged with <code class="docutils literal notranslate"><span class="pre">main</span></code>.</strong></p>
+<p>(e.g., if the release branch is called <code class="docutils literal notranslate"><span class="pre">release</span></code>)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">main</span>
+<span class="n">git</span> <span class="n">pull</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">release</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">main</span>
+</pre></div>
+</div>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Make sure that all CI tests are passing.</strong></p>
+<p>Note that the GitHub action that publishes to PyPI does not check if CI is
+passing before publishing. So you need to check this manually.</p>
+<p>This does mean you can ignore CI failures, but ideally you should fix any
+failures or update the <code class="docutils literal notranslate"><span class="pre">*-xfails.txt</span></code> files before tagging, so that CI and
+the CuPy tests fully pass. Otherwise it will be hard to tell what things are
+breaking in the future. It’s also a good idea to remove any xpasses from
+those files (but be aware that some xfails are from flaky failures, so
+unless you know the underlying issue has been fixed, an xpass test is
+probably still xfail).</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Test CuPy.</strong></p>
+<p>CuPy must be tested manually (it isn’t tested on CI, see
+<a class="reference external" href="https://github.com/data-apis/array-api-compat/issues/197">https://github.com/data-apis/array-api-compat/issues/197</a>). Use the script</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">test_cupy</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>on a machine with a CUDA GPU.</p>
-<p>Once you are ready to release, create a PR with a release branch, so that you
-can verify that CI is passing. You must edit</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Update the version.</strong></p>
+<p>You must edit</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array_api_compat</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>and update the version (the version is not computed from the tag because that
-would break vendorability). You should also edit</p>
+<p>and update the version (the version is not computed from the tag because
+that would break vendorability).</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Update the <a class="reference internal" href="../changelog.html"><span class="std std-doc">changelog</span></a>.</strong></p>
+<p>Edit</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docs</span><span class="o">/</span><span class="n">changelog</span><span class="o">.</span><span class="n">md</span>
 </pre></div>
 </div>
 <p>with the changes for the release.</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Create the release tag.</strong></p>
 <p>Once everything is ready, create a tag</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">tag</span> <span class="o">-</span><span class="n">a</span> <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>(note the tag names are not prefixed, for instance, the tag for version 1.5 is
 just <code class="docutils literal notranslate"><span class="pre">1.5</span></code>)</p>
-<p>and push it to GitHub</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Push the tag to GitHub.</strong></p>
+<p><em>This is the final step. Doing this will build and publish the release!</em></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>Check that the <code class="docutils literal notranslate"><span class="pre">publish</span> <span class="pre">distributions</span></code> action on the tag build works. Note
-that this action will run even if the other CI fails, so you must make sure
-that CI is passing <em>before</em> tagging.</p>
-<p>This does mean you can ignore CI failures, but ideally you should fix any
-failures or update the <code class="docutils literal notranslate"><span class="pre">*-xfails.txt</span></code> files before tagging, so that CI and the
-cupy tests pass. Otherwise it will be hard to tell what things are breaking in
-the future. It’s also a good idea to remove any xpasses from those files (but
-be aware that some xfails are from flaky failures, so unless you know the
-underlying issue has been fixed, an xpass test is probably still xfail).</p>
-<p>If the publish action fails for some reason and didn’t upload the release to
-PyPI, you will need to delete the tag and try again.</p>
+<p>This will trigger the <a class="reference external" href="https://github.com/data-apis/array-api-compat/actions/workflows/publish-package.yml"><code class="docutils literal notranslate"><span class="pre">publish</span> <span class="pre">distributions</span></code></a>
+GitHub Action that will build the release and push it to PyPI.</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Check that the <a class="reference external" href="https://github.com/data-apis/array-api-compat/actions/workflows/publish-package.yml"><code class="docutils literal notranslate"><span class="pre">publish</span> <span class="pre">distributions</span></code></a>
+action build on the tag worked.</strong> Note that this action will run even if the
+other CI fails, so you must make sure that CI is passing <em>before</em> tagging.</p>
+<p>If it failed for some reason, you may need to delete the tag and try again.</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Merge the release branch.</strong></p>
+<p>This way any changes you made in the branch, such as updates to the
+changelog or xfails files, are updated in <code class="docutils literal notranslate"><span class="pre">main</span></code>. This will also make the
+docs update (the docs are published automatically from the sources on
+<code class="docutils literal notranslate"><span class="pre">main</span></code>).</p>
+</li>
+<li class="task-list-item enabled"><p><input class="task-list-item-checkbox"  type="checkbox"> <strong>Update conda-forge.</strong></p>
 <p>After the PyPI package is published, the conda-forge bot should update the
-feedstock automatically.</p>
+feedstock automatically after some time. The bot should automerge, so in
+most cases you don’t need to do anything here, unless some metadata on the
+feedstock needs to be updated.</p>
+</li>
+</ul>
 </section>
 
         </article>
