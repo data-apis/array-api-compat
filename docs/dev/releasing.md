@@ -103,6 +103,6 @@
 - [ ] **Update conda-forge.**
 
   After the PyPI package is published, the conda-forge bot should update the
-  feedstock automatically after some times. The bot should automerge, so in
+  feedstock automatically after some time. The bot should automerge, so in
   most cases you don't need to do anything here, unless some metadata on the
   feedstock needs to be updated.
