@@ -38,7 +38,8 @@ intersphinx_disabled_reftypes = ['*']
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-myst_enable_extensions = ["dollarmath", "linkify"]
+myst_enable_extensions = ["dollarmath", "linkify", "tasklist"]
+myst_enable_checkboxes = True
 
 napoleon_use_rtype = False
 napoleon_use_param = False

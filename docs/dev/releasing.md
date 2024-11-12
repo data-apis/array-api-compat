@@ -1,59 +1,108 @@
 # Releasing
 
-To release, first make sure that all CI tests are passing on `main`.
+- [ ] **Create a PR with a release branch**
 
-Note that CuPy must be tested manually (it isn't tested on CI). Use the script
+  This makes it easy to verify that CI is passing, and also gives you a place
+  to push up updates to the changelog and any last minute fixes for the
+  release.
 
-```
-./test_cupy.sh
-```
+- [ ] **Double check the release branch is fully merged with `main`.**
 
-on a machine with a CUDA GPU.
+  (e.g., if the release branch is called `release`)
 
-Once you are ready to release, create a PR with a release branch, so that you
-can verify that CI is passing. You must edit
+  ```
+  git checkout main
+  git pull
+  git checkout release
+  git merge main
+  ```
 
-```
-array_api_compat/__init__.py
-```
+- [ ] **Make sure that all CI tests are passing.**
 
-and update the version (the version is not computed from the tag because that
-would break vendorability). You should also edit
+  Note that the GitHub action that publishes to PyPI does not check if CI is
+  passing before publishing. So you need to check this manually.
 
-```
-docs/changelog.md
-```
+  This does mean you can ignore CI failures, but ideally you should fix any
+  failures or update the `*-xfails.txt` files before tagging, so that CI and
+  the CuPy tests fully pass. Otherwise it will be hard to tell what things are
+  breaking in the future. It's also a good idea to remove any xpasses from
+  those files (but be aware that some xfails are from flaky failures, so
+  unless you know the underlying issue has been fixed, an xpass test is
+  probably still xfail).
 
-with the changes for the release.
+- [ ] **Test CuPy.**
 
-Once everything is ready, create a tag
+  CuPy must be tested manually (it isn't tested on CI, see
+  https://github.com/data-apis/array-api-compat/issues/197). Use the script
 
-```
-git tag -a <version>
-```
+   ```
+   ./test_cupy.sh
+   ```
 
-(note the tag names are not prefixed, for instance, the tag for version 1.5 is
-just `1.5`)
+   on a machine with a CUDA GPU.
 
-and push it to GitHub
 
-```
-git push origin <version>
-```
+- [ ] **Update the version.**
 
-Check that the `publish distributions` action on the tag build works. Note
-that this action will run even if the other CI fails, so you must make sure
-that CI is passing *before* tagging.
+  You must edit
 
-This does mean you can ignore CI failures, but ideally you should fix any
-failures or update the `*-xfails.txt` files before tagging, so that CI and the
-cupy tests pass. Otherwise it will be hard to tell what things are breaking in
-the future. It's also a good idea to remove any xpasses from those files (but
-be aware that some xfails are from flaky failures, so unless you know the
-underlying issue has been fixed, an xpass test is probably still xfail).
+  ```
+  array_api_compat/__init__.py
+  ```
 
-If the publish action fails for some reason and didn't upload the release to
-PyPI, you will need to delete the tag and try again.
+  and update the version (the version is not computed from the tag because
+  that would break vendorability).
 
-After the PyPI package is published, the conda-forge bot should update the
-feedstock automatically.
+- [ ] **Update the [changelog](../changelog.md).**
+
+  Edit
+
+  ```
+  docs/changelog.md
+  ```
+
+  with the changes for the release.
+
+- [ ] **Create the release tag.**
+
+  Once everything is ready, create a tag
+
+  ```
+  git tag -a <version>
+  ```
+
+  (note the tag names are not prefixed, for instance, the tag for version 1.5 is
+  just `1.5`)
+
+- [ ] **Push the tag to GitHub.**
+
+  *This is the final step. Doing this will build and publish the release!*
+
+  ```
+  git push origin <version>
+  ```
+
+  This will trigger the [`publish
+  distributions`](https://github.com/data-apis/array-api-compat/actions/workflows/publish-package.yml)
+  GitHub Action that will build the release and push it to PyPI.
+
+- [ ] **Check that the [`publish
+  distributions`](https://github.com/data-apis/array-api-compat/actions/workflows/publish-package.yml)
+  action build on the tag worked.** Note that this action will run even if the
+  other CI fails, so you must make sure that CI is passing *before* tagging.
+
+  If it failed for some reason, you may need to delete the tag and try again.
+
+- [ ] **Merge the release branch.**
+
+  This way any changes you made in the branch, such as updates to the
+  changelog or xfails files, are updated in `main`. This will also make the
+  docs update (the docs are published automatically from the sources on
+  `main`).
+
+- [ ] **Update conda-forge.**
+
+  After the PyPI package is published, the conda-forge bot should update the
+  feedstock automatically after some times. The bot should automerge, so in
+  most cases you don't need to do anything here, unless some metadata on the
+  feedstock needs to be updated.
