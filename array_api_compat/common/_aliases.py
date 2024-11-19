@@ -479,7 +479,7 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
     x2_ = xp.moveaxis(x2, axis, -1)
     x1_, x2_ = _broadcast(x1_, x2_)
 
-    res = x1_[..., None, :] @ x2_[..., None]
+    res = xp.conj(x1_[..., None, :]) @ x2_[..., None]
     return res[..., 0, 0]
 
 # isdtype is a new function in the 2022.12 array API specification.
