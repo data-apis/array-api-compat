@@ -521,7 +521,10 @@ def array_namespace(*xs, api_version=None, use_compat=None):
                 import torch
                 namespaces.add(torch)
         elif is_dask_array(x):
-            if _use_compat:
+            # dask main namespace is not array API compatible
+            # so return namespace from array-api-compat unless
+            # explicitly requested otherwise
+            if _use_compat or _use_compat is None:
                 _check_api_version(api_version)
                 from ..dask import array as dask_namespace
                 namespaces.add(dask_namespace)
