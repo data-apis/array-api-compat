@@ -158,5 +158,4 @@ Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
 - As with NumPy, type annotations and positional-only arguments may not
   exactly match the spec for functions that are not wrapped at all.
 
-The minimum supported PyTorch version is 1.13.
-
+The minimum supported PyTorch version is 3.0.0.
