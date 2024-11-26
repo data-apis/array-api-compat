@@ -15,7 +15,7 @@ from functools import cache
 
 class __array_namespace_info__:
     """
-    Get the array API inspection namespace for PyTorch.
+    Get the array API inspection namespace for Paddle.
 
     The array API inspection namespace defines the following functions:
 
@@ -32,7 +32,7 @@ class __array_namespace_info__:
     Returns
     -------
     info : ModuleType
-        The array API inspection namespace for PyTorch.
+        The array API inspection namespace for Paddle.
 
     Examples
     --------
@@ -54,11 +54,11 @@ class __array_namespace_info__:
         The resulting dictionary has the following keys:
 
         - **"boolean indexing"**: boolean indicating whether an array library
-          supports boolean indexing. Always ``True`` for PyTorch.
+          supports boolean indexing. Always ``True`` for Paddle.
 
         - **"data-dependent shapes"**: boolean indicating whether an array
           library supports data-dependent output shapes. Always ``True`` for
-          PyTorch.
+          Paddle.
 
         See
         https://data-apis.org/array-api/latest/API_specification/generated/array_api.info.capabilities.html
@@ -93,7 +93,7 @@ class __array_namespace_info__:
 
     def default_device(self):
         """
-        The default device used for new PyTorch arrays.
+        The default device used for new Paddle arrays.
 
         See Also
         --------
@@ -105,7 +105,7 @@ class __array_namespace_info__:
         Returns
         -------
         device : str
-            The default device used for new PyTorch arrays.
+            The default device used for new Paddle arrays.
 
         Examples
         --------
@@ -118,18 +118,18 @@ class __array_namespace_info__:
 
     def default_dtypes(self, *, device=None):
         """
-        The default data types used for new PyTorch arrays.
+        The default data types used for new Paddle arrays.
 
         Parameters
         ----------
         device : str, optional
-            The device to get the default data types for. For PyTorch, only
+            The device to get the default data types for. For Paddle, only
             ``'cpu'`` is allowed.
 
         Returns
         -------
         dtypes : dict
-            A dictionary describing the default data types used for new PyTorch
+            A dictionary describing the default data types used for new Paddle
             arrays.
 
         See Also
@@ -244,7 +244,7 @@ class __array_namespace_info__:
     @cache
     def dtypes(self, *, device=None, kind=None):
         """
-        The array API data types supported by PyTorch.
+        The array API data types supported by Paddle.
 
         Note that this function only returns data types that are defined by
         the array API.
@@ -277,7 +277,7 @@ class __array_namespace_info__:
         -------
         dtypes : dict
             A dictionary mapping the names of data types to the corresponding
-            PyTorch data types.
+            Paddle data types.
 
         See Also
         --------
@@ -307,12 +307,12 @@ class __array_namespace_info__:
     @cache
     def devices(self):
         """
-        The devices supported by PyTorch.
+        The devices supported by Paddle.
 
         Returns
         -------
         devices : list of str
-            The devices supported by PyTorch.
+            The devices supported by Paddle.
 
         See Also
         --------
