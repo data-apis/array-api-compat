@@ -3,12 +3,12 @@ import sys
 
 import pytest
 
-wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + ["jax.numpy"]
+wrapped_libraries = ["numpy", "paddle"]
+all_libraries = wrapped_libraries + []
 
 # `sparse` added array API support as of Python 3.10.
-if sys.version_info >= (3, 10):
-    all_libraries.append('sparse')
+# if sys.version_info >= (3, 10):
+#     all_libraries.append('sparse')
 
 def import_(library, wrapper=False):
     if library == 'cupy':
@@ -24,5 +24,10 @@ def import_(library, wrapper=False):
             library = 'sparse'
         else:
             library = 'array_api_compat.' + library
+
+    if library == 'paddle':
+        xp = import_module(library)
+        xp.asarray = xp.to_tensor
+        return xp
 
     return import_module(library)

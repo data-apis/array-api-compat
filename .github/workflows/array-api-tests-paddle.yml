@@ -1,0 +1,11 @@
+name: Array API Tests (Paddle Latest)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-paddle:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: paddle
+      extra-env-vars: |
+        ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64

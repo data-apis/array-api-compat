@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     import paddle
+
     array = paddle.Tensor
     from typing import Union, Sequence, Literal
 
-from paddle.fft import * # noqa: F403
+from paddle.fft import *  # noqa: F403
 import paddle.fft
 
-# Several paddle fft functions do not map axes to dim
 
 def fftn(
     x: array,
@@ -22,6 +23,7 @@ def fftn(
 ) -> array:
     return paddle.fft.fftn(x, s=s, axes=axes, norm=norm, **kwargs)
 
+
 def ifftn(
     x: array,
     /,
@@ -32,6 +34,7 @@ def ifftn(
     **kwargs,
 ) -> array:
     return paddle.fft.ifftn(x, s=s, axes=axes, norm=norm, **kwargs)
+
 
 def rfftn(
     x: array,
@@ -44,6 +47,7 @@ def rfftn(
 ) -> array:
     return paddle.fft.rfftn(x, s=s, axes=axes, norm=norm, **kwargs)
 
+
 def irfftn(
     x: array,
     /,
@@ -55,6 +59,7 @@ def irfftn(
 ) -> array:
     return paddle.fft.irfftn(x, s=s, axes=axes, norm=norm, **kwargs)
 
+
 def fftshift(
     x: array,
     /,
@@ -63,6 +68,7 @@ def fftshift(
     **kwargs,
 ) -> array:
     return paddle.fft.fftshift(x, axes=axes, **kwargs)
+
 
 def ifftshift(
     x: array,
@@ -83,4 +89,4 @@ __all__ = paddle.fft.__all__ + [
     "ifftshift",
 ]
 
-_all_ignore = ['paddle']
+_all_ignore = ["paddle"]

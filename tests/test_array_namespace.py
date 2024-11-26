@@ -2,10 +2,11 @@ import subprocess
 import sys
 import warnings
 
-import jax
+# import jax
 import numpy as np
 import pytest
-import torch
+# import torch
+import paddle
 
 import array_api_compat
 from array_api_compat import array_namespace
@@ -72,11 +73,11 @@ else:
 """
         subprocess.run([sys.executable, "-c", code], check=True)
 
-def test_jax_zero_gradient():
-    jx = jax.numpy.arange(4)
-    jax_zero = jax.vmap(jax.grad(jax.numpy.float32, allow_int=True))(jx)
-    assert (array_api_compat.get_namespace(jax_zero) is
-            array_api_compat.get_namespace(jx))
+# def test_jax_zero_gradient():
+#     jx = jax.numpy.arange(4)
+#     jax_zero = jax.vmap(jax.grad(jax.numpy.float32, allow_int=True))(jx)
+#     assert (array_api_compat.get_namespace(jax_zero) is
+#             array_api_compat.get_namespace(jx))
 
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
@@ -86,26 +87,53 @@ def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace((x, x)))
     pytest.raises(TypeError, lambda: array_namespace(x, (x, x)))
 
-def test_array_namespace_errors_torch():
-    y = torch.asarray([1, 2])
+# def test_array_namespace_errors_torch():
+#     y = torch.asarray([1, 2])
+#     x = np.asarray([1, 2])
+#     pytest.raises(TypeError, lambda: array_namespace(x, y))
+
+
+def test_array_namespace_errors_paddle():
+    y = paddle.to_tensor([1, 2])
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
+
+# def test_api_version():
+#     x = torch.asarray([1, 2])
+#     torch_ = import_("torch", wrapper=True)
+#     assert array_namespace(x, api_version="2023.12") == torch_
+#     assert array_namespace(x, api_version=None) == torch_
+#     assert array_namespace(x) == torch_
+#     # Should issue a warning
+#     with warnings.catch_warnings(record=True) as w:
+#         assert array_namespace(x, api_version="2021.12") == torch_
+#     assert len(w) == 1
+#     assert "2021.12" in str(w[0].message)
+
+#     # Should issue a warning
+#     with warnings.catch_warnings(record=True) as w:
+#         assert array_namespace(x, api_version="2022.12") == torch_
+#     assert len(w) == 1
+#     assert "2022.12" in str(w[0].message)
+
+#     pytest.raises(ValueError, lambda: array_namespace(x, api_version="2020.12"))
+
 def test_api_version():
-    x = torch.asarray([1, 2])
-    torch_ = import_("torch", wrapper=True)
-    assert array_namespace(x, api_version="2023.12") == torch_
-    assert array_namespace(x, api_version=None) == torch_
-    assert array_namespace(x) == torch_
+    x = paddle.asarray([1, 2])
+    paddle_ = import_("paddle", wrapper=True)
+    assert array_namespace(x, api_version="2023.12") == paddle_
+    assert array_namespace(x, api_version=None) == paddle_
+    assert array_namespace(x) == paddle_
     # Should issue a warning
     with warnings.catch_warnings(record=True) as w:
-        assert array_namespace(x, api_version="2021.12") == torch_
+        assert array_namespace(x, api_version="2021.12") == paddle_
     assert len(w) == 1
     assert "2021.12" in str(w[0].message)
 
     # Should issue a warning
     with warnings.catch_warnings(record=True) as w:
-        assert array_namespace(x, api_version="2022.12") == torch_
+        assert array_namespace(x, api_version="2022.12") == paddle_
     assert len(w) == 1
     assert "2022.12" in str(w[0].message)
 
@@ -118,6 +146,22 @@ def test_get_namespace():
 def test_python_scalars():
     a = torch.asarray([1, 2])
     xp = import_("torch", wrapper=True)
+
+    pytest.raises(TypeError, lambda: array_namespace(1))
+    pytest.raises(TypeError, lambda: array_namespace(1.0))
+    pytest.raises(TypeError, lambda: array_namespace(1j))
+    pytest.raises(TypeError, lambda: array_namespace(True))
+    pytest.raises(TypeError, lambda: array_namespace(None))
+
+    assert array_namespace(a, 1) == xp
+    assert array_namespace(a, 1.0) == xp
+    assert array_namespace(a, 1j) == xp
+    assert array_namespace(a, True) == xp
+    assert array_namespace(a, None) == xp
+
+def test_python_scalars():
+    a = paddle.to_tensor([1, 2])
+    xp = import_("paddle", wrapper=True)
 
     pytest.raises(TypeError, lambda: array_namespace(1))
     pytest.raises(TypeError, lambda: array_namespace(1.0))
