@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-wrapped_libraries = ["numpy", "paddle"]
+wrapped_libraries = ["numpy", "paddle", "torch"]
 all_libraries = wrapped_libraries + []
 
 # `sparse` added array API support as of Python 3.10.

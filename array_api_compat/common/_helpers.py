@@ -144,7 +144,6 @@ def is_paddle_array(x):
 
     import paddle
 
-    # TODO: Should we reject ndarray subclasses?
     return paddle.is_tensor(x)
 
 def is_ndonnx_array(x):
@@ -725,7 +724,7 @@ def device(x: Array, /) -> Device:
             return "cpu"
         elif "gpu" in raw_place_str:
             return "gpu"
-        raise NotImplementedError(f"Unsupported device {raw_place_str}")
+        raise ValueError(f"Unsupported Paddle device: {x.place}")
 
     return x.device
 

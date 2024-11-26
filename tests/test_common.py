@@ -17,7 +17,7 @@ from numpy.testing import assert_allclose
 is_array_functions = {
     'numpy': 'is_numpy_array',
     # 'cupy': 'is_cupy_array',
-    # 'torch': 'is_torch_array',
+    'torch': 'is_torch_array',
     # 'dask.array': 'is_dask_array',
     # 'jax.numpy': 'is_jax_array',
     # 'sparse': 'is_pydata_sparse_array',
@@ -27,7 +27,7 @@ is_array_functions = {
 is_namespace_functions = {
     'numpy': 'is_numpy_namespace',
     # 'cupy': 'is_cupy_namespace',
-    # 'torch': 'is_torch_namespace',
+    'torch': 'is_torch_namespace',
     # 'dask.array': 'is_dask_namespace',
     # 'jax.numpy': 'is_jax_namespace',
     # 'sparse': 'is_pydata_sparse_namespace',
@@ -103,6 +103,13 @@ def test_asarray_cross_library(source_library, target_library, request):
     if source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
+    if source_library == "paddle" or target_library == "paddle":
+        pytest.skip(
+            reason=(
+                "paddle does not support implicit conversion from/to other framework "
+                "via 'asarray', dlpack is recommend now."
+            )
+        )
     elif source_library == "sparse" and target_library != "sparse":
         pytest.skip(reason="`sparse` does not allow implicit densification")
     src_lib = import_(source_library, wrapper=True)
