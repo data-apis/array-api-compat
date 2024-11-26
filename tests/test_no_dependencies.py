@@ -51,8 +51,8 @@ def _test_dependency(mod):
 
 @pytest.mark.parametrize("library",
     [
-        "numpy",
-        "paddle", "array_api_strict",
+        "numpy", "cupy", "numpy", "torch", "dask.array",
+        "jax.numpy", "sparse", "paddle", "array_api_strict"
     ]
 )
 def test_numpy_dependency(library):

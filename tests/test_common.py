@@ -16,21 +16,21 @@ from numpy.testing import assert_allclose
 
 is_array_functions = {
     'numpy': 'is_numpy_array',
-    # 'cupy': 'is_cupy_array',
+    'cupy': 'is_cupy_array',
     'torch': 'is_torch_array',
-    # 'dask.array': 'is_dask_array',
-    # 'jax.numpy': 'is_jax_array',
-    # 'sparse': 'is_pydata_sparse_array',
+    'dask.array': 'is_dask_array',
+    'jax.numpy': 'is_jax_array',
+    'sparse': 'is_pydata_sparse_array',
     'paddle': 'is_paddle_array',
 }
 
 is_namespace_functions = {
     'numpy': 'is_numpy_namespace',
-    # 'cupy': 'is_cupy_namespace',
+    'cupy': 'is_cupy_namespace',
     'torch': 'is_torch_namespace',
-    # 'dask.array': 'is_dask_namespace',
-    # 'jax.numpy': 'is_jax_namespace',
-    # 'sparse': 'is_pydata_sparse_namespace',
+    'dask.array': 'is_dask_namespace',
+    'jax.numpy': 'is_jax_namespace',
+    'sparse': 'is_pydata_sparse_namespace',
     'paddle': 'is_paddle_namespace',
 }
 
