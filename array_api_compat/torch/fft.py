@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    import paddle
-    array = paddle.Tensor
+    import torch
+    array = torch.Tensor
     from typing import Union, Sequence, Literal
 
-from paddle.fft import * # noqa: F403
-import paddle.fft
+from torch.fft import * # noqa: F403
+import torch.fft
 
-# Several paddle fft functions do not map axes to dim
+# Several torch fft functions do not map axes to dim
 
 def fftn(
     x: array,
@@ -20,7 +20,7 @@ def fftn(
     norm: Literal["backward", "ortho", "forward"] = "backward",
     **kwargs,
 ) -> array:
-    return paddle.fft.fftn(x, s=s, axes=axes, norm=norm, **kwargs)
+    return torch.fft.fftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
 def ifftn(
     x: array,
@@ -31,7 +31,7 @@ def ifftn(
     norm: Literal["backward", "ortho", "forward"] = "backward",
     **kwargs,
 ) -> array:
-    return paddle.fft.ifftn(x, s=s, axes=axes, norm=norm, **kwargs)
+    return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
 def rfftn(
     x: array,
@@ -42,7 +42,7 @@ def rfftn(
     norm: Literal["backward", "ortho", "forward"] = "backward",
     **kwargs,
 ) -> array:
-    return paddle.fft.rfftn(x, s=s, axes=axes, norm=norm, **kwargs)
+    return torch.fft.rfftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
 def irfftn(
     x: array,
@@ -53,7 +53,7 @@ def irfftn(
     norm: Literal["backward", "ortho", "forward"] = "backward",
     **kwargs,
 ) -> array:
-    return paddle.fft.irfftn(x, s=s, axes=axes, norm=norm, **kwargs)
+    return torch.fft.irfftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
 def fftshift(
     x: array,
@@ -62,7 +62,7 @@ def fftshift(
     axes: Union[int, Sequence[int]] = None,
     **kwargs,
 ) -> array:
-    return paddle.fft.fftshift(x, axes=axes, **kwargs)
+    return torch.fft.fftshift(x, dim=axes, **kwargs)
 
 def ifftshift(
     x: array,
@@ -71,10 +71,10 @@ def ifftshift(
     axes: Union[int, Sequence[int]] = None,
     **kwargs,
 ) -> array:
-    return paddle.fft.ifftshift(x, axes=axes, **kwargs)
+    return torch.fft.ifftshift(x, dim=axes, **kwargs)
 
 
-__all__ = paddle.fft.__all__ + [
+__all__ = torch.fft.__all__ + [
     "fftn",
     "ifftn",
     "rfftn",
@@ -83,4 +83,4 @@ __all__ = paddle.fft.__all__ + [
     "ifftshift",
 ]
 
-_all_ignore = ['paddle']
+_all_ignore = ['torch']
