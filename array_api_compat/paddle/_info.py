@@ -170,8 +170,7 @@ class __array_namespace_info__:
         int32 = paddle.int32
         int64 = paddle.int64
         uint8 = paddle.uint8
-        # uint16, uint32, and uint64 are present in newer versions of pytorch,
-        # but they aren't generally supported by the array API functions, so
+        # uint16, uint32, and uint64 are not fully supported in paddle,
         # we omit them from this function.
         float32 = paddle.float32
         float64 = paddle.float64

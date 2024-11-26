@@ -28,11 +28,10 @@ from paddle import outer
 from ._aliases import matmul, matrix_transpose, tensordot
 
 # Note: paddle.linalg.cross does not default to axis=-1 (it defaults to the
-# first axis with size 3), see https://github.com/pytorch/pytorch/issues/58743
-
+# first axis with size 3)
 
 # paddle.cross also does not support broadcasting when it would add new
-# dimensions https://github.com/pytorch/pytorch/issues/39656
+# dimensions
 def cross(x1: array, x2: array, /, *, axis: int = -1) -> array:
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
     if not (-min(x1.ndim, x2.ndim) <= axis < max(x1.ndim, x2.ndim)):

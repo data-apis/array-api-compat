@@ -2,7 +2,7 @@ import subprocess
 import sys
 import warnings
 
-# import jax
+import jax
 import numpy as np
 import pytest
 import torch
