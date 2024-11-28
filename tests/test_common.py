@@ -55,6 +55,25 @@ def test_is_xp_namespace(library, func):
     assert is_func(lib) == (func == is_namespace_functions[library])
 
 
+@pytest.mark.parametrize('library', all_libraries)
+def test_xp_is_array_generics(library):
+    """
+    Test that scalar selection on a xp.ndarray always returns
+    an object that matches with exactly one among the is_*_array
+    function of the same library and is_numpy_array.
+    """
+    lib = import_(library)
+    x = lib.asarray([1, 2, 3])
+    x0 = x[0]
+
+    matches = []
+    for library2, func in is_array_functions.items():
+        is_func = globals()[func]
+        if is_func(x0):
+            matches.append(library2)
+    assert matches in ([library], ["numpy"])
+
+
 @pytest.mark.parametrize("library", all_libraries)
 def test_device(library):
     xp = import_(library, wrapper=True)
