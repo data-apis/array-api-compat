@@ -5,7 +5,7 @@ from array_api_compat import (  # noqa: F401
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
 )
 
-from array_api_compat import is_array_api_obj, device, to_device
+from array_api_compat import device, is_array_api_obj, is_writeable_array, to_device
 
 from ._helpers import import_, wrapped_libraries, all_libraries
 
@@ -53,6 +53,24 @@ def test_is_xp_namespace(library, func):
     is_func = globals()[func]
 
     assert is_func(lib) == (func == is_namespace_functions[library])
+
+
+@pytest.mark.parametrize("library", all_libraries)
+def test_is_writeable_array(library):
+    lib = import_(library)
+    x = lib.asarray([1, 2, 3])
+    if is_writeable_array(x):
+        x[1] = 4
+    else:
+        with pytest.raises((TypeError, ValueError)):
+            x[1] = 4
+
+
+def test_is_writeable_array_numpy():
+    x = np.asarray([1, 2, 3])
+    assert is_writeable_array(x)
+    x.flags.writeable = False
+    assert not is_writeable_array(x)
 
 
 @pytest.mark.parametrize("library", all_libraries)
