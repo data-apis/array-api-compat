@@ -332,18 +332,12 @@ class __array_namespace_info__:
         # message of paddle.device to get the list of all possible types of
         # device:
         try:
-            paddle.device("notadevice")
-        except RuntimeError as e:
+            paddle.set_device("notadevice")
+        except ValueError as e:
             # The error message is something like:
             # ValueError: The device must be a string which is like 'cpu', 'gpu', 'gpu:x', 'xpu', 'xpu:x', 'npu', 'npu:x
-            devices_names = (
-                e.args[0]
-                .split("ValueError: The device must be a string which is like ")[1]
-                .split(", ")
-            )
-            devices_names = [
-                name.strip("'") for name in devices_names if ":" not in name
-            ]
+            devices_names = e.args[0].split("The device must be a string which is like ")[1].split(", ")
+            devices_names = [name.strip("'") for name in devices_names if ":" not in name]
 
         # Next we need to check for different indices for different devices.
         # device(device_name, index=index) doesn't actually check if the

@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import paddle
+    from ..common._typing import Device
 
     array = paddle.Tensor
-    from typing import Union, Sequence, Literal
+    from typing import Optional, Union, Sequence, Literal
 
 from paddle.fft import *  # noqa: F403
 import paddle.fft
@@ -80,6 +81,32 @@ def ifftshift(
     return paddle.fft.ifftshift(x, axes=axes, **kwargs)
 
 
+def fftfreq(
+    n: int,
+    /,
+    *,
+    d: float = 1.0,
+    device: Optional[Device] = None,
+) -> array:
+    out = paddle.fft.fftfreq(n, d)
+    if device is not None:
+        out = out.to(device)
+    return out
+
+
+def rfftfreq(
+    n: int,
+    /,
+    *,
+    d: float = 1.0,
+    device: Optional[Device] = None,
+) -> array:
+    out = paddle.fft.rfftfreq(n, d)
+    if device is not None:
+        out = out.to(device)
+    return out
+
+
 __all__ = paddle.fft.__all__ + [
     "fftn",
     "ifftn",
@@ -87,6 +114,8 @@ __all__ = paddle.fft.__all__ + [
     "irfftn",
     "fftshift",
     "ifftshift",
+    "fftfreq",
+    "rfftfreq",
 ]
 
 _all_ignore = ["paddle"]

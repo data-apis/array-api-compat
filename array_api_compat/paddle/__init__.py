@@ -4,16 +4,10 @@ from paddle import *  # noqa: F403
 import paddle
 
 for n in dir(paddle):
-    if (
-        n.startswith("_")
-        or n.endswith("_")
-        or "gpu" in n
-        or "cpu" in n
-        or "backward" in n
-    ):
+    if n.startswith("_") or n.endswith("_") or "gpu" in n or "cpu" in n or "backward" in n:
         continue
-    exec(n + " = paddle." + n)
-    exec("asarray = paddle.to_tensor")
+    exec(f"{n} = paddle.{n}")
+
 
 # These imports may overwrite names from the import * above.
 from ._aliases import *  # noqa: F403
