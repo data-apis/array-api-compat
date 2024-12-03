@@ -790,15 +790,6 @@ def arange(
     device: Optional[Device] = None,
     **kwargs,
 ) -> array:
-    if stop is None:
-        start, stop = 0, start
-    if step > 0 and stop <= start or step < 0 and stop >= start:
-        if dtype is None:
-            if _builtin_all(isinstance(i, int) for i in [start, stop, step]):
-                dtype = paddle.int64
-            else:
-                dtype = paddle.float32
-        return paddle.empty([0], dtype=dtype, **kwargs).to(device)
     return paddle.arange(start, stop, step, dtype=dtype, **kwargs).to(device)
 
 
@@ -1100,7 +1091,10 @@ def asarray(
     else:
         if not paddle.is_tensor(obj) or (dtype is not None and obj.dtype != dtype):
             obj = np.array(obj, copy=False)
-            obj = paddle.from_dlpack(obj.__dlpack__(), **kwargs).to(dtype)
+            if dtype != paddle.bool and dtype != "bool":
+                obj = paddle.from_dlpack(obj.__dlpack__(), **kwargs).to(dtype)
+            else:
+                obj = paddle.to_tensor(obj, dtype=dtype)
             if device is not None:
                 obj = obj.to(device)
             return obj
