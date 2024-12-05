@@ -146,7 +146,13 @@ def asarray(
     ):
         return obj.copy()
 
-    return da.asarray(obj, dtype=dtype)
+    obj = da.asarray(obj, dtype=dtype)
+
+    # Backport https://github.com/dask/dask/pull/11586
+    if dtype not in (None, obj.dtype):
+        obj = obj.astype(dtype)
+
+    return obj
 
 
 from dask.array import (
