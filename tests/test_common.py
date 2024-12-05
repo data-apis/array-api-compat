@@ -91,7 +91,10 @@ def test_to_device_host(library):
 @pytest.mark.parametrize("target_library", is_array_functions.keys())
 @pytest.mark.parametrize("source_library", is_array_functions.keys())
 def test_asarray_cross_library(source_library, target_library, request):
-    if source_library == "dask.array" and target_library == "torch":
+    if (
+        (source_library == "dask.array" and target_library == "torch")
+        or (source_library == "torch" and target_library == "dask.array")
+    ):
         # Allow rest of test to execute instead of immediately xfailing
         # xref https://github.com/pandas-dev/pandas/issues/38902
 
