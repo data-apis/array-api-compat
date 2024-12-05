@@ -128,23 +128,26 @@ def asarray(
 
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
+
+    .. note::
+       copy=True means that if you update the output array the input will never
+       be affected; however the output array may internally hold references to the
+       input array, preventing deallocation. This kind of implementation detail should
+       be left at dask's discretion.
     """
     if copy is False:
         # copy=False is not yet implemented in dask
-        raise NotImplementedError("copy=False is not yet implemented")
-    elif copy is True:
-        if isinstance(obj, da.Array) and dtype is None:
-            return obj.copy()
-        # Go through numpy, since dask copy is no-op by default
-        obj = np.array(obj, dtype=dtype, copy=True)
-        return da.array(obj, dtype=dtype)
-    else:
-        if not isinstance(obj, da.Array) or dtype is not None and obj.dtype != dtype:
-            obj = np.asarray(obj, dtype=dtype)
-            return da.from_array(obj)
-        return obj
+        raise NotImplementedError("copy=False can't be implemented in dask")
 
-    return da.asarray(obj, dtype=dtype, **kwargs)
+    if (
+        copy is True 
+        and isinstance(obj, da.Array)
+        and (dtype is None or dtype == obj.dtype)
+    ):
+        return obj.copy()
+
+    return da.asarray(obj, dtype=dtype)
+
 
 from dask.array import (
     # Element wise aliases

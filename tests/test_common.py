@@ -112,6 +112,7 @@ def test_asarray_cross_library(source_library, target_library, request):
 
     assert is_tgt_type(b), f"Expected {b} to be a {tgt_lib.ndarray}, but was {type(b)}"
 
+
 @pytest.mark.parametrize("library", wrapped_libraries)
 def test_asarray_copy(library):
     # Note, we have this test here because the test suite currently doesn't
@@ -130,6 +131,7 @@ def test_asarray_copy(library):
     else:
         supports_copy_false = True
 
+    # Tests for copy=True
     a = asarray([1])
     b = asarray(a, copy=True)
     assert is_lib_func(b)
@@ -138,26 +140,40 @@ def test_asarray_copy(library):
     assert all(a[0] == 0)
 
     a = asarray([1])
+    b = asarray(a, copy=True, dtype=a.dtype)
+    assert is_lib_func(b)
+    a[0] = 0
+    assert all(b[0] == 1)
+    assert all(a[0] == 0)
+
+    # Tests for copy=False
+    a = asarray([1])
     if supports_copy_false:
         b = asarray(a, copy=False)
         assert is_lib_func(b)
         a[0] = 0
         assert all(b[0] == 0)
     else:
-        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False))
+        with pytest.raises(NotImplementedError):
+            asarray(a, copy=False)
 
     a = asarray([1])
     if supports_copy_false:
-        pytest.raises(ValueError, lambda: asarray(a, copy=False,
-                                                  dtype=xp.float64))
+        with pytest.raises(ValueError):
+            asarray(a, copy=False, dtype=xp.float64)
     else:
-        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False, dtype=xp.float64))
+        with pytest.raises(NotImplementedError):
+            asarray(a, copy=False, dtype=xp.float64)
 
+    # Tests for copy=None
+    # Do not test whether the buffer is shared or not after copy=None.
+    # A library should have the freedom to alter its behaviour
+    # without treating it as a breaking change.
     a = asarray([1])
     b = asarray(a, copy=None)
     assert is_lib_func(b)
     a[0] = 0
-    assert all(b[0] == 0)
+    assert all((b[0] == 1.0) | (b[0] == 0.0))
 
     a = asarray([1.0], dtype=xp.float32)
     assert a.dtype == xp.float32
@@ -165,6 +181,7 @@ def test_asarray_copy(library):
     assert is_lib_func(b)
     assert b.dtype == xp.float64
     a[0] = 0.0
+    # dtype change must always trigger a copy
     assert all(b[0] == 1.0)
 
     a = asarray([1.0], dtype=xp.float64)
@@ -173,16 +190,18 @@ def test_asarray_copy(library):
     assert is_lib_func(b)
     assert b.dtype == xp.float64
     a[0] = 0.0
-    assert all(b[0] == 0.0)
+    assert all((b[0] == 1.0) | (b[0] == 0.0))
 
     # Python built-in types
     for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
         asarray(obj, copy=True) # No error
         asarray(obj, copy=None) # No error
         if supports_copy_false:
-            pytest.raises(ValueError, lambda: asarray(obj, copy=False))
+            with pytest.raises(ValueError):
+                asarray(obj, copy=False)
         else:
-            pytest.raises(NotImplementedError, lambda: asarray(obj, copy=False))
+            with pytest.raises(NotImplementedError):
+                asarray(obj, copy=False)
 
     # Use the standard library array to test the buffer protocol
     a = array.array('f', [1.0])
@@ -198,14 +217,11 @@ def test_asarray_copy(library):
         a[0] = 0.0
         assert all(b[0] == 0.0)
     else:
-        pytest.raises(NotImplementedError, lambda: asarray(a, copy=False))
+        with pytest.raises(NotImplementedError):
+            asarray(a, copy=False)
 
     a = array.array('f', [1.0])
     b = asarray(a, copy=None)
     assert is_lib_func(b)
     a[0] = 0.0
-    if library == 'cupy':
-        # A copy is required for libraries where the default device is not CPU
-        assert all(b[0] == 1.0)
-    else:
-        assert all(b[0] == 0.0)
+    assert all((b[0] == 1.0) | (b[0] == 0.0))
