@@ -206,7 +206,8 @@ def test_asarray_copy(library):
     a[0] = 0.0
     if library in ('cupy', 'dask.array'):
         # A copy is required for libraries where the default device is not CPU
-        # dask made a breaking change in 2024.12: copy=None copies
+        # dask changed behaviour of copy=None in 2024.12 to copy;
+        # this wrapper ensures the same behaviour in older versions too.
         # https://github.com/dask/dask/pull/11524/
         assert all(b[0] == 1.0)
     else:
