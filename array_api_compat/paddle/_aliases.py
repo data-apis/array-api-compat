@@ -420,7 +420,9 @@ def _normalize_axes(axis, ndim):
     for a in axis:
         if a < lower or a > upper:
             # Match paddle error message (e.g., from sum())
-            raise IndexError(f"Dimension out of range (expected to be in range of [{lower}, {upper}], but got {a}")
+            raise IndexError(
+                f"Dimension out of range (expected to be in range of [{lower}, {upper}], but got {a}"
+            )
         if a < 0:
             a = a + ndim
         if a in axes:
@@ -480,7 +482,9 @@ def prod(
 
     # paddle.prod doesn't support multiple axes
     if isinstance(axis, tuple):
-        return _reduce_multiple_axes(paddle.prod, x, axis, keepdim=keepdims, dtype=dtype, **kwargs)
+        return _reduce_multiple_axes(
+            paddle.prod, x, axis, keepdim=keepdims, dtype=dtype, **kwargs
+        )
     if axis is None:
         # paddle doesn't support keepdims with axis=None
         res = paddle.prod(x, dtype=dtype, **kwargs)
@@ -610,7 +614,9 @@ def std(
     if isinstance(correction, float):
         _correction = int(correction)
         if correction != _correction:
-            raise NotImplementedError("float correction in paddle std() is not yet supported")
+            raise NotImplementedError(
+                "float correction in paddle std() is not yet supported"
+            )
     elif isinstance(correction, int):
         if correction not in [0, 1]:
             raise NotImplementedError("correction only can be 0 or 1")
@@ -648,7 +654,9 @@ def var(
     if isinstance(correction, float):
         _correction = int(correction)
         if correction != _correction:
-            raise NotImplementedError("float correction in paddle std() is not yet supported")
+            raise NotImplementedError(
+                "float correction in paddle std() is not yet supported"
+            )
     elif isinstance(correction, int):
         if correction not in [0, 1]:
             raise NotImplementedError("correction only can be 0 or 1")
@@ -709,7 +717,9 @@ def permute_dims(x: array, /, axes: Tuple[int, ...]) -> array:
 
 # The axis parameter doesn't work for flip() and roll()
 # accept axis=None
-def flip(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, **kwargs) -> array:
+def flip(
+    x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, **kwargs
+) -> array:
     if axis is None:
         axis = tuple(range(x.ndim))
     # paddle.flip doesn't accept dim as an int but the method does
@@ -738,21 +748,27 @@ def where(condition: array, x1: array, x2: array, /) -> array:
     return paddle.where(condition, x1, x2)
 
 
-def empty_like(x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None) -> array:
+def empty_like(
+    x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> array:
     out = paddle.empty_like(x, dtype=dtype)
     if device is not None:
         out = out.to(device)
     return out
 
 
-def zeros_like(x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None) -> array:
+def zeros_like(
+    x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> array:
     out = paddle.zeros_like(x, dtype=dtype)
     if device is not None:
         out = out.to(device)
     return out
 
 
-def ones_like(x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None) -> array:
+def ones_like(
+    x: array, /, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None
+) -> array:
     out = paddle.ones_like(x, dtype=dtype)
     if device is not None:
         out = out.to(device)
@@ -774,7 +790,9 @@ def full_like(
 
 
 # paddle.reshape doesn't have the copy keyword
-def reshape(x: array, /, shape: Tuple[int, ...], copy: Optional[bool] = None, **kwargs) -> array:
+def reshape(
+    x: array, /, shape: Tuple[int, ...], copy: Optional[bool] = None, **kwargs
+) -> array:
     return paddle.reshape(x, shape, **kwargs)
 
 
@@ -825,7 +843,9 @@ def linspace(
     **kwargs,
 ) -> array:
     if not endpoint:
-        return paddle.linspace(start, stop, num + 1, dtype=dtype, **kwargs).to(device)[:-1]
+        return paddle.linspace(start, stop, num + 1, dtype=dtype, **kwargs).to(device)[
+            :-1
+        ]
     return paddle.linspace(start, stop, num, dtype=dtype, **kwargs).to(device)
 
 
@@ -890,7 +910,9 @@ def expand_dims(x: array, /, *, axis: int = 0) -> array:
     return paddle.unsqueeze(x, axis)
 
 
-def astype(x: array, dtype: Dtype, /, *, copy: bool = True, device: Optional[Device] = None) -> array:
+def astype(
+    x: array, dtype: Dtype, /, *, copy: bool = True, device: Optional[Device] = None
+) -> array:
     # if copy is not None:
     #     raise NotImplementedError("paddle.astype doesn't yet support the copy keyword")
     t = x.to(dtype, device=device)
@@ -1036,7 +1058,7 @@ def sign(x: array, /) -> array:
     else:
         out = paddle.sign(x)
         if paddle.is_floating_point(x):
-            out = paddle.where(paddle.isnan(x), paddle.nan, out)
+            out = paddle.where(paddle.isnan(x), paddle.full(x.shape, paddle.nan), out)
         return out
 
 
@@ -1083,7 +1105,8 @@ def asarray(
             return obj
         else:
             raise NotImplementedError(
-                "asarray(obj, ..., copy=False) is not supported " "for obj do not has '__dlpack__()' method"
+                "asarray(obj, ..., copy=False) is not supported "
+                "for obj do not has '__dlpack__()' method"
             )
     elif copy is True:
         obj = np.array(obj, copy=True)
@@ -1164,11 +1187,18 @@ def clip(
 
 
 def cumulative_sum(
-    x: array, /, *, axis: Optional[int] = None, dtype: Optional[Dtype] = None, include_initial: bool = False
+    x: array,
+    /,
+    *,
+    axis: Optional[int] = None,
+    dtype: Optional[Dtype] = None,
+    include_initial: bool = False,
 ) -> array:
     if axis is None:
         if x.ndim > 1:
-            raise ValueError("axis must be specified in cumulative_sum for more than one dimension")
+            raise ValueError(
+                "axis must be specified in cumulative_sum for more than one dimension"
+            )
         axis = 0
 
     res = paddle.cumsum(x, axis=axis, dtype=dtype)
@@ -1185,7 +1215,12 @@ def cumulative_sum(
 
 
 def searchsorted(
-    x1: array, x2: array, /, *, side: Literal["left", "right"] = "left", sorter: array | None = None
+    x1: array,
+    x2: array,
+    /,
+    *,
+    side: Literal["left", "right"] = "left",
+    sorter: array | None = None,
 ) -> array:
     if sorter is None:
         return paddle.searchsorted(x1, x2, right=(side == "right"))

@@ -154,8 +154,16 @@ class __array_namespace_info__:
         # value here because this error doesn't represent a different default
         # per-device.
         default_floating = paddle.get_default_dtype()
-        default_complex = "complex64" if default_floating == "float32" else "complex128"
-        default_integral = "int64"
+        if default_floating in ["float16", "float32", "float64", "bfloat16"]:
+            default_floating = getattr(paddle, default_floating)
+        else:
+            raise ValueError(f"Unsupported default floating: {default_floating}")
+        default_complex = (
+            paddle.complex64
+            if default_floating == paddle.float32
+            else paddle.complex128
+        )
+        default_integral = paddle.int64
         return {
             "real floating": default_floating,
             "complex floating": default_complex,
@@ -336,8 +344,14 @@ class __array_namespace_info__:
         except ValueError as e:
             # The error message is something like:
             # ValueError: The device must be a string which is like 'cpu', 'gpu', 'gpu:x', 'xpu', 'xpu:x', 'npu', 'npu:x
-            devices_names = e.args[0].split("The device must be a string which is like ")[1].split(", ")
-            devices_names = [name.strip("'") for name in devices_names if ":" not in name]
+            devices_names = (
+                e.args[0]
+                .split("The device must be a string which is like ")[1]
+                .split(", ")
+            )
+            devices_names = [
+                name.strip("'") for name in devices_names if ":" not in name
+            ]
 
         # Next we need to check for different indices for different devices.
         # device(device_name, index=index) doesn't actually check if the
