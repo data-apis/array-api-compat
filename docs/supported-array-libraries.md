@@ -137,3 +137,25 @@ The minimum supported Dask version is 2023.12.0.
 ## [Sparse](https://sparse.pydata.org/en/stable/)
 
 Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
+
+## [Paddle](https://www.paddlepaddle.org.cn/)
+
+- Like NumPy/CuPy, we do not wrap the `paddle.Tensor` object. It is missing the
+  `__array_namespace__` and `to_device` methods, so the corresponding helper
+  functions {func}`~.array_namespace()` and {func}`~.to_device()` in this
+  library should be used instead.
+
+- Paddle does not have unsigned integer types other than `uint8`, and no
+  attempt is made to implement them here.
+
+- [`std()`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.std.html#array_api.std)
+  and
+  [`var()`](https://data-apis.org/array-api/latest/API_specification/generated/array_api.var.html#array_api.var)
+  do not support floating-point `correction` except for `0.0` and `1.0`.
+
+- The `stream` argument of the {func}`~.to_device()` helper is not supported.
+
+- As with NumPy, type annotations and positional-only arguments may not
+  exactly match the spec for functions that are not wrapped at all.
+
+The minimum supported PyTorch version is 3.0.0.
