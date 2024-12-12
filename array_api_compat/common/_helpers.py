@@ -91,7 +91,7 @@ def is_cupy_array(x):
     import cupy as cp
 
     # TODO: Should we reject ndarray subclasses?
-    return isinstance(x, (cp.ndarray, cp.generic))
+    return isinstance(x, cp.ndarray)
 
 def is_torch_array(x):
     """
