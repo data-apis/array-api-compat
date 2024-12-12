@@ -204,8 +204,11 @@ def test_asarray_copy(library):
     b = asarray(a, copy=None)
     assert is_lib_func(b)
     a[0] = 0.0
-    if library == 'cupy':
+    if library in ('cupy', 'dask.array'):
         # A copy is required for libraries where the default device is not CPU
+        # dask changed behaviour of copy=None in 2024.12 to copy;
+        # this wrapper ensures the same behaviour in older versions too.
+        # https://github.com/dask/dask/pull/11524/
         assert all(b[0] == 1.0)
     else:
         assert all(b[0] == 0.0)

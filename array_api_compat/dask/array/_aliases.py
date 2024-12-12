@@ -140,7 +140,9 @@ def asarray(
         return da.array(obj, dtype=dtype)
     else:
         if not isinstance(obj, da.Array) or dtype is not None and obj.dtype != dtype:
-            obj = np.asarray(obj, dtype=dtype)
+            # copy=True to be uniform across dask < 2024.12 and >= 2024.12
+            # see https://github.com/dask/dask/pull/11524/
+            obj = np.array(obj, dtype=dtype, copy=True)
             return da.from_array(obj)
         return obj
 
