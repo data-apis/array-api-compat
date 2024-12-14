@@ -445,7 +445,7 @@ def _reduce_multiple_axes(f, x, axis, keepdims=False, **kwargs):
     # Some reductions don't support multiple axes
     axes = _normalize_axes(axis, x.ndim)
     for a in reversed(axes):
-        x = paddle.movedim(x, a, -1)
+        x = paddle.moveaxis(x, a, -1)
     x = paddle.flatten(x, -len(axes))
 
     out = f(x, -1, **kwargs)
@@ -922,8 +922,7 @@ def astype(
 
 
 def broadcast_arrays(*arrays: array) -> List[array]:
-    shape = broadcast_shapes(*[a.shape for a in arrays])
-    return [paddle.broadcast_to(a, shape) for a in arrays]
+    return paddle.broadcast_tensors(arrays)
 
 
 # Note that these named tuples aren't actually part of the standard namespace,
