@@ -498,6 +498,17 @@ and is therefore cheap to use.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="array_api_compat.is_writeable_array">
+<span class="sig-prename descclassname"><span class="pre">array_api_compat.</span></span><span class="sig-name descname"><span class="pre">is_writeable_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#array_api_compat.is_writeable_array" title="Link to this definition">¶</a></dt>
+<dd><p>Return False if <code class="docutils literal notranslate"><span class="pre">x.__setitem__</span></code> is expected to raise; True otherwise.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>As there is no standard way to check if an array is writeable without actually
+writing to it, this function blindly returns True for all unknown array types.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="array_api_compat.is_numpy_namespace">
 <span class="sig-prename descclassname"><span class="pre">array_api_compat.</span></span><span class="sig-name descname"><span class="pre">is_numpy_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xp</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#array_api_compat.is_numpy_namespace" title="Link to this definition">¶</a></dt>
 <dd><p>Returns True if <code class="code docutils literal notranslate"><span class="pre">xp</span></code> is a NumPy namespace.</p>
@@ -668,6 +679,7 @@ older versions of JAX.</p>
 <li><a class="reference internal" href="#array_api_compat.is_jax_array"><code class="docutils literal notranslate"><span class="pre">is_jax_array()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_pydata_sparse_array"><code class="docutils literal notranslate"><span class="pre">is_pydata_sparse_array()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_ndonnx_array"><code class="docutils literal notranslate"><span class="pre">is_ndonnx_array()</span></code></a></li>
+<li><a class="reference internal" href="#array_api_compat.is_writeable_array"><code class="docutils literal notranslate"><span class="pre">is_writeable_array()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_numpy_namespace"><code class="docutils literal notranslate"><span class="pre">is_numpy_namespace()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_cupy_namespace"><code class="docutils literal notranslate"><span class="pre">is_cupy_namespace()</span></code></a></li>
 <li><a class="reference internal" href="#array_api_compat.is_torch_namespace"><code class="docutils literal notranslate"><span class="pre">is_torch_namespace()</span></code></a></li>
