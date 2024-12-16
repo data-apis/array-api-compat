@@ -51,6 +51,7 @@ yet.
 .. autofunction:: is_jax_array
 .. autofunction:: is_pydata_sparse_array
 .. autofunction:: is_ndonnx_array
+.. autofunction:: is_writeable_array
 .. autofunction:: is_numpy_namespace
 .. autofunction:: is_cupy_namespace
 .. autofunction:: is_torch_namespace

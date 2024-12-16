@@ -787,6 +787,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         return x
     return x.to_device(device, stream=stream)
 
+
 def size(x):
     """
     Return the total number of elements of x.
@@ -800,6 +801,23 @@ def size(x):
     if None in x.shape:
         return None
     return math.prod(x.shape)
+
+
+def is_writeable_array(x) -> bool:
+    """
+    Return False if ``x.__setitem__`` is expected to raise; True otherwise.
+
+    Warning
+    -------
+    As there is no standard way to check if an array is writeable without actually
+    writing to it, this function blindly returns True for all unknown array types.
+    """
+    if is_numpy_array(x):
+        return x.flags.writeable
+    if is_jax_array(x) or is_pydata_sparse_array(x):
+        return False
+    return True
+
 
 __all__ = [
     "array_namespace",
@@ -821,6 +839,7 @@ __all__ = [
     "is_ndonnx_namespace",
     "is_pydata_sparse_array",
     "is_pydata_sparse_namespace",
+    "is_writeable_array",
     "size",
     "to_device",
 ]
