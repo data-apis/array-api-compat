@@ -173,6 +173,9 @@ array_api_tests/test_special_cases.py::test_unary[trunc(x_i is -0) -> -0]
 array_api_tests/test_fft.py::test_fftn
 array_api_tests/test_fft.py::test_ifftn
 array_api_tests/test_fft.py::test_rfftn
+ 
+# observed in the 1.10 release process, is likely related to xfails above
+array_api_tests/test_fft.py::test_irfftn
 
 # 2023.12 support
 # cupy.ndaray cannot be specified as `repeats` argument.
