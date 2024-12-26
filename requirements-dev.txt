@@ -4,5 +4,6 @@ jax[cpu]
 numpy
 pytest
 torch
+paddlepaddle -i https://www.paddlepaddle.org.cn/packages/nightly/cpu/
 sparse >=0.15.1
 ndonnx

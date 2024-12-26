@@ -24,3 +24,9 @@ def test_vendoring_torch():
 def test_vendoring_dask():
     from vendor_test import uses_dask
     uses_dask._test_dask()
+
+
+def test_vendoring_paddle():
+    from vendor_test import uses_paddle
+
+    uses_paddle._test_paddle()
