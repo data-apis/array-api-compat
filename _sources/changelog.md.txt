@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.10.0 (2024-12-25)
+
+### Major Changes
+
+- New function `is_writeable_array` adds transparent support for readonly
+  arrays, such as JAX arrays or numpy arrays with `.flags.writeable=False`.
+
+- `asarray(..., copy=None)` with `dask` backend always copies, so that
+  `copy=None` and `copy=True` are equivalent for the `dask` backend.
+   This change is made to be forward compatible with the `dask==2024.12`
+   release.
+
+
+### Minor Changes
+
+- `array_namespace` accepts (and ignores) `None` and python scalars (int, float,
+   complex, bool). This change is to simplify downstream adoption, for
+   functions where arguments can be either arrays or scalars.
+
+- `vecdot` conjugates its first argument, as stipulated by the Array API spec.
+  Previously, conjation if the first argument was missing.
+
+
 ## 1.9.1 (2024-10-29)
 
 ### Major Changes
