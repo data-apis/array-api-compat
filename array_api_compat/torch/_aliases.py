@@ -505,6 +505,17 @@ def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
     return torch.nonzero(x, as_tuple=True, **kwargs)
 
+# torch uses `dim` instead of `axis`
+def count_nonzero(
+    x: array,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+) -> array:
+    return torch.count_nonzero(x, dim=axis, keepdims=keepdims)
+
+
 def where(condition: array, x1: array, x2: array, /) -> array:
     x1, x2 = _fix_promotion(x1, x2)
     return torch.where(condition, x1, x2)
@@ -753,7 +764,8 @@ def sign(x: array, /) -> array:
 __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
-           'bitwise_right_shift', 'bitwise_xor', 'copysign', 'divide',
+           'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',
+           'divide',
            'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
            'less', 'less_equal', 'logaddexp', 'maximum', 'minimum',
            'multiply', 'not_equal', 'pow', 'remainder', 'subtract', 'max',
