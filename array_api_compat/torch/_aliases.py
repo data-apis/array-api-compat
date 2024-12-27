@@ -210,6 +210,7 @@ def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
 clip = get_xp(torch)(_aliases_clip)
 unstack = get_xp(torch)(_aliases_unstack)
 cumulative_sum = get_xp(torch)(_aliases_cumulative_sum)
+cumulative_prod = get_xp(torch)(_aliases_cumulative_prod)
 
 # torch.sort also returns a tuple
 # https://github.com/pytorch/pytorch/issues/70921
