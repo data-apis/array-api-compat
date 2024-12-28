@@ -761,6 +761,11 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         axis = 0
     return torch.index_select(x, axis, indices, **kwargs)
 
+
+def take_along_axis(x: array, indices: array, /, *, axis: int = -1) -> array:
+    return torch.take_along_dim(x, indices, dim=axis)
+
+
 def sign(x: array, /) -> array:
     # torch sign() does not support complex numbers and does not propagate
     # nans. See https://github.com/data-apis/array-api-compat/issues/136
@@ -784,7 +789,7 @@ __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
            'less', 'less_equal', 'logaddexp', 'maximum', 'minimum',
            'multiply', 'not_equal', 'pow', 'remainder', 'subtract', 'max',
-           'min', 'clip', 'unstack', 'cumulative_sum', 'sort', 'prod', 'sum',
+           'min', 'clip', 'unstack', 'cumulative_sum', 'cumulative_prod', 'sort', 'prod', 'sum',
            'any', 'all', 'mean', 'std', 'var', 'concat', 'squeeze',
            'broadcast_to', 'flip', 'roll', 'nonzero', 'where', 'reshape',
            'arange', 'eye', 'linspace', 'full', 'ones', 'zeros', 'empty',
@@ -792,6 +797,6 @@ __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'sign']
+           'take', 'take_along_axis', 'sign']
 
 _all_ignore = ['torch', 'get_xp']
