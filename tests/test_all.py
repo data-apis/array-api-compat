@@ -18,7 +18,10 @@ import pytest
 
 @pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):
-    import_(library, wrapper=True)
+    if library == "common":
+        import array_api_compat.common  # noqa: F401
+    else:
+        import_(library, wrapper=True)
 
     for mod_name in sys.modules:
         if not mod_name.startswith('array_api_compat.' + library):
