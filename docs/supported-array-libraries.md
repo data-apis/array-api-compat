@@ -138,6 +138,11 @@ The minimum supported Dask version is 2023.12.0.
 
 Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
 
+(ndonnx-support)=
+## [ndonnx](https://github.com/quantco/ndonnx)
+
+Similar to JAX, `ndonnx` Array API support is contained directly in `ndonnx`.
+
 (array-api-strict-support)=
 ## [array-api-strict](https://data-apis.org/array-api-strict/)
 
