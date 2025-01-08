@@ -788,19 +788,24 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     return x.to_device(device, stream=stream)
 
 
-def size(x):
+def size(x: Array) -> int | None:
     """
     Return the total number of elements of x.
 
     This is equivalent to `x.size` according to the `standard
     <https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html>`__.
+
     This helper is included because PyTorch defines `size` in an
     :external+torch:meth:`incompatible way <torch.Tensor.size>`.
-
+    It also fixes dask.array's behaviour which returns nan for unknown sizes, whereas
+    the standard requires None.
     """
+    # Lazy API compliant arrays, such as ndonnx, can contain None in their shape
     if None in x.shape:
         return None
-    return math.prod(x.shape)
+    out = math.prod(x.shape)
+    # dask.array.Array.shape can contain NaN
+    return None if math.isnan(out) else out
 
 
 def is_writeable_array(x) -> bool:

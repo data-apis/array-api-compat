@@ -5,8 +5,9 @@ from array_api_compat import (  # noqa: F401
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
 )
 
-from array_api_compat import device, is_array_api_obj, is_writeable_array, to_device
-
+from array_api_compat import (
+    device, is_array_api_obj, is_writeable_array, size, to_device
+)
 from ._helpers import import_, wrapped_libraries, all_libraries
 
 import pytest
@@ -90,6 +91,28 @@ def test_is_writeable_array_numpy():
     assert is_writeable_array(x)
     x.flags.writeable = False
     assert not is_writeable_array(x)
+
+
+@pytest.mark.parametrize("library", all_libraries)
+def test_size(library):
+    xp = import_(library)
+    x = xp.asarray([1, 2, 3])
+    assert size(x) == 3
+
+
+@pytest.mark.parametrize("library", all_libraries)
+def test_size_none(library):
+    if library == "sparse":
+        pytest.skip("No arange(); no indexing by sparse arrays")
+
+    xp = import_(library)
+    x = xp.arange(10)
+    x = x[x < 5]
+
+    # dask.array now has shape=(nan, ) and size=nan
+    # ndonnx now has shape=(None, ) and size=None
+    # Eager libraries have shape=(5, ) and size=5
+    assert size(x) in (None, 5)
 
 
 @pytest.mark.parametrize("library", all_libraries)
