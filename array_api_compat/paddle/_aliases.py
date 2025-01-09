@@ -4,7 +4,7 @@ from typing import Literal
 import numpy as np
 
 from functools import wraps as _wraps
-from builtins import all as _builtin_all, any as _builtin_any
+from builtins import any as _builtin_any
 
 from ..common._aliases import (
     unstack as _aliases_unstack,
@@ -1036,7 +1036,7 @@ def isdtype(
                 paddle.framework.core.DataType.FLOAT64,
                 paddle.framework.core.DataType.FLOAT16,
                 paddle.framework.core.DataType.BFLOAT16,
-            ]
+        ]
         elif kind == "complex floating":
             return is_complex(dtype)
         elif kind == "numeric":
@@ -1186,8 +1186,7 @@ def clip(
     if type(max) is int and max >= paddle.iinfo(x.dtype).max:
         max = None
 
-    if out is None:
-        out = paddle.to_tensor(broadcast_to(x, result_shape), place=x.place)
+    out = paddle.to_tensor(broadcast_to(x, result_shape), place=x.place)
     if min is not None:
         if paddle.is_tensor(x) and x.dtype == paddle.float64 and _isscalar(min):
             # Avoid loss of precision due to paddle defaulting to float32
@@ -1203,7 +1202,7 @@ def clip(
         ib = (out > b) | paddle.isnan(b)
         out[ib] = astype(b[ib], out.dtype)
     # Return a scalar for 0-D
-    return out[()]
+    return out
 
 
 def cumulative_sum(
@@ -1340,6 +1339,8 @@ __all__ = [
     "ones_like",
     "full_like",
     "asarray",
+    "ceil",
+    "floor",
 ]
 
 _all_ignore = ["paddle", "get_xp"]
