@@ -1036,7 +1036,7 @@ def isdtype(
                 paddle.framework.core.DataType.FLOAT64,
                 paddle.framework.core.DataType.FLOAT16,
                 paddle.framework.core.DataType.BFLOAT16,
-        ]
+            ]
         elif kind == "complex floating":
             return is_complex(dtype)
         elif kind == "numeric":
@@ -1135,6 +1135,14 @@ def asarray(
             return obj
 
         return obj
+
+
+def floor(x: array, /) -> array:
+    return paddle.floor(x).to(x.dtype)
+
+
+def ceil(x: array, /) -> array:
+    return paddle.ceil(x).to(x.dtype)
 
 
 def clip(
