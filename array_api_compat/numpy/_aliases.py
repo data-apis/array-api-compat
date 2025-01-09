@@ -50,6 +50,7 @@ astype = _aliases.astype
 std = get_xp(np)(_aliases.std)
 var = get_xp(np)(_aliases.var)
 cumulative_sum = get_xp(np)(_aliases.cumulative_sum)
+cumulative_prod = get_xp(np)(_aliases.cumulative_prod)
 clip = get_xp(np)(_aliases.clip)
 permute_dims = get_xp(np)(_aliases.permute_dims)
 reshape = get_xp(np)(_aliases.reshape)
