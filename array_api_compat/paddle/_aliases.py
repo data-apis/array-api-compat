@@ -1118,13 +1118,13 @@ def asarray(
             )
     elif copy is True:
         obj = np.array(obj, copy=True)
-        if np.issubdtype(obj.dtype, np.floating):
+        if np.issubdtype(obj.dtype, np.floating) and dtype is None:
             obj = obj.astype(paddle.get_default_dtype())
         return paddle.to_tensor(obj, dtype=dtype, place=device)
     else:
         if not paddle.is_tensor(obj) or (dtype is not None and obj.dtype != dtype):
             obj = np.array(obj, copy=False)
-            if np.issubdtype(obj.dtype, np.floating):
+            if np.issubdtype(obj.dtype, np.floating) and dtype is None:
                 obj = obj.astype(paddle.get_default_dtype())
             if dtype != paddle.bool and dtype != "bool":
                 obj = paddle.from_dlpack(obj.__dlpack__(), **kwargs).to(dtype)
