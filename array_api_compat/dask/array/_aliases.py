@@ -48,11 +48,7 @@ def astype(
     copy: bool = True,
     device: Device | None = None
 ) -> Array:
-    if device is not None:
-        raise NotImplementedError(
-            "The device keyword is not implemented yet for "
-            "array-api-compat wrapped dask"
-        )
+    # TODO: respect device keyword?
     if not copy and dtype == x.dtype:
         return x
     # dask astype doesn't respect copy=True,
