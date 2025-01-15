@@ -40,13 +40,25 @@ import dask.array as da
 isdtype = get_xp(np)(_aliases.isdtype)
 unstack = get_xp(da)(_aliases.unstack)
 
-def astype(x: Array, dtype: Dtype, /, *, copy: bool = True) -> Array:
+def astype(
+    x: Array,
+    dtype: Dtype,
+    /,
+    *,
+    copy: bool = True,
+    device: Device | None = None
+) -> Array:
+    if device is not None:
+        raise NotImplementedError(
+            "The device keyword is not implemented yet for "
+            "array-api-compat wrapped dask"
+        )
     if not copy and dtype == x.dtype:
         return x
-    # dask astype doesn't respect copy=True so copy
-    # manually via numpy
-    x = np.array(x, dtype=dtype, copy=copy)
-    return da.from_array(x)
+    # dask astype doesn't respect copy=True,
+    # so call copy manually afterwards
+    x = x.astype(dtype)
+    return x.copy() if copy else x
 
 # Common aliases
 

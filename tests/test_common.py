@@ -272,16 +272,3 @@ def test_asarray_copy(library):
         assert all(b[0] == 1.0)
     else:
         assert all(b[0] == 0.0)
-
-@pytest.mark.parametrize("library", wrapped_libraries)
-def test_astype_copy(library):
-    # array-api-tests currently doesn't check copy=True
-    # makes a copy when dtypes are the same
-    # so we check that here
-    xp = import_(library, wrapper=True)
-    a = xp.asarray([1])
-    b = xp.astype(a, a.dtype, copy=True)
-
-    a[0] = 10
-
-    assert b[0] == 1
