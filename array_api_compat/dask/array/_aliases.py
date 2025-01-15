@@ -39,7 +39,14 @@ import dask.array as da
 
 isdtype = get_xp(np)(_aliases.isdtype)
 unstack = get_xp(da)(_aliases.unstack)
-astype = _aliases.astype
+
+def astype(x: Array, dtype: Dtype, /, *, copy: bool = True) -> Array:
+    if not copy and dtype == x.dtype:
+        return x
+    # dask astype doesn't respect copy=True so copy
+    # manually via numpy
+    x = np.array(x, dtype=dtype, copy=copy)
+    return da.from_array(x)
 
 # Common aliases
 
