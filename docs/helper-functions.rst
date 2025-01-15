@@ -52,6 +52,7 @@ yet.
 .. autofunction:: is_pydata_sparse_array
 .. autofunction:: is_ndonnx_array
 .. autofunction:: is_writeable_array
+.. autofunction:: is_lazy_array
 .. autofunction:: is_numpy_namespace
 .. autofunction:: is_cupy_namespace
 .. autofunction:: is_torch_namespace

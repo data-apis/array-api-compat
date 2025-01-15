@@ -1,3 +1,10 @@
+import math
+
+import pytest
+import numpy as np
+import array
+from numpy.testing import assert_allclose
+
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
@@ -6,14 +13,9 @@ from array_api_compat import (  # noqa: F401
 )
 
 from array_api_compat import (
-    device, is_array_api_obj, is_writeable_array, size, to_device
+    device, is_array_api_obj, is_lazy_array, is_writeable_array, size, to_device
 )
 from ._helpers import import_, wrapped_libraries, all_libraries
-
-import pytest
-import numpy as np
-import array
-from numpy.testing import assert_allclose
 
 is_array_functions = {
     'numpy': 'is_numpy_array',
@@ -116,6 +118,45 @@ def test_size_none(library):
 
 
 @pytest.mark.parametrize("library", all_libraries)
+def test_is_lazy_array(library):
+    lib = import_(library)
+    x = lib.asarray([1, 2, 3])
+    assert isinstance(is_lazy_array(x), bool)
+
+
+@pytest.mark.parametrize("shape", [(math.nan,), (1, math.nan), (None, ), (1, None)])
+def test_is_lazy_array_nan_size(shape, monkeypatch):
+    """Test is_lazy_array() on an unknown Array API compliant object
+    with NaN (like Dask) or None (like ndonnx) in its shape
+    """
+    xp = import_("array_api_strict")
+    x = xp.asarray(1)
+    assert not is_lazy_array(x)
+    monkeypatch.setattr(type(x), "shape", shape)
+    assert is_lazy_array(x)
+
+
+@pytest.mark.parametrize("exc", [TypeError, AssertionError])
+def test_is_lazy_array_bool_raises(exc, monkeypatch):
+    """Test is_lazy_array() on an unknown Array API compliant object
+    where calling bool() raises:
+    - TypeError: e.g. like jitted JAX. This is the proper exception which
+      lazy arrays should raise as per the Array API specification
+    - something else: e.g. like Dask, where bool() triggers compute()
+      which can result in any kind of exception to be raised
+    """
+    xp = import_("array_api_strict")
+    x = xp.asarray(1)
+    assert not is_lazy_array(x)
+
+    def __bool__(self):
+        raise exc("Hello world")
+
+    monkeypatch.setattr(type(x), "__bool__", __bool__)
+    assert is_lazy_array(x)
+
+
+@pytest.mark.parametrize("library", all_libraries)
 def test_device(library):
     xp = import_(library, wrapper=True)
 
@@ -171,6 +212,7 @@ def test_asarray_cross_library(source_library, target_library, request):
     b = tgt_lib.asarray(a)
 
     assert is_tgt_type(b), f"Expected {b} to be a {tgt_lib.ndarray}, but was {type(b)}"
+
 
 @pytest.mark.parametrize("library", wrapped_libraries)
 def test_asarray_copy(library):
