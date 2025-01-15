@@ -6,10 +6,10 @@ import array
 from numpy.testing import assert_allclose
 
 from array_api_compat import (  # noqa: F401
-    is_numpy_array, is_cupy_array, is_torch_array,
+    is_numpy_array, is_cupy_array, is_torch_array, is_paddle_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
-    is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
+    is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace, is_paddle_namespace,
 )
 
 from array_api_compat import (
@@ -24,6 +24,7 @@ is_array_functions = {
     'dask.array': 'is_dask_array',
     'jax.numpy': 'is_jax_array',
     'sparse': 'is_pydata_sparse_array',
+    'paddle': 'is_paddle_array',
 }
 
 is_namespace_functions = {
@@ -33,6 +34,7 @@ is_namespace_functions = {
     'dask.array': 'is_dask_namespace',
     'jax.numpy': 'is_jax_namespace',
     'sparse': 'is_pydata_sparse_namespace',
+    'paddle': 'is_paddle_namespace',
 }
 
 
@@ -202,6 +204,13 @@ def test_asarray_cross_library(source_library, target_library, request):
     if source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
+    if source_library == "paddle" or target_library == "paddle":
+        pytest.skip(
+            reason=(
+                "paddle does not support implicit conversion from/to other framework "
+                "via 'asarray', dlpack is recommend now."
+            )
+        )
     elif source_library == "sparse" and target_library != "sparse":
         pytest.skip(reason="`sparse` does not allow implicit densification")
     src_lib = import_(source_library, wrapper=True)
@@ -216,6 +225,8 @@ def test_asarray_cross_library(source_library, target_library, request):
 
 @pytest.mark.parametrize("library", wrapped_libraries)
 def test_asarray_copy(library):
+    if library == 'paddle':
+        pytest.skip("Paddle does not support explicit copies")
     # Note, we have this test here because the test suite currently doesn't
     # test the copy flag to asarray() very rigorously. Once
     # https://github.com/data-apis/array-api-tests/issues/241 is fixed we

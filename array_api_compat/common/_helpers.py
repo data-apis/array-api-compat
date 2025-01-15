@@ -120,6 +120,32 @@ def is_torch_array(x):
     # TODO: Should we reject ndarray subclasses?
     return isinstance(x, torch.Tensor)
 
+def is_paddle_array(x):
+    """
+    Return True if `x` is a Paddle tensor.
+
+    This function does not import Paddle if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    # Avoid importing paddle if it isn't already
+    if 'paddle' not in sys.modules:
+        return False
+
+    import paddle
+
+    return paddle.is_tensor(x)
+
 def is_ndonnx_array(x):
     """
     Return True if `x` is a ndonnx Array.
@@ -252,6 +278,7 @@ def is_array_api_obj(x):
         or is_dask_array(x) \
         or is_jax_array(x) \
         or is_pydata_sparse_array(x) \
+        or is_paddle_array(x) \
         or hasattr(x, '__array_namespace__')
 
 def _compat_module_name():
@@ -317,6 +344,27 @@ def is_torch_namespace(xp) -> bool:
     is_array_api_strict_namespace
     """
     return xp.__name__ in {'torch', _compat_module_name() + '.torch'}
+
+
+def is_paddle_namespace(xp) -> bool:
+    """
+    Returns True if `xp` is a Paddle namespace.
+
+    This includes both Paddle itself and the version wrapped by array-api-compat.
+
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_namespace
+    is_cupy_namespace
+    is_ndonnx_namespace
+    is_dask_namespace
+    is_jax_namespace
+    is_pydata_sparse_namespace
+    is_array_api_strict_namespace
+    """
+    return xp.__name__ in {'paddle', _compat_module_name() + '.paddle'}
 
 
 def is_ndonnx_namespace(xp):
@@ -543,6 +591,14 @@ def array_namespace(*xs, api_version=None, use_compat=None):
                 else:
                     import jax.experimental.array_api as jnp
             namespaces.add(jnp)
+        elif is_paddle_array(x):
+            if _use_compat:
+                _check_api_version(api_version)
+                from .. import paddle as paddle_namespace
+                namespaces.add(paddle_namespace)
+            else:
+                import paddle
+                namespaces.add(paddle)
         elif is_pydata_sparse_array(x):
             if use_compat is True:
                 _check_api_version(api_version)
@@ -660,6 +716,16 @@ def device(x: Array, /) -> Device:
             return "cpu"
         # Return the device of the constituent array
         return device(inner)
+    elif is_paddle_array(x):
+        raw_place_str = str(x.place)
+        if "gpu_pinned" in raw_place_str:
+            return "cpu"
+        elif "cpu" in raw_place_str:
+            return "cpu"
+        elif "gpu" in raw_place_str:
+            return "gpu"
+        raise ValueError(f"Unsupported Paddle device: {x.place}")
+
     return x.device
 
 # Prevent shadowing, used below
@@ -708,6 +774,14 @@ def _torch_to_device(x, device, /, stream=None):
     if stream is not None:
         raise NotImplementedError
     return x.to(device)
+
+def _paddle_to_device(x, device, /, stream=None):
+    if stream is not None:
+        raise NotImplementedError(
+            "paddle.Tensor.to() do not support stream argument yet"
+        )
+    return x.to(device)
+
 
 def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] = None) -> Array:
     """
@@ -781,6 +855,8 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
             # In JAX v0.4.31 and older, this import adds to_device method to x.
             import jax.experimental.array_api # noqa: F401
         return x.to_device(device, stream=stream)
+    elif is_paddle_array(x):
+        return _paddle_to_device(x, device, stream=stream)
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.
@@ -899,6 +975,8 @@ __all__ = [
     "is_torch_namespace",
     "is_ndonnx_array",
     "is_ndonnx_namespace",
+    "is_paddle_array",
+    "is_paddle_namespace",
     "is_pydata_sparse_array",
     "is_pydata_sparse_namespace",
     "is_writeable_array",

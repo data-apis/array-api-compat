@@ -6,6 +6,7 @@ import jax
 import numpy as np
 import pytest
 import torch
+import paddle
 
 import array_api_compat
 from array_api_compat import array_namespace
@@ -91,6 +92,12 @@ def test_array_namespace_errors_torch():
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
+
+def test_array_namespace_errors_paddle():
+    y = paddle.to_tensor([1, 2])
+    x = np.asarray([1, 2])
+    pytest.raises(TypeError, lambda: array_namespace(x, y))
+
 def test_api_version():
     x = torch.asarray([1, 2])
     torch_ = import_("torch", wrapper=True)
@@ -115,9 +122,25 @@ def test_get_namespace():
     # Backwards compatible wrapper
     assert array_api_compat.get_namespace is array_api_compat.array_namespace
 
-def test_python_scalars():
+def test_python_scalars_torch():
     a = torch.asarray([1, 2])
     xp = import_("torch", wrapper=True)
+
+    pytest.raises(TypeError, lambda: array_namespace(1))
+    pytest.raises(TypeError, lambda: array_namespace(1.0))
+    pytest.raises(TypeError, lambda: array_namespace(1j))
+    pytest.raises(TypeError, lambda: array_namespace(True))
+    pytest.raises(TypeError, lambda: array_namespace(None))
+
+    assert array_namespace(a, 1) == xp
+    assert array_namespace(a, 1.0) == xp
+    assert array_namespace(a, 1j) == xp
+    assert array_namespace(a, True) == xp
+    assert array_namespace(a, None) == xp
+
+def test_python_scalars_paddle():
+    a = paddle.to_tensor([1, 2])
+    xp = import_("paddle", wrapper=True)
 
     pytest.raises(TypeError, lambda: array_namespace(1))
     pytest.raises(TypeError, lambda: array_namespace(1.0))
