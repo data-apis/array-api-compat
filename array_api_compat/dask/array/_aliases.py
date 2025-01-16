@@ -144,24 +144,23 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    if copy is False:
-        # copy=False is not yet implemented in dask
-        raise NotImplementedError("copy=False is not yet implemented")
-    elif copy is True:
-        if isinstance(obj, da.Array) and dtype is None:
-            return obj.copy()
-        # Go through numpy, since dask copy is no-op by default
-        obj = np.array(obj, dtype=dtype, copy=True)
-        return da.array(obj, dtype=dtype)
-    else:
-        if not isinstance(obj, da.Array) or dtype is not None and obj.dtype != dtype:
-            # copy=True to be uniform across dask < 2024.12 and >= 2024.12
-            # see https://github.com/dask/dask/pull/11524/
-            obj = np.array(obj, dtype=dtype, copy=True)
-            return da.from_array(obj)
-        return obj
+    if isinstance(obj, da.Array):
+        if dtype is not None and dtype != obj.dtype:
+            if copy is False:
+                raise ValueError("Unable to avoid copy when changing dtype")
+            obj = obj.astype(dtype)
+        return obj.copy() if copy else obj
 
-    return da.asarray(obj, dtype=dtype, **kwargs)
+    if copy is False:
+        raise NotImplementedError(
+            "Unable to avoid copy when converting a non-dask object to dask"
+        )
+
+    # copy=None to be uniform across dask < 2024.12 and >= 2024.12
+    # see https://github.com/dask/dask/pull/11524/
+    obj = np.array(obj, dtype=dtype, copy=True)
+    return da.from_array(obj)
+
 
 from dask.array import (
     # Element wise aliases
