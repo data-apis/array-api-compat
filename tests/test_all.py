@@ -40,5 +40,7 @@ def test_all(library):
         all_names = module.__all__
 
         if set(dir_names) != set(all_names):
-            assert set(dir_names) - set(all_names) == set(), f"Some dir() names not included in __all__ for {mod_name}"
-            assert set(all_names) - set(dir_names) == set(), f"Some __all__ names not in dir() for {mod_name}"
+            extra_dir = set(dir_names) - set(all_names)
+            extra_all = set(all_names) - set(dir_names)
+            assert not extra_dir, f"Some dir() names not included in __all__ for {mod_name}: {extra_dir}"
+            assert not extra_all, f"Some __all__ names not in dir() for {mod_name}: {extra_all}"

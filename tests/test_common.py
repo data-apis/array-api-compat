@@ -226,11 +226,17 @@ def test_asarray_copy(library):
     all = xp.all if library != 'dask.array' else lambda x: xp.all(x).compute()
 
     if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :
-        supports_copy_false = False
-    elif library in ['cupy', 'dask.array']:
-        supports_copy_false = False
+        supports_copy_false_other_ns = False
+        supports_copy_false_same_ns = False
+    elif library == 'cupy':
+        supports_copy_false_other_ns = False
+        supports_copy_false_same_ns = False
+    elif library == 'dask.array':
+        supports_copy_false_other_ns = False
+        supports_copy_false_same_ns = True
     else:
-        supports_copy_false = True
+        supports_copy_false_other_ns = True
+        supports_copy_false_same_ns = True
 
     a = asarray([1])
     b = asarray(a, copy=True)
@@ -240,7 +246,7 @@ def test_asarray_copy(library):
     assert all(a[0] == 0)
 
     a = asarray([1])
-    if supports_copy_false:
+    if supports_copy_false_same_ns:
         b = asarray(a, copy=False)
         assert is_lib_func(b)
         a[0] = 0
@@ -249,7 +255,7 @@ def test_asarray_copy(library):
         pytest.raises(NotImplementedError, lambda: asarray(a, copy=False))
 
     a = asarray([1])
-    if supports_copy_false:
+    if supports_copy_false_same_ns:
         pytest.raises(ValueError, lambda: asarray(a, copy=False,
                                                   dtype=xp.float64))
     else:
@@ -281,7 +287,7 @@ def test_asarray_copy(library):
     for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
         asarray(obj, copy=True) # No error
         asarray(obj, copy=None) # No error
-        if supports_copy_false:
+        if supports_copy_false_other_ns:
             pytest.raises(ValueError, lambda: asarray(obj, copy=False))
         else:
             pytest.raises(NotImplementedError, lambda: asarray(obj, copy=False))
@@ -294,7 +300,7 @@ def test_asarray_copy(library):
     assert all(b[0] == 1.0)
 
     a = array.array('f', [1.0])
-    if supports_copy_false:
+    if supports_copy_false_other_ns:
         b = asarray(a, copy=False)
         assert is_lib_func(b)
         a[0] = 0.0
