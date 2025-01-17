@@ -156,6 +156,27 @@ def test_is_lazy_array_bool_raises(exc, monkeypatch):
     assert is_lazy_array(x)
 
 
+@pytest.mark.parametrize(
+    'func',
+    list(is_array_functions.values()) 
+    + ["is_array_api_obj", "is_lazy_array", "is_writeable_array"]
+)
+def test_is_array_any_object(func):
+    """Test that is_*_array functions return False and don't raise on non-array objects
+    """
+    func = globals()[func]
+
+    # These objects are missing attributes such as __name__
+    assert not func(object())
+    assert not func(None)
+    assert not func(1)
+
+    class C:
+        pass
+
+    assert not func(C())
+
+
 @pytest.mark.parametrize("library", all_libraries)
 def test_device(library):
     xp = import_(library, wrapper=True)
