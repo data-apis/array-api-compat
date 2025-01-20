@@ -14,12 +14,12 @@ from ._helpers import import_, all_libraries, wrapped_libraries
 
 @pytest.mark.parametrize("use_compat", [True, False, None])
 @pytest.mark.parametrize("api_version", [None, "2021.12", "2022.12", "2023.12"])
-@pytest.mark.parametrize("library", all_libraries + ['array_api_strict'])
+@pytest.mark.parametrize("library", all_libraries)
 def test_array_namespace(library, api_version, use_compat):
     xp = import_(library)
 
     array = xp.asarray([1.0, 2.0, 3.0])
-    if use_compat is True and library in {'array_api_strict', 'jax.numpy', 'sparse'}:
+    if use_compat and library not in wrapped_libraries:
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
     namespace = array_api_compat.array_namespace(array, api_version=api_version, use_compat=use_compat)

@@ -10,6 +10,7 @@ from array_api_compat import (  # noqa: F401
     is_dask_array, is_jax_array, is_pydata_sparse_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
+    is_array_api_strict_namespace,
 )
 
 from array_api_compat import (
@@ -33,6 +34,7 @@ is_namespace_functions = {
     'dask.array': 'is_dask_namespace',
     'jax.numpy': 'is_jax_namespace',
     'sparse': 'is_pydata_sparse_namespace',
+    'array_api_strict': 'is_array_api_strict_namespace',
 }
 
 
@@ -74,7 +76,12 @@ def test_xp_is_array_generics(library):
         is_func = globals()[func]
         if is_func(x0):
             matches.append(library2)
-    assert matches in ([library], ["numpy"])
+
+    if library == "array_api_strict":
+        # There is no is_array_api_strict_array() function
+        assert matches == []
+    else:
+        assert matches in ([library], ["numpy"])
 
 
 @pytest.mark.parametrize("library", all_libraries)
@@ -213,26 +220,33 @@ def test_to_device_host(library):
 @pytest.mark.parametrize("target_library", is_array_functions.keys())
 @pytest.mark.parametrize("source_library", is_array_functions.keys())
 def test_asarray_cross_library(source_library, target_library, request):
-    if source_library == "dask.array" and target_library == "torch":
+    def _xfail(reason: str) -> None:
         # Allow rest of test to execute instead of immediately xfailing
         # xref https://github.com/pandas-dev/pandas/issues/38902
+        request.node.add_marker(pytest.mark.xfail(reason=reason))
 
+    if source_library == "dask.array" and target_library == "torch":
         # TODO: remove xfail once
         # https://github.com/dask/dask/issues/8260 is resolved
-        request.node.add_marker(pytest.mark.xfail(reason="Bug in dask raising error on conversion"))
-    if source_library == "cupy" and target_library != "cupy":
+        _xfail(reason="Bug in dask raising error on conversion")
+    elif source_library == "jax.numpy" and target_library == "torch":
+        _xfail(reason="casts int to float")
+    elif source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
     elif source_library == "sparse" and target_library != "sparse":
         pytest.skip(reason="`sparse` does not allow implicit densification")
+
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)
     is_tgt_type = globals()[is_array_functions[target_library]]
 
-    a = src_lib.asarray([1, 2, 3])
+    a = src_lib.asarray([1, 2, 3], dtype=src_lib.int32)
     b = tgt_lib.asarray(a)
 
     assert is_tgt_type(b), f"Expected {b} to be a {tgt_lib.ndarray}, but was {type(b)}"
+    assert b.dtype == tgt_lib.int32
+
 
 
 @pytest.mark.parametrize("library", wrapped_libraries)

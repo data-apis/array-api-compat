@@ -1,14 +1,10 @@
 from importlib import import_module
-import sys
 
 import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + ["jax.numpy"]
+all_libraries = wrapped_libraries + ["array_api_strict", "jax.numpy", "sparse"]
 
-# `sparse` added array API support as of Python 3.10.
-if sys.version_info >= (3, 10):
-    all_libraries.append('sparse')
 
 def import_(library, wrapper=False):
     if library == 'cupy':
@@ -20,9 +16,7 @@ def import_(library, wrapper=False):
             jax_numpy = import_module("jax.numpy")
             if not hasattr(jax_numpy, "__array_api_version__"):
                 library = 'jax.experimental.array_api'
-        elif library.startswith('sparse'):
-            library = 'sparse'
-        else:
+        elif library in wrapped_libraries:
             library = 'array_api_compat.' + library
 
     return import_module(library)
