@@ -137,3 +137,13 @@ The minimum supported Dask version is 2023.12.0.
 ## [Sparse](https://sparse.pydata.org/en/stable/)
 
 Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
+
+(ndonnx-support)=
+## [ndonnx](https://github.com/quantco/ndonnx)
+
+Similar to JAX, `ndonnx` Array API support is contained directly in `ndonnx`.
+
+(array-api-strict-support)=
+## [array-api-strict](https://data-apis.org/array-api-strict/)
+
+array-api-strict exists only to test support for the Array API, so it does not need any wrappers.

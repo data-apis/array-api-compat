@@ -645,17 +645,13 @@ def device(x: Array, /) -> Device:
     to_device : Move array data to a different device.
 
     """
-    if is_numpy_array(x):
+    if is_numpy_array(x) or is_ndonnx_array(x):
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the jax array to determine type
-        try:
-            import numpy as np
-            if isinstance(x._meta, np.ndarray):
-                # Must be on CPU since backed by numpy
-                return "cpu"
-        except ImportError:
-            pass
+        if is_numpy_array(x._meta):
+            # Must be on CPU since backed by numpy
+            return "cpu"
         return _DASK_DEVICE
     elif is_jax_array(x):
         # JAX has .device() as a method, but it is being deprecated so that it
@@ -776,7 +772,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     device : Hardware device the array data resides on.
 
     """
-    if is_numpy_array(x):
+    if is_numpy_array(x) or is_ndonnx_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         if device == 'cpu':
