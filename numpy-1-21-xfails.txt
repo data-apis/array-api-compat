@@ -254,7 +254,6 @@ array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is 
 # 2023.12 support
 array_api_tests/test_searching_functions.py::test_searchsorted
 array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
-array_api_tests/test_signatures.py::test_func_signature[astype]
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 # uint64 repeats not supported
 array_api_tests/test_manipulation_functions.py::test_repeat

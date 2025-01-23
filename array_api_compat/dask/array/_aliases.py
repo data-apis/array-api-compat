@@ -233,7 +233,7 @@ _da_unsupported = ['sort', 'argsort']
 
 _common_aliases = [alias for alias in _aliases.__all__ if alias not in _da_unsupported]
 
-__all__ = _common_aliases + ['__array_namespace_info__', 'asarray', 'acos',
+__all__ = _common_aliases + ['__array_namespace_info__', 'asarray', 'astype', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
                     'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast',

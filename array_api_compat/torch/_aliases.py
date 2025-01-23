@@ -613,8 +613,19 @@ def triu(x: array, /, *, k: int = 0) -> array:
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
     return torch.unsqueeze(x, axis)
 
-def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
-    return x.to(dtype, copy=copy)
+
+def astype(
+    x: array,
+    dtype: Dtype,
+    /,
+    *,
+    copy: bool = True,
+    device: Optional[Device] = None,
+) -> array:
+    if device is not None:
+        return x.to(device, dtype=dtype, copy=copy)
+    return x.to(dtype=dtype, copy=copy)
+
 
 def broadcast_arrays(*arrays: array) -> List[array]:
     shape = torch.broadcast_shapes(*[a.shape for a in arrays])
