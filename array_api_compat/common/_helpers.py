@@ -649,13 +649,9 @@ def device(x: Array, /) -> Device:
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the jax array to determine type
-        try:
-            import numpy as np
-            if isinstance(x._meta, np.ndarray):
-                # Must be on CPU since backed by numpy
-                return "cpu"
-        except ImportError:
-            pass
+        if is_numpy_array(x._meta):
+            # Must be on CPU since backed by numpy
+            return "cpu"
         return _DASK_DEVICE
     elif is_jax_array(x):
         # JAX has .device() as a method, but it is being deprecated so that it
