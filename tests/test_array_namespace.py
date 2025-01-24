@@ -22,7 +22,7 @@ def test_array_namespace(library, api_version, use_compat):
     if use_compat and library not in wrapped_libraries:
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
-    namespace = array_api_compat.array_namespace(array, api_version=api_version, use_compat=use_compat)
+    namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and use_compat is None:
@@ -44,7 +44,7 @@ def test_array_namespace(library, api_version, use_compat):
 
     if library == "numpy":
         # check that the same namespace is returned for NumPy scalars
-        scalar_namespace = array_api_compat.array_namespace(
+        scalar_namespace = array_namespace(
             xp.float64(0.0), api_version=api_version, use_compat=use_compat
         )
         assert scalar_namespace == namespace
@@ -75,8 +75,7 @@ else:
 def test_jax_zero_gradient():
     jx = jax.numpy.arange(4)
     jax_zero = jax.vmap(jax.grad(jax.numpy.float32, allow_int=True))(jx)
-    assert (array_api_compat.get_namespace(jax_zero) is
-            array_api_compat.get_namespace(jx))
+    assert array_namespace(jax_zero) is array_namespace(jx)
 
 def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace([1]))
@@ -91,7 +90,7 @@ def test_array_namespace_errors_torch():
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
-def test_api_version():
+def test_api_version_torch():
     x = torch.asarray([1, 2])
     torch_ = import_("torch", wrapper=True)
     assert array_namespace(x, api_version="2023.12") == torch_
@@ -113,7 +112,7 @@ def test_api_version():
 
 def test_get_namespace():
     # Backwards compatible wrapper
-    assert array_api_compat.get_namespace is array_api_compat.array_namespace
+    assert array_api_compat.get_namespace is array_namespace
 
 def test_python_scalars():
     a = torch.asarray([1, 2])
