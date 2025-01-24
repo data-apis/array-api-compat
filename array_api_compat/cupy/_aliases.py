@@ -121,7 +121,7 @@ def astype(
     if device is None:
         return x.astype(dtype=dtype, copy=copy)
     out = _helpers.to_device(x.astype(dtype=dtype, copy=False), device)
-    return out.copy() if copy and out is x else x
+    return out.copy() if copy and out is x else out
 
 
 # These functions are completely new here. If the library already has them
