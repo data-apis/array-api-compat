@@ -181,5 +181,4 @@ array_api_tests/test_fft.py::test_irfftn
 # cupy.ndaray cannot be specified as `repeats` argument.
 array_api_tests/test_manipulation_functions.py::test_repeat
 array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
-array_api_tests/test_signatures.py::test_func_signature[astype]
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]

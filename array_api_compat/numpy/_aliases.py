@@ -46,7 +46,6 @@ unique_all = get_xp(np)(_aliases.unique_all)
 unique_counts = get_xp(np)(_aliases.unique_counts)
 unique_inverse = get_xp(np)(_aliases.unique_inverse)
 unique_values = get_xp(np)(_aliases.unique_values)
-astype = _aliases.astype
 std = get_xp(np)(_aliases.std)
 var = get_xp(np)(_aliases.var)
 cumulative_sum = get_xp(np)(_aliases.cumulative_sum)
@@ -115,6 +114,18 @@ def asarray(
 
     return np.array(obj, copy=copy, dtype=dtype, **kwargs)
 
+
+def astype(
+    x: ndarray,
+    dtype: Dtype,
+    /,
+    *,
+    copy: bool = True,
+    device: Optional[Device] = None,
+) -> ndarray:
+    return x.astype(dtype=dtype, copy=copy)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, 'vecdot'):
@@ -132,10 +143,10 @@ if hasattr(np, 'unstack'):
 else:
     unstack = get_xp(np)(_aliases.unstack)
 
-__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'bool',
+__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'concat', 'pow']
+                              'bool', 'concat', 'pow']
 
 _all_ignore = ['np', 'get_xp']

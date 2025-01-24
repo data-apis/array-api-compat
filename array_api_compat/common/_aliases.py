@@ -233,11 +233,6 @@ def unique_values(x: ndarray, /, xp) -> ndarray:
         **kwargs,
     )
 
-def astype(x: ndarray, dtype: Dtype, /, *, copy: bool = True) -> ndarray:
-    if not copy and dtype == x.dtype:
-        return x
-    return x.astype(dtype=dtype, copy=copy)
-
 # These functions have different keyword argument names
 
 def std(
@@ -549,7 +544,7 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
-           'astype', 'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
+           'std', 'var', 'cumulative_sum', 'clip', 'permute_dims',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
            'unstack', 'sign']

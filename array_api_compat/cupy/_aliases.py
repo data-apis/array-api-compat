@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import cupy as cp
 
-from ..common import _aliases
+from ..common import _aliases, _helpers
 from .._internal import get_xp
 
 from ._info import __array_namespace_info__
@@ -46,7 +46,6 @@ unique_all = get_xp(cp)(_aliases.unique_all)
 unique_counts = get_xp(cp)(_aliases.unique_counts)
 unique_inverse = get_xp(cp)(_aliases.unique_inverse)
 unique_values = get_xp(cp)(_aliases.unique_values)
-astype = _aliases.astype
 std = get_xp(cp)(_aliases.std)
 var = get_xp(cp)(_aliases.var)
 cumulative_sum = get_xp(cp)(_aliases.cumulative_sum)
@@ -110,6 +109,21 @@ def asarray(
 
         return cp.array(obj, dtype=dtype, **kwargs)
 
+
+def astype(
+    x: ndarray,
+    dtype: Dtype,
+    /,
+    *,
+    copy: bool = True,
+    device: Optional[Device] = None,
+) -> ndarray:
+    if device is None:
+        return x.astype(dtype=dtype, copy=copy)
+    out = _helpers.to_device(x.astype(dtype=dtype, copy=False), device)
+    return out.copy() if copy and out is x else out
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -127,10 +141,10 @@ if hasattr(cp, 'unstack'):
 else:
     unstack = get_xp(cp)(_aliases.unstack)
 
-__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'bool',
+__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'concat', 'pow', 'sign']
+                              'bool', 'concat', 'pow', 'sign']
 
 _all_ignore = ['cp', 'get_xp']

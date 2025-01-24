@@ -154,4 +154,3 @@ array_api_tests/test_statistical_functions.py::test_prod
 # 2023.12 support
 array_api_tests/test_manipulation_functions.py::test_repeat
 array_api_tests/test_searching_functions.py::test_searchsorted
-array_api_tests/test_signatures.py::test_func_signature[astype]
