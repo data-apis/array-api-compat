@@ -3,7 +3,7 @@ import math
 import pytest
 import numpy as np
 import array
-from numpy.testing import assert_allclose
+from numpy.testing import assert_equal
 
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
@@ -195,7 +195,10 @@ def test_device(library):
     dev = device(x)
 
     x2 = to_device(x, dev)
-    assert device(x) == device(x2)
+    assert device(x2) == device(x)
+
+    x3 = xp.asarray(x, device=dev)
+    assert device(x3) == device(x)
 
 
 @pytest.mark.parametrize("library", wrapped_libraries)
@@ -214,7 +217,7 @@ def test_to_device_host(library):
     # a `device(x)` query; however, what's really important
     # here is that we can test portably after calling
     # to_device(x, "cpu") to return to host
-    assert_allclose(x, expected)
+    assert_equal(x, expected)
 
 
 @pytest.mark.parametrize("target_library", is_array_functions.keys())

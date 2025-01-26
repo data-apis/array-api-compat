@@ -648,20 +648,24 @@ def device(x: Array, /) -> Device:
     if is_numpy_array(x):
         return "cpu"
     elif is_dask_array(x):
-        # Peek at the metadata of the jax array to determine type
+        # Peek at the metadata of the Dask array to determine type
         if is_numpy_array(x._meta):
             # Must be on CPU since backed by numpy
             return "cpu"
         return _DASK_DEVICE
     elif is_jax_array(x):
-        # JAX has .device() as a method, but it is being deprecated so that it
-        # can become a property, in accordance with the standard. In order for
-        # this function to not break when JAX makes the flip, we check for
-        # both here.
-        if inspect.ismethod(x.device):
-            return x.device()
+        # FIXME Jitted JAX arrays do not have a device attribute
+        #       https://github.com/jax-ml/jax/issues/26000
+        #       Return None in this case. Note that this workaround breaks
+        #       the standard and will result in new arrays being created on the
+        #       default device instead of the same device as the input array(s).
+        x_device = getattr(x, 'device', None)
+        # Older JAX releases had .device() as a method, which has been replaced
+        # with a property in accordance with the standard.
+        if inspect.ismethod(x_device):
+            return x_device()
         else:
-            return x.device
+            return x_device
     elif is_pydata_sparse_array(x):
         # `sparse` will gain `.device`, so check for this first.
         x_device = getattr(x, 'device', None)
@@ -792,8 +796,11 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         raise ValueError(f"Unsupported device {device!r}")
     elif is_jax_array(x):
         if not hasattr(x, "__array_namespace__"):
-            # In JAX v0.4.31 and older, this import adds to_device method to x.
+            # In JAX v0.4.31 and older, this import adds to_device method to x...
             import jax.experimental.array_api # noqa: F401
+            # ... but only on eager JAX. It won't work inside jax.jit.
+            if not hasattr(x, "to_device"):
+                return x
         return x.to_device(device, stream=stream)
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
