@@ -645,7 +645,7 @@ def device(x: Array, /) -> Device:
     to_device : Move array data to a different device.
 
     """
-    if is_numpy_array(x):
+    if is_numpy_array(x) or is_ndonnx_array(x):
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the Dask array to determine type
@@ -776,7 +776,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     device : Hardware device the array data resides on.
 
     """
-    if is_numpy_array(x):
+    if is_numpy_array(x) or is_ndonnx_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
         if device == 'cpu':

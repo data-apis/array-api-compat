@@ -3,11 +3,12 @@ from importlib import import_module
 import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + ["array_api_strict", "jax.numpy", "sparse"]
-
+all_libraries = wrapped_libraries + [
+    "array_api_strict", "jax.numpy", "ndonnx", "sparse"
+]
 
 def import_(library, wrapper=False):
-    if library == 'cupy':
+    if library in ('cupy', 'ndonnx'):
         pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
