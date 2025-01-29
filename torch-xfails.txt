@@ -8,23 +8,11 @@ array_api_tests/test_array_object.py::test_getitem
 array_api_tests/test_array_object.py::test_setitem
 # Masking doesn't suport 0 dimensions in the mask
 array_api_tests/test_array_object.py::test_getitem_masking
-# torch doesn't have uint dtypes other than uint8
-array_api_tests/test_array_object.py::test_scalar_casting[__int__(uint16)]
-array_api_tests/test_array_object.py::test_scalar_casting[__int__(uint32)]
-array_api_tests/test_array_object.py::test_scalar_casting[__int__(uint64)]
-array_api_tests/test_array_object.py::test_scalar_casting[__index__(uint16)]
-array_api_tests/test_array_object.py::test_scalar_casting[__index__(uint32)]
-array_api_tests/test_array_object.py::test_scalar_casting[__index__(uint64)]
 
 # Overflow error from large inputs
 array_api_tests/test_creation_functions.py::test_arange
 # pytorch linspace bug (should be fixed in torch 2.0)
 array_api_tests/test_creation_functions.py::test_linspace
-
-# torch doesn't have higher uint dtypes
-array_api_tests/test_data_type_functions.py::test_iinfo[uint16]
-array_api_tests/test_data_type_functions.py::test_iinfo[uint32]
-array_api_tests/test_data_type_functions.py::test_iinfo[uint64]
 
 # We cannot wrap the tensor object
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
