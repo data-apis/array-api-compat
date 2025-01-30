@@ -31,6 +31,9 @@ array_api_tests/test_set_functions.py::test_unique_values
 # fails for ndim > 2
 array_api_tests/test_linalg.py::test_svdvals
 
+# dtype mismatch got uint64, but should be uint8, NPY_PROMOTION_STATE=weak doesn't help :(
+array_api_tests/test_linalg.py::test_tensordot
+
 # AssertionError: out.dtype=uint64, but should be uint8 [tensordot(uint8, uint8)]
 array_api_tests/test_linalg.py::test_linalg_tensordot
 
