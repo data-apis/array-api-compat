@@ -385,7 +385,7 @@ specified <code class="docutils literal notranslate"><span class="pre">device</s
 device is the CPU. For CuPy, this method supports CuPy CUDA
 <a class="reference external" href="https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Device.html#cupy.cuda.Device" title="(in CuPy v13.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a> and
 <a class="reference external" href="https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html#cupy.cuda.Stream" title="(in CuPy v13.3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stream</span></code></a> objects. For PyTorch,
-this is the same as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.to.html#torch.Tensor.to" title="(in PyTorch v2.5)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.to(device)</span></code></a>
+this is the same as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.to.html#torch.Tensor.to" title="(in PyTorch v2.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.to(device)</span></code></a>
 (the <code class="docutils literal notranslate"><span class="pre">stream</span></code> argument is not supported in PyTorch).</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -402,7 +402,7 @@ this is the same as <a class="reference external" href="https://pytorch.org/docs
 <dd><p>Return the total number of elements of x.</p>
 <p>This is equivalent to <code class="code docutils literal notranslate"><span class="pre">x.size</span></code> according to the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html">standard</a>.</p>
 <p>This helper is included because PyTorch defines <code class="code docutils literal notranslate"><span class="pre">size</span></code> in an
-<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.5)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">incompatible</span> <span class="pre">way</span></code></a>.
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">incompatible</span> <span class="pre">way</span></code></a>.
 It also fixes dask.array’s behaviour which returns nan for unknown sizes, whereas
 the standard requires None.</p>
 </dd></dl>
