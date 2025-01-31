@@ -1,9 +1,6 @@
 # asarray(copy=False) is not yet implemented
 array_api_tests/test_creation_functions.py::test_asarray_arrays
 
-# https://github.com/data-apis/array-api-tests/issues/195
-array_api_tests/test_creation_functions.py::test_linspace
-
 # finfo(float32).eps returns float32 but should return float
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 
@@ -12,12 +9,6 @@ array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
-
-# linalg tests require https://github.com/data-apis/array-api-tests/pull/101
-# cleanups. Also some tests are using .mT
-array_api_tests/test_linalg.py::test_eigvalsh
-array_api_tests/test_linalg.py::test_solve
-array_api_tests/test_linalg.py::test_trace
 
 # Array methods and attributes not already on np.ndarray cannot be wrapped
 array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
@@ -44,10 +35,6 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
 
 # https://github.com/numpy/numpy/issues/21213
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
-array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
-array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 
 # NumPy 1.21 specific XFAILS
@@ -79,17 +66,6 @@ array_api_tests/test_searching_functions.py::test_argmax
 array_api_tests/test_searching_functions.py::test_argmin
 array_api_tests/test_signatures.py::test_func_signature[argmax]
 array_api_tests/test_signatures.py::test_func_signature[argmin]
-
-# unique doesn't support comparing nans as unequal
-array_api_tests/test_set_functions.py::test_unique_all
-array_api_tests/test_set_functions.py::test_unique_counts
-array_api_tests/test_set_functions.py::test_unique_inverse
-array_api_tests/test_set_functions.py::test_unique_values
-
-# The test suite is incorrectly checking sums that have loss of significance
-# (https://github.com/data-apis/array-api-tests/issues/168)
-array_api_tests/test_statistical_functions.py::test_sum
-array_api_tests/test_statistical_functions.py::test_prod
 
 # NumPy 1.21 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
 # type promotion issues
@@ -158,9 +134,6 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isu
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[subtract(x1, x2)]
-array_api_tests/test_searching_functions.py::test_where
-array_api_tests/test_special_cases.py::test_binary[__add__((x1_i is +0 or x1_i == -0) and isfinite(x2_i) and x2_i != 0) -> x2_i]
-array_api_tests/test_special_cases.py::test_binary[__add__(isfinite(x1_i) and x1_i != 0 and (x2_i is +0 or x2_i == -0)) -> x1_i]
 array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i < 0 and x2_i is +0) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i < 0 and x2_i is -0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i > 0 and x2_i is +0) -> +infinity]
@@ -177,44 +150,18 @@ array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is +0 and x2_i <
 array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is +0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is -0 and x2_i < 0) -> -0]
 array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is -0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__pow__(abs(x1_i) < 1 and x2_i is +infinity) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__pow__(abs(x1_i) < 1 and x2_i is -infinity) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[__pow__(abs(x1_i) > 1 and x2_i is +infinity) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[__pow__(abs(x1_i) > 1 and x2_i is -infinity) -> +0]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i < 0 and isfinite(x1_i) and isfinite(x2_i) and not x2_i.is_integer()) -> NaN]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is +0 and x2_i < 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is +0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is +infinity and x2_i < 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is +infinity and x2_i > 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i < 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i < 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -0 and x2_i > 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -0]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i < 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
 array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i < 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -0]
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is -infinity and x2_i > 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[__pow__(x1_i is NaN and not x2_i == 0) -> NaN]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i < 0 and x2_i is +0) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i < 0 and x2_i is -0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i > 0 and x2_i is +0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i > 0 and x2_i is -0) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i is +0 and x2_i < 0) -> -0]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i is +0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i is -0 and x2_i < 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[__truediv__(x1_i is -0 and x2_i > 0) -> -0]
-array_api_tests/test_special_cases.py::test_binary[add((x1_i is +0 or x1_i == -0) and isfinite(x2_i) and x2_i != 0) -> x2_i]
-array_api_tests/test_special_cases.py::test_binary[add(isfinite(x1_i) and x1_i != 0 and (x2_i is +0 or x2_i == -0)) -> x1_i]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i < 0 and x2_i is +0) -> roughly -pi/2]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i < 0 and x2_i is -0) -> roughly -pi/2]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i > 0 and x2_i is +0) -> roughly +pi/2]
 array_api_tests/test_special_cases.py::test_binary[atan2(x1_i > 0 and x2_i is -0) -> roughly +pi/2]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i < 0 and x2_i is +0) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i < 0 and x2_i is -0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i > 0 and x2_i is +0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i > 0 and x2_i is -0) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i is +0 and x2_i < 0) -> -0]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i is +0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i is -0 and x2_i < 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[divide(x1_i is -0 and x2_i > 0) -> -0]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i < 0 and x2_i is +0) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i < 0 and x2_i is -0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i > 0 and x2_i is +0) -> +infinity]
@@ -223,24 +170,6 @@ array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +0 and x
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +0 and x2_i > 0) -> +0]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -0 and x2_i < 0) -> +0]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -0 and x2_i > 0) -> -0]
-array_api_tests/test_special_cases.py::test_binary[pow(abs(x1_i) < 1 and x2_i is +infinity) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(abs(x1_i) < 1 and x2_i is -infinity) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(abs(x1_i) > 1 and x2_i is +infinity) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(abs(x1_i) > 1 and x2_i is -infinity) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i < 0 and isfinite(x1_i) and isfinite(x2_i) and not x2_i.is_integer()) -> NaN]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is +0 and x2_i < 0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is +0 and x2_i > 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is +infinity and x2_i < 0) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is +infinity and x2_i > 0) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -0 and x2_i < 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -0 and x2_i < 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -0 and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -0 and x2_i > 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -infinity and x2_i < 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -infinity and x2_i < 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -0]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is -infinity and x2_i > 0 and x2_i.is_integer() and x2_i % 2 == 1) -> -infinity]
-array_api_tests/test_special_cases.py::test_binary[pow(x1_i is NaN and not x2_i == 0) -> NaN]
 array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> x2_i]
 array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i < 0 and x2_i is -infinity) -> x1_i]
 array_api_tests/test_special_cases.py::test_binary[remainder(isfinite(x1_i) and x1_i > 0 and x2_i is +infinity) -> x1_i]
@@ -252,7 +181,6 @@ array_api_tests/test_special_cases.py::test_binary[remainder(x1_i is -0 and x2_i
 array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
 
 # 2023.12 support
-array_api_tests/test_searching_functions.py::test_searchsorted
 array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 # uint64 repeats not supported
