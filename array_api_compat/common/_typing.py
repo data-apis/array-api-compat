@@ -21,3 +21,4 @@ SupportsBufferProtocol = Any
 
 Array = Any
 Device = Any
+DType = Any
