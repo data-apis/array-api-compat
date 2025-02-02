@@ -1,5 +1,55 @@
 # Changelog
 
+## 1.11.0 (2025-XX-XX)
+
+### Major Changes
+
+This release targets the 2024.12 Array API revision. This includes
+
+  - `__array_api_version__` for the wrapped APIs is now set to `2024.12`; **TODO**
+  - Wrappers for `count_nonzero`;
+  - Wrappers for `cumulative_prod`;
+  - Wrappers for `take_along_axis`;
+  - Wrappers for `diff`;
+  - `__capabilities__` dict contains a `max_dimensions` key;
+  - Python scalars are acceped as arguments to `result_type`;
+  - `fft.fftfreq` and `fft.rfftfreq` functions now accept an options `dtype`
+    argument to control the output data type.
+
+Improved support for array handling under `jax.jit`  context, including
+
+  - An improved support of the `.device` attribute and `to_device` function;
+  - New functions `is_lazy_array` and `is_writeable_array`.
+
+Note that the work to enable `jax.jit` support is ongoing, and the full support
+is expected to be finalized in future releases.
+
+- `torch` wrappers contain unsigned integer dtypes of widths >8 bits, `uint16`,
+  `uint32` and `uint64`. This effectively assumes that the unwrapped `pytorch` version
+  is at least 2.3.
+
+### Minor Changes
+
+- Several improvements to `dask` wrappers:
+
+  - `size` returns None for arrays of unknown shapes.
+  - `astype(..., copy=True)` always copies, independently of the `dask` version.
+  - implementations of `sort` and `argsort` are now available. Note that these
+    implementations are relatively crude, and might be memory intensive.
+
+### Authors
+
+The following users contributed to this release:
+
+Athan Reines
+Guido Imperiale
+Evgeni Burovski
+Guido Imperiale
+Lucas Colley
+Ralf Gommers
+Thomas Li
+
+
 ## 1.10.0 (2024-12-25)
 
 ### Major Changes
