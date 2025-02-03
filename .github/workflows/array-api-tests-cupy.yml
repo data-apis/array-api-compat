@@ -1,0 +1,54 @@
+name: CuPy Array API Tests
+
+on: [push, pull_request]
+
+env:
+  PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }} --hypothesis-disable-deadline"
+
+permissions:
+   contents: read  # to fetch code (actions/checkout)
+
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+
+    steps:
+    - name: Checkout array-api-compat
+      uses: actions/checkout@v4
+      with:
+        path: array-api-compat
+    - name: Checkout array-api-tests
+      uses: actions/checkout@v4
+      with:
+        repository: data-apis/array-api-tests
+        submodules: 'true'
+        path: array-api-tests
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Initialize submodules in -tests
+      run: |
+        cd array-api-tests
+        git submodule update --init
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
+        python -m pip install cupy-cuda12x
+
+    - name: Run the array API testsuite (CuPy)
+      env:
+        ARRAY_API_TESTS_MODULE: array_api_compat.cupy
+        ARRAY_API_TESTS_VERSION: 2023.12
+        PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci --hypothesis-disable-deadline"
+      run: |
+        export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
+        cd ${GITHUB_WORKSPACE}/array-api-tests
+        pytest array_api_tests/ --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/cupy-xfails.txt  ${PYTEST_ARGS}
