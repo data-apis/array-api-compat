@@ -40,8 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # min version of dask we needs drops support for python 3.9
-        python-version: ${{ inputs.package-name == 'dask' && fromJson('[''3.10'', ''3.11'', ''3.12'']') || fromJson('[''3.9'', ''3.10'', ''3.11'', ''3.12'']') }}
+        # Min version of dask we need dropped support for Python 3.9
+        # There is no numpy git tip for Python 3.9 or 3.10
+        python-version: ${{ (inputs.package-name == 'dask' && fromJson('[''3.10'', ''3.11'', ''3.12'']')) || (inputs.package-name == 'numpy' && inputs.xfails-file-extra == '-dev' && fromJson('[''3.11'', ''3.12'']')) || fromJson('[''3.9'', ''3.10'', ''3.11'', ''3.12'']') }}
 
     steps:
     - name: Checkout array-api-compat
