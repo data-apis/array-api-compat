@@ -645,7 +645,7 @@ def device(x: Array, /) -> Device:
     to_device : Move array data to a different device.
 
     """
-    if is_numpy_array(x) or is_ndonnx_array(x):
+    if is_numpy_array(x):
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the Dask array to determine type

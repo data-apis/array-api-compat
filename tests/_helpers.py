@@ -21,3 +21,14 @@ def import_(library, wrapper=False):
             library = 'array_api_compat.' + library
 
     return import_module(library)
+
+
+def xfail(request: pytest.FixtureRequest, reason: str) -> None:
+    """
+    XFAIL the currently running test.
+
+    Unlike ``pytest.xfail``, allow rest of test to execute instead of immediately
+    halting it, so that it may result in a XPASS.
+    xref https://github.com/pandas-dev/pandas/issues/38902
+    """
+    request.node.add_marker(pytest.mark.xfail(reason=reason))
