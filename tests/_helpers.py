@@ -3,11 +3,12 @@ from importlib import import_module
 import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
-all_libraries = wrapped_libraries + ["array_api_strict", "jax.numpy", "sparse"]
-
+all_libraries = wrapped_libraries + [
+    "array_api_strict", "jax.numpy", "ndonnx", "sparse"
+]
 
 def import_(library, wrapper=False):
-    if library == 'cupy':
+    if library in ('cupy', 'ndonnx'):
         pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
@@ -20,3 +21,14 @@ def import_(library, wrapper=False):
             library = 'array_api_compat.' + library
 
     return import_module(library)
+
+
+def xfail(request: pytest.FixtureRequest, reason: str) -> None:
+    """
+    XFAIL the currently running test.
+
+    Unlike ``pytest.xfail``, allow rest of test to execute instead of immediately
+    halting it, so that it may result in a XPASS.
+    xref https://github.com/pandas-dev/pandas/issues/38902
+    """
+    request.node.add_marker(pytest.mark.xfail(reason=reason))

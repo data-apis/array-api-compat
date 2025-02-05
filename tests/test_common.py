@@ -8,15 +8,17 @@ from numpy.testing import assert_equal
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
+    is_ndonnx_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
-    is_array_api_strict_namespace,
+    is_array_api_strict_namespace, is_ndonnx_namespace,
 )
 
 from array_api_compat import (
     device, is_array_api_obj, is_lazy_array, is_writeable_array, size, to_device
 )
-from ._helpers import import_, wrapped_libraries, all_libraries
+from ._helpers import all_libraries, import_, wrapped_libraries, xfail
+
 
 is_array_functions = {
     'numpy': 'is_numpy_array',
@@ -25,6 +27,7 @@ is_array_functions = {
     'dask.array': 'is_dask_array',
     'jax.numpy': 'is_jax_array',
     'sparse': 'is_pydata_sparse_array',
+    'ndonnx': 'is_ndonnx_array',
 }
 
 is_namespace_functions = {
@@ -35,6 +38,7 @@ is_namespace_functions = {
     'jax.numpy': 'is_jax_namespace',
     'sparse': 'is_pydata_sparse_namespace',
     'array_api_strict': 'is_array_api_strict_namespace',
+    'ndonnx': 'is_ndonnx_namespace',
 }
 
 
@@ -185,7 +189,10 @@ def test_is_array_any_object(func):
 
 
 @pytest.mark.parametrize("library", all_libraries)
-def test_device(library):
+def test_device(library, request):
+    if library == "ndonnx":
+        xfail(request, reason="Needs ndonnx >=0.9.4")
+
     xp = import_(library, wrapper=True)
 
     # We can't test much for device() and to_device() other than that
@@ -223,17 +230,19 @@ def test_to_device_host(library):
 @pytest.mark.parametrize("target_library", is_array_functions.keys())
 @pytest.mark.parametrize("source_library", is_array_functions.keys())
 def test_asarray_cross_library(source_library, target_library, request):
-    def _xfail(reason: str) -> None:
-        # Allow rest of test to execute instead of immediately xfailing
-        # xref https://github.com/pandas-dev/pandas/issues/38902
-        request.node.add_marker(pytest.mark.xfail(reason=reason))
-
     if source_library == "dask.array" and target_library == "torch":
         # TODO: remove xfail once
         # https://github.com/dask/dask/issues/8260 is resolved
-        _xfail(reason="Bug in dask raising error on conversion")
+        xfail(request, reason="Bug in dask raising error on conversion")
+    elif (
+        source_library == "ndonnx" 
+        and target_library not in ("array_api_strict", "ndonnx", "numpy")
+    ):
+        xfail(request, reason="The truth value of lazy Array Array(dtype=Boolean) is unknown")
+    elif source_library == "ndonnx" and target_library == "numpy":
+        xfail(request, reason="produces numpy array of ndonnx scalar arrays")
     elif source_library == "jax.numpy" and target_library == "torch":
-        _xfail(reason="casts int to float")
+        xfail(request, reason="casts int to float")
     elif source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")

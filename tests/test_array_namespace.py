@@ -22,6 +22,9 @@ def test_array_namespace(library, api_version, use_compat):
     if use_compat and library not in wrapped_libraries:
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
+    if library == "ndonnx" and api_version in ("2021.12", "2022.12"):
+        pytest.skip("Unsupported API version")
+
     namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
