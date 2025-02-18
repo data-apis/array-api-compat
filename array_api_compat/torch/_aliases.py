@@ -8,6 +8,7 @@ from ..common._aliases import (matrix_transpose as _aliases_matrix_transpose,
                                clip as _aliases_clip,
                                unstack as _aliases_unstack,
                                cumulative_sum as _aliases_cumulative_sum,
+                               cumulative_prod as _aliases_cumulative_prod,
                                )
 from .._internal import get_xp
 
@@ -124,7 +125,11 @@ def _fix_promotion(x1, x2, only_scalar=True):
         x1 = x1.to(dtype)
     return x1, x2
 
-def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
+
+_py_scalars = (bool, int, float, complex)
+
+
+def result_type(*arrays_and_dtypes: Union[array, Dtype, bool, int, float, complex]) -> Dtype:
     if len(arrays_and_dtypes) == 0:
         raise TypeError("At least one array or dtype must be provided")
     if len(arrays_and_dtypes) == 1:
@@ -136,6 +141,9 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
         return result_type(arrays_and_dtypes[0], result_type(*arrays_and_dtypes[1:]))
 
     x, y = arrays_and_dtypes
+    if isinstance(x, _py_scalars) or isinstance(y, _py_scalars):
+        return torch.result_type(x, y)
+
     xdt = x.dtype if not isinstance(x, torch.dtype) else x
     ydt = y.dtype if not isinstance(y, torch.dtype) else y
 
@@ -210,6 +218,7 @@ def min(x: array, /, *, axis: Optional[Union[int, Tuple[int, ...]]] = None, keep
 clip = get_xp(torch)(_aliases_clip)
 unstack = get_xp(torch)(_aliases_unstack)
 cumulative_sum = get_xp(torch)(_aliases_cumulative_sum)
+cumulative_prod = get_xp(torch)(_aliases_cumulative_prod)
 
 # torch.sort also returns a tuple
 # https://github.com/pytorch/pytorch/issues/70921
@@ -504,6 +513,31 @@ def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
     return torch.nonzero(x, as_tuple=True, **kwargs)
 
+
+# torch uses `dim` instead of `axis`
+def diff(
+    x: array,
+    /,
+    *,
+    axis: int = -1,
+    n: int = 1,
+    prepend: Optional[array] = None,
+    append: Optional[array] = None,
+) -> array:
+    return torch.diff(x, dim=axis, n=n, prepend=prepend, append=append)
+
+
+# torch uses `dim` instead of `axis`
+def count_nonzero(
+    x: array,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: bool = False,
+) -> array:
+    return torch.count_nonzero(x, dim=axis, keepdims=keepdims)
+
+
 def where(condition: array, x1: array, x2: array, /) -> array:
     x1, x2 = _fix_promotion(x1, x2)
     return torch.where(condition, x1, x2)
@@ -734,6 +768,11 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         axis = 0
     return torch.index_select(x, axis, indices, **kwargs)
 
+
+def take_along_axis(x: array, indices: array, /, *, axis: int = -1) -> array:
+    return torch.take_along_dim(x, indices, dim=axis)
+
+
 def sign(x: array, /) -> array:
     # torch sign() does not support complex numbers and does not propagate
     # nans. See https://github.com/data-apis/array-api-compat/issues/136
@@ -752,11 +791,12 @@ def sign(x: array, /) -> array:
 __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
-           'bitwise_right_shift', 'bitwise_xor', 'copysign', 'divide',
+           'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',
+           'diff', 'divide',
            'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
            'less', 'less_equal', 'logaddexp', 'maximum', 'minimum',
            'multiply', 'not_equal', 'pow', 'remainder', 'subtract', 'max',
-           'min', 'clip', 'unstack', 'cumulative_sum', 'sort', 'prod', 'sum',
+           'min', 'clip', 'unstack', 'cumulative_sum', 'cumulative_prod', 'sort', 'prod', 'sum',
            'any', 'all', 'mean', 'std', 'var', 'concat', 'squeeze',
            'broadcast_to', 'flip', 'roll', 'nonzero', 'where', 'reshape',
            'arange', 'eye', 'linspace', 'full', 'ones', 'zeros', 'empty',
@@ -764,6 +804,6 @@ __all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'sign']
+           'take', 'take_along_axis', 'sign']
 
 _all_ignore = ['torch', 'get_xp']
