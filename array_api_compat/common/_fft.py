@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union, Optional, Literal
 
 if TYPE_CHECKING:
-    from ._typing import Device, ndarray
+    from ._typing import Device, ndarray, DType
     from collections.abc import Sequence
 
 # Note: NumPy fft functions improperly upcast float32 and complex64 to
@@ -149,15 +149,37 @@ def ihfft(
         return res.astype(xp.complex64)
     return res
 
-def fftfreq(n: int, /, xp, *, d: float = 1.0, device: Optional[Device] = None) -> ndarray:
+def fftfreq(
+    n: int,
+    /,
+    xp,
+    *,
+    d: float = 1.0,
+    dtype: Optional[DType] = None,
+    device: Optional[Device] = None
+) -> ndarray:
     if device not in ["cpu", None]:
         raise ValueError(f"Unsupported device {device!r}")
-    return xp.fft.fftfreq(n, d=d)
+    res = xp.fft.fftfreq(n, d=d)
+    if dtype is not None:
+        return res.astype(dtype)
+    return res
 
-def rfftfreq(n: int, /, xp, *, d: float = 1.0, device: Optional[Device] = None) -> ndarray:
+def rfftfreq(
+    n: int,
+    /,
+    xp,
+    *,
+    d: float = 1.0,
+    dtype: Optional[DType] = None,
+    device: Optional[Device] = None
+) -> ndarray:
     if device not in ["cpu", None]:
         raise ValueError(f"Unsupported device {device!r}")
-    return xp.fft.rfftfreq(n, d=d)
+    res = xp.fft.rfftfreq(n, d=d)
+    if dtype is not None:
+        return res.astype(dtype)
+    return res
 
 def fftshift(x: ndarray, /, xp, *, axes: Union[int, Sequence[int]] = None) -> ndarray:
     return xp.fft.fftshift(x, axes=axes)
