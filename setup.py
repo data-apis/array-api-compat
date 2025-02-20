@@ -34,4 +34,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    package_data={
+        "array_api_compat": ["py.typed"],
+    },
 )
