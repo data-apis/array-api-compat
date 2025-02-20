@@ -24,9 +24,6 @@ Improved support for JAX:
   - Work arounds for `.device` attribute and `to_device` function
     not working correctly within `jax.jit`
 
-- `torch` wrappers contain unsigned integer dtypes of widths >8 bits, `uint16`,
-  `uint32` and `uint64` if PyTorch version is at least 2.3.
-
 ### Minor Changes
 
 - Several improvements to `dask.array` wrappers:
@@ -36,6 +33,10 @@ Improved support for JAX:
   - implementations of `sort` and `argsort` are now available. Note that these
     implementations are relatively crude, and might be memory intensive.
   - `asarray` no longer accidentally materializes the Dask graph
+  - `torch` wrappers contain unsigned integer dtypes of widths >8 bits, `uint16`,
+    `uint32` and `uint64` if PyTorch version is at least 2.3. Note that the
+     unsigned int support for PyTorch is incomplete and will be improved in a
+     future release.
 
 ### Authors
 
