@@ -9,33 +9,33 @@ This release targets the 2024.12 Array API revision. This includes
   - `__array_api_version__` for the wrapped APIs is now set to `2024.12`; **TODO**
   - Wrappers for `count_nonzero`;
   - Wrappers for `cumulative_prod`;
-  - Wrappers for `take_along_axis`;
+  - Wrappers for `take_along_axis` (with the exception of Dask);
   - Wrappers for `diff`;
   - `__capabilities__` dict contains a `max_dimensions` key;
-  - Python scalars are acceped as arguments to `result_type`;
-  - `fft.fftfreq` and `fft.rfftfreq` functions now accept an options `dtype`
+  - Python scalars are accepted as arguments to `result_type`;
+  - `fft.fftfreq` and `fft.rfftfreq` functions now accept an optional `dtype`
     argument to control the output data type.
 
-Improved support for array handling under `jax.jit`  context, including
+New functions to test properties of arrays:
+  - `is_writeable_array` (benefits NumPy, JAX, Sparse)
+  - `is_lazy_array` (benefits JAX, Dask, ndonnx)
 
-  - An improved support of the `.device` attribute and `to_device` function;
-  - New functions `is_lazy_array` and `is_writeable_array`.
-
-Note that the work to enable `jax.jit` support is ongoing, and the full support
-is expected to be finalized in future releases.
+Improved support for JAX:
+  - Work arounds for `.device` attribute and `to_device` function
+    not working correctly within `jax.jit`
 
 - `torch` wrappers contain unsigned integer dtypes of widths >8 bits, `uint16`,
-  `uint32` and `uint64`. This effectively assumes that the unwrapped `pytorch` version
-  is at least 2.3.
+  `uint32` and `uint64` if PyTorch version is at least 2.3.
 
 ### Minor Changes
 
-- Several improvements to `dask` wrappers:
+- Several improvements to `dask.array` wrappers:
 
   - `size` returns None for arrays of unknown shapes.
-  - `astype(..., copy=True)` always copies, independently of the `dask` version.
+  - `astype(..., copy=True)` always copies, independently of the Dask version.
   - implementations of `sort` and `argsort` are now available. Note that these
     implementations are relatively crude, and might be memory intensive.
+  - `asarray` no longer accidentally materializes the Dask graph
 
 ### Authors
 
