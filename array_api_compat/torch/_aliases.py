@@ -96,6 +96,53 @@ _promotion_table  = {
 }
 
 
+try:
+    # torch >=2.3
+    _uint_promotion_table = {
+        # uints
+        (torch.uint8, torch.uint16): torch.uint16,
+        (torch.uint8, torch.uint32): torch.uint32,
+        (torch.uint8, torch.uint64): torch.uint64,
+        (torch.uint16, torch.uint8): torch.uint16,
+        (torch.uint16, torch.uint16): torch.uint16,
+        (torch.uint16, torch.uint32): torch.uint32,
+        (torch.uint16, torch.uint64): torch.uint64,
+        (torch.uint32, torch.uint8): torch.uint32,
+        (torch.uint32, torch.uint16): torch.uint32,
+        (torch.uint32, torch.uint32): torch.uint32,
+        (torch.uint32, torch.uint64): torch.uint64,
+        (torch.uint64, torch.uint8): torch.uint64,
+        (torch.uint64, torch.uint16): torch.uint64,
+        (torch.uint64, torch.uint32): torch.uint64,
+        (torch.uint64, torch.uint64): torch.uint64,
+        # ints and uints (mixed sign)
+        (torch.int8, torch.uint16): torch.int32,
+        (torch.int8, torch.uint32): torch.int64,
+        (torch.int16, torch.uint8): torch.int16,
+        (torch.int16, torch.uint16): torch.int32,
+        (torch.int16, torch.uint32): torch.int64,
+        (torch.int32, torch.uint8): torch.int32,
+        (torch.int32, torch.uint16): torch.int32,
+        (torch.int32, torch.uint32): torch.int64,
+        (torch.int64, torch.uint8): torch.int64,
+        (torch.int64, torch.uint16): torch.int64,
+        (torch.int64, torch.uint32): torch.int64,
+        (torch.uint16, torch.int8): torch.int32,
+        (torch.uint16, torch.int16): torch.int32,
+        (torch.uint16, torch.int32): torch.int32,
+        (torch.uint16, torch.int64): torch.int64,
+        (torch.uint32, torch.int8): torch.int64,
+        (torch.uint32, torch.int16): torch.int64,
+        (torch.uint32, torch.int32): torch.int64,
+        (torch.uint32, torch.int64): torch.int64,
+    }
+except AttributeError:
+    _uint_promotion_table = {}
+    pass
+
+_promotion_table.update(_uint_promotion_table)
+
+
 def _two_arg(f):
     @_wraps(f)
     def _f(x1, x2, /, **kwargs):
