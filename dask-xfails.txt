@@ -91,3 +91,45 @@ array_api_tests/test_creation_functions.py::test_arange
 
 # 2023.12 support
 array_api_tests/test_manipulation_functions.py::test_repeat
+
+# 2024.12 support
+array_api_tests/test_array_object.py::test_setitem
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_1[1]
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_1[None]
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_2[1]
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_2[None]
+array_api_tests/test_has_names.py::test_has_names[indexing-take_along_axis]
+array_api_tests/test_signatures.py::test_func_signature[take_along_axis]
+
+array_api_tests/test_linalg.py::test_cholesky
+array_api_tests/test_linalg.py::test_linalg_matmul
+array_api_tests/test_linalg.py::test_matrix_norm
+array_api_tests/test_linalg.py::test_qr
+array_api_tests/test_manipulation_functions.py::test_concat
+array_api_tests/test_manipulation_functions.py::test_roll
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[add(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[bitwise_left_shift(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[bitwise_right_shift(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
+array_api_tests/test_signatures.py::test_func_signature[count_nonzero]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_nan_propagation[cumulative_prod]
+
+
