@@ -15,6 +15,16 @@ import sys
 from ._helpers import import_, wrapped_libraries
 
 import pytest
+import typing
+
+TYPING_NAMES = {
+    "Array",
+    "Device",
+    "DType",
+    "Namespace",
+    "NestedSequence",
+    "SupportsBufferProtocol",
+}
 
 @pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):
@@ -37,8 +47,11 @@ def test_all(library):
         dir_names = [n for n in dir(module) if not n.startswith('_')]
         if '__array_namespace_info__' in dir(module):
             dir_names.append('__array_namespace_info__')
-        ignore_all_names = getattr(module, '_all_ignore', [])
-        ignore_all_names += ['annotations', 'TYPE_CHECKING']
+        ignore_all_names = set(getattr(module, '_all_ignore', ()))
+        ignore_all_names |= set(dir(typing))
+        ignore_all_names |= {"annotations"}
+        if not module.__name__.endswith("._typing"):
+            ignore_all_names |= TYPING_NAMES
         dir_names = set(dir_names) - set(ignore_all_names)
         all_names = module.__all__
 

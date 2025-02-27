@@ -4,15 +4,11 @@ These are functions that are just aliases of existing functions in NumPy.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Optional, Sequence, Tuple, Union
-    from ._typing import ndarray, Device, Dtype
-
-from typing import NamedTuple
 import inspect
+from typing import Any, NamedTuple, Optional, Sequence, Tuple, Union
 
 from ._helpers import array_namespace, _check_device, device, is_torch_array, is_cupy_namespace
+from ._typing import Array, Device, DType, Namespace
 
 # These functions are modified from the NumPy versions.
 
@@ -24,29 +20,34 @@ def arange(
     stop: Optional[Union[int, float]] = None,
     step: Union[int, float] = 1,
     *,
-    xp,
-    dtype: Optional[Dtype] = None,
+    xp: Namespace,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
-    **kwargs
-) -> ndarray:
+    **kwargs,
+) -> Array:
     _check_device(xp, device)
     return xp.arange(start, stop=stop, step=step, dtype=dtype, **kwargs)
 
 def empty(
     shape: Union[int, Tuple[int, ...]],
-    xp,
+    xp: Namespace,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
-    **kwargs
-) -> ndarray:
+    **kwargs,
+) -> Array:
     _check_device(xp, device)
     return xp.empty(shape, dtype=dtype, **kwargs)
 
 def empty_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None,
-    **kwargs
-) -> ndarray:
+    x: Array,
+    /,
+    xp: Namespace,
+    *,
+    dtype: Optional[DType] = None, 
+    device: Optional[Device] = None,
+    **kwargs,
+) -> Array:
     _check_device(xp, device)
     return xp.empty_like(x, dtype=dtype, **kwargs)
 
@@ -55,37 +56,37 @@ def eye(
     n_cols: Optional[int] = None,
     /,
     *,
-    xp,
+    xp: Namespace,
     k: int = 0,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype, **kwargs)
 
 def full(
     shape: Union[int, Tuple[int, ...]],
     fill_value: Union[int, float],
-    xp,
+    xp: Namespace,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.full(shape, fill_value, dtype=dtype, **kwargs)
 
 def full_like(
-    x: ndarray,
+    x: Array,
     /,
     fill_value: Union[int, float],
     *,
-    xp,
-    dtype: Optional[Dtype] = None,
+    xp: Namespace,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.full_like(x, fill_value, dtype=dtype, **kwargs)
 
@@ -95,48 +96,58 @@ def linspace(
     /,
     num: int,
     *,
-    xp,
-    dtype: Optional[Dtype] = None,
+    xp: Namespace,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     endpoint: bool = True,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, **kwargs)
 
 def ones(
     shape: Union[int, Tuple[int, ...]],
-    xp,
+    xp: Namespace,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.ones(shape, dtype=dtype, **kwargs)
 
 def ones_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None,
+    x: Array,
+    /,
+    xp: Namespace,
+    *,
+    dtype: Optional[DType] = None,
+    device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.ones_like(x, dtype=dtype, **kwargs)
 
 def zeros(
     shape: Union[int, Tuple[int, ...]],
-    xp,
+    xp: Namespace,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.zeros(shape, dtype=dtype, **kwargs)
 
 def zeros_like(
-    x: ndarray, /, xp, *, dtype: Optional[Dtype] = None, device: Optional[Device] = None,
+    x: Array,
+    /,
+    xp: Namespace,
+    *,
+    dtype: Optional[DType] = None,
+    device: Optional[Device] = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     _check_device(xp, device)
     return xp.zeros_like(x, dtype=dtype, **kwargs)
 
@@ -150,23 +161,23 @@ def zeros_like(
 # Note that these named tuples aren't actually part of the standard namespace,
 # but I don't see any issue with exporting the names here regardless.
 class UniqueAllResult(NamedTuple):
-    values: ndarray
-    indices: ndarray
-    inverse_indices: ndarray
-    counts: ndarray
+    values: Array
+    indices: Array
+    inverse_indices: Array
+    counts: Array
 
 
 class UniqueCountsResult(NamedTuple):
-    values: ndarray
-    counts: ndarray
+    values: Array
+    counts: Array
 
 
 class UniqueInverseResult(NamedTuple):
-    values: ndarray
-    inverse_indices: ndarray
+    values: Array
+    inverse_indices: Array
 
 
-def _unique_kwargs(xp):
+def _unique_kwargs(xp: Namespace) -> dict[str, Any]:
     # Older versions of NumPy and CuPy do not have equal_nan. Rather than
     # trying to parse version numbers, just check if equal_nan is in the
     # signature.
@@ -175,7 +186,7 @@ def _unique_kwargs(xp):
         return {'equal_nan': False}
     return {}
 
-def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
+def unique_all(x: Array, /, xp: Namespace) -> UniqueAllResult:
     kwargs = _unique_kwargs(xp)
     values, indices, inverse_indices, counts = xp.unique(
         x,
@@ -195,7 +206,7 @@ def unique_all(x: ndarray, /, xp) -> UniqueAllResult:
     )
 
 
-def unique_counts(x: ndarray, /, xp) -> UniqueCountsResult:
+def unique_counts(x: Array, /, xp: Namespace) -> UniqueCountsResult:
     kwargs = _unique_kwargs(xp)
     res = xp.unique(
         x,
@@ -208,7 +219,7 @@ def unique_counts(x: ndarray, /, xp) -> UniqueCountsResult:
     return UniqueCountsResult(*res)
 
 
-def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
+def unique_inverse(x: Array, /, xp: Namespace) -> UniqueInverseResult:
     kwargs = _unique_kwargs(xp)
     values, inverse_indices = xp.unique(
         x,
@@ -223,7 +234,7 @@ def unique_inverse(x: ndarray, /, xp) -> UniqueInverseResult:
     return UniqueInverseResult(values, inverse_indices)
 
 
-def unique_values(x: ndarray, /, xp) -> ndarray:
+def unique_values(x: Array, /, xp: Namespace) -> Array:
     kwargs = _unique_kwargs(xp)
     return xp.unique(
         x,
@@ -236,42 +247,42 @@ def unique_values(x: ndarray, /, xp) -> ndarray:
 # These functions have different keyword argument names
 
 def std(
-    x: ndarray,
+    x: Array,
     /,
-    xp,
+    xp: Namespace,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    correction: Union[int, float] = 0.0, # correction instead of ddof
+    correction: Union[int, float] = 0.0,  # correction instead of ddof
     keepdims: bool = False,
     **kwargs,
-) -> ndarray:
+) -> Array:
     return xp.std(x, axis=axis, ddof=correction, keepdims=keepdims, **kwargs)
 
 def var(
-    x: ndarray,
+    x: Array,
     /,
-    xp,
+    xp: Namespace,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    correction: Union[int, float] = 0.0, # correction instead of ddof
+    correction: Union[int, float] = 0.0,  # correction instead of ddof
     keepdims: bool = False,
     **kwargs,
-) -> ndarray:
+) -> Array:
     return xp.var(x, axis=axis, ddof=correction, keepdims=keepdims, **kwargs)
 
 # cumulative_sum is renamed from cumsum, and adds the include_initial keyword
 # argument
 
 def cumulative_sum(
-    x: ndarray,
+    x: Array,
     /,
-    xp,
+    xp: Namespace,
     *,
     axis: Optional[int] = None,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     include_initial: bool = False,
-    **kwargs
-) -> ndarray:
+    **kwargs,
+) -> Array:
     wrapped_xp = array_namespace(x)
 
     # TODO: The standard is not clear about what should happen when x.ndim == 0.
@@ -294,15 +305,15 @@ def cumulative_sum(
 
 
 def cumulative_prod(
-    x: ndarray,
+    x: Array,
     /,
-    xp,
+    xp: Namespace,
     *,
     axis: Optional[int] = None,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     include_initial: bool = False,
-    **kwargs
-) -> ndarray:
+    **kwargs,
+) -> Array:
     wrapped_xp = array_namespace(x)
 
     if axis is None:
@@ -325,17 +336,18 @@ def cumulative_prod(
 # The min and max argument names in clip are different and not optional in numpy, and type
 # promotion behavior is different.
 def clip(
-    x: ndarray,
+    x: Array,
     /,
-    min: Optional[Union[int, float, ndarray]] = None,
-    max: Optional[Union[int, float, ndarray]] = None,
+    min: Optional[Union[int, float, Array]] = None,
+    max: Optional[Union[int, float, Array]] = None,
     *,
-    xp,
+    xp: Namespace,
     # TODO: np.clip has other ufunc kwargs
-    out: Optional[ndarray] = None,
-) -> ndarray:
+    out: Optional[Array] = None,
+) -> Array:
     def _isscalar(a):
         return isinstance(a, (int, float, type(None)))
+
     min_shape = () if _isscalar(min) else min.shape
     max_shape = () if _isscalar(max) else max.shape
 
@@ -389,15 +401,18 @@ def clip(
     return out[()]
 
 # Unlike transpose(), the axes argument to permute_dims() is required.
-def permute_dims(x: ndarray, /, axes: Tuple[int, ...], xp) -> ndarray:
+def permute_dims(x: Array, /, axes: Tuple[int, ...], xp: Namespace) -> Array:
     return xp.transpose(x, axes)
 
 # np.reshape calls the keyword argument 'newshape' instead of 'shape'
-def reshape(x: ndarray,
-            /,
-            shape: Tuple[int, ...],
-            xp, copy: Optional[bool] = None,
-            **kwargs) -> ndarray:
+def reshape(
+    x: Array,
+    /,
+    shape: Tuple[int, ...],
+    xp: Namespace,
+    copy: Optional[bool] = None,
+    **kwargs,
+) -> Array:
     if copy is True:
         x = x.copy()
     elif copy is False:
@@ -409,9 +424,15 @@ def reshape(x: ndarray,
 # The descending keyword is new in sort and argsort, and 'kind' replaced with
 # 'stable'
 def argsort(
-    x: ndarray, /, xp, *, axis: int = -1, descending: bool = False, stable: bool = True,
+    x: Array,
+    /,
+    xp: Namespace,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
     **kwargs,
-) -> ndarray:
+) -> Array:
     # Note: this keyword argument is different, and the default is different.
     # We set it in kwargs like this because numpy.sort uses kind='quicksort'
     # as the default whereas cupy.sort uses kind=None.
@@ -434,9 +455,15 @@ def argsort(
     return res
 
 def sort(
-    x: ndarray, /, xp, *, axis: int = -1, descending: bool = False, stable: bool = True,
+    x: Array,
+    /,
+    xp: Namespace,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
     **kwargs,
-) -> ndarray:
+) -> Array:
     # Note: this keyword argument is different, and the default is different.
     # We set it in kwargs like this because numpy.sort uses kind='quicksort'
     # as the default whereas cupy.sort uses kind=None.
@@ -448,50 +475,50 @@ def sort(
     return res
 
 # nonzero should error for zero-dimensional arrays
-def nonzero(x: ndarray, /, xp, **kwargs) -> Tuple[ndarray, ...]:
+def nonzero(x: Array, /, xp: Namespace, **kwargs) -> Tuple[Array, ...]:
     if x.ndim == 0:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
     return xp.nonzero(x, **kwargs)
 
 # ceil, floor, and trunc return integers for integer inputs
 
-def ceil(x: ndarray, /, xp, **kwargs) -> ndarray:
+def ceil(x: Array, /, xp: Namespace, **kwargs) -> Array:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
     return xp.ceil(x, **kwargs)
 
-def floor(x: ndarray, /, xp, **kwargs) -> ndarray:
+def floor(x: Array, /, xp: Namespace, **kwargs) -> Array:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
     return xp.floor(x, **kwargs)
 
-def trunc(x: ndarray, /, xp, **kwargs) -> ndarray:
+def trunc(x: Array, /, xp: Namespace, **kwargs) -> Array:
     if xp.issubdtype(x.dtype, xp.integer):
         return x
     return xp.trunc(x, **kwargs)
 
 # linear algebra functions
 
-def matmul(x1: ndarray, x2: ndarray, /, xp, **kwargs) -> ndarray:
+def matmul(x1: Array, x2: Array, /, xp: Namespace, **kwargs) -> Array:
     return xp.matmul(x1, x2, **kwargs)
 
 # Unlike transpose, matrix_transpose only transposes the last two axes.
-def matrix_transpose(x: ndarray, /, xp) -> ndarray:
+def matrix_transpose(x: Array, /, xp: Namespace) -> Array:
     if x.ndim < 2:
         raise ValueError("x must be at least 2-dimensional for matrix_transpose")
     return xp.swapaxes(x, -1, -2)
 
-def tensordot(x1: ndarray,
-              x2: ndarray,
+def tensordot(x1: Array,
+              x2: Array,
               /,
-              xp,
+              xp: Namespace,
               *,
               axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
               **kwargs,
-) -> ndarray:
+) -> Array:
     return xp.tensordot(x1, x2, axes=axes, **kwargs)
 
-def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
+def vecdot(x1: Array, x2: Array, /, xp: Namespace, *, axis: int = -1) -> Array:
     if x1.shape[axis] != x2.shape[axis]:
         raise ValueError("x1 and x2 must have the same size along the given axis")
 
@@ -510,8 +537,11 @@ def vecdot(x1: ndarray, x2: ndarray, /, xp, *, axis: int = -1) -> ndarray:
 # isdtype is a new function in the 2022.12 array API specification.
 
 def isdtype(
-    dtype: Dtype, kind: Union[Dtype, str, Tuple[Union[Dtype, str], ...]], xp,
-    *, _tuple=True, # Disallow nested tuples
+    dtype: DType,
+    kind: Union[DType, str, Tuple[Union[DType, str], ...]],
+    xp: Namespace,
+    *,
+    _tuple: bool = True, # Disallow nested tuples
 ) -> bool:
     """
     Returns a boolean indicating whether a provided dtype is of a specified data type ``kind``.
@@ -550,14 +580,14 @@ def isdtype(
         return dtype == kind
 
 # unstack is a new function in the 2023.12 array API standard
-def unstack(x: ndarray, /, xp, *, axis: int = 0) -> Tuple[ndarray, ...]:
+def unstack(x: Array, /, xp: Namespace, *, axis: int = 0) -> Tuple[Array, ...]:
     if x.ndim == 0:
         raise ValueError("Input array must be at least 1-d.")
     return tuple(xp.moveaxis(x, axis, 0))
 
 # numpy 1.26 does not use the standard definition for sign on complex numbers
 
-def sign(x: ndarray, /, xp, **kwargs) -> ndarray:
+def sign(x: Array, /, xp: Namespace, **kwargs) -> Array:
     if isdtype(x.dtype, 'complex floating', xp=xp):
         out = (x/xp.abs(x, **kwargs))[...]
         # sign(0) = 0 but the above formula would give nan
