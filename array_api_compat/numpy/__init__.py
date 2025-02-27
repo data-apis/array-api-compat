@@ -27,4 +27,4 @@ try:
 except ImportError:
     pass
 
-__array_api_version__ = '2023.12'
+__array_api_version__ = '2024.12'
