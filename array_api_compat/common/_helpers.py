@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Optional, Union, Any
-    from ._typing import Array, Device
+    from ._typing import Array, Device, Namespace
 
 import sys
 import math
@@ -439,7 +439,7 @@ def _check_api_version(api_version: str) -> None:
         raise ValueError("Only the 2023.12 version of the array API specification is currently supported")
 
 
-def array_namespace(*xs, api_version=None, use_compat=None):
+def array_namespace(*xs, api_version=None, use_compat=None) -> Namespace:
     """
     Get the array API compatible namespace for the arrays `xs`.
 
