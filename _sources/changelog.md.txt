@@ -1,5 +1,60 @@
 # Changelog
 
+## 1.11.0 (2025-XX-XX)
+
+### Major Changes
+
+This release targets the 2024.12 Array API revision. This includes
+
+  - `__array_api_version__` for the wrapped APIs is now set to `2024.12`;
+  - Wrappers for `count_nonzero`;
+  - Wrappers for `cumulative_prod`;
+  - Wrappers for `take_along_axis` (with the exception of Dask);
+  - Wrappers for `diff`;
+  - `__capabilities__` dict contains a `max_dimensions` key;
+  - Python scalars are accepted as arguments to `result_type`;
+  - `fft.fftfreq` and `fft.rfftfreq` functions now accept an optional `dtype`
+    argument to control the output data type.
+
+Note that these wrappers, as well as other 2024.12 features, are relatively undertested
+in this release, and may have rough edges. Please report any issues you encounter
+in [the issue tracker](https://github.com/data-apis/array-api-compat/issues).
+
+New functions to test properties of arrays:
+  - `is_writeable_array` (benefits NumPy, JAX, Sparse)
+  - `is_lazy_array` (benefits JAX, Dask, ndonnx)
+
+Improved support for JAX:
+  - Work arounds for `.device` attribute and `to_device` function
+    not working correctly within `jax.jit`
+
+### Minor Changes
+
+- Several improvements to `dask.array` wrappers:
+
+  - `size` returns None for arrays of unknown shapes.
+  - `astype(..., copy=True)` always copies, independently of the Dask version.
+  - implementations of `sort` and `argsort` are now available. Note that these
+    implementations are relatively crude, and might be memory intensive.
+  - `asarray` no longer accidentally materializes the Dask graph
+  - `torch` wrappers contain unsigned integer dtypes of widths >8 bits, `uint16`,
+    `uint32` and `uint64` if PyTorch version is at least 2.3. Note that the
+     unsigned integer support is incomplete in PyTorch itself, see
+     [gh-253](https://github.com/data-apis/array-api-compat/pull/253).
+
+### Authors
+
+The following users contributed to this release:
+
+Athan Reines
+Guido Imperiale
+Evgeni Burovski
+Guido Imperiale
+Lucas Colley
+Ralf Gommers
+Thomas Li
+
+
 ## 1.10.0 (2024-12-25)
 
 ### Major Changes
