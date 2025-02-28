@@ -1,5 +1,5 @@
-# slow and not implemented in dask
-array_api_tests/test_linalg.py::test_matrix_power
+# Passes, but extremely slow
+array_api_tests/test_linalg.py::test_outer
 
-# hangs on 2024.12
+# Hangs
 array_api_tests/test_creation_functions.py::test_eye

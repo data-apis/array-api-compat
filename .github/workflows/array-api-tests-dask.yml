@@ -10,4 +10,7 @@ jobs:
       package-version: '>= 2024.9.0'
       module-name: dask.array
       extra-requires: numpy
-      pytest-extra-args: --disable-deadline --max-examples=5
+      # Dask is quite slower then other libraries on unit tests
+      # Reduce the number of examples to speed up CI, even though
+      # this can cause flakiness.
+      pytest-extra-args: --max-examples=50
