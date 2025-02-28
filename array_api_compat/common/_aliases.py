@@ -331,8 +331,6 @@ def clip(
     max: Optional[Union[int, float, ndarray]] = None,
     *,
     xp,
-    # TODO: np.clip has other ufunc kwargs
-    out: Optional[ndarray] = None,
 ) -> ndarray:
     def _isscalar(a):
         return isinstance(a, (int, float, type(None)))
@@ -368,9 +366,9 @@ def clip(
     if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
         max = None
 
-    if out is None:
-        out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape),
-                                 copy=True, device=device(x))
+    out = wrapped_xp.asarray(xp.broadcast_to(x, result_shape),
+                             copy=True, device=device(x))
+
     if min is not None:
         if is_torch_array(x) and x.dtype == xp.float64 and _isscalar(min):
             # Avoid loss of precision due to torch defaulting to float32
