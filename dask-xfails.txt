@@ -2,9 +2,9 @@
 # slowness. This causes very high flakiness in the tests.
 # Before changing this file, please run with at least 200 examples.
 
-# Shape mismatch; needs high priority investigation
+# Broken edge case with shape 0
+# https://github.com/dask/dask/issues/11800
 array_api_tests/test_array_object.py::test_setitem
-array_api_tests/test_indexing_functions.py::test_take
 
 # Various indexing errors
 array_api_tests/test_array_object.py::test_getitem_masking
@@ -18,6 +18,9 @@ array_api_tests/test_data_type_functions.py::test_finfo[float32]
 # out[-1]=dask.array<getitem ...> but should be some floating number
 # (I think the test is not forcing the op to be computed?)
 array_api_tests/test_creation_functions.py::test_linspace
+
+# Shape mismatch
+array_api_tests/test_indexing_functions.py::test_take
 
 # Array methods and attributes not already on da.Array cannot be wrapped
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
