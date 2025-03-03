@@ -191,5 +191,4 @@ array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_xor]
 array_api_tests/test_special_cases.py::test_binary[nextafter(x1_i is +0 and x2_i is -0) -> -0]
-array_api_tests/test_special_cases.py::test_nan_propagation[cumulative_prod]
 
