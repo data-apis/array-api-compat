@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "array-api-compat"
+dynamic = ["version"]
+description = "A wrapper around NumPy and other array libraries to make them compatible with the Array API standard"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [{name = "Consortium for Python Data API Standards"}]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+cupy = ["cupy"]
+dask = ["dask"]
+jax = ["jax"]
+numpy = ["numpy"]
+pytorch = ["torch"]
+sparse = ["sparse>=0.15.1"]
+dev = [
+    "array-api-strict",
+    "dask[array]",
+    "jax[cpu]",
+    "numpy",
+    "pytest",
+    "torch",
+    "sparse>=0.15.1",
+    "ndonnx; python_version>=\"3.10\""
+]
+
+[project.urls]
+homepage = "https://data-apis.org/array-api-compat/"
+repository = "https://github.com/data-apis/array-api-compat/"
+
+[tool.setuptools.dynamic]
+version = {attr = "array_api_compat.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["array_api_compat.*"]
