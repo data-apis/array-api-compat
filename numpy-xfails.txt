@@ -13,8 +13,6 @@ array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 array_api_tests/test_manipulation_functions.py::test_repeat
 
 # 2024.12 support
-array_api_tests/test_special_cases.py::test_nan_propagation[cumulative_prod]
-
 array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
