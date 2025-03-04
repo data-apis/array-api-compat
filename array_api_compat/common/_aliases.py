@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device, device, is_torch_array, is_cupy_namespace
+from ._helpers import array_namespace, _check_device, device, is_cupy_namespace
 
 # These functions are modified from the NumPy versions.
 
