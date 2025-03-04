@@ -5,7 +5,7 @@ These are functions that are just aliases of existing functions in NumPy.
 from __future__ import annotations
 
 import inspect
-from typing import Any, NamedTuple, Optional, Sequence, Tuple, Union
+from typing import NamedTuple, Optional, Sequence, Tuple, Union
 
 from ._helpers import array_namespace, _check_device, device, is_torch_array, is_cupy_namespace
 from ._typing import Array, Device, DType, Namespace

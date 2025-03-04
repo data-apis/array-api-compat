@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["Array", "DType", "Device"]
 _all_ignore = ["cp"]
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import cupy as cp
 from cupy import ndarray as Array
