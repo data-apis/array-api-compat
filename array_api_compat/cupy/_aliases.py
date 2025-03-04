@@ -125,6 +125,20 @@ def astype(
     return out.copy() if copy and out is x else out
 
 
+# cupy.count_nonzero does not have keepdims
+def count_nonzero(
+    x: ndarray,
+    axis=None,
+    keepdims=False
+) -> ndarray:
+   result = cp.count_nonzero(x, axis)
+   if keepdims:
+       if axis is None:
+            return cp.reshape(result, [1]*x.ndim)
+       return cp.expand_dims(result, axis)
+   return result
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -146,6 +160,6 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'pow', 'sign']
+                              'bool', 'concat', 'count_nonzero', 'pow', 'sign']
 
 _all_ignore = ['cp', 'get_xp']

@@ -521,7 +521,7 @@ def diff(
     return torch.diff(x, dim=axis, n=n, prepend=prepend, append=append)
 
 
-# torch uses `dim` instead of `axis`
+# torch uses `dim` instead of `axis`, does not have keepdims
 def count_nonzero(
     x: array,
     /,
@@ -529,7 +529,14 @@ def count_nonzero(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
 ) -> array:
-    return torch.count_nonzero(x, dim=axis, keepdims=keepdims)
+    result = torch.count_nonzero(x, dim=axis)
+    if keepdims:
+        if axis is not None:
+            return result.unsqueeze(axis)
+        return _axis_none_keepdims(result, x.ndim, keepdims)
+    else:
+        return result
+
 
 
 def where(condition: array, x1: array, x2: array, /) -> array:
