@@ -66,15 +66,7 @@ _copy_default = object()
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
-    obj: Union[
-        Array,
-        bool,
-        int,
-        float,
-        complex,
-        NestedSequence[bool | int | float | complex],
-        SupportsBufferProtocol,
-    ],
+    obj: bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol,
     /,
     *,
     dtype: Optional[DType] = None,
