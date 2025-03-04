@@ -1,6 +1,27 @@
 # Changelog
 
-## 1.11.0 (2025-XX-XX)
+## 1.11.1 (2025-03-04)
+
+This is a bugfix release with no new features compared to version 1.11.
+
+### Major Changes
+
+- fix `count_nonzero` wrappers: work around the lack of the `keepdims` argument in
+  several array libraries (torch, dask, cupy); work around numpy returning python
+  ints in for some input combinations.
+
+### Minor Changes
+
+- runnings self-tests does not require all array libraries. Missing libraries are
+  skipped.
+
+The following users contributed to this release:
+
+Evgeni Burovski
+Guido Imperiale
+
+
+## 1.11.0 (2025-02-27)
 
 ### Major Changes
 
