@@ -67,7 +67,7 @@ def eye(
 
 def full(
     shape: Union[int, Tuple[int, ...]],
-    fill_value: Union[int, float],
+    fill_value: bool | complex,
     xp: Namespace,
     *,
     dtype: Optional[DType] = None,
@@ -80,7 +80,7 @@ def full(
 def full_like(
     x: Array,
     /,
-    fill_value: Union[int, float],
+    fill_value: bool | complex,
     *,
     xp: Namespace,
     dtype: Optional[DType] = None,

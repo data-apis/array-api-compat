@@ -602,7 +602,7 @@ def linspace(start: Union[int, float],
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
-         fill_value: Union[bool, int, float, complex],
+         fill_value: bool | complex,
          *,
          dtype: Optional[DType] = None,
          device: Optional[Device] = None,
