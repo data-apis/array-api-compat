@@ -377,7 +377,6 @@ def clip(
         a = wrapped_xp.asarray(min, dtype=x.dtype, device=dev)
         a = xp.broadcast_to(a, result_shape)
         ia = (out < a) | xp.isnan(a)
-        # torch requires an explicit cast here
         out[ia] = a[ia]
 
     if max is not None:
