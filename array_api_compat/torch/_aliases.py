@@ -116,7 +116,7 @@ def _fix_promotion(x1, x2, only_scalar=True):
 _py_scalars = (bool, int, float, complex)
 
 
-def result_type(*arrays_and_dtypes: Union[Array, DType, bool, int, float, complex]) -> DType:
+def result_type(*arrays_and_dtypes: Array | DType | bool | complex) -> DType:
     if len(arrays_and_dtypes) == 0:
         raise TypeError("At least one array or dtype must be provided")
     if len(arrays_and_dtypes) == 1:
