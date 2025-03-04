@@ -376,13 +376,13 @@ def clip(
     if min is not None:
         a = wrapped_xp.asarray(min, dtype=x.dtype, device=dev)
         a = xp.broadcast_to(a, result_shape)
-        ia = ~(out >= a)  # Propagate NaNs
+        ia = (out < a) | xp.isnan(a)
         out[ia] = a[ia]
 
     if max is not None:
         b = wrapped_xp.asarray(max, dtype=x.dtype, device=dev)
         b = xp.broadcast_to(b, result_shape)
-        ib = ~(out <= b)  # Propagate NaNs
+        ib = (out > b) | xp.isnan(b)
         out[ib] = b[ib]
 
     # Return a scalar for 0-D
