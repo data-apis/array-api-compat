@@ -8,8 +8,7 @@ all_libraries = wrapped_libraries + [
 ]
 
 def import_(library, wrapper=False):
-    if library in ('cupy', 'ndonnx'):
-        pytest.importorskip(library)
+    pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
             # JAX v0.4.32 implements the array API directly in jax.numpy

@@ -127,6 +127,19 @@ def astype(
     return x.astype(dtype=dtype, copy=copy)
 
 
+# count_nonzero returns a python int for axis=None and keepdims=False
+# https://github.com/numpy/numpy/issues/17562
+def count_nonzero(
+    x : ndarray,
+    axis=None,
+    keepdims=False
+) -> ndarray:
+    result = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if axis is None and not keepdims:
+        return np.asarray(result)
+    return result
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, 'vecdot'):
@@ -148,6 +161,6 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'pow']
+                              'bool', 'concat', 'count_nonzero', 'pow']
 
 _all_ignore = ['np', 'get_xp']

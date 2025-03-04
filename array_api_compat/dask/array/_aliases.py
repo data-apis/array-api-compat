@@ -335,6 +335,21 @@ def argsort(
     return restore(x)
 
 
+# dask.array.count_nonzero does not have keepdims
+def count_nonzero(
+    x: Array,
+    axis=None,
+    keepdims=False
+) -> Array:
+   result = da.count_nonzero(x, axis)
+   if keepdims:
+       if axis is None:
+            return da.reshape(result, [1]*x.ndim)
+       return da.expand_dims(result, axis)
+   return result
+
+
+
 __all__ = _aliases.__all__ + [
                     '__array_namespace_info__', 'asarray', 'astype', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
@@ -343,6 +358,6 @@ __all__ = _aliases.__all__ + [
                     'result_type', 'bool', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
                     'uint8', 'uint16', 'uint32', 'uint64',
                     'complex64', 'complex128', 'iinfo', 'finfo',
-                    'can_cast', 'result_type']
+                    'can_cast', 'count_nonzero', 'result_type']
 
 _all_ignore = ["Callable", "array_namespace", "get_xp", "da", "np"]
