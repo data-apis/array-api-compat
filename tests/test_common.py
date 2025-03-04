@@ -367,3 +367,18 @@ def test_asarray_copy(library):
         assert all(b[0] == 1.0)
     else:
         assert all(b[0] == 0.0)
+
+
+@pytest.mark.parametrize("library", ["numpy", "cupy", "torch"])
+def test_clip_out(library):
+    """Test non-standard out= parameter for clip()
+
+    (see "Avoid Restricting Behavior that is Outside the Scope of the Standard"
+    in https://data-apis.org/array-api-compat/dev/special-considerations.html)
+    """
+    xp = import_(library, wrapper=True)
+    x = xp.asarray([10, 20, 30])
+    out = xp.zeros_like(x)
+    xp.clip(x, 15, 25, out=out)
+    expect = xp.asarray([15, 20, 25])
+    assert xp.all(out == expect)
