@@ -17,14 +17,14 @@ from ._helpers import import_, wrapped_libraries
 import pytest
 import typing
 
-TYPING_NAMES = {
+TYPING_NAMES = frozenset((
     "Array",
     "Device",
     "DType",
     "Namespace",
     "NestedSequence",
     "SupportsBufferProtocol",
-}
+))
 
 @pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):

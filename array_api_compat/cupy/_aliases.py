@@ -126,10 +126,10 @@ def astype(
 
 # cupy.count_nonzero does not have keepdims
 def count_nonzero(
-    x: ndarray,
+    x: Array,
     axis=None,
     keepdims=False
-) -> ndarray:
+) -> Array:
    result = cp.count_nonzero(x, axis)
    if keepdims:
        if axis is None:

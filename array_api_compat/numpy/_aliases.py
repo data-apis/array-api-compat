@@ -128,10 +128,10 @@ def astype(
 # count_nonzero returns a python int for axis=None and keepdims=False
 # https://github.com/numpy/numpy/issues/17562
 def count_nonzero(
-    x : ndarray,
+    x : Array,
     axis=None,
     keepdims=False
-) -> ndarray:
+) -> Array:
     result = np.count_nonzero(x, axis=axis, keepdims=keepdims)
     if axis is None and not keepdims:
         return np.asarray(result)
