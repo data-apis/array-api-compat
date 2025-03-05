@@ -116,7 +116,7 @@ def _fix_promotion(x1, x2, only_scalar=True):
 _py_scalars = (bool, int, float, complex)
 
 
-def result_type(*arrays_and_dtypes: Array | DType | bool | complex) -> DType:
+def result_type(*arrays_and_dtypes: Array | DType | complex) -> DType:
     if len(arrays_and_dtypes) == 0:
         raise TypeError("At least one array or dtype must be provided")
     if len(arrays_and_dtypes) == 1:
@@ -602,7 +602,7 @@ def linspace(start: Union[int, float],
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
-         fill_value: bool | complex,
+         fill_value: complex,
          *,
          dtype: Optional[DType] = None,
          device: Optional[Device] = None,
