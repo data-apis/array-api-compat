@@ -73,7 +73,8 @@ def _supports_buffer_protocol(obj):
 # complicated enough that it's easier to define it separately for each module
 # rather than trying to combine everything into one function in common/
 def asarray(
-    obj: bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol,
+    obj: Array | bool | complex | NestedSequence[bool | complex] 
+         | SupportsBufferProtocol,
     /,
     *,
     dtype: Optional[DType] = None,
