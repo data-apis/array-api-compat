@@ -410,6 +410,7 @@ def reshape(
     /,
     shape: Tuple[int, ...],
     xp: Namespace,
+    *,
     copy: Optional[bool] = None,
     **kwargs,
 ) -> Array:

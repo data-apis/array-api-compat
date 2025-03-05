@@ -539,6 +539,7 @@ def where(condition: Array, x1: Array, x2: Array, /) -> Array:
 def reshape(x: Array,
             /,
             shape: Tuple[int, ...],
+            *,
             copy: Optional[bool] = None,
             **kwargs) -> Array:
     if copy is not None:
