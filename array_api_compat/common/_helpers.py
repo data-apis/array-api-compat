@@ -7,16 +7,14 @@ users of the compat library.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Optional, Union, Any
-    from ._typing import Array, Device, Namespace
-
 import sys
 import math
 import inspect
 import warnings
+from typing import Optional, Union, Any
+
+from ._typing import Array, Device, Namespace
+
 
 def _is_jax_zero_gradient_array(x: object) -> bool:
     """Return True if `x` is a zero-gradient array.
@@ -268,7 +266,7 @@ def _compat_module_name() -> str:
     return __name__.removesuffix('.common._helpers')
 
 
-def is_numpy_namespace(xp) -> bool:
+def is_numpy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a NumPy namespace.
 
@@ -289,7 +287,7 @@ def is_numpy_namespace(xp) -> bool:
     return xp.__name__ in {'numpy', _compat_module_name() + '.numpy'}
 
 
-def is_cupy_namespace(xp) -> bool:
+def is_cupy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a CuPy namespace.
 
@@ -310,7 +308,7 @@ def is_cupy_namespace(xp) -> bool:
     return xp.__name__ in {'cupy', _compat_module_name() + '.cupy'}
 
 
-def is_torch_namespace(xp) -> bool:
+def is_torch_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a PyTorch namespace.
 
@@ -331,7 +329,7 @@ def is_torch_namespace(xp) -> bool:
     return xp.__name__ in {'torch', _compat_module_name() + '.torch'}
 
 
-def is_ndonnx_namespace(xp) -> bool:
+def is_ndonnx_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is an NDONNX namespace.
 
@@ -350,7 +348,7 @@ def is_ndonnx_namespace(xp) -> bool:
     return xp.__name__ == 'ndonnx'
 
 
-def is_dask_namespace(xp) -> bool:
+def is_dask_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a Dask namespace.
 
@@ -371,7 +369,7 @@ def is_dask_namespace(xp) -> bool:
     return xp.__name__ in {'dask.array', _compat_module_name() + '.dask.array'}
 
 
-def is_jax_namespace(xp) -> bool:
+def is_jax_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a JAX namespace.
 
@@ -393,7 +391,7 @@ def is_jax_namespace(xp) -> bool:
     return xp.__name__ in {'jax.numpy', 'jax.experimental.array_api'}
 
 
-def is_pydata_sparse_namespace(xp) -> bool:
+def is_pydata_sparse_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a pydata/sparse namespace.
 
@@ -412,7 +410,7 @@ def is_pydata_sparse_namespace(xp) -> bool:
     return xp.__name__ == 'sparse'
 
 
-def is_array_api_strict_namespace(xp) -> bool:
+def is_array_api_strict_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is an array-api-strict namespace.
 
@@ -439,7 +437,11 @@ def _check_api_version(api_version: str) -> None:
         raise ValueError("Only the 2024.12 version of the array API specification is currently supported")
 
 
-def array_namespace(*xs, api_version=None, use_compat=None) -> Namespace:
+def array_namespace(
+    *xs: Union[Array, bool, int, float, complex, None],
+    api_version: Optional[str] = None,
+    use_compat: Optional[bool] = None,
+) -> Namespace:
     """
     Get the array API compatible namespace for the arrays `xs`.
 

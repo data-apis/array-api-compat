@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-from ..common import _aliases
+from typing import Optional, Union
 
 from .._internal import get_xp
-
+from ..common import _aliases
+from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._info import __array_namespace_info__
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Optional, Union
-    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
+from ._typing import Array, Device, DType
 
 import numpy as np
 bool = np.bool_
@@ -76,21 +73,14 @@ def _supports_buffer_protocol(obj):
 # complicated enough that it's easier to define it separately for each module
 # rather than trying to combine everything into one function in common/
 def asarray(
-    obj: Union[
-        ndarray,
-        bool,
-        int,
-        float,
-        NestedSequence[bool | int | float],
-        SupportsBufferProtocol,
-    ],
+    obj: Array | complex | NestedSequence[complex] | SupportsBufferProtocol,
     /,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     copy: "Optional[Union[bool, np._CopyMode]]" = None,
     **kwargs,
-) -> ndarray:
+) -> Array:
     """
     Array API compatibility wrapper for asarray().
 
@@ -117,23 +107,23 @@ def asarray(
 
 
 def astype(
-    x: ndarray,
-    dtype: Dtype,
+    x: Array,
+    dtype: DType,
     /,
     *,
     copy: bool = True,
     device: Optional[Device] = None,
-) -> ndarray:
+) -> Array:
     return x.astype(dtype=dtype, copy=copy)
 
 
 # count_nonzero returns a python int for axis=None and keepdims=False
 # https://github.com/numpy/numpy/issues/17562
 def count_nonzero(
-    x : ndarray,
+    x : Array,
     axis=None,
     keepdims=False
-) -> ndarray:
+) -> Array:
     result = np.count_nonzero(x, axis=axis, keepdims=keepdims)
     if axis is None and not keepdims:
         return np.asarray(result)
