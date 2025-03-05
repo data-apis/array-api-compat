@@ -509,13 +509,14 @@ def matrix_transpose(x: Array, /, xp: Namespace) -> Array:
         raise ValueError("x must be at least 2-dimensional for matrix_transpose")
     return xp.swapaxes(x, -1, -2)
 
-def tensordot(x1: Array,
-              x2: Array,
-              /,
-              xp: Namespace,
-              *,
-              axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
-              **kwargs,
+def tensordot(
+    x1: Array,
+    x2: Array,
+    /,
+    xp: Namespace,
+    *,
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2,
+    **kwargs,
 ) -> Array:
     return xp.tensordot(x1, x2, axes=axes, **kwargs)
 

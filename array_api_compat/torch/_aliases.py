@@ -712,7 +712,14 @@ def vecdot(x1: Array, x2: Array, /, *, axis: int = -1) -> Array:
     return _vecdot(x1, x2, axis=axis)
 
 # torch.tensordot uses dims instead of axes
-def tensordot(x1: Array, x2: Array, /, *, axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2, **kwargs) -> Array:
+def tensordot(
+    x1: Array,
+    x2: Array,
+    /,
+    *, 
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = 2, 
+    **kwargs,
+) -> Array:
     # Note: torch.tensordot fails with integer dtypes when there is only 1
     # element in the axis (https://github.com/pytorch/pytorch/issues/84530).
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
