@@ -29,11 +29,7 @@ jobs:
             PIP_EXTRA='numpy==1.26.*'
           fi
 
-          if [ "${{ matrix.python-version }}" == "3.9" ]; then
-            sed -i '/^ndonnx/d' requirements-dev.txt
-          fi
-
-          python -m pip install -r requirements-dev.txt $PIP_EXTRA
+          python -m pip install .[dev] $PIP_EXTRA
 
       - name: Run Tests
         run: |
