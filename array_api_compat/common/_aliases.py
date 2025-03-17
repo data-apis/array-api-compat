@@ -363,10 +363,11 @@ def clip(
 
     # At least handle the case of Python integers correctly (see
     # https://github.com/numpy/numpy/pull/26892).
-    if type(min) is int and min <= wrapped_xp.iinfo(x.dtype).min:
-        min = None
-    if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
-        max = None
+    if wrapped_xp.isdtype(x.dtype, "integral"):
+        if type(min) is int and min <= wrapped_xp.iinfo(x.dtype).min:
+            min = None
+        if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
+            max = None
 
     dev = device(x)
     if out is None:
