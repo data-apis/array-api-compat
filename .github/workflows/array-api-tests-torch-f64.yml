@@ -9,4 +9,4 @@ jobs:
       package-name: torch
       extra-env-vars: |
         ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64
-        ARRAY_API_TESTS_MODULE="exec('import array_api_compat.torch as xp; import torch; torch.set_default_dtype(xp.float64)')"
+        ARRAY_API_TESTS_MODULE=exec('import array_api_compat.torch as xp; import torch; torch.set_default_dtype(xp.float64)')
