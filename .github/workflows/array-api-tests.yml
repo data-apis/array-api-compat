@@ -81,6 +81,7 @@ jobs:
         # tests fail on bad scalar type promotion behavior)
         NPY_PROMOTION_STATE: weak
       run: |
+        echo ">>>>>>>>>>>>> "$ARRAY_API_TESTS_MODULE
         export PYTHONPATH="${GITHUB_WORKSPACE}/array-api-compat"
         cd ${GITHUB_WORKSPACE}/array-api-tests
         pytest array_api_tests/ --xfails-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}${{ inputs.xfails-file-extra }}-xfails.txt --skips-file ${GITHUB_WORKSPACE}/array-api-compat/${{ inputs.package-name }}${{ inputs.skips-file-extra}}-skips.txt ${PYTEST_ARGS}
