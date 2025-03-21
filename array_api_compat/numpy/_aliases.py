@@ -9,6 +9,7 @@ from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 import numpy as np
+
 bool = np.bool_
 
 # Basic renames
@@ -61,6 +62,7 @@ matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
 sign = get_xp(np)(_aliases.sign)
 
+
 def _supports_buffer_protocol(obj):
     try:
         memoryview(obj)
@@ -68,12 +70,15 @@ def _supports_buffer_protocol(obj):
         return False
     return True
 
+
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 # asarray() is different enough between numpy, cupy, and dask, the logic
 # complicated enough that it's easier to define it separately for each module
 # rather than trying to combine everything into one function in common/
 def asarray(
-    obj: Array | complex | NestedSequence[complex] | SupportsBufferProtocol,
+    obj: (
+        Array | bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol
+    ),
     /,
     *,
     dtype: Optional[DType] = None,
@@ -119,11 +124,7 @@ def astype(
 
 # count_nonzero returns a python int for axis=None and keepdims=False
 # https://github.com/numpy/numpy/issues/17562
-def count_nonzero(
-    x : Array,
-    axis=None,
-    keepdims=False
-) -> Array:
+def count_nonzero(x: Array, axis=None, keepdims=False) -> Array:
     result = np.count_nonzero(x, axis=axis, keepdims=keepdims)
     if axis is None and not keepdims:
         return np.asarray(result)
