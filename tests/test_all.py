@@ -26,7 +26,6 @@ TYPING_NAMES = frozenset((
     "SupportsBufferProtocol",
 ))
 
-@pytest.mark.skip(reason="TODO: starts failing after adding test_torch.py in gh-277")
 @pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):
     if library == "common":
