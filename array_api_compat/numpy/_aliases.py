@@ -13,9 +13,9 @@ from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 if TYPE_CHECKING:
-    from typing import Any, Literal, TypeAlias
+    from typing import Any, Literal
 
-    from typing_extensions import Buffer, TypeIs
+    from typing_extensions import Buffer, TypeAlias, TypeIs
 
     _Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
 
