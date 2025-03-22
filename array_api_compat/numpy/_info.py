@@ -137,7 +137,7 @@ class __array_namespace_info__:
         self,
         *,
         device: Device | None = None,
-    ) -> dict[str, dtype[intp | float64 | complex128]]:
+    ) -> dict[str, "dtype[intp | float64 | complex128]"]:
         """
         The default data types used for new NumPy arrays.
 
