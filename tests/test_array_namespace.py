@@ -2,10 +2,8 @@ import subprocess
 import sys
 import warnings
 
-import jax
 import numpy as np
 import pytest
-import torch
 
 import array_api_compat
 from array_api_compat import array_namespace
@@ -76,6 +74,7 @@ else:
         subprocess.run([sys.executable, "-c", code], check=True)
 
 def test_jax_zero_gradient():
+    jax = import_("jax")
     jx = jax.numpy.arange(4)
     jax_zero = jax.vmap(jax.grad(jax.numpy.float32, allow_int=True))(jx)
     assert array_namespace(jax_zero) is array_namespace(jx)
@@ -89,11 +88,13 @@ def test_array_namespace_errors():
     pytest.raises(TypeError, lambda: array_namespace(x, (x, x)))
 
 def test_array_namespace_errors_torch():
+    torch = import_("torch")
     y = torch.asarray([1, 2])
     x = np.asarray([1, 2])
     pytest.raises(TypeError, lambda: array_namespace(x, y))
 
 def test_api_version_torch():
+    torch = import_("torch")
     x = torch.asarray([1, 2])
     torch_ = import_("torch", wrapper=True)
     assert array_namespace(x, api_version="2023.12") == torch_
@@ -118,6 +119,7 @@ def test_get_namespace():
     assert array_api_compat.get_namespace is array_namespace
 
 def test_python_scalars():
+    torch = import_("torch")
     a = torch.asarray([1, 2])
     xp = import_("torch", wrapper=True)
 
