@@ -1,33 +1,28 @@
 from __future__ import annotations
 
-from ...common import _linalg
-from ..._internal import get_xp
+from typing import Literal
 
+import dask.array as da
 # Exports
 from dask.array.linalg import * # noqa: F403
 from dask.array import outer
-
 # These functions are in both the main and linalg namespaces
 from dask.array import matmul, tensordot
+
+from ..._internal import get_xp
+from ...common import _linalg
+from ...common._typing import Array
 from ._aliases import matrix_transpose, vecdot
-
-import dask.array as da
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from ...common._typing import Array
-    from typing import Literal
 
 # dask.array.linalg doesn't have __all__. If it is added, replace this with
 #
 # from dask.array.linalg import __all__ as linalg_all
 _n = {}
 exec('from dask.array.linalg import *', _n)
-del _n['__builtins__']
-if 'annotations' in _n:
-    del _n['annotations']
+for k in ('__builtins__', 'annotations', 'operator', 'warnings', 'Array'):
+    _n.pop(k, None)
 linalg_all = list(_n)
-del _n
+del _n, k
 
 EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult
@@ -70,4 +65,4 @@ __all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
                         "cholesky", "matrix_rank", "matrix_norm", "svdvals",
                         "vector_norm", "diagonal"]
 
-_all_ignore = ['get_xp', 'da', 'linalg_all']
+_all_ignore = ['get_xp', 'da', 'linalg_all', 'warnings']
