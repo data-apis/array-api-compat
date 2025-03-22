@@ -12,7 +12,12 @@ if TYPE_CHECKING:
 from typing import NamedTuple
 import inspect
 
-from ._helpers import array_namespace, _check_device, device, is_cupy_namespace
+from ._helpers import (
+    array_namespace, 
+    _check_device, 
+    device as _get_device,
+    is_cupy_namespace as _is_cupy_namespace
+)
 
 # These functions are modified from the NumPy versions.
 
@@ -287,7 +292,7 @@ def cumulative_sum(
         initial_shape = list(x.shape)
         initial_shape[axis] = 1
         res = xp.concatenate(
-            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
+            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=_get_device(res)), res],
             axis=axis,
         )
     return res
@@ -317,7 +322,7 @@ def cumulative_prod(
         initial_shape = list(x.shape)
         initial_shape[axis] = 1
         res = xp.concatenate(
-            [wrapped_xp.ones(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
+            [wrapped_xp.ones(shape=initial_shape, dtype=res.dtype, device=_get_device(res)), res],
             axis=axis,
         )
     return res
@@ -369,7 +374,7 @@ def clip(
         if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
             max = None
 
-    dev = device(x)
+    dev = _get_device(x)
     if out is None:
         out = wrapped_xp.empty(result_shape, dtype=x.dtype, device=dev)
     out[()] = x
@@ -579,3 +584,5 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
            'unstack', 'sign']
+
+_all_ignore = ['inspect', 'array_namespace', 'NamedTuple']
