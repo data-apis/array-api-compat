@@ -7,6 +7,8 @@ https://data-apis.org/array-api/latest/API_specification/inspection.html for
 more details.
 
 """
+from __future__ import annotations
+
 from numpy import bool_ as bool
 from numpy import (
     complex64,
@@ -137,7 +139,7 @@ class __array_namespace_info__:
         self,
         *,
         device: Device | None = None,
-    ) -> dict[str, "dtype[intp | float64 | complex128]"]:
+    ) -> dict[str, dtype[intp | float64 | complex128]]:
         """
         The default data types used for new NumPy arrays.
 
