@@ -7,23 +7,25 @@ https://data-apis.org/array-api/latest/API_specification/inspection.html for
 more details.
 
 """
+from numpy import bool_ as bool
 from numpy import (
+    complex64,
+    complex128,
     dtype,
-    bool_ as bool,
-    intp,
+    float32,
+    float64,
     int8,
     int16,
     int32,
     int64,
+    intp,
     uint8,
     uint16,
     uint32,
     uint64,
-    float32,
-    float64,
-    complex64,
-    complex128,
 )
+
+from ._typing import Device, DType
 
 
 class __array_namespace_info__:
@@ -131,7 +133,11 @@ class __array_namespace_info__:
         """
         return "cpu"
 
-    def default_dtypes(self, *, device=None):
+    def default_dtypes(
+        self,
+        *,
+        device: Device | None = None,
+    ) -> dict[str, dtype[intp | float64 | complex128]]:
         """
         The default data types used for new NumPy arrays.
 
@@ -183,7 +189,12 @@ class __array_namespace_info__:
             "indexing": dtype(intp),
         }
 
-    def dtypes(self, *, device=None, kind=None):
+    def dtypes(
+        self,
+        *,
+        device: Device | None = None,
+        kind: str | tuple[str, ...] | None = None,
+    ) -> dict[str, DType]:
         """
         The array API data types supported by NumPy.
 
@@ -260,7 +271,7 @@ class __array_namespace_info__:
                 "complex128": dtype(complex128),
             }
         if kind == "bool":
-            return {"bool": bool}
+            return {"bool": dtype(bool)}
         if kind == "signed integer":
             return {
                 "int8": dtype(int8),
@@ -312,13 +323,13 @@ class __array_namespace_info__:
                 "complex128": dtype(complex128),
             }
         if isinstance(kind, tuple):
-            res = {}
+            res: dict[str, DType] = {}
             for k in kind:
                 res.update(self.dtypes(kind=k))
             return res
         raise ValueError(f"unsupported kind: {kind!r}")
 
-    def devices(self):
+    def devices(self) -> list[Device]:
         """
         The devices supported by NumPy.
 
