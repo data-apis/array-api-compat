@@ -7,16 +7,53 @@ users of the compat library.
 """
 from __future__ import annotations
 
-import sys
-import math
 import inspect
+import math
+import sys
 import warnings
-from typing import Optional, Union, Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Literal,
+    SupportsIndex,
+    TypeAlias,
+    TypeGuard,
+    cast,
+    overload,
+)
 
-from ._typing import Array, Device, Namespace
+from ._typing import Array, Device, HasShape, Namespace, SupportsArrayNamespace
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
+
+    import dask.array as da
+    import jax
+    import ndonnx as ndx
+    import numpy as np
+    import numpy.typing as npt
+    import sparse  # pyright: ignore[reportMissingTypeStubs]
+    import torch
+    from typing_extensions import TypeIs, TypeVar
+
+    _SizeT = TypeVar("_SizeT", bound=int | None)
+
+    _ZeroGradientArray: TypeAlias = npt.NDArray[np.void]
+    _CupyArray: TypeAlias = Any  # cupy has no py.typed
+
+    _ArrayApiObj: TypeAlias = (
+        npt.NDArray[Any]
+        | da.Array
+        | jax.Array
+        | ndx.Array
+        | sparse.SparseArray
+        | torch.Tensor
+        | SupportsArrayNamespace[Any]
+        | _CupyArray
+    )
 
 
-def _is_jax_zero_gradient_array(x: object) -> bool:
+def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
     """Return True if `x` is a zero-gradient array.
 
     These arrays are a design quirk of Jax that may one day be removed.
@@ -25,13 +62,17 @@ def _is_jax_zero_gradient_array(x: object) -> bool:
     if 'numpy' not in sys.modules or 'jax' not in sys.modules:
         return False
 
-    import numpy as np
     import jax
+    import numpy as np
 
-    return isinstance(x, np.ndarray) and x.dtype == jax.float0
+    jax_float0 = cast("np.dtype[np.void]", jax.float0)
+    return (
+        isinstance(x, np.ndarray)
+        and cast("npt.NDArray[np.void]", x).dtype == jax_float0
+    )
 
 
-def is_numpy_array(x: object) -> bool:
+def is_numpy_array(x: object) -> TypeGuard[npt.NDArray[Any]]:
     """
     Return True if `x` is a NumPy array.
 
@@ -60,7 +101,7 @@ def is_numpy_array(x: object) -> bool:
 
     # TODO: Should we reject ndarray subclasses?
     return (isinstance(x, (np.ndarray, np.generic))
-            and not _is_jax_zero_gradient_array(x))
+            and not _is_jax_zero_gradient_array(x))  # pyright: ignore[reportUnknownArgumentType]  # fmt: skip
 
 
 def is_cupy_array(x: object) -> bool:
@@ -88,13 +129,13 @@ def is_cupy_array(x: object) -> bool:
     if 'cupy' not in sys.modules:
         return False
 
-    import cupy as cp
+    import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
 
     # TODO: Should we reject ndarray subclasses?
-    return isinstance(x, cp.ndarray)
+    return isinstance(x, cp.ndarray)  # pyright: ignore[reportUnknownMemberType]
 
 
-def is_torch_array(x: object) -> bool:
+def is_torch_array(x: object) -> TypeIs[torch.Tensor]:
     """
     Return True if `x` is a PyTorch tensor.
 
@@ -122,7 +163,7 @@ def is_torch_array(x: object) -> bool:
     return isinstance(x, torch.Tensor)
 
 
-def is_ndonnx_array(x: object) -> bool:
+def is_ndonnx_array(x: object) -> TypeIs[ndx.Array]:
     """
     Return True if `x` is a ndonnx Array.
 
@@ -150,7 +191,7 @@ def is_ndonnx_array(x: object) -> bool:
     return isinstance(x, ndx.Array)
 
 
-def is_dask_array(x: object) -> bool:
+def is_dask_array(x: object) -> TypeIs[da.Array]:
     """
     Return True if `x` is a dask.array Array.
 
@@ -177,8 +218,7 @@ def is_dask_array(x: object) -> bool:
 
     return isinstance(x, dask.array.Array)
 
-
-def is_jax_array(x: object) -> bool:
+def is_jax_array(x: object) -> TypeIs[jax.Array]:
     """
     Return True if `x` is a JAX array.
 
@@ -207,7 +247,7 @@ def is_jax_array(x: object) -> bool:
     return isinstance(x, jax.Array) or _is_jax_zero_gradient_array(x)
 
 
-def is_pydata_sparse_array(x) -> bool:
+def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     """
     Return True if `x` is an array from the `sparse` package.
 
@@ -231,13 +271,13 @@ def is_pydata_sparse_array(x) -> bool:
     if 'sparse' not in sys.modules:
         return False
 
-    import sparse
+    import sparse  # pyright: ignore[reportMissingTypeStubs]
 
     # TODO: Account for other backends.
     return isinstance(x, sparse.SparseArray)
 
 
-def is_array_api_obj(x: object) -> bool:
+def is_array_api_obj(x: object) -> TypeIs[_ArrayApiObj]:  # pyright: ignore[reportUnknownParameterType]
     """
     Return True if `x` is an array API compatible array object.
 
@@ -429,7 +469,7 @@ def is_array_api_strict_namespace(xp: Namespace) -> bool:
     return xp.__name__ == 'array_api_strict'
 
 
-def _check_api_version(api_version: str) -> None:
+def _check_api_version(api_version: str | None) -> None:
     if api_version in ['2021.12', '2022.12', '2023.12']:
         warnings.warn(f"The {api_version} version of the array API specification was requested but the returned namespace is actually version 2024.12")
     elif api_version is not None and api_version not in ['2021.12', '2022.12',
@@ -438,9 +478,9 @@ def _check_api_version(api_version: str) -> None:
 
 
 def array_namespace(
-    *xs: Union[Array, bool, int, float, complex, None],
-    api_version: Optional[str] = None,
-    use_compat: Optional[bool] = None,
+    *xs: Array | complex | None,
+    api_version: str | None = None,
+    use_compat: bool | None = None,
 ) -> Namespace:
     """
     Get the array API compatible namespace for the arrays `xs`.
@@ -510,11 +550,12 @@ def array_namespace(
 
     _use_compat = use_compat in [None, True]
 
-    namespaces = set()
+    namespaces: set[Namespace] = set()
     for x in xs:
         if is_numpy_array(x):
-            from .. import numpy as numpy_namespace
             import numpy as np
+
+            from .. import numpy as numpy_namespace
             if use_compat is True:
                 _check_api_version(api_version)
                 namespaces.add(numpy_namespace)
@@ -530,7 +571,8 @@ def array_namespace(
                 from .. import cupy as cupy_namespace
                 namespaces.add(cupy_namespace)
             else:
-                import cupy as cp
+                import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
+
                 namespaces.add(cp)
         elif is_torch_array(x):
             if _use_compat:
@@ -561,20 +603,21 @@ def array_namespace(
                 if hasattr(jax.numpy, "__array_api_version__"):
                     jnp = jax.numpy
                 else:
-                    import jax.experimental.array_api as jnp
+                    import jax.experimental.array_api as jnp  # pyright: ignore[reportMissingImports]
             namespaces.add(jnp)
         elif is_pydata_sparse_array(x):
             if use_compat is True:
                 _check_api_version(api_version)
                 raise ValueError("`sparse` does not have an array-api-compat wrapper")
             else:
-                import sparse
+                import sparse  # pyright: ignore[reportMissingTypeStubs]
             # `sparse` is already an array namespace. We do not have a wrapper
             # submodule for it.
             namespaces.add(sparse)
         elif hasattr(x, '__array_namespace__'):
             if use_compat is True:
                 raise ValueError("The given array does not have an array-api-compat wrapper")
+            x = cast("SupportsArrayNamespace[Any]", x)
             namespaces.add(x.__array_namespace__(api_version=api_version))
         elif isinstance(x, (bool, int, float, complex, type(None))):
             continue
@@ -595,7 +638,7 @@ def array_namespace(
 # backwards compatibility alias
 get_namespace = array_namespace
 
-def _check_device(xp, device):
+def _check_device(xp: Namespace, device: Device) -> None:  # pyright: ignore[reportUnusedFunction]
     if xp == sys.modules.get('numpy'):
         if device not in ["cpu", None]:
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
@@ -604,7 +647,7 @@ def _check_device(xp, device):
 # when the array backend is not the CPU.
 # (since it is not easy to tell which device a dask array is on)
 class _dask_device:
-    def __repr__(self):
+    def __repr__(self) -> Literal["DASK_DEVICE"]:
         return "DASK_DEVICE"
 
 _DASK_DEVICE = _dask_device()
@@ -615,7 +658,7 @@ _DASK_DEVICE = _dask_device()
 # wrapping or subclassing them. These helper functions can be used instead of
 # the wrapper functions for libraries that need to support both NumPy/CuPy and
 # other libraries that use devices.
-def device(x: Array, /) -> Device:
+def device(x: _ArrayApiObj, /) -> Device:
     """
     Hardware device the array data resides on.
 
@@ -651,7 +694,7 @@ def device(x: Array, /) -> Device:
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the Dask array to determine type
-        if is_numpy_array(x._meta):
+        if is_numpy_array(x._meta):  # pyright: ignore
             # Must be on CPU since backed by numpy
             return "cpu"
         return _DASK_DEVICE
@@ -675,22 +718,28 @@ def device(x: Array, /) -> Device:
             return x_device
         # Everything but DOK has this attr.
         try:
-            inner = x.data
+            inner = x.data  # pyright: ignore
         except AttributeError:
             return "cpu"
         # Return the device of the constituent array
-        return device(inner)
-    return x.device
+        return device(inner)  # pyright: ignore
+    return x.device  # pyright: ignore
+
 
 # Prevent shadowing, used below
 _device = device
 
 # Based on cupy.array_api.Array.to_device
-def _cupy_to_device(x, device, /, stream=None):
-    import cupy as cp
-    from cupy.cuda import Device as _Device
-    from cupy.cuda import stream as stream_module
-    from cupy_backends.cuda.api import runtime
+def _cupy_to_device(
+    x: _CupyArray,
+    device: Device,
+    /,
+    stream: int | Any | None = None,
+) -> _CupyArray:
+    import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
+    from cupy.cuda import Device as _Device  # pyright: ignore
+    from cupy.cuda import stream as stream_module  # pyright: ignore
+    from cupy_backends.cuda.api import runtime  # pyright: ignore
 
     if device == x.device:
         return x
@@ -703,33 +752,38 @@ def _cupy_to_device(x, device, /, stream=None):
         raise ValueError(f"Unsupported device {device!r}")
     else:
         # see cupy/cupy#5985 for the reason how we handle device/stream here
-        prev_device = runtime.getDevice()
-        prev_stream: stream_module.Stream = None
+        prev_device: Any = runtime.getDevice()  # pyright: ignore[reportUnknownMemberType]
+        prev_stream = None
         if stream is not None:
-            prev_stream = stream_module.get_current_stream()
+            prev_stream: Any = stream_module.get_current_stream()  # pyright: ignore
             # stream can be an int as specified in __dlpack__, or a CuPy stream
             if isinstance(stream, int):
-                stream = cp.cuda.ExternalStream(stream)
-            elif isinstance(stream, cp.cuda.Stream):
+                stream = cp.cuda.ExternalStream(stream)  # pyright: ignore
+            elif isinstance(stream, cp.cuda.Stream):  # pyright: ignore[reportUnknownMemberType]
                 pass
             else:
                 raise ValueError('the input stream is not recognized')
-            stream.use()
+            stream.use()  # pyright: ignore[reportUnknownMemberType]
         try:
-            runtime.setDevice(device.id)
+            runtime.setDevice(device.id)  # pyright: ignore[reportUnknownMemberType]
             arr = x.copy()
         finally:
-            runtime.setDevice(prev_device)
+            runtime.setDevice(prev_device)  # pyright: ignore[reportUnknownMemberType]
             if stream is not None:
                 prev_stream.use()
         return arr
 
-def _torch_to_device(x, device, /, stream=None):
+def _torch_to_device(
+    x: torch.Tensor,
+    device: torch.device | str | int,
+    /,
+    stream: None = None,
+) -> torch.Tensor:
     if stream is not None:
         raise NotImplementedError
     return x.to(device)
 
-def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] = None) -> Array:
+def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -> Array:
     """
     Copy the array from the device on which it currently resides to the specified ``device``.
 
@@ -749,7 +803,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         a ``device`` object (see the `Device Support <https://data-apis.org/array-api/latest/design_topics/device_support.html>`__
         section of the array API specification).
 
-    stream: Optional[Union[int, Any]]
+    stream: int | Any | None
         stream object to use during copy. In addition to the types supported
         in ``array.__dlpack__``, implementations may choose to support any
         library-specific stream object with the caveat that any code using
@@ -788,7 +842,7 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
     elif is_torch_array(x):
-        return _torch_to_device(x, device, stream=stream)
+        return _torch_to_device(x, device, stream=stream)  # pyright: ignore[reportArgumentType]
     elif is_dask_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
@@ -799,7 +853,8 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
     elif is_jax_array(x):
         if not hasattr(x, "__array_namespace__"):
             # In JAX v0.4.31 and older, this import adds to_device method to x...
-            import jax.experimental.array_api # noqa: F401
+            import jax.experimental.array_api  # noqa: F401  # pyright: ignore
+
             # ... but only on eager JAX. It won't work inside jax.jit.
             if not hasattr(x, "to_device"):
                 return x
@@ -808,10 +863,16 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.
         return x
-    return x.to_device(device, stream=stream)
+    return x.to_device(device, stream=stream)  # pyright: ignore
 
 
-def size(x: Array) -> int | None:
+@overload
+def size(x: HasShape[Collection[SupportsIndex]]) -> int: ...
+@overload
+def size(x: HasShape[Collection[None]]) -> None: ...
+@overload
+def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None: ...
+def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None:
     """
     Return the total number of elements of x.
 
@@ -826,7 +887,7 @@ def size(x: Array) -> int | None:
     # Lazy API compliant arrays, such as ndonnx, can contain None in their shape
     if None in x.shape:
         return None
-    out = math.prod(x.shape)
+    out = math.prod(cast("Collection[SupportsIndex]", x.shape))
     # dask.array.Array.shape can contain NaN
     return None if math.isnan(out) else out
 
@@ -889,7 +950,7 @@ def is_lazy_array(x: object) -> bool:
     # on __bool__ (dask is one such example, which however is special-cased above).
 
     # Select a single point of the array
-    s = size(x)
+    s = size(cast("HasShape[Collection[SupportsIndex | None]]", x))
     if s is None:
         return True
     xp = array_namespace(x)
