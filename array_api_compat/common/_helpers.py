@@ -12,7 +12,7 @@ import inspect
 import math
 import sys
 import warnings
-from typing import TYPE_CHECKING, Any, Literal, SupportsIndex, TypeGuard, cast, overload
+from typing import TYPE_CHECKING, Any, Literal, SupportsIndex, cast, overload
 
 from ._typing import Array, Device, HasShape, Namespace, SupportsArrayNamespace
 
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
     import sparse  # pyright: ignore[reportMissingTypeStubs]
     import torch
-    from typing_extensions import TypeAlias, TypeIs, TypeVar
+    from typing_extensions import TypeAlias, TypeGuard, TypeIs, TypeVar
 
     _SizeT = TypeVar("_SizeT", bound=int | None)
 
