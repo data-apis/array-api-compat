@@ -33,7 +33,7 @@ def test_all(library):
     else:
         import_(library, wrapper=True)
 
-    for mod_name in sys.modules:
+    for mod_name in sys.modules.copy():
         if not mod_name.startswith('array_api_compat.' + library):
             continue
 
