@@ -46,6 +46,7 @@ array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_xor]
+array_api_tests/test_data_type_functions.py::TestResultType::test_with_scalars
 
 # Stubs have a comment: (**note**: libraries may return ``NaN`` to match Python behavior.); Apparently, NumPy does just that
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
