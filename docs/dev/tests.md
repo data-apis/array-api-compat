@@ -7,7 +7,7 @@ the array API standard. There are also array-api-compat specific tests in
 These tests should be limited to things that are not tested by the test suite,
 e.g., tests for [helper functions](../helper-functions.rst) or for behavior
 that is not strictly required by the standard. To run these tests, install the
-dependencies from `requirements-dev.txt` (array-api-compat has [no hard
+dependencies from the `dev` optional group (array-api-compat has [no hard
 runtime dependencies](no-dependencies)).
 
 array-api-tests is run against all supported libraries are tested on CI
