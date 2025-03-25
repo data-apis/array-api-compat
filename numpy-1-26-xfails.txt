@@ -41,13 +41,13 @@ array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 array_api_tests/test_manipulation_functions.py::test_repeat
 
 # 2024.12 support
-array_api_tests/test_special_cases.py::test_nan_propagation[cumulative_prod]
-
 array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_xor]
+
+# Stubs have a comment: (**note**: libraries may return ``NaN`` to match Python behavior.); Apparently, NumPy does just that
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
@@ -66,3 +66,6 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity 
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
 array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+
+# numpy < 2 bug: type promotion of asarray([], 'float32') and (finfo(float32).max + 1) gives float64 not float32
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real

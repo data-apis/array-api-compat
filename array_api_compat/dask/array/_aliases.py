@@ -1,16 +1,10 @@
 from __future__ import annotations
 
-from typing import Callable
-
-from ...common import _aliases, array_namespace
-
-from ..._internal import get_xp
-
-from ._info import __array_namespace_info__
+from typing import Callable, Optional, Union
 
 import numpy as np
 from numpy import (
-    # Dtypes
+    # dtypes
     iinfo,
     finfo,
     bool_ as bool,
@@ -29,21 +23,18 @@ from numpy import (
     can_cast,
     result_type,
 )
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Optional, Union
-
-    from ...common._typing import (
-        Device,
-        Dtype,
-        Array,
-        NestedSequence,
-        SupportsBufferProtocol,
-    )
-
 import dask.array as da
+
+from ...common import _aliases, array_namespace
+from ...common._typing import (
+    Array,
+    Device,
+    DType,
+    NestedSequence,
+    SupportsBufferProtocol,
+)
+from ..._internal import get_xp
+from ._info import __array_namespace_info__
 
 isdtype = get_xp(np)(_aliases.isdtype)
 unstack = get_xp(da)(_aliases.unstack)
@@ -52,7 +43,7 @@ unstack = get_xp(da)(_aliases.unstack)
 # da.astype doesn't respect copy=True
 def astype(
     x: Array,
-    dtype: Dtype,
+    dtype: DType,
     /,
     *,
     copy: bool = True,
@@ -84,7 +75,7 @@ def arange(
     stop: Optional[Union[int, float]] = None,
     step: Union[int, float] = 1,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
@@ -144,17 +135,12 @@ sign = get_xp(np)(_aliases.sign)
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
-    obj: Union[
-        Array,
-        bool,
-        int,
-        float,
-        NestedSequence[bool | int | float],
-        SupportsBufferProtocol,
-    ],
+    obj: (
+        Array | bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol
+    ),
     /,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     copy: Optional[Union[bool, np._CopyMode]] = None,
     **kwargs,
@@ -335,6 +321,21 @@ def argsort(
     return restore(x)
 
 
+# dask.array.count_nonzero does not have keepdims
+def count_nonzero(
+    x: Array,
+    axis=None,
+    keepdims=False
+) -> Array:
+   result = da.count_nonzero(x, axis)
+   if keepdims:
+       if axis is None:
+            return da.reshape(result, [1]*x.ndim)
+       return da.expand_dims(result, axis)
+   return result
+
+
+
 __all__ = _aliases.__all__ + [
                     '__array_namespace_info__', 'asarray', 'astype', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
@@ -343,6 +344,6 @@ __all__ = _aliases.__all__ + [
                     'result_type', 'bool', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
                     'uint8', 'uint16', 'uint32', 'uint64',
                     'complex64', 'complex128', 'iinfo', 'finfo',
-                    'can_cast', 'result_type']
+                    'can_cast', 'count_nonzero', 'result_type']
 
-_all_ignore = ["Callable", "array_namespace", "get_xp", "da", "np"]
+_all_ignore = ["array_namespace", "get_xp", "da", "np"]

@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import cupy as cp
 
 from ..common import _aliases, _helpers
+from ..common._typing import NestedSequence, SupportsBufferProtocol
 from .._internal import get_xp
-
 from ._info import __array_namespace_info__
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Optional, Union
-    from ._typing import ndarray, Device, Dtype, NestedSequence, SupportsBufferProtocol
+from ._typing import Array, Device, DType
 
 bool = cp.bool_
 
@@ -66,23 +64,19 @@ sign = get_xp(cp)(_aliases.sign)
 
 _copy_default = object()
 
+
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
-    obj: Union[
-        ndarray,
-        bool,
-        int,
-        float,
-        NestedSequence[bool | int | float],
-        SupportsBufferProtocol,
-    ],
+    obj: (
+        Array | bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol
+    ),
     /,
     *,
-    dtype: Optional[Dtype] = None,
+    dtype: Optional[DType] = None,
     device: Optional[Device] = None,
     copy: Optional[bool] = _copy_default,
     **kwargs,
-) -> ndarray:
+) -> Array:
     """
     Array API compatibility wrapper for asarray().
 
@@ -112,17 +106,31 @@ def asarray(
 
 
 def astype(
-    x: ndarray,
-    dtype: Dtype,
+    x: Array,
+    dtype: DType,
     /,
     *,
     copy: bool = True,
     device: Optional[Device] = None,
-) -> ndarray:
+) -> Array:
     if device is None:
         return x.astype(dtype=dtype, copy=copy)
     out = _helpers.to_device(x.astype(dtype=dtype, copy=False), device)
     return out.copy() if copy and out is x else out
+
+
+# cupy.count_nonzero does not have keepdims
+def count_nonzero(
+    x: Array,
+    axis=None,
+    keepdims=False
+) -> Array:
+   result = cp.count_nonzero(x, axis)
+   if keepdims:
+       if axis is None:
+            return cp.reshape(result, [1]*x.ndim)
+       return cp.expand_dims(result, axis)
+   return result
 
 
 # These functions are completely new here. If the library already has them
@@ -146,6 +154,6 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'pow', 'sign']
+                              'bool', 'concat', 'count_nonzero', 'pow', 'sign']
 
 _all_ignore = ['cp', 'get_xp']

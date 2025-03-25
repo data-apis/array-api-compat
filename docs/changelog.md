@@ -1,6 +1,44 @@
 # Changelog
 
-## 1.11.0 (2025-XX-XX)
+## 1.11.2 (2025-03-20)
+
+This is a bugfix release with no new features compared to version 1.11.
+
+- fix the `result_type` wrapper for pytorch. Previously, `result_type` had multiple
+  issues with scalar arguments.
+- fix several issues with `clip` wrappers. Previously, `clip` was failing to allow
+  behaviors which are unspecified by the 2024.12 standard but allowed by the array
+  libraries.
+
+The following users contributed to this release:
+
+Evgeni Burovski
+Guido Imperiale
+Magnus Dalen Kvalevåg
+
+
+## 1.11.1 (2025-03-04)
+
+This is a bugfix release with no new features compared to version 1.11.
+
+### Major Changes
+
+- fix `count_nonzero` wrappers: work around the lack of the `keepdims` argument in
+  several array libraries (torch, dask, cupy); work around numpy returning python
+  ints in for some input combinations.
+
+### Minor Changes
+
+- runnings self-tests does not require all array libraries. Missing libraries are
+  skipped.
+
+The following users contributed to this release:
+
+Evgeni Burovski
+Guido Imperiale
+
+
+## 1.11.0 (2025-02-27)
 
 ### Major Changes
 
