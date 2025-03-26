@@ -28,12 +28,14 @@ array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
 array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
-# Fails because shape is NaN since we don't materialize it yet
+# Data-dependent output shape
+# These tests fail as array-api-tests doesn't cope with unknown shapes
+# Also, output shape is (math.nan, ) instead of (None, )
+# Also, da.unique() doesn't accept equals_nan which causes non-compliant
+# output when there are NaNs in the input.
 array_api_tests/test_searching_functions.py::test_nonzero
 array_api_tests/test_set_functions.py::test_unique_all
 array_api_tests/test_set_functions.py::test_unique_counts
-
-# Different error but same cause as above, we're just trying to do ndindex on nan shape
 array_api_tests/test_set_functions.py::test_unique_inverse
 array_api_tests/test_set_functions.py::test_unique_values
 

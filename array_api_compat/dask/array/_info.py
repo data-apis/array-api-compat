@@ -68,11 +68,22 @@ class __array_namespace_info__:
         The resulting dictionary has the following keys:
 
         - **"boolean indexing"**: boolean indicating whether an array library
-          supports boolean indexing. Always ``False`` for Dask.
+          supports boolean indexing.
+
+          Dask support boolean indexing as long as both the index
+          and the indexed arrays have known shapes.
+          Note however that the output .shape and .size properties
+          will contain a non-compliant math.nan instead of None.
 
         - **"data-dependent shapes"**: boolean indicating whether an array
-          library supports data-dependent output shapes. Always ``False`` for
-          Dask.
+          library supports data-dependent output shapes.
+
+          Dask implements unique_values et.al.
+          Note however that the output .shape and .size properties
+          will contain a non-compliant math.nan instead of None.
+
+        - **"max dimensions"**: integer indicating the maximum number of
+          dimensions supported by the array library.
 
         See
         https://data-apis.org/array-api/latest/API_specification/generated/array_api.info.capabilities.html
@@ -99,9 +110,8 @@ class __array_namespace_info__:
 
         """
         return {
-            "boolean indexing": False,
-            "data-dependent shapes": False,
-            # 'max rank' will be part of the 2024.12 standard
+            "boolean indexing": True,
+            "data-dependent shapes": True,
             "max dimensions": 64,
         }
 
