@@ -116,7 +116,9 @@ def _fix_promotion(x1, x2, only_scalar=True):
 _py_scalars = (bool, int, float, complex)
 
 
-def result_type(*arrays_and_dtypes: Array | DType | complex) -> DType:
+def result_type(
+    *arrays_and_dtypes: Array | DType | bool | int | float | complex
+) -> DType:
     num = len(arrays_and_dtypes)
 
     if num == 0:
@@ -550,9 +552,15 @@ def count_nonzero(
         return result
 
 
-def where(condition: Array, x1: Array, x2: Array, /) -> Array:
+def where(
+    condition: Array, 
+    x1: Array | bool | int | float | complex, 
+    x2: Array | bool | int | float | complex,
+    /,
+) -> Array:
     x1, x2 = _fix_promotion(x1, x2)
     return torch.where(condition, x1, x2)
+
 
 # torch.reshape doesn't have the copy keyword
 def reshape(x: Array,
@@ -622,7 +630,7 @@ def linspace(start: Union[int, float],
 # torch.full does not accept an int size
 # https://github.com/pytorch/pytorch/issues/70906
 def full(shape: Union[int, Tuple[int, ...]],
-         fill_value: complex,
+         fill_value: bool | int | float | complex,
          *,
          dtype: Optional[DType] = None,
          device: Optional[Device] = None,

@@ -85,7 +85,7 @@ def vector_norm(
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
     # float stands for inf | -inf, which are not valid for Literal
-    ord: Union[int, float, float] = 2,
+    ord: Union[int, float] = 2,
     **kwargs,
 ) -> Array:
     # torch.vector_norm incorrectly treats axis=() the same as axis=None
