@@ -1,6 +1,10 @@
+# pyright: reportPrivateUsage=false
 from __future__ import annotations
 
-from typing import Optional, Union
+from builtins import bool as py_bool
+from typing import TYPE_CHECKING, cast
+
+import numpy as np
 
 from .._internal import get_xp
 from ..common import _aliases
@@ -8,7 +12,12 @@ from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
-import numpy as np
+if TYPE_CHECKING:
+    from typing import Any, Literal
+
+    from typing_extensions import Buffer, TypeAlias, TypeIs
+
+    _Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
 
 bool = np.bool_
 
@@ -63,9 +72,9 @@ tensordot = get_xp(np)(_aliases.tensordot)
 sign = get_xp(np)(_aliases.sign)
 
 
-def _supports_buffer_protocol(obj):
+def _supports_buffer_protocol(obj: object) -> TypeIs[Buffer]:  # pyright: ignore[reportUnusedFunction]
     try:
-        memoryview(obj)
+        memoryview(obj)  # pyright: ignore[reportArgumentType]
     except TypeError:
         return False
     return True
@@ -76,15 +85,13 @@ def _supports_buffer_protocol(obj):
 # complicated enough that it's easier to define it separately for each module
 # rather than trying to combine everything into one function in common/
 def asarray(
-    obj: (
-        Array | bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol
-    ),
+    obj: Array | complex | NestedSequence[complex] | SupportsBufferProtocol,
     /,
     *,
-    dtype: Optional[DType] = None,
-    device: Optional[Device] = None,
-    copy: "Optional[Union[bool, np._CopyMode]]" = None,
-    **kwargs,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    copy: _Copy | None = None,
+    **kwargs: Any,
 ) -> Array:
     """
     Array API compatibility wrapper for asarray().
@@ -108,7 +115,7 @@ def asarray(
         if copy is False:
             raise NotImplementedError("asarray(copy=False) requires a newer version of NumPy.")
 
-    return np.array(obj, copy=copy, dtype=dtype, **kwargs)
+    return np.array(obj, copy=copy, dtype=dtype, **kwargs)  # pyright: ignore
 
 
 def astype(
@@ -116,16 +123,20 @@ def astype(
     dtype: DType,
     /,
     *,
-    copy: bool = True,
-    device: Optional[Device] = None,
+    copy: py_bool = True,
+    device: Device | None = None,
 ) -> Array:
     return x.astype(dtype=dtype, copy=copy)
 
 
 # count_nonzero returns a python int for axis=None and keepdims=False
 # https://github.com/numpy/numpy/issues/17562
-def count_nonzero(x: Array, axis=None, keepdims=False) -> Array:
-    result = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+def count_nonzero(
+    x: Array,
+    axis: int | tuple[int, ...] | None = None,
+    keepdims: py_bool = False,
+) -> Array:
+    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore
     if axis is None and not keepdims:
         return np.asarray(result)
     return result
@@ -148,10 +159,25 @@ if hasattr(np, 'unstack'):
 else:
     unstack = get_xp(np)(_aliases.unstack)
 
-__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
-                              'acos', 'acosh', 'asin', 'asinh', 'atan',
-                              'atan2', 'atanh', 'bitwise_left_shift',
-                              'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'count_nonzero', 'pow']
+__all__ = [
+    "__array_namespace_info__",
+    "asarray",
+    "astype",
+    "acos",
+    "acosh",
+    "asin",
+    "asinh",
+    "atan",
+    "atan2",
+    "atanh",
+    "bitwise_left_shift",
+    "bitwise_invert",
+    "bitwise_right_shift",
+    "bool",
+    "concat",
+    "count_nonzero",
+    "pow",
+]
+__all__ += _aliases.__all__
 
 _all_ignore = ['np', 'get_xp']
