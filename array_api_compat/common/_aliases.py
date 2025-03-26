@@ -7,8 +7,14 @@ from __future__ import annotations
 import inspect
 from typing import NamedTuple, Optional, Sequence, Tuple, Union
 
-from ._helpers import array_namespace, _check_device, device, is_cupy_namespace
 from ._typing import Array, Device, DType, Namespace
+from ._helpers import (
+    array_namespace,
+    _check_device,
+    device as _get_device,
+    is_cupy_namespace as _is_cupy_namespace
+)
+
 
 # These functions are modified from the NumPy versions.
 
@@ -298,7 +304,7 @@ def cumulative_sum(
         initial_shape = list(x.shape)
         initial_shape[axis] = 1
         res = xp.concatenate(
-            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
+            [wrapped_xp.zeros(shape=initial_shape, dtype=res.dtype, device=_get_device(res)), res],
             axis=axis,
         )
     return res
@@ -328,7 +334,7 @@ def cumulative_prod(
         initial_shape = list(x.shape)
         initial_shape[axis] = 1
         res = xp.concatenate(
-            [wrapped_xp.ones(shape=initial_shape, dtype=res.dtype, device=device(res)), res],
+            [wrapped_xp.ones(shape=initial_shape, dtype=res.dtype, device=_get_device(res)), res],
             axis=axis,
         )
     return res
@@ -381,7 +387,7 @@ def clip(
         if type(max) is int and max >= wrapped_xp.iinfo(x.dtype).max:
             max = None
 
-    dev = device(x)
+    dev = _get_device(x)
     if out is None:
         out = wrapped_xp.empty(result_shape, dtype=x.dtype, device=dev)
     out[()] = x
@@ -599,7 +605,7 @@ def sign(x: Array, /, xp: Namespace, **kwargs) -> Array:
         out = xp.sign(x, **kwargs)
     # CuPy sign() does not propagate nans. See
     # https://github.com/data-apis/array-api-compat/issues/136
-    if is_cupy_namespace(xp) and isdtype(x.dtype, 'real floating', xp=xp):
+    if _is_cupy_namespace(xp) and isdtype(x.dtype, 'real floating', xp=xp):
         out[xp.isnan(x)] = xp.nan
     return out[()]
 
@@ -611,3 +617,5 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
            'unstack', 'sign']
+
+_all_ignore = ['inspect', 'array_namespace', 'NamedTuple']
