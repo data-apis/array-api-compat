@@ -33,6 +33,7 @@ def test_all(library):
     else:
         import_(library, wrapper=True)
 
+    # NB: iterate over a copy to avoid a "dictionary size changed" error
     for mod_name in sys.modules.copy():
         if not mod_name.startswith('array_api_compat.' + library):
             continue
