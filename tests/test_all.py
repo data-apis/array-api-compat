@@ -26,7 +26,6 @@ TYPING_NAMES = frozenset((
     "SupportsBufferProtocol",
 ))
 
-@pytest.mark.skip(reason="TODO: starts failing after adding test_torch.py in gh-277")
 @pytest.mark.parametrize("library", ["common"] + wrapped_libraries)
 def test_all(library):
     if library == "common":
@@ -34,7 +33,8 @@ def test_all(library):
     else:
         import_(library, wrapper=True)
 
-    for mod_name in sys.modules:
+    # NB: iterate over a copy to avoid a "dictionary size changed" error
+    for mod_name in sys.modules.copy():
         if not mod_name.startswith('array_api_compat.' + library):
             continue
 
