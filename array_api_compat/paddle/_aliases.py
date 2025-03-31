@@ -78,7 +78,7 @@ _promotion_table = {
 def _two_arg(f):
     @_wraps(f)
     def _f(x1, x2, /, **kwargs):
-        x1, x2 = _fix_promotion(x1, x2)
+        # x1, x2 = _fix_promotion(x1, x2)
         return f(x1, x2, **kwargs)
 
     if _f.__doc__ is None:
@@ -312,6 +312,12 @@ def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
     }
     return can_cast_dict[from_][to]
 
+def test_bitwise_or(x: array, y: array):
+    if not paddle.is_tensor(x):
+        x = paddle.to_tensor(x)
+    if not paddle.is_tensor(y):
+        y = paddle.to_tensor(y)
+    return paddle.bitwise_or(x, y)
 
 # Basic renames
 bitwise_invert = paddle.bitwise_not
@@ -326,7 +332,7 @@ add = _two_arg(paddle.add)
 atan2 = _two_arg(paddle.atan2)
 bitwise_and = _two_arg(paddle.bitwise_and)
 bitwise_left_shift = _two_arg(paddle.bitwise_left_shift)
-bitwise_or = _two_arg(paddle.bitwise_or)
+bitwise_or = _two_arg(test_bitwise_or)
 bitwise_right_shift = _two_arg(paddle.bitwise_right_shift)
 bitwise_xor = _two_arg(paddle.bitwise_xor)
 copysign = _two_arg(paddle.copysign)
@@ -455,6 +461,20 @@ def _reduce_multiple_axes(f, x, axis, keepdims=False, **kwargs):
             out = paddle.unsqueeze(out, a)
     return out
 
+_NP_2_PADDLE_DTYPE = {
+    "BOOL": 'bool',
+    "UINT8": 'uint8',
+    "INT8": 'int8',
+    "INT16": 'int16',
+    "INT32": 'int32',
+    "INT64": 'int64',
+    "FLOAT16": 'float16',
+    "BFLOAT16": 'bfloat16',
+    "FLOAT32": 'float32',
+    "FLOAT64": 'float64',
+    "COMPLEX128": 'complex128',
+    "COMPLEX64": 'complex64',
+}
 
 def prod(
     x: array,
@@ -469,6 +489,10 @@ def prod(
         x = paddle.to_tensor(x)
     ndim = x.ndim
 
+    if dtype is not None:
+        # import pdb
+        # pdb.set_trace()
+        dtype = _NP_2_PADDLE_DTYPE[dtype.name] 
     # below because it still needs to upcast.
     if axis == ():
         if dtype is None:
@@ -825,7 +849,7 @@ def eye(
     if n_cols is None:
         n_cols = n_rows
     z = paddle.zeros([n_rows, n_cols], dtype=dtype, **kwargs).to(device)
-    if abs(k) <= n_rows + n_cols:
+    if n_rows > 0 and n_cols > 0 and abs(k) <= n_rows + n_cols:
         z.diagonal(k).fill_(1)
     return z
 
@@ -1052,6 +1076,10 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
         if x.ndim != 1:
             raise ValueError("axis must be specified when ndim > 1")
         axis = 0
+    if not paddle.is_tensor(indices):
+        indices = paddle.to_tensor(indices)
+    if not paddle.is_tensor(axis):
+        axis = paddle.to_tensor(axis)
     return paddle.index_select(x, axis, indices, **kwargs)
 
 
@@ -1143,7 +1171,6 @@ def floor(x: array, /) -> array:
 
 def ceil(x: array, /) -> array:
     return paddle.ceil(x).to(x.dtype)
-
 
 def clip(
     x: array,
@@ -1249,7 +1276,6 @@ def searchsorted(
         x2,
         right=(side == "right"),
     )
-
 
 __all__ = [
     "__array_namespace_info__",

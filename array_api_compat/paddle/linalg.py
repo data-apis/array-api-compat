@@ -84,6 +84,8 @@ def trace(x: array, /, *, offset: int = 0, dtype: Optional[Dtype] = None) -> arr
     # Use our wrapped sum to make sure it does upcasting correctly
     return sum(paddle.diagonal(x, offset=offset, axis1=-2, axis2=-1), axis=-1, dtype=dtype)
 
+def diagonal(x: ndarray, / , *, offset: int = 0, **kwargs) -> ndarray:
+    return paddle.diagonal(x, offset=offset, axis1=-2, axis2=-1, **kwargs)
 
 def vector_norm(
     x: array,
@@ -141,6 +143,24 @@ def slogdet(x: array):
     slotdet = namedtuple("slotdet", ["sign", "logabsdet"])
     return slotdet(sign, log_det)
 
+def tuple_to_namedtuple(data, fields):
+    nt_class = namedtuple('DynamicNameTuple', fields)
+    return nt_class(*data)
+
+def eigh(x: array):
+    return tuple_to_namedtuple(paddle.linalg.eigh(x), ['eigenvalues', 'eigenvectors'])
+
+def qr(x: array, mode: Optional[str] = None) -> array:
+    if mode is None:
+        return tuple_to_namedtuple(paddle.linalg.qr(x), ['Q', 'R'])
+
+    return tuple_to_namedtuple(paddle.linalg.qr(x, mode), ['Q', 'R'])
+
+
+def svd(x: array, full_matrices: Optional[bool]= None) -> array:
+    if full_matrices is None :
+        return tuple_to_namedtuple(paddle.linalg.svd(x), ['U', 'S', 'Vh'])
+    return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices), ['U', 'S', 'Vh'])
 
 __all__ = linalg_all + [
     "outer",
@@ -154,6 +174,8 @@ __all__ = linalg_all + [
     "trace",
     "vector_norm",
     "slogdet",
+    "eigh",
+    "diagonal",
 ]
 
 _all_ignore = ["paddle_linalg", "sum"]
