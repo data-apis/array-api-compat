@@ -13,7 +13,6 @@ import math
 import inspect
 import warnings
 from collections.abc import Generator
-from types import ModuleType
 from typing import Optional, Union, Any
 
 from ._typing import Array, Device, Namespace
@@ -801,10 +800,10 @@ def to_device(x: Array, device: Device, /, *, stream: Optional[Union[int, Any]] 
 
 
 def _device_ctx(
-    bare_xp: ModuleType, device: Device, like: Array | None = None
+    bare_xp: Namespace, device: Device, like: Array | None = None
 ) -> Generator[None]:
     """Context manager which changes the current device in CuPy.
-    
+
     Used internally by array creation functions in common._aliases.
     """
     if device is None:
@@ -832,7 +831,7 @@ def _device_ctx(
     raise AssertionError("unreachable")  # pragma: nocover
 
 
-def _validate_device(bare_xp: ModuleType, device: Device) -> None:
+def _validate_device(bare_xp: Namespace, device: Device) -> None:
     with _device_ctx(bare_xp, device):
         pass
 
