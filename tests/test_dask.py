@@ -1,10 +1,14 @@
 from contextlib import contextmanager
 
 import array_api_strict
-import dask
 import numpy as np
 import pytest
-import dask.array as da
+
+try:
+    import dask
+    import dask.array as da
+except ImportError:
+    pytestmark = pytest.skip(allow_module_level=True, reason="dask not found")
 
 from array_api_compat import array_namespace
 

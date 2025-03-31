@@ -3,7 +3,11 @@
 import itertools
 
 import pytest
-import torch
+
+try:
+    import torch
+except ImportError:
+    pytestmark = pytest.skip(allow_module_level=True, reason="pytorch not found")
 
 from array_api_compat import torch as xp
 

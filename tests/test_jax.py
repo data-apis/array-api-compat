@@ -1,9 +1,13 @@
-import jax
-import jax.numpy as jnp
 from numpy.testing import assert_equal
 import pytest
 
 from array_api_compat import device, to_device
+
+try:
+    import jax
+    import jax.numpy as jnp
+except ImportError:
+    pytestmark = pytest.skip(allow_module_level=True, reason="jax not found")
 
 HAS_JAX_0_4_31 = jax.__version__ >= "0.4.31"
 
