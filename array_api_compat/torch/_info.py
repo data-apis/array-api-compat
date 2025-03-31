@@ -113,7 +113,7 @@ class __array_namespace_info__:
 
         Notes
         -----
-        This method returns the static default device when yPyTorch is initialized.
+        This method returns the static default device when PyTorch is initialized.
         However, the *current* device used by creation functions (``empty`` etc.)
         can be changed at runtime.
 
