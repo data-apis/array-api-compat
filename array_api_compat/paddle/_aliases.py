@@ -112,25 +112,32 @@ def result_type(*arrays_and_dtypes: Union[array, Dtype]) -> Dtype:
         raise TypeError("At least one array or dtype must be provided")
     if len(arrays_and_dtypes) == 1:
         x = arrays_and_dtypes[0]
-        if isinstance(x, paddle.dtype):
-            return x
-        return x.dtype
+        return x if isinstance(x, paddle.dtype) else x.dtype
     if len(arrays_and_dtypes) > 2:
         return result_type(arrays_and_dtypes[0], result_type(*arrays_and_dtypes[1:]))
 
     x, y = arrays_and_dtypes
-    xdt = x.dtype if not isinstance(x, paddle.dtype) else x
-    ydt = y.dtype if not isinstance(y, paddle.dtype) else y
+    xdt = x if isinstance(x, paddle.dtype) else x.dtype
+    ydt = y if isinstance(y, paddle.dtype) else y.dtype
 
     if (xdt, ydt) in _promotion_table:
-        return _promotion_table[xdt, ydt]
+        return _promotion_table[(xdt, ydt)]
 
-    # This doesn't result_type(dtype, dtype) for non-array API dtypes
-    # because paddle.result_type only accepts tensors. This does however, allow
-    # cross-kind promotion.
-    x = paddle.to_tensor([], dtype=x) if isinstance(x, paddle.dtype) else x
-    y = paddle.to_tensor([], dtype=y) if isinstance(y, paddle.dtype) else y
-    return paddle.result_type(x, y)
+    type_order = {
+        paddle.bool: 0,
+        paddle.int8: 1,
+        paddle.uint8: 2,
+        paddle.int16: 3,
+        paddle.int32: 4,
+        paddle.int64: 5,
+        paddle.float16: 6,
+        paddle.float32: 7,
+        paddle.float64: 8,
+        paddle.complex64: 9,
+        paddle.complex128: 10
+    }
+    
+    return xdt if type_order.get(xdt, 0) > type_order.get(ydt, 0) else ydt
 
 
 def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
@@ -946,7 +953,15 @@ def astype(
 
 
 def broadcast_arrays(*arrays: array) -> List[array]:
-    return paddle.broadcast_tensors(arrays)
+    original_dtypes = [arr.dtype for arr in arrays]
+    if len(set(original_dtypes)) == 1:
+        return paddle.broadcast_tensors(arrays)
+    target_dtype = result_type(*arrays)
+    casted_arrays = [arr.astype(target_dtype) if arr.dtype != target_dtype else arr 
+                    for arr in arrays]
+    broadcasted = paddle.broadcast_tensors(casted_arrays)
+    result = [arr.astype(original_dtype) for arr, original_dtype in zip(broadcasted, original_dtypes)]
+    return result
 
 
 # Note that these named tuples aren't actually part of the standard namespace,
