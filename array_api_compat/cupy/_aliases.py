@@ -66,7 +66,10 @@ sign = get_xp(cp)(_aliases.sign)
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
     obj: (
-        Array | bool | complex | NestedSequence[bool | complex] | SupportsBufferProtocol
+        Array 
+        | bool | int | float | complex 
+        | NestedSequence[bool | int | float | complex] 
+        | SupportsBufferProtocol
     ),
     /,
     *,
