@@ -87,7 +87,8 @@ def asarray(
     if copy is False:
         raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
 
-    with _helpers._device_ctx(cp, device):
+    like = obj if _helpers.is_cupy_array(obj) else None
+    with _helpers._device_ctx(cp, device, like=like):
         if copy is None:
             return cp.asarray(obj, dtype=dtype, **kwargs)
         else:
