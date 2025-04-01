@@ -78,7 +78,7 @@ _promotion_table = {
 def _two_arg(f):
     @_wraps(f)
     def _f(x1, x2, /, **kwargs):
-        # x1, x2 = _fix_promotion(x1, x2)
+        x1, x2 = _fix_promotion(x1, x2)
         return f(x1, x2, **kwargs)
 
     if _f.__doc__ is None:
