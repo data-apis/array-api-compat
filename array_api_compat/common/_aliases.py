@@ -5,7 +5,7 @@ These are functions that are just aliases of existing functions in NumPy.
 from __future__ import annotations
 
 import inspect
-from typing import NamedTuple, Optional, Sequence, Tuple, Union
+from typing import Any, NamedTuple, Optional, Sequence, Tuple, Union
 
 from ._typing import Array, Device, DType, Namespace
 from ._helpers import (
@@ -609,6 +609,23 @@ def sign(x: Array, /, xp: Namespace, **kwargs) -> Array:
         out[xp.isnan(x)] = xp.nan
     return out[()]
 
+
+def finfo(type_: DType | Array, /, xp: Namespace) -> Any:
+    # It is surprisingly difficult to recognize a dtype apart from an array.
+    # np.int64 is not the same as np.asarray(1).dtype!
+    try:
+        return xp.finfo(type_)
+    except (ValueError, TypeError):
+        return xp.finfo(type_.dtype)
+
+
+def iinfo(type_: DType | Array, /, xp: Namespace) -> Any:
+    try:
+        return xp.iinfo(type_)
+    except (ValueError, TypeError):
+        return xp.iinfo(type_.dtype)
+
+
 __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'linspace', 'ones', 'ones_like', 'zeros', 'zeros_like',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
@@ -616,6 +633,6 @@ __all__ = ['arange', 'empty', 'empty_like', 'eye', 'full', 'full_like',
            'std', 'var', 'cumulative_sum', 'cumulative_prod','clip', 'permute_dims',
            'reshape', 'argsort', 'sort', 'nonzero', 'ceil', 'floor', 'trunc',
            'matmul', 'matrix_transpose', 'tensordot', 'vecdot', 'isdtype',
-           'unstack', 'sign']
+           'unstack', 'sign', 'finfo', 'iinfo']
 
 _all_ignore = ['inspect', 'array_namespace', 'NamedTuple']

@@ -115,6 +115,10 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
 array_api_tests/test_set_functions.py::test_unique_values
 
+# finfo/iinfo.dtype is a string instead of a dtype
+array_api_tests/test_data_type_functions.py::test_finfo_dtype
+array_api_tests/test_data_type_functions.py::test_iinfo_dtype
+
 # 2023.12 support
 array_api_tests/test_has_names.py::test_has_names[manipulation-repeat]
 array_api_tests/test_manipulation_functions.py::test_repeat
