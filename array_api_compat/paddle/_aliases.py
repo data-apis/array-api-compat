@@ -938,6 +938,8 @@ def triu(x: array, /, *, k: int = 0) -> array:
 
 
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
+    if axis < -x.ndim - 1 or axis > x.ndim:
+        raise IndexError(f"Axis {axis} is out of bounds for array of dimension { x.ndim}")
     return paddle.unsqueeze(x, axis)
 
 
@@ -1087,15 +1089,31 @@ def isdtype(
 
 
 def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -> array:
-    if axis is None:
+    _axis = axis 
+    if _axis is None:
         if x.ndim != 1:
-            raise ValueError("axis must be specified when ndim > 1")
-        axis = 0
-    if not paddle.is_tensor(indices):
-        indices = paddle.to_tensor(indices)
-    if not paddle.is_tensor(axis):
-        axis = paddle.to_tensor(axis)
-    return paddle.index_select(x, axis, indices, **kwargs)
+            raise ValueError("axis must be specified when x.ndim > 1")
+        _axis = 0
+    elif not isinstance(_axis, int):
+        raise TypeError(f"axis must be an integer, but received {type(_axis)}")
+
+    if not (-x.ndim <= _axis < x.ndim):
+        raise IndexError(f"axis {_axis} is out of bounds for tensor of dimension {x.ndim}")
+
+    if isinstance(indices, paddle.Tensor):
+        indices_tensor = indices
+    elif isinstance(indices, int):
+        indices_tensor = paddle.to_tensor([indices], dtype='int64')
+    else:
+        # Otherwise (e.g., list, tuple), convert directly
+        indices_tensor = paddle.to_tensor(indices, dtype='int64')
+    # Ensure indices is a 1D tensor
+    if indices_tensor.ndim == 0:
+        indices_tensor = indices_tensor.reshape([1])
+    elif indices_tensor.ndim > 1:
+        raise ValueError(f"indices must be a 1D tensor, but received a {indices_tensor.ndim}D tensor")
+
+    return paddle.index_select(x, index=indices_tensor, axis=_axis)
 
 
 def sign(x: array, /) -> array:
@@ -1261,7 +1279,6 @@ def cumulative_sum(
                 "axis must be specified in cumulative_sum for more than one dimension"
             )
         axis = 0
-
     res = paddle.cumsum(x, axis=axis, dtype=dtype)
 
     # np.cumsum does not support include_initial

@@ -136,12 +136,7 @@ def pinv(x: array, /, *, rtol: Optional[Union[float, array]] = None) -> array:
 
 
 def slogdet(x: array):
-    det = paddle.linalg.det(x)
-    sign = paddle.sign(det)
-    log_det = paddle.log(det)
-
-    slotdet = namedtuple("slotdet", ["sign", "logabsdet"])
-    return slotdet(sign, log_det)
+    return tuple_to_namedtuple(paddle.linalg.slogdet(x), ["sign", "logabsdet"])
 
 def tuple_to_namedtuple(data, fields):
     nt_class = namedtuple('DynamicNameTuple', fields)
