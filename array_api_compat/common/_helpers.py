@@ -831,7 +831,7 @@ def _device_ctx(
     raise AssertionError("unreachable")  # pragma: nocover
 
 
-def _validate_device(bare_xp: Namespace, device: Device) -> None:
+def _check_device(bare_xp: Namespace, device: Device) -> None:
     with _device_ctx(bare_xp, device):
         pass
 

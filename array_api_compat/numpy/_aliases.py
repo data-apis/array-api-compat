@@ -95,7 +95,7 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    _helpers._validate_device(np, device)
+    _helpers._check_device(np, device)
 
     if hasattr(np, '_CopyMode'):
         if copy is None:
@@ -121,7 +121,7 @@ def astype(
     copy: bool = True,
     device: Optional[Device] = None,
 ) -> Array:
-    _helpers._validate_device(np, device)
+    _helpers._check_device(np, device)
     return x.astype(dtype=dtype, copy=copy)
 
 

@@ -56,7 +56,7 @@ def astype(
     specification for more details.
     """
     # TODO: respect device keyword?
-    _helpers._validate_device(da, device)
+    _helpers._check_device(da, device)
 
     if not copy and dtype == x.dtype:
         return x
@@ -87,7 +87,7 @@ def arange(
     specification for more details.
     """
     # TODO: respect device keyword?
-    _helpers._validate_device(da, device)
+    _helpers._check_device(da, device)
 
     args = [start]
     if stop is not None:
@@ -157,7 +157,7 @@ def asarray(
     specification for more details.
     """
     # TODO: respect device keyword?
-    _helpers._validate_device(da, device)
+    _helpers._check_device(da, device)
 
     if isinstance(obj, da.Array):
         if dtype is not None and dtype != obj.dtype:
