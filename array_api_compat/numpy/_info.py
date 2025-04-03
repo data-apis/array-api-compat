@@ -119,7 +119,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        device : Device
+        device : str
             The default device used for new NumPy arrays.
 
         Examples
@@ -326,7 +326,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        devices : list[Device]
+        devices : list of str
             The devices supported by NumPy.
 
         See Also

@@ -26,7 +26,6 @@ from cupy import (
     complex128,
 )
 
-
 class __array_namespace_info__:
     """
     Get the array API inspection namespace for CuPy.
@@ -118,7 +117,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        device : Device
+        device : str
             The default device used for new CuPy arrays.
 
         Examples
@@ -127,15 +126,6 @@ class __array_namespace_info__:
         >>> info.default_device()
         Device(0)
 
-        Notes
-        -----
-        This method returns the static default device when CuPy is initialized.
-        However, the *current* device used by creation functions (``empty`` etc.)
-        can be changed globally or with a context manager.
-
-        See Also
-        --------
-        https://github.com/data-apis/array-api/issues/835
         """
         return cuda.Device(0)
 
@@ -322,7 +312,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        devices : list[Device]
+        devices : list of str
             The devices supported by CuPy.
 
         See Also
