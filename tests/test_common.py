@@ -234,6 +234,7 @@ def test_asarray_cross_library(source_library, target_library, request):
         # TODO: remove xfail once
         # https://github.com/dask/dask/issues/8260 is resolved
         xfail(request, reason="Bug in dask raising error on conversion")
+
     elif (
         source_library == "ndonnx" 
         and target_library not in ("array_api_strict", "ndonnx", "numpy")
@@ -241,6 +242,9 @@ def test_asarray_cross_library(source_library, target_library, request):
         xfail(request, reason="The truth value of lazy Array Array(dtype=Boolean) is unknown")
     elif source_library == "ndonnx" and target_library == "numpy":
         xfail(request, reason="produces numpy array of ndonnx scalar arrays")
+    elif target_library == "ndonnx" and source_library in ("torch", "dask.array", "jax.numpy"):
+        xfail(request, reason="unable to infer dtype")
+
     elif source_library == "jax.numpy" and target_library == "torch":
         xfail(request, reason="casts int to float")
     elif source_library == "cupy" and target_library != "cupy":
