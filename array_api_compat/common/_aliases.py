@@ -18,7 +18,7 @@ from ._helpers import (
 
 # These functions are modified from the NumPy versions.
 
-# Creation functions add the device keyword (which does nothing for NumPy)
+# Creation functions add the device keyword (which does nothing for NumPy and Dask)
 
 def arange(
     start: Union[int, float],
