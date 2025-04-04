@@ -62,8 +62,6 @@ matrix_transpose = get_xp(cp)(_aliases.matrix_transpose)
 tensordot = get_xp(cp)(_aliases.tensordot)
 sign = get_xp(cp)(_aliases.sign)
 
-_copy_default = object()
-
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
@@ -77,7 +75,7 @@ def asarray(
     *,
     dtype: Optional[DType] = None,
     device: Optional[Device] = None,
-    copy: Optional[bool] = _copy_default,
+    copy: Optional[bool] = None,
     **kwargs,
 ) -> Array:
     """
@@ -86,26 +84,15 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    with cp.cuda.Device(device):
-        # cupy is like NumPy 1.26 (except without _CopyMode). See the comments
-        # in asarray in numpy/_aliases.py.
-        if copy is not _copy_default:
-            # A future version of CuPy will change the meaning of copy=False
-            # to mean no-copy. We don't know for certain what version it will
-            # be yet, so to avoid breaking that version, we use a different
-            # default value for copy so asarray(obj) with no copy kwarg will
-            # always do the copy-if-needed behavior.
+    if copy is False:
+        raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
 
-            # This will still need to be updated to remove the
-            # NotImplementedError for copy=False, but at least this won't
-            # break the default or existing behavior.
-            if copy is None:
-                copy = False
-            elif copy is False:
-                raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
-            kwargs['copy'] = copy
-
-        return cp.array(obj, dtype=dtype, **kwargs)
+    like = obj if _helpers.is_cupy_array(obj) else None
+    with _helpers._device_ctx(cp, device, like=like):
+        if copy is None:
+            return cp.asarray(obj, dtype=dtype, **kwargs)
+        else:
+            return cp.array(obj, dtype=dtype, copy=True, **kwargs)
 
 
 def astype(
