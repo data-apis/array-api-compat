@@ -276,7 +276,7 @@ def test_asarray_copy(library):
     is_lib_func = globals()[is_array_functions[library]]
     all = xp.all if library != 'dask.array' else lambda x: xp.all(x).compute()
 
-    if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(xp, '_CopyMode') :
+    if library == 'numpy' and xp.__version__[0] < '2' and not hasattr(np, "_CopyMode"):
         supports_copy_false_other_ns = False
         supports_copy_false_same_ns = False
     elif library == 'cupy':
