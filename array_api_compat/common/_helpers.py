@@ -595,10 +595,28 @@ def array_namespace(
 # backwards compatibility alias
 get_namespace = array_namespace
 
-def _check_device(xp, device):
-    if xp == sys.modules.get('numpy'):
-        if device not in ["cpu", None]:
+
+def _check_device(bare_xp, device):
+    """
+    Validate dummy device on device-less array backends.
+
+    Notes
+    -----
+    This function is also invoked by CuPy, which does have multiple devices
+    if there are multiple GPUs available.
+    However, CuPy multi-device support is currently impossible
+    without using the global device or a context manager:
+
+    https://github.com/data-apis/array-api-compat/pull/293
+    """
+    if bare_xp is sys.modules.get('numpy'):
+        if device not in ("cpu", None):
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
+
+    elif bare_xp is sys.modules.get('dask.array'):
+        if device not in ("cpu", _DASK_DEVICE, None):
+            raise ValueError(f"Unsupported device for Dask: {device!r}")
+
 
 # Placeholder object to represent the dask device
 # when the array backend is not the CPU.
