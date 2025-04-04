@@ -7,5 +7,3 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: torch
-      extra-env-vars: |
-        ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64
