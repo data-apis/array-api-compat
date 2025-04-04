@@ -250,6 +250,9 @@ clip = get_xp(torch)(_aliases.clip)
 unstack = get_xp(torch)(_aliases.unstack)
 cumulative_sum = get_xp(torch)(_aliases.cumulative_sum)
 cumulative_prod = get_xp(torch)(_aliases.cumulative_prod)
+finfo = get_xp(torch)(_aliases.finfo)
+iinfo = get_xp(torch)(_aliases.iinfo)
+
 
 # torch.sort also returns a tuple
 # https://github.com/pytorch/pytorch/issues/70921
@@ -851,6 +854,6 @@ __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'take_along_axis', 'sign']
+           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo']
 
 _all_ignore = ['torch', 'get_xp']

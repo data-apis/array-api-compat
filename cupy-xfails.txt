@@ -14,9 +14,14 @@ array_api_tests/test_array_object.py::test_getitem
 # copy=False is not yet implemented
 array_api_tests/test_creation_functions.py::test_asarray_arrays
 
-# finfo test is testing that the result is a float instead of float32 (see
-# also https://github.com/data-apis/array-api/issues/405)
-array_api_tests/test_data_type_functions.py::test_finfo[float32]
+# attributes are np.float32 instead of float
+# (see also https://github.com/data-apis/array-api/issues/405)
+array_api_tests/test_data_type_functions.py::test_finfo[float32-dtype]
+array_api_tests/test_data_type_functions.py::test_finfo[float32-array]
+array_api_tests/test_data_type_functions.py::test_finfo[float32-array.dtype]
+array_api_tests/test_data_type_functions.py::test_finfo[complex64-dtype]
+array_api_tests/test_data_type_functions.py::test_finfo[complex64-array]
+array_api_tests/test_data_type_functions.py::test_finfo[complex64-array.dtype]
 
 # Some array attributes are missing, and we do not wrap the array object
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]

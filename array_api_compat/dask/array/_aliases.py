@@ -5,8 +5,6 @@ from typing import Callable, Optional, Union
 import numpy as np
 from numpy import (
     # dtypes
-    iinfo,
-    finfo,
     bool_ as bool,
     float32,
     float64,
@@ -131,6 +129,8 @@ trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 tensordot = get_xp(np)(_aliases.tensordot)
 sign = get_xp(np)(_aliases.sign)
+finfo = get_xp(np)(_aliases.finfo)
+iinfo = get_xp(np)(_aliases.iinfo)
 
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
@@ -343,10 +343,9 @@ __all__ = _aliases.__all__ + [
                     '__array_namespace_info__', 'asarray', 'astype', 'acos',
                     'acosh', 'asin', 'asinh', 'atan', 'atan2',
                     'atanh', 'bitwise_left_shift', 'bitwise_invert',
-                    'bitwise_right_shift', 'concat', 'pow', 'iinfo', 'finfo', 'can_cast',
+                    'bitwise_right_shift', 'concat', 'pow', 'can_cast',
                     'result_type', 'bool', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64',
-                    'uint8', 'uint16', 'uint32', 'uint64',
-                    'complex64', 'complex128', 'iinfo', 'finfo',
+                    'uint8', 'uint16', 'uint32', 'uint64', 'complex64', 'complex128',
                     'can_cast', 'count_nonzero', 'result_type']
 
 _all_ignore = ["array_namespace", "get_xp", "da", "np"]
