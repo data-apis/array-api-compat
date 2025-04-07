@@ -1014,7 +1014,36 @@ matrix_transpose = paddle.linalg.matrix_transpose
 
 
 def vecdot(x1: array, x2: array, /, *, axis: int = -1) -> array:
-    x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
+    shape1 = x1.shape
+    shape2 = x2.shape
+    rank1 = len(shape1)
+    rank2 = len(shape2)
+    if rank1 == 0 or rank2 == 0:
+        raise ValueError(
+            f"Vector dot product requires non-scalar inputs (rank > 0). "
+            f"Got ranks {rank1} and {rank2} for shapes {shape1} and {shape2}."
+        )
+    try:
+        norm_axis1 = axis if axis >= 0 else rank1 + axis
+        if not (0 <= norm_axis1 < rank1):
+            raise IndexError # Axis out of bounds for x1
+        norm_axis2 = axis if axis >= 0 else rank2 + axis
+        if not (0 <= norm_axis2 < rank2):
+            raise IndexError # Axis out of bounds for x2
+        size1 = shape1[norm_axis1]
+        size2 = shape2[norm_axis2]
+    except IndexError:
+        raise ValueError(
+            f"Axis {axis} is out of bounds for input shapes {shape1} (rank {rank1}) "
+            f"and/or {shape2} (rank {rank2})."
+        )
+
+    if size1 != size2:
+        raise ValueError(
+            f"Inputs must have the same dimension size along the reduction axis ({axis}). "
+            f"Got shapes {shape1} and {shape2}, with sizes {size1} and {size2} "
+            f"along the normalized axis {norm_axis1} and {norm_axis2} respectively."
+        )
     return paddle.linalg.vecdot(x1, x2, axis=axis)
 
 
