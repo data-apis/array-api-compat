@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from functools import reduce as _reduce, wraps as _wraps
 from builtins import all as _builtin_all, any as _builtin_any
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Any, List, Optional, Sequence, Tuple, Union
 
 import torch
 
 from .._internal import get_xp
 from ..common import _aliases
+from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
@@ -207,6 +208,28 @@ pow = _two_arg(torch.pow)
 remainder = _two_arg(torch.remainder)
 subtract = _two_arg(torch.subtract)
 
+
+def asarray(
+    obj: (
+    Array 
+        | bool | int | float | complex 
+        | NestedSequence[bool | int | float | complex] 
+        | SupportsBufferProtocol
+    ),
+    /,
+    *,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    copy: bool | None = None,
+    **kwargs: Any,
+) -> Array:
+    # torch.asarray does not respect input->output device propagation
+    # https://github.com/pytorch/pytorch/issues/150199
+    if device is None and isinstance(obj, torch.Tensor):
+        device = obj.device
+    return torch.asarray(obj, dtype=dtype, device=device, copy=copy, **kwargs)
+
+
 # These wrappers are mostly based on the fact that pytorch uses 'dim' instead
 # of 'axis'.
 
@@ -285,7 +308,6 @@ def prod(x: Array,
          dtype: Optional[DType] = None,
          keepdims: bool = False,
          **kwargs) -> Array:
-    x = torch.asarray(x)
     ndim = x.ndim
 
     # https://github.com/pytorch/pytorch/issues/29137. Separate from the logic
@@ -321,7 +343,6 @@ def sum(x: Array,
          dtype: Optional[DType] = None,
          keepdims: bool = False,
          **kwargs) -> Array:
-    x = torch.asarray(x)
     ndim = x.ndim
 
     # https://github.com/pytorch/pytorch/issues/29137.
@@ -351,7 +372,6 @@ def any(x: Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> Array:
-    x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
@@ -376,7 +396,6 @@ def all(x: Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> Array:
-    x = torch.asarray(x)
     ndim = x.ndim
     if axis == ():
         return x.to(torch.bool)
@@ -819,7 +838,7 @@ def sign(x: Array, /) -> Array:
         return out
 
 
-__all__ = ['__array_namespace_info__', 'result_type', 'can_cast',
+__all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',
