@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Union
 
 from .._internal import get_xp
-from ..common import _aliases
+from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
@@ -97,8 +97,7 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    if device not in ["cpu", None]:
-        raise ValueError(f"Unsupported device for NumPy: {device!r}")
+    _helpers._check_device(np, device)
 
     if hasattr(np, '_CopyMode'):
         if copy is None:
@@ -124,6 +123,7 @@ def astype(
     copy: bool = True,
     device: Optional[Device] = None,
 ) -> Array:
+    _helpers._check_device(np, device)
     return x.astype(dtype=dtype, copy=copy)
 
 

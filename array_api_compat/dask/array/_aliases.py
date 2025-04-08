@@ -23,7 +23,7 @@ from numpy import (
 )
 import dask.array as da
 
-from ...common import _aliases, array_namespace
+from ...common import _aliases, _helpers, array_namespace
 from ...common._typing import (
     Array,
     Device,
@@ -54,6 +54,7 @@ def astype(
     specification for more details.
     """
     # TODO: respect device keyword?
+    _helpers._check_device(da, device)
 
     if not copy and dtype == x.dtype:
         return x
@@ -84,6 +85,7 @@ def arange(
     specification for more details.
     """
     # TODO: respect device keyword?
+    _helpers._check_device(da, device)
 
     args = [start]
     if stop is not None:
@@ -155,6 +157,7 @@ def asarray(
     specification for more details.
     """
     # TODO: respect device keyword?
+    _helpers._check_device(da, device)
 
     if isinstance(obj, da.Array):
         if dtype is not None and dtype != obj.dtype:
