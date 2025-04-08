@@ -169,16 +169,26 @@ class __array_namespace_info__:
         int32 = torch.int32
         int64 = torch.int64
         uint8 = torch.uint8
-        # uint16, uint32, and uint64 are present in newer versions of pytorch,
-        # but they aren't generally supported by the array API functions, so
-        # we omit them from this function.
+        try:
+            # pytorch >= 2.3
+            uint16 = torch.uint16
+            uint32 = torch.uint32
+            uint64 = torch.uint64
+            uint_kinds = {
+                "uint16": uint16,
+                "uint32": uint32,
+                "uint64": uint64,
+            }
+        except AttributeError:
+            uint_kinds = {}
+
         float32 = torch.float32
         float64 = torch.float64
         complex64 = torch.complex64
         complex128 = torch.complex128
 
         if kind is None:
-            return {
+            kinds = {
                 "bool": bool,
                 "int8": int8,
                 "int16": int16,
@@ -190,6 +200,8 @@ class __array_namespace_info__:
                 "complex64": complex64,
                 "complex128": complex128,
             }
+            kinds.update(uint_kinds)
+            return kinds
         if kind == "bool":
             return {"bool": bool}
         if kind == "signed integer":
@@ -200,17 +212,21 @@ class __array_namespace_info__:
                 "int64": int64,
             }
         if kind == "unsigned integer":
-            return {
+            kinds= {
                 "uint8": uint8,
             }
+            kinds.update(uint_kinds)
+            return kinds
         if kind == "integral":
-            return {
+            kinds= {
                 "int8": int8,
                 "int16": int16,
                 "int32": int32,
                 "int64": int64,
                 "uint8": uint8,
             }
+            kinds.update(uint_kinds)
+            return kinds
         if kind == "real floating":
             return {
                 "float32": float32,
@@ -222,7 +238,7 @@ class __array_namespace_info__:
                 "complex128": complex128,
             }
         if kind == "numeric":
-            return {
+            kinds = {
                 "int8": int8,
                 "int16": int16,
                 "int32": int32,
@@ -233,6 +249,9 @@ class __array_namespace_info__:
                 "complex64": complex64,
                 "complex128": complex128,
             }
+            kinds.update(uint_kinds)
+            return kinds
+
         if isinstance(kind, tuple):
             res = {}
             for k in kind:
