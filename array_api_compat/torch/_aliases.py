@@ -35,53 +35,32 @@ _array_api_dtypes = {
     torch.complex128,
 }
 
-_promotion_table  = {
-    # bool
-    (torch.bool, torch.bool): torch.bool,
+_promotion_table = {
     # ints
-    (torch.int8, torch.int8): torch.int8,
     (torch.int8, torch.int16): torch.int16,
     (torch.int8, torch.int32): torch.int32,
     (torch.int8, torch.int64): torch.int64,
-    (torch.int16, torch.int8): torch.int16,
-    (torch.int16, torch.int16): torch.int16,
     (torch.int16, torch.int32): torch.int32,
     (torch.int16, torch.int64): torch.int64,
-    (torch.int32, torch.int8): torch.int32,
-    (torch.int32, torch.int16): torch.int32,
-    (torch.int32, torch.int32): torch.int32,
     (torch.int32, torch.int64): torch.int64,
-    (torch.int64, torch.int8): torch.int64,
-    (torch.int64, torch.int16): torch.int64,
-    (torch.int64, torch.int32): torch.int64,
-    (torch.int64, torch.int64): torch.int64,
-    # uints
-    (torch.uint8, torch.uint8): torch.uint8,
     # ints and uints (mixed sign)
-    (torch.int8, torch.uint8): torch.int16,
-    (torch.int16, torch.uint8): torch.int16,
-    (torch.int32, torch.uint8): torch.int32,
-    (torch.int64, torch.uint8): torch.int64,
     (torch.uint8, torch.int8): torch.int16,
     (torch.uint8, torch.int16): torch.int16,
     (torch.uint8, torch.int32): torch.int32,
     (torch.uint8, torch.int64): torch.int64,
     # floats
-    (torch.float32, torch.float32): torch.float32,
     (torch.float32, torch.float64): torch.float64,
-    (torch.float64, torch.float32): torch.float64,
-    (torch.float64, torch.float64): torch.float64,
     # complexes
-    (torch.complex64, torch.complex64): torch.complex64,
     (torch.complex64, torch.complex128): torch.complex128,
-    (torch.complex128, torch.complex64): torch.complex128,
-    (torch.complex128, torch.complex128): torch.complex128,
     # Mixed float and complex
     (torch.float32, torch.complex64): torch.complex64,
     (torch.float32, torch.complex128): torch.complex128,
     (torch.float64, torch.complex64): torch.complex128,
     (torch.float64, torch.complex128): torch.complex128,
 }
+
+_promotion_table.update({(b, a): c for (a, b), c in _promotion_table.items()})
+_promotion_table.update({(a, a): a for a in _array_api_dtypes})
 
 
 def _two_arg(f):
@@ -150,13 +129,18 @@ def result_type(
         return _reduce(_result_type, others + scalars)
 
 
-def _result_type(x, y):
+def _result_type(
+    x: Array | DType | bool | int | float | complex,
+    y: Array | DType | bool | int | float | complex,
+) -> DType:
     if not (isinstance(x, _py_scalars) or isinstance(y, _py_scalars)):
-        xdt = x.dtype if not isinstance(x, torch.dtype) else x
-        ydt = y.dtype if not isinstance(y, torch.dtype) else y
+        xdt = x if isinstance(x, torch.dtype) else x.dtype
+        ydt = y if isinstance(y, torch.dtype) else y.dtype
 
-        if (xdt, ydt) in _promotion_table:
+        try:
             return _promotion_table[xdt, ydt]
+        except KeyError:
+            pass
 
     # This doesn't result_type(dtype, dtype) for non-array API dtypes
     # because torch.result_type only accepts tensors. This does however, allow
@@ -301,6 +285,25 @@ def _reduce_multiple_axes(f, x, axis, keepdims=False, **kwargs):
             out = torch.unsqueeze(out, a)
     return out
 
+
+def _sum_prod_no_axis(x: Array, dtype: DType | None) -> Array:
+    """
+    Implements `sum(..., axis=())` and `prod(..., axis=())`.
+    
+    Works around https://github.com/pytorch/pytorch/issues/29137
+    """
+    if dtype is not None:
+        return x.clone() if dtype == x.dtype else x.to(dtype)
+
+    # We can't upcast uint8 according to the spec because there is no
+    # torch.uint64, so at least upcast to int64 which is what prod does
+    # when axis=None.
+    if x.dtype in (torch.uint8, torch.int8, torch.int16, torch.int32):
+        return x.to(torch.int64)
+
+    return x.clone()
+
+
 def prod(x: Array,
          /,
          *,
@@ -308,20 +311,9 @@ def prod(x: Array,
          dtype: Optional[DType] = None,
          keepdims: bool = False,
          **kwargs) -> Array:
-    ndim = x.ndim
 
-    # https://github.com/pytorch/pytorch/issues/29137. Separate from the logic
-    # below because it still needs to upcast.
     if axis == ():
-        if dtype is None:
-            # We can't upcast uint8 according to the spec because there is no
-            # torch.uint64, so at least upcast to int64 which is what sum does
-            # when axis=None.
-            if x.dtype in [torch.int8, torch.int16, torch.int32, torch.uint8]:
-                return x.to(torch.int64)
-            return x.clone()
-        return x.to(dtype)
-
+        return _sum_prod_no_axis(x, dtype)
     # torch.prod doesn't support multiple axes
     # (https://github.com/pytorch/pytorch/issues/56586).
     if isinstance(axis, tuple):
@@ -330,7 +322,7 @@ def prod(x: Array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.prod(x, dtype=dtype, **kwargs)
-        res = _axis_none_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
 
     return torch.prod(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
@@ -343,25 +335,14 @@ def sum(x: Array,
          dtype: Optional[DType] = None,
          keepdims: bool = False,
          **kwargs) -> Array:
-    ndim = x.ndim
 
-    # https://github.com/pytorch/pytorch/issues/29137.
-    # Make sure it upcasts.
     if axis == ():
-        if dtype is None:
-            # We can't upcast uint8 according to the spec because there is no
-            # torch.uint64, so at least upcast to int64 which is what sum does
-            # when axis=None.
-            if x.dtype in [torch.int8, torch.int16, torch.int32, torch.uint8]:
-                return x.to(torch.int64)
-            return x.clone()
-        return x.to(dtype)
-
+        return _sum_prod_no_axis(x, dtype)
     if axis is None:
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.sum(x, dtype=dtype, **kwargs)
-        res = _axis_none_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res
 
     return torch.sum(x, axis, dtype=dtype, keepdims=keepdims, **kwargs)
@@ -372,7 +353,7 @@ def any(x: Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> Array:
-    ndim = x.ndim
+
     if axis == ():
         return x.to(torch.bool)
     # torch.any doesn't support multiple axes
@@ -384,7 +365,7 @@ def any(x: Array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.any(x, **kwargs)
-        res = _axis_none_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res.to(torch.bool)
 
     # torch.any doesn't return bool for uint8
@@ -396,7 +377,7 @@ def all(x: Array,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         keepdims: bool = False,
         **kwargs) -> Array:
-    ndim = x.ndim
+
     if axis == ():
         return x.to(torch.bool)
     # torch.all doesn't support multiple axes
@@ -408,7 +389,7 @@ def all(x: Array,
         # torch doesn't support keepdims with axis=None
         # (https://github.com/pytorch/pytorch/issues/71209)
         res = torch.all(x, **kwargs)
-        res = _axis_none_keepdims(res, ndim, keepdims)
+        res = _axis_none_keepdims(res, x.ndim, keepdims)
         return res.to(torch.bool)
 
     # torch.all doesn't return bool for uint8
