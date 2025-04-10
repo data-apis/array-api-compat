@@ -6,6 +6,11 @@ array_api_tests/test_data_type_functions.py::test_finfo[complex64]
 # Rounding error near infinity
 array_api_tests/test_operators_and_elementwise_functions.py::test_clip
 
+# The test suite cannot properly get the signature for vecdot
+# https://github.com/numpy/numpy/pull/26237
+array_api_tests/test_signatures.py::test_func_signature[vecdot]
+array_api_tests/test_signatures.py::test_extension_func_signature[linalg.vecdot]
+
 # 2023.12 support
 # uint64 repeats not supported
 array_api_tests/test_manipulation_functions.py::test_repeat
