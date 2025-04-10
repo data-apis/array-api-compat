@@ -10,7 +10,7 @@ from cupy import ndarray as Array
 from cupy.cuda.device import Device
 
 if TYPE_CHECKING:
-    # NumPy 1.x on Python 3.9 and 3.10 fails to parse np.dtype[]
+    # NumPy 1.x on Python 3.10 fails to parse np.dtype[]
     DType = cp.dtype[
         cp.intp
         | cp.int8

@@ -39,11 +39,8 @@ array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and
 # https://github.com/numpy/numpy/issues/21213
 array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 
-# NumPy 1.21 specific XFAILS
+# NumPy 1.22 specific XFAILS
 ############################
-
-# finfo has no smallest_normal
-array_api_tests/test_data_type_functions.py::test_finfo
 
 # dlpack stuff
 array_api_tests/test_has_names.py::test_has_names[creation-from_dlpack]
@@ -69,7 +66,7 @@ array_api_tests/test_searching_functions.py::test_argmin
 array_api_tests/test_signatures.py::test_func_signature[argmax]
 array_api_tests/test_signatures.py::test_func_signature[argmin]
 
-# NumPy 1.21 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
+# NumPy 1.22 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
 # type promotion issues
 array_api_tests/test_manipulation_functions.py::test_concat
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]

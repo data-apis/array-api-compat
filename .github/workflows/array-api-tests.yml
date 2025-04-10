@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: '>= 0'
+      python-versions:
+        required: true
+        type: string
+        description: JSON array of Python versions to test against.
       pytest-extra-args:
         required: false
         type: string
@@ -30,7 +34,7 @@ on:
       extra-env-vars:
         required: false
         type: string
-        description: "Multiline string of environment variables to set for the test run."
+        description: Multiline string of environment variables to set for the test run.
 
 env:
   PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }} --hypothesis-disable-deadline --durations 10"
@@ -40,40 +44,42 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Min version of dask we need dropped support for Python 3.9
-        # There is no numpy git tip for Python 3.9 or 3.10
-        python-version: ${{ (inputs.package-name == 'dask' && fromJson('[''3.10'', ''3.11'', ''3.12'']')) || (inputs.package-name == 'numpy' && inputs.xfails-file-extra == '-dev' && fromJson('[''3.11'', ''3.12'']')) || fromJson('[''3.9'', ''3.10'', ''3.11'', ''3.12'']') }}
+        python-version: ${{ fromJson(inputs.python-versions) }}
 
     steps:
     - name: Checkout array-api-compat
       uses: actions/checkout@v4
       with:
         path: array-api-compat
+
     - name: Checkout array-api-tests
       uses: actions/checkout@v4
       with:
         repository: data-apis/array-api-tests
         submodules: 'true'
         path: array-api-tests
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Set Extra Environment Variables
       # Set additional environment variables if provided
       if: inputs.extra-env-vars
       run: |
         echo "${{ inputs.extra-env-vars }}" >> $GITHUB_ENV
+
     - name: Install dependencies
-      # NumPy 1.21 doesn't support Python 3.11. There doesn't seem to be a way
-      # to put this in the numpy 1.21 config file.
-      if: "! ((matrix.python-version == '3.11' || matrix.python-version == '3.12') && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
       run: |
         python -m pip install --upgrade pip
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.extra-requires }}
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
+
+    - name: Dump pip environment
+      run: pip freeze
+
     - name: Run the array API testsuite (${{ inputs.package-name }})
-      if: "! ((matrix.python-version == '3.11' || matrix.python-version == '3.12') && inputs.package-name == 'numpy' && contains(inputs.package-version, '1.21'))"
       env:
         ARRAY_API_TESTS_MODULE: array_api_compat.${{ inputs.module-name || inputs.package-name }}
         ARRAY_API_TESTS_VERSION: 2024.12
