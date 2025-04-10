@@ -151,13 +151,18 @@ def result_type(
         return _reduce(_result_type, others + scalars)
 
 
-def _result_type(x, y):
+def _result_type(
+    x: Array | DType | bool | int | float | complex,
+    y: Array | DType | bool | int | float | complex,
+) -> DType:
     if not (isinstance(x, _py_scalars) or isinstance(y, _py_scalars)):
-        xdt = x.dtype if not isinstance(x, torch.dtype) else x
-        ydt = y.dtype if not isinstance(y, torch.dtype) else y
+        xdt = x if isinstance(x, torch.dtype) else x.dtype
+        ydt = y if isinstance(y, torch.dtype) else y.dtype
 
-        if (xdt, ydt) in _promotion_table:
+        try:
             return _promotion_table[xdt, ydt]
+        except KeyError:
+            pass
 
     # This doesn't result_type(dtype, dtype) for non-array API dtypes
     # because torch.result_type only accepts tensors. This does however, allow
