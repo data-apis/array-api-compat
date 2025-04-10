@@ -12,8 +12,10 @@ array_api_tests/test_array_object.py::test_getitem_masking
 # zero division error, and typeerror: tuple indices must be integers or slices not tuple
 array_api_tests/test_creation_functions.py::test_eye
 
-# finfo(float32).eps returns float32 but should return float
+# attributes are np.float32 instead of float
+# (see also https://github.com/data-apis/array-api/issues/405)
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
+array_api_tests/test_data_type_functions.py::test_finfo[complex64]
 
 # out[-1]=dask.array<getitem ...> but should be some floating number
 # (I think the test is not forcing the op to be computed?)

@@ -61,6 +61,8 @@ matmul = get_xp(cp)(_aliases.matmul)
 matrix_transpose = get_xp(cp)(_aliases.matrix_transpose)
 tensordot = get_xp(cp)(_aliases.tensordot)
 sign = get_xp(cp)(_aliases.sign)
+finfo = get_xp(cp)(_aliases.finfo)
+iinfo = get_xp(cp)(_aliases.iinfo)
 
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
@@ -87,7 +89,7 @@ def asarray(
     if copy is False:
         raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
 
-    like = obj if _helpers.is_cupy_array(obj) else None
+    like = obj if isinstance(obj, cp.ndarray) else None
     with _helpers._device_ctx(cp, device, like=like):
         if copy is None:
             return cp.asarray(obj, dtype=dtype, **kwargs)
