@@ -10,7 +10,7 @@ from typing import Any, NamedTuple, Optional, Sequence, Tuple, Union
 from ._typing import Array, Device, DType, Namespace
 from ._helpers import (
     array_namespace,
-    _check_device,
+    _device_ctx,
     device as _get_device,
     is_cupy_namespace as _is_cupy_namespace
 )
@@ -31,8 +31,8 @@ def arange(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.arange(start, stop=stop, step=step, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.arange(start, stop=stop, step=step, dtype=dtype, **kwargs)
 
 def empty(
     shape: Union[int, Tuple[int, ...]],
@@ -42,8 +42,8 @@ def empty(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.empty(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.empty(shape, dtype=dtype, **kwargs)
 
 def empty_like(
     x: Array,
@@ -54,8 +54,8 @@ def empty_like(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.empty_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.empty_like(x, dtype=dtype, **kwargs)
 
 def eye(
     n_rows: int,
@@ -68,8 +68,8 @@ def eye(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype, **kwargs)
 
 def full(
     shape: Union[int, Tuple[int, ...]],
@@ -80,8 +80,8 @@ def full(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.full(shape, fill_value, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.full(shape, fill_value, dtype=dtype, **kwargs)
 
 def full_like(
     x: Array,
@@ -93,8 +93,8 @@ def full_like(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.full_like(x, fill_value, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.full_like(x, fill_value, dtype=dtype, **kwargs)
 
 def linspace(
     start: Union[int, float],
@@ -108,8 +108,8 @@ def linspace(
     endpoint: bool = True,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, **kwargs)
 
 def ones(
     shape: Union[int, Tuple[int, ...]],
@@ -119,8 +119,8 @@ def ones(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.ones(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.ones(shape, dtype=dtype, **kwargs)
 
 def ones_like(
     x: Array,
@@ -131,8 +131,8 @@ def ones_like(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.ones_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.ones_like(x, dtype=dtype, **kwargs)
 
 def zeros(
     shape: Union[int, Tuple[int, ...]],
@@ -142,8 +142,8 @@ def zeros(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.zeros(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.zeros(shape, dtype=dtype, **kwargs)
 
 def zeros_like(
     x: Array,
@@ -154,8 +154,8 @@ def zeros_like(
     device: Optional[Device] = None,
     **kwargs,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.zeros_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.zeros_like(x, dtype=dtype, **kwargs)
 
 # np.unique() is split into four functions in the array API:
 # unique_all, unique_counts, unique_inverse, and unique_values (this is done
