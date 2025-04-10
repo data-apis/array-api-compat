@@ -46,8 +46,6 @@ NumPy has a few issues:
 
 - `unique_*` will not compare nans as unequal.
 - No `from_dlpack` or `__dlpack__`.
-- `argmax()` and `argmin()` do not have `keepdims`.
-- `qr()` doesn't support matrix stacks.
 - Type promotion behavior will be value based for 0-D arrays (and there is no
   `NPY_PROMOTION_STATE=weak` to disable this).
 
