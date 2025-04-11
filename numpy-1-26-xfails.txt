@@ -3,9 +3,6 @@
 array_api_tests/test_data_type_functions.py::test_finfo[float32]
 array_api_tests/test_data_type_functions.py::test_finfo[complex64]
 
-# Rounding error near infinity
-array_api_tests/test_operators_and_elementwise_functions.py::test_clip
-
 # Array methods and attributes not already on np.ndarray cannot be wrapped
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
