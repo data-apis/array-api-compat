@@ -101,7 +101,6 @@ class __array_namespace_info__:
         return {
             "boolean indexing": True,
             "data-dependent shapes": True,
-            # 'max rank' will be part of the 2024.12 standard
             "max dimensions": 64,
         }
 
