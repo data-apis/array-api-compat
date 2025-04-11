@@ -7,13 +7,12 @@ name = "array-api-compat"
 dynamic = ["version"]
 description = "A wrapper around NumPy and other array libraries to make them compatible with the Array API standard"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [{name = "Consortium for Python Data API Standards"}]
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -24,11 +23,14 @@ classifiers = [
 
 [project.optional-dependencies]
 cupy = ["cupy"]
-dask = ["dask"]
+dask = ["dask>=2024.9.0"]
 jax = ["jax"]
-numpy = ["numpy"]
+# Note: array-api-compat follows scikit-learn minimum dependencies, which support
+# much older versions of NumPy than what SPEC0 recommends.
+numpy = ["numpy>=1.22"]
 pytorch = ["torch"]
 sparse = ["sparse>=0.15.1"]
+ndonnx = ["ndonnx"]
 docs = [
     "furo",
     "linkify-it-py",
@@ -39,13 +41,13 @@ docs = [
 ]
 dev = [
     "array-api-strict",
-    "dask[array]",
+    "dask[array]>=2024.9.0",
     "jax[cpu]",
-    "numpy",
+    "numpy>=1.22",
     "pytest",
     "torch",
     "sparse>=0.15.1",
-    "ndonnx; python_version>=\"3.10\""
+    "ndonnx"
 ]
 
 [project.urls]

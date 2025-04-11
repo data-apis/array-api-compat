@@ -1,0 +1,12 @@
+name: Array API Tests (NumPy 1.22)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-numpy-1-22:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: numpy
+      package-version: '== 1.22.*'
+      xfails-file-extra: '-1-22'
+      python-versions: '[''3.10'']'

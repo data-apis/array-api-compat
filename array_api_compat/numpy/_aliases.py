@@ -99,18 +99,12 @@ def asarray(
     """
     _helpers._check_device(np, device)
 
-    if hasattr(np, '_CopyMode'):
-        if copy is None:
-            copy = np._CopyMode.IF_NEEDED
-        elif copy is False:
-            copy = np._CopyMode.NEVER
-        elif copy is True:
-            copy = np._CopyMode.ALWAYS
-    else:
-        # Not present in older NumPys. In this case, we cannot really support
-        # copy=False.
-        if copy is False:
-            raise NotImplementedError("asarray(copy=False) requires a newer version of NumPy.")
+    if copy is None:
+        copy = np._CopyMode.IF_NEEDED
+    elif copy is False:
+        copy = np._CopyMode.NEVER
+    elif copy is True:
+        copy = np._CopyMode.ALWAYS
 
     return np.array(obj, copy=copy, dtype=dtype, **kwargs)
 

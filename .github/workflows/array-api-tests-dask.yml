@@ -7,7 +7,6 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: dask
-      package-version: '>= 2024.9.0'
       module-name: dask.array
       extra-requires: numpy
       # Dask is substantially slower then other libraries on unit tests.
@@ -16,3 +15,4 @@ jobs:
       # flakiness. Before changes to dask-xfails.txt or dask-skips.txt, please run
       # the full test suite with at least 200 examples.
       pytest-extra-args: --max-examples=5
+      python-versions: '[''3.10'', ''3.13'']'

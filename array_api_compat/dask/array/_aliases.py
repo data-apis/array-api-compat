@@ -147,7 +147,7 @@ def asarray(
     *,
     dtype: Optional[DType] = None,
     device: Optional[Device] = None,
-    copy: Optional[Union[bool, np._CopyMode]] = None,
+    copy: Optional[bool] = None,
     **kwargs,
 ) -> Array:
     """

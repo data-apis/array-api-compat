@@ -10,7 +10,7 @@ from numpy import ndarray as Array
 
 Device = Literal["cpu"]
 if TYPE_CHECKING:
-    # NumPy 1.x on Python 3.9 and 3.10 fails to parse np.dtype[]
+    # NumPy 1.x on Python 3.10 fails to parse np.dtype[]
     DType = np.dtype[
         np.intp
         | np.int8
