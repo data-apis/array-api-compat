@@ -50,7 +50,7 @@ class __array_namespace_info__:
 
     Examples
     --------
-    >>> info = np.__array_namespace_info__()
+    >>> info = xp.__array_namespace_info__()
     >>> info.default_dtypes()
     {'real floating': dask.float64,
      'complex floating': dask.complex128,
@@ -103,10 +103,11 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.capabilities()
         {'boolean indexing': True,
-         'data-dependent shapes': True}
+         'data-dependent shapes': True,
+         'max dimensions': 64}
 
         """
         return {
@@ -135,7 +136,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.default_device()
         'cpu'
 
@@ -173,7 +174,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.default_dtypes()
         {'real floating': dask.float64,
          'complex floating': dask.complex128,
@@ -239,7 +240,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.dtypes(kind='signed integer')
         {'int8': dask.int8,
          'int16': dask.int16,
@@ -347,7 +348,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.devices()
         ['cpu', DASK_DEVICE]
 

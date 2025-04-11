@@ -50,7 +50,7 @@ class __array_namespace_info__:
 
     Examples
     --------
-    >>> info = np.__array_namespace_info__()
+    >>> info = xp.__array_namespace_info__()
     >>> info.default_dtypes()
     {'real floating': cupy.float64,
      'complex floating': cupy.complex128,
@@ -95,7 +95,8 @@ class __array_namespace_info__:
         >>> info = xp.__array_namespace_info__()
         >>> info.capabilities()
         {'boolean indexing': True,
-         'data-dependent shapes': True}
+         'data-dependent shapes': True,
+         'max dimensions': 64}
 
         """
         return {

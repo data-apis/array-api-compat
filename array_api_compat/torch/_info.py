@@ -34,7 +34,7 @@ class __array_namespace_info__:
 
     Examples
     --------
-    >>> info = np.__array_namespace_info__()
+    >>> info = xp.__array_namespace_info__()
     >>> info.default_dtypes()
     {'real floating': numpy.float64,
      'complex floating': numpy.complex128,
@@ -76,10 +76,11 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.capabilities()
         {'boolean indexing': True,
-         'data-dependent shapes': True}
+         'data-dependent shapes': True,
+         'max dimensions': 64}
 
         """
         return {
@@ -106,7 +107,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.default_device()
         device(type='cpu')
 
@@ -147,7 +148,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.default_dtypes()
         {'real floating': torch.float32,
          'complex floating': torch.complex64,
@@ -296,7 +297,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.dtypes(kind='signed integer')
         {'int8': numpy.int8,
          'int16': numpy.int16,
@@ -331,7 +332,7 @@ class __array_namespace_info__:
 
         Examples
         --------
-        >>> info = np.__array_namespace_info__()
+        >>> info = xp.__array_namespace_info__()
         >>> info.devices()
         [device(type='cpu'), device(type='mps', index=0), device(type='meta')]
 
