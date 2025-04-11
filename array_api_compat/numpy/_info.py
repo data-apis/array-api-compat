@@ -94,13 +94,13 @@ class __array_namespace_info__:
         >>> info = np.__array_namespace_info__()
         >>> info.capabilities()
         {'boolean indexing': True,
-         'data-dependent shapes': True}
+         'data-dependent shapes': True,
+         'max dimensions': 64}
 
         """
         return {
             "boolean indexing": True,
             "data-dependent shapes": True,
-            # 'max rank' will be part of the 2024.12 standard
             "max dimensions": 64,
         }
 
@@ -119,7 +119,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        device : str
+        device : Device
             The default device used for new NumPy arrays.
 
         Examples
@@ -326,7 +326,7 @@ class __array_namespace_info__:
 
         Returns
         -------
-        devices : list of str
+        devices : list[Device]
             The devices supported by NumPy.
 
         See Also
