@@ -42,6 +42,10 @@ array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
 # cross has some promotion bug that is fixed in newer numpy versions
 array_api_tests/test_linalg.py::test_cross
 
+# linspace(-0.0, -1.0, num=1) returns +0.0 instead of -0.0.
+# Fixed in newer numpy versions.
+array_api_tests/test_creation_functions.py::test_linspace
+
 # vector_norm with ord=-1 which has since been fixed
 # https://github.com/numpy/numpy/issues/21083
 array_api_tests/test_linalg.py::test_vector_norm
@@ -116,6 +120,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isu
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[subtract(x1, x2)]
+array_api_tests/test_searching_functions.py::test_where
 array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
 
 # 2023.12 support
