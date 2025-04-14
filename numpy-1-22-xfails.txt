@@ -48,6 +48,8 @@ array_api_tests/test_linalg.py::test_vector_norm
 
 # NumPy 1.22 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
 # type promotion issues
+# NOTE: some of these may not fail until one runs array-api-tests with
+# --max-examples 100000
 array_api_tests/test_manipulation_functions.py::test_concat
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
