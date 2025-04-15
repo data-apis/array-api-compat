@@ -839,6 +839,19 @@ def size(x: Array) -> int | None:
     return None if math.isnan(out) else out
 
 
+@cache
+def _is_writeable_cls(cls: type) -> bool | None:
+    if (
+        _issubclass_fast(cls, "numpy", "generic")
+        or _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "sparse", "SparseArray")
+    ):
+        return False
+    if _is_array_api_cls(cls):
+        return True
+    return None
+
+
 def is_writeable_array(x: object) -> bool:
     """
     Return False if ``x.__setitem__`` is expected to raise; True otherwise.
@@ -849,11 +862,32 @@ def is_writeable_array(x: object) -> bool:
     As there is no standard way to check if an array is writeable without actually
     writing to it, this function blindly returns True for all unknown array types.
     """
-    if is_numpy_array(x):
+    cls = type(x)
+    if _issubclass_fast(cls, "numpy", "ndarray"):
         return x.flags.writeable
-    if is_jax_array(x) or is_pydata_sparse_array(x):
+    res = _is_writeable_cls(cls)
+    if res is not None:
+        return res
+    return hasattr(x, '__array_namespace__')
+
+
+@cache
+def _is_lazy_cls(cls: type) -> bool | None:
+    if (
+        _issubclass_fast(cls, "numpy", "ndarray")
+        or _issubclass_fast(cls, "numpy", "generic")
+        or _issubclass_fast(cls, "cupy", "ndarray")
+        or _issubclass_fast(cls, "torch", "Tensor")
+        or _issubclass_fast(cls, "sparse", "SparseArray")
+    ):
         return False
-    return is_array_api_obj(x)
+    if (
+        _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "dask.array", "Array")
+        or _issubclass_fast(cls, "ndonnx", "Array")
+    ):
+        return True
+    return  None
 
 
 def is_lazy_array(x: object) -> bool:
@@ -869,14 +903,6 @@ def is_lazy_array(x: object) -> bool:
     This function errs on the side of caution for array types that may or may not be
     lazy, e.g. JAX arrays, by always returning True for them.
     """
-    if (
-        is_numpy_array(x)
-        or is_cupy_array(x)
-        or is_torch_array(x)
-        or is_pydata_sparse_array(x)
-    ):
-        return False
-
     # **JAX note:** while it is possible to determine if you're inside or outside
     # jax.jit by testing the subclass of a jax.Array object, as well as testing bool()
     # as we do below for unknown arrays, this is not recommended by JAX best practices.
@@ -886,10 +912,13 @@ def is_lazy_array(x: object) -> bool:
     # compatibility, is highly detrimental to performance as the whole graph will end
     # up being computed multiple times.
 
-    if is_jax_array(x) or is_dask_array(x) or is_ndonnx_array(x):
-        return True
+    # Note: skipping reclassification of JAX zero gradient arrays, as one will
+    # exclusively get them once they leave a jax.grad JIT context.
+    res = _is_lazy_cls(type(x))
+    if res is not None:
+        return res
 
-    if not is_array_api_obj(x):
+    if not hasattr(x, "__array_namespace__"):
         return False
 
     # Unknown Array API compatible object. Note that this test may have dire consequences
