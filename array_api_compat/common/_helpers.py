@@ -11,24 +11,42 @@ import sys
 import math
 import inspect
 import warnings
+from functools import cache
 from typing import Optional, Union, Any
 
 from ._typing import Array, Device, Namespace
 
 
-def _is_jax_zero_gradient_array(x: object) -> bool:
+@cache
+def _issubclass_fast(cls: type, modname: str, clsname: str) -> bool:
+    try:
+        mod = sys.modules[modname]
+    except KeyError:
+        return False
+    parent_cls = getattr(mod, clsname)
+    return issubclass(cls, parent_cls)
+
+
+def _is_jax_zero_gradient_array(x: Array) -> bool:
     """Return True if `x` is a zero-gradient array.
 
     These arrays are a design quirk of Jax that may one day be removed.
     See https://github.com/google/jax/issues/20620.
     """
-    if 'numpy' not in sys.modules or 'jax' not in sys.modules:
+    # Fast exit
+    try:
+        dtype = x.dtype
+    except AttributeError:
+        return False
+    if not _issubclass_fast(type(dtype), "numpy.dtypes", "VoidDType"):
         return False
 
-    import numpy as np
-    import jax
+    if "jax" not in sys.modules:
+        return False
 
-    return isinstance(x, np.ndarray) and x.dtype == jax.float0
+    import jax
+    # jax.float0 is a np.dtype([('float0', 'V')])
+    return dtype == jax.float0
 
 
 def is_numpy_array(x: object) -> bool:
@@ -52,15 +70,12 @@ def is_numpy_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing NumPy if it isn't already
-    if 'numpy' not in sys.modules:
-        return False
-
-    import numpy as np
-
     # TODO: Should we reject ndarray subclasses?
-    return (isinstance(x, (np.ndarray, np.generic))
-            and not _is_jax_zero_gradient_array(x))
+    cls = type(x)
+    return (
+        _issubclass_fast(cls, "numpy", "ndarray") 
+        or _issubclass_fast(cls, "numpy", "generic")
+    ) and not _is_jax_zero_gradient_array(x)
 
 
 def is_cupy_array(x: object) -> bool:
@@ -84,14 +99,7 @@ def is_cupy_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing CuPy if it isn't already
-    if 'cupy' not in sys.modules:
-        return False
-
-    import cupy as cp
-
-    # TODO: Should we reject ndarray subclasses?
-    return isinstance(x, cp.ndarray)
+    return _issubclass_fast(type(x), "cupy", "ndarray")
 
 
 def is_torch_array(x: object) -> bool:
@@ -112,14 +120,7 @@ def is_torch_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing torch if it isn't already
-    if 'torch' not in sys.modules:
-        return False
-
-    import torch
-
-    # TODO: Should we reject ndarray subclasses?
-    return isinstance(x, torch.Tensor)
+    return _issubclass_fast(type(x), "torch", "Tensor")
 
 
 def is_ndonnx_array(x: object) -> bool:
@@ -141,13 +142,7 @@ def is_ndonnx_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing torch if it isn't already
-    if 'ndonnx' not in sys.modules:
-        return False
-
-    import ndonnx as ndx
-
-    return isinstance(x, ndx.Array)
+    return _issubclass_fast(type(x), "ndonnx", "Array")
 
 
 def is_dask_array(x: object) -> bool:
@@ -169,13 +164,7 @@ def is_dask_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    # Avoid importing dask if it isn't already
-    if 'dask.array' not in sys.modules:
-        return False
-
-    import dask.array
-
-    return isinstance(x, dask.array.Array)
+    return _issubclass_fast(type(x), "dask.array", "Array")
 
 
 def is_jax_array(x: object) -> bool:
@@ -198,13 +187,7 @@ def is_jax_array(x: object) -> bool:
     is_dask_array
     is_pydata_sparse_array
     """
-    # Avoid importing jax if it isn't already
-    if 'jax' not in sys.modules:
-        return False
-
-    import jax
-
-    return isinstance(x, jax.Array) or _is_jax_zero_gradient_array(x)
+    return _issubclass_fast(type(x), "jax", "Array") or _is_jax_zero_gradient_array(x)
 
 
 def is_pydata_sparse_array(x) -> bool:
@@ -227,14 +210,8 @@ def is_pydata_sparse_array(x) -> bool:
     is_dask_array
     is_jax_array
     """
-    # Avoid importing jax if it isn't already
-    if 'sparse' not in sys.modules:
-        return False
-
-    import sparse
-
     # TODO: Account for other backends.
-    return isinstance(x, sparse.SparseArray)
+    return _issubclass_fast(type(x), "sparse", "SparseArray")
 
 
 def is_array_api_obj(x: object) -> bool:
@@ -252,13 +229,22 @@ def is_array_api_obj(x: object) -> bool:
     is_dask_array
     is_jax_array
     """
-    return is_numpy_array(x) \
-        or is_cupy_array(x) \
-        or is_torch_array(x) \
-        or is_dask_array(x) \
-        or is_jax_array(x) \
-        or is_pydata_sparse_array(x) \
-        or hasattr(x, '__array_namespace__')
+    return hasattr(x, '__array_namespace__') or _is_array_api_cls(type(x))
+
+
+@cache
+def _is_array_api_cls(cls: type) -> bool:
+    return (
+        # TODO: drop support for numpy<2 which didn't have __array_namespace__
+        _issubclass_fast(cls, "numpy", "ndarray")
+        or _issubclass_fast(cls, "numpy", "generic")
+        or _issubclass_fast(cls, "cupy", "ndarray")
+        or _issubclass_fast(cls, "torch", "Tensor")
+        or _issubclass_fast(cls, "dask.array", "Array")
+        or _issubclass_fast(cls, "sparse", "SparseArray")
+        # TODO: drop support for jax<0.4.32 which didn't have __array_namespace__
+        or _issubclass_fast(cls, "jax", "Array")
+    )
 
 
 def _compat_module_name() -> str:
@@ -266,6 +252,7 @@ def _compat_module_name() -> str:
     return __name__.removesuffix('.common._helpers')
 
 
+@cache
 def is_numpy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a NumPy namespace.
@@ -287,6 +274,7 @@ def is_numpy_namespace(xp: Namespace) -> bool:
     return xp.__name__ in {'numpy', _compat_module_name() + '.numpy'}
 
 
+@cache
 def is_cupy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a CuPy namespace.
@@ -308,6 +296,7 @@ def is_cupy_namespace(xp: Namespace) -> bool:
     return xp.__name__ in {'cupy', _compat_module_name() + '.cupy'}
 
 
+@cache
 def is_torch_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a PyTorch namespace.
@@ -348,6 +337,7 @@ def is_ndonnx_namespace(xp: Namespace) -> bool:
     return xp.__name__ == 'ndonnx'
 
 
+@cache
 def is_dask_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a Dask namespace.
@@ -952,4 +942,4 @@ __all__ = [
     "to_device",
 ]
 
-_all_ignore = ['sys', 'math', 'inspect', 'warnings']
+_all_ignore = ['cache', 'sys', 'math', 'inspect', 'warnings']
