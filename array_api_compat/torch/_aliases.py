@@ -574,6 +574,11 @@ def count_nonzero(
         return result
 
 
+# "repeat" is torch.repeat_interleave;  also the dim argument
+def repeat(x: Array, repeats: int | Array, /, *, axis: int | None = None) -> Array:
+    return torch.repeat_interleave(x, repeats, axis)
+
+
 def where(
     condition: Array, 
     x1: Array | bool | int | float | complex, 
@@ -854,6 +859,6 @@ __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo']
+           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat']
 
 _all_ignore = ['torch', 'get_xp']
