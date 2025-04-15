@@ -4,15 +4,24 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
-        numpy-version: ['1.21', '1.26', '2.0', 'dev']
-        exclude:
-          - python-version: '3.11'
-            numpy-version: '1.21'
-          - python-version: '3.12'
-            numpy-version: '1.21'
-      fail-fast: true
+        include:
+          - numpy-version: '1.22'
+            python-version: '3.10'
+          - numpy-version: '1.26'
+            python-version: '3.10'
+          - numpy-version: '1.26'
+            python-version: '3.12'
+          - numpy-version: 'latest'
+            python-version: '3.10'
+          - numpy-version: 'latest'
+            python-version: '3.13'
+          - numpy-version: 'dev'
+            python-version: '3.11'
+          - numpy-version: 'dev'
+            python-version: '3.13'
+  
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -21,22 +30,29 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install pytest
+
           if [ "${{ matrix.numpy-version }}" == "dev" ]; then
-            PIP_EXTRA='numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
-          elif [ "${{ matrix.numpy-version }}" == "1.21" ]; then
-            PIP_EXTRA='numpy==1.21.*'
+            python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+          elif [ "${{ matrix.numpy-version }}" == "1.22" ]; then
+            python -m pip install 'numpy==1.22.*'
+          elif [ "${{ matrix.numpy-version }}" == "1.26" ]; then
+            python -m pip install 'numpy==1.26.*'
           else
-            PIP_EXTRA='numpy==1.26.*'
+            # Don't `pip install .[dev]` as it would pull in the whole torch cuda stack
+            python -m pip install array-api-strict dask[array] jax[cpu] numpy sparse
+            python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+            if [ "${{ matrix.python-version }}" != "3.13" ]; then
+              # onnx wheels are not available on Python 3.13 at the moment of writing
+              python -m pip install ndonnx
+            fi
           fi
 
-          python -m pip install .[dev] $PIP_EXTRA
+      - name: Dump pip environment
+        run: pip freeze
+
+      - name: Test it installs
+        run: python -m pip install .
 
       - name: Run Tests
-        run: |
-          if [[ "${{ matrix.numpy-version }}" == "1.21" || "${{ matrix.numpy-version }}" == "dev" ]]; then
-             PYTEST_EXTRA=(-k "numpy and not jax and not torch and not dask and not sparse")
-          fi
-          pytest -v "${PYTEST_EXTRA[@]}"
-
-          # Make sure it installs
-          python -m pip install .
+        run: pytest -v

@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 
-import array_api_strict
 import numpy as np
 import pytest
 
@@ -171,9 +170,10 @@ def test_sort_argsort_chunk_size(xp, func, shape, chunks):
 @pytest.mark.parametrize("func", ["sort", "argsort"])
 def test_sort_argsort_meta(xp, func):
     """Test meta-namespace other than numpy"""
-    typ = type(array_api_strict.asarray(0))
+    mxp = pytest.importorskip("array_api_strict")
+    typ = type(mxp.asarray(0))
     a = da.random.random(10)
-    b = a.map_blocks(array_api_strict.asarray)
+    b = a.map_blocks(mxp.asarray)
     assert isinstance(b._meta, typ)
     c = getattr(xp, func)(b)
     assert isinstance(c._meta, typ)
