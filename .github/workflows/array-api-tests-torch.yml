@@ -8,6 +8,4 @@ jobs:
     with:
       package-name: torch
       extra-requires: '--index-url https://download.pytorch.org/whl/cpu'
-      extra-env-vars: |
-        ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64
       python-versions: '[''3.10'', ''3.13'']'
