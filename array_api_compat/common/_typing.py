@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import ModuleType as Namespace
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol, TypeAlias, TypeVar
 
 __all__ = [
     "Array",
@@ -30,7 +30,7 @@ class HasShape(Protocol[_T_co]):
     def shape(self, /) -> _T_co: ...
 
 
-SupportsBufferProtocol = Any
-Array = Any
-Device = Any
-DType = Any
+SupportsBufferProtocol: TypeAlias = Any
+Array: TypeAlias = Any
+Device: TypeAlias = Any
+DType: TypeAlias = Any
