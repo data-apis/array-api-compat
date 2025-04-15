@@ -283,21 +283,15 @@ with the environment variable <code class="docutils literal notranslate"><span c
 <code class="docutils literal notranslate"><span class="pre">np._set_promotion_state('weak')</span></code> (requires NumPy 1.24 or newer, see <a class="reference external" href="https://numpy.org/neps/nep-0050-scalar-promotion.html">NEP
 50</a> and
 <a class="reference external" href="https://github.com/numpy/numpy/issues/22341">https://github.com/numpy/numpy/issues/22341</a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">asarray()</span></code> does not support <code class="docutils literal notranslate"><span class="pre">copy=False</span></code>.</p></li>
 <li><p>Functions which are not wrapped may not have the same type annotations
 as the spec.</p></li>
 <li><p>Functions which are not wrapped may not use positional-only arguments.</p></li>
 </ul>
-<p>The minimum supported NumPy version is 1.21. However, this older version of
+<p>The minimum supported NumPy version is 1.22. However, this older version of
 NumPy has a few issues:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">unique_*</span></code> will not compare nans as unequal.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">finfo()</span></code> has no <code class="docutils literal notranslate"><span class="pre">smallest_normal</span></code>.</p></li>
 <li><p>No <code class="docutils literal notranslate"><span class="pre">from_dlpack</span></code> or <code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">argmax()</span></code> and <code class="docutils literal notranslate"><span class="pre">argmin()</span></code> do not have <code class="docutils literal notranslate"><span class="pre">keepdims</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">qr()</span></code> doesn’t support matrix stacks.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">asarray()</span></code> doesn’t support <code class="docutils literal notranslate"><span class="pre">copy=True</span></code> (as noted above, <code class="docutils literal notranslate"><span class="pre">copy=False</span></code> is not
-supported even in the latest NumPy).</p></li>
 <li><p>Type promotion behavior will be value based for 0-D arrays (and there is no
 <code class="docutils literal notranslate"><span class="pre">NPY_PROMOTION_STATE=weak</span></code> to disable this).</p></li>
 </ul>
@@ -316,8 +310,8 @@ library should be used instead.</p></li>
 <a class="reference external" href="https://data-apis.org/array-api/draft/API_specification/generated/array_api.array.size.html"><code class="docutils literal notranslate"><span class="pre">x.size</span></code></a>
 attribute in the spec. Use the <a class="reference internal" href="helper-functions.html#array_api_compat.size" title="array_api_compat.size"><code class="xref py py-func docutils literal notranslate"><span class="pre">size()</span></code></a> helper function as a
 portable workaround.</p></li>
-<li><p>PyTorch does not have unsigned integer types other than <code class="docutils literal notranslate"><span class="pre">uint8</span></code>, and no
-attempt is made to implement them here.</p></li>
+<li><p>PyTorch has incomplete support for unsigned integer types other
+than <code class="docutils literal notranslate"><span class="pre">uint8</span></code>, and no attempt is made to implement them here.</p></li>
 <li><p>PyTorch has type promotion semantics that differ from the array API
 specification for 0-D tensor objects. The array functions in this wrapper
 library do work around this, but the operators on the Tensor object do not,
@@ -337,7 +331,6 @@ do not support floating-point <code class="docutils literal notranslate"><span c
 <li><p>As with NumPy, type annotations and positional-only arguments may not
 exactly match the spec for functions that are not wrapped at all.</p></li>
 </ul>
-<p>The minimum supported PyTorch version is 1.13.</p>
 </section>
 <section id="jax">
 <span id="jax-support"></span><h2><a class="reference external" href="https://jax.readthedocs.io/en/latest/">JAX</a><a class="headerlink" href="#jax" title="Link to this heading">¶</a></h2>
@@ -366,7 +359,6 @@ that you find under the <code class="docutils literal notranslate"><span class="
 <li><p><code class="docutils literal notranslate"><span class="pre">matrix_rank</span></code>
 Other methods may only be partially implemented or return incorrect results at times.</p></li>
 </ul>
-<p>The minimum supported Dask version is 2023.12.0.</p>
 </section>
 <section id="sparse">
 <span id="sparse-support"></span><h2><a class="reference external" href="https://sparse.pydata.org/en/stable/">Sparse</a><a class="headerlink" href="#sparse" title="Link to this heading">¶</a></h2>

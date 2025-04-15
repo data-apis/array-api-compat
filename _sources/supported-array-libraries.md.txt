@@ -36,23 +36,16 @@ deviations from the standard should be noted:
   50](https://numpy.org/neps/nep-0050-scalar-promotion.html) and
   https://github.com/numpy/numpy/issues/22341)
 
-- `asarray()` does not support `copy=False`.
-
 - Functions which are not wrapped may not have the same type annotations
   as the spec.
 
 - Functions which are not wrapped may not use positional-only arguments.
 
-The minimum supported NumPy version is 1.21. However, this older version of
+The minimum supported NumPy version is 1.22. However, this older version of
 NumPy has a few issues:
 
 - `unique_*` will not compare nans as unequal.
-- `finfo()` has no `smallest_normal`.
 - No `from_dlpack` or `__dlpack__`.
-- `argmax()` and `argmin()` do not have `keepdims`.
-- `qr()` doesn't support matrix stacks.
-- `asarray()` doesn't support `copy=True` (as noted above, `copy=False` is not
-  supported even in the latest NumPy).
 - Type promotion behavior will be value based for 0-D arrays (and there is no
   `NPY_PROMOTION_STATE=weak` to disable this).
 
@@ -72,8 +65,8 @@ version.
   attribute in the spec. Use the {func}`~.size()` helper function as a
   portable workaround.
 
-- PyTorch does not have unsigned integer types other than `uint8`, and no
-  attempt is made to implement them here.
+- PyTorch has incomplete support for unsigned integer types other
+  than `uint8`, and no attempt is made to implement them here.
 
 - PyTorch has type promotion semantics that differ from the array API
   specification for 0-D tensor objects. The array functions in this wrapper
@@ -99,8 +92,6 @@ version.
 
 - As with NumPy, type annotations and positional-only arguments may not
   exactly match the spec for functions that are not wrapped at all.
-
-The minimum supported PyTorch version is 1.13.
 
 (jax-support)=
 ## [JAX](https://jax.readthedocs.io/en/latest/)
@@ -130,8 +121,6 @@ For `linalg`, several methods are missing, for example:
 - `matrix_norm`
 - `matrix_rank`
 Other methods may only be partially implemented or return incorrect results at times.
-
-The minimum supported Dask version is 2023.12.0.
 
 (sparse-support)=
 ## [Sparse](https://sparse.pydata.org/en/stable/)
