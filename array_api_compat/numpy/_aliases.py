@@ -173,5 +173,8 @@ __all__ = [
     "pow",
 ]
 __all__ += _aliases.__all__
-
 _all_ignore = ["np", "get_xp"]
+
+
+def __dir__() -> list[str]:
+    return __all__

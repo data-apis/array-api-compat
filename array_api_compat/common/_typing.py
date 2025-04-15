@@ -3,17 +3,6 @@ from __future__ import annotations
 from types import ModuleType as Namespace
 from typing import Any, Protocol, TypeAlias, TypeVar
 
-__all__ = [
-    "Array",
-    "SupportsArrayNamespace",
-    "DType",
-    "Device",
-    "HasShape",
-    "Namespace",
-    "NestedSequence",
-    "SupportsBufferProtocol",
-]
-
 _T_co = TypeVar("_T_co", covariant=True)
 
 class NestedSequence(Protocol[_T_co]):
@@ -34,3 +23,19 @@ SupportsBufferProtocol: TypeAlias = Any
 Array: TypeAlias = Any
 Device: TypeAlias = Any
 DType: TypeAlias = Any
+
+
+__all__ = [
+    "Array",
+    "SupportsArrayNamespace",
+    "DType",
+    "Device",
+    "HasShape",
+    "Namespace",
+    "NestedSequence",
+    "SupportsBufferProtocol",
+]
+
+
+def __dir__() -> list[str]:
+    return __all__

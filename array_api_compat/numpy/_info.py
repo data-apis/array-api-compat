@@ -357,3 +357,10 @@ class __array_namespace_info__:
 
         """
         return ["cpu"]
+
+
+__all__ = ["__array_namespace_info__"]
+
+
+def __dir__() -> list[str]:
+    return __all__

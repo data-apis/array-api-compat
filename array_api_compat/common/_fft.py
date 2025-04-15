@@ -208,3 +208,6 @@ __all__ = [
     "fftshift",
     "ifftshift",
 ]
+
+def __dir__() -> list[str]:
+    return __all__

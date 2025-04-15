@@ -20,8 +20,14 @@ rfftfreq = get_xp(np)(_fft.rfftfreq)
 fftshift = get_xp(np)(_fft.fftshift)
 ifftshift = get_xp(np)(_fft.ifftshift)
 
+
 __all__ = ["rfft2", "irfft2", "fft2", "ifft2"]
 __all__ += _fft.__all__
+
+
+def __dir__() -> list[str]:
+    return __all__
+
 
 del get_xp
 del np

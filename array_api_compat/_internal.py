@@ -8,8 +8,6 @@ from inspect import signature
 from types import ModuleType
 from typing import TypeVar
 
-__all__ = ["get_xp"]
-
 _T = TypeVar("_T")
 
 
@@ -52,3 +50,10 @@ specification for more details.
         return wrapped_f  # pyright: ignore[reportReturnType]
 
     return inner
+
+
+__all__ = ["get_xp"]
+
+
+def __dir__() -> list[str]:
+    return __all__
