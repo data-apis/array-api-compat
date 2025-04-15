@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from builtins import bool as py_bool
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias, cast
 
 import numpy as np
 
@@ -13,11 +13,9 @@ from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 if TYPE_CHECKING:
-    from typing import Any, Literal
+    from typing_extensions import Buffer, TypeIs
 
-    from typing_extensions import Buffer, TypeAlias, TypeIs
-
-    _Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
+_Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
 
 bool = np.bool_
 

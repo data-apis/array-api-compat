@@ -12,12 +12,22 @@ import inspect
 import math
 import sys
 import warnings
-from typing import TYPE_CHECKING, Any, Literal, SupportsIndex, cast, overload
+from collections.abc import Collection
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Literal,
+    SupportsIndex,
+    TypeAlias,
+    TypeGuard,
+    TypeVar,
+    cast,
+    overload,
+)
 
 from ._typing import Array, Device, HasShape, Namespace, SupportsArrayNamespace
 
 if TYPE_CHECKING:
-    from collections.abc import Collection
 
     import dask.array as da
     import jax
@@ -26,7 +36,9 @@ if TYPE_CHECKING:
     import numpy.typing as npt
     import sparse  # pyright: ignore[reportMissingTypeStubs]
     import torch
-    from typing_extensions import TypeAlias, TypeGuard, TypeIs, TypeVar
+
+    # TODO: import from typing (requires Python >=3.13)
+    from typing_extensions import TypeIs, TypeVar
 
     _SizeT = TypeVar("_SizeT", bound=int | None)
 

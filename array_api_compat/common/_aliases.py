@@ -13,6 +13,7 @@ from ._helpers import is_cupy_namespace as _is_cupy_namespace
 from ._typing import Array, Device, DType, Namespace
 
 if TYPE_CHECKING:
+    # TODO: import from typing (requires Python >=3.13)
     from typing_extensions import TypeIs
 
 # These functions are modified from the NumPy versions.

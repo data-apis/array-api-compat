@@ -2,21 +2,18 @@
 Internal helpers
 """
 
+from collections.abc import Callable
 from functools import wraps
 from inspect import signature
-from typing import TYPE_CHECKING
+from types import ModuleType
+from typing import TypeVar
 
 __all__ = ["get_xp"]
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
-    from types import ModuleType
-    from typing import TypeVar
-
-    _T = TypeVar("_T")
+_T = TypeVar("_T")
 
 
-def get_xp(xp: "ModuleType") -> "Callable[[Callable[..., _T]], Callable[..., _T]]":
+def get_xp(xp: ModuleType) -> Callable[[Callable[..., _T]], Callable[..., _T]]:
     """
     Decorator to automatically replace xp with the corresponding array module.
 
@@ -33,7 +30,7 @@ def get_xp(xp: "ModuleType") -> "Callable[[Callable[..., _T]], Callable[..., _T]
 
     """
 
-    def inner(f: "Callable[..., _T]", /) -> "Callable[..., _T]":
+    def inner(f: Callable[..., _T], /) -> Callable[..., _T]:
         @wraps(f)
         def wrapped_f(*args: object, **kwargs: object) -> object:
             return f(*args, xp=xp, **kwargs)
