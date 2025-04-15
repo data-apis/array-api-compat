@@ -781,42 +781,28 @@ def _cupy_to_device(
     /,
     stream: int | Any | None = None,
 ) -> _CupyArray:
-    import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
-    from cupy.cuda import Device as _Device  # pyright: ignore
-    from cupy.cuda import stream as stream_module  # pyright: ignore
-    from cupy_backends.cuda.api import runtime  # pyright: ignore
+    import cupy as cp
 
-    if device == x.device:
-        return x
-    elif device == "cpu":
+    if device == "cpu":
         # allowing us to use `to_device(x, "cpu")`
         # is useful for portable test swapping between
         # host and device backends
         return x.get()
-    elif not isinstance(device, _Device):
-        raise ValueError(f"Unsupported device {device!r}")
-    else:
-        # see cupy/cupy#5985 for the reason how we handle device/stream here
-        prev_device: Any = runtime.getDevice()  # pyright: ignore[reportUnknownMemberType]
-        prev_stream = None
-        if stream is not None:
-            prev_stream: Any = stream_module.get_current_stream()  # pyright: ignore
-            # stream can be an int as specified in __dlpack__, or a CuPy stream
-            if isinstance(stream, int):
-                stream = cp.cuda.ExternalStream(stream)  # pyright: ignore
-            elif isinstance(stream, cp.cuda.Stream):  # pyright: ignore[reportUnknownMemberType]
-                pass
-            else:
-                raise ValueError("the input stream is not recognized")
-            stream.use()  # pyright: ignore[reportUnknownMemberType]
-        try:
-            runtime.setDevice(device.id)  # pyright: ignore[reportUnknownMemberType]
-            arr = x.copy()
-        finally:
-            runtime.setDevice(prev_device)  # pyright: ignore[reportUnknownMemberType]
-            if stream is not None:
-                prev_stream.use()
-        return arr
+    if not isinstance(device, cp.cuda.Device):
+        raise TypeError(f"Unsupported device type {device!r}")
+
+    if stream is None:
+        with device:
+            return cp.asarray(x)
+
+    # stream can be an int as specified in __dlpack__, or a CuPy stream
+    if isinstance(stream, int):
+        stream = cp.cuda.ExternalStream(stream)
+    elif not isinstance(stream, cp.cuda.Stream):
+        raise TypeError(f"Unsupported stream type {stream!r}")
+
+    with device, stream:
+        return cp.asarray(x)
 
 
 def _torch_to_device(
