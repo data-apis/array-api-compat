@@ -1,7 +1,22 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from types import ModuleType as Namespace
-from typing import Any, Protocol, TypeAlias, TypedDict, TypeVar
+from typing import TYPE_CHECKING, Literal, Protocol, TypeAlias, TypedDict, TypeVar
+
+if TYPE_CHECKING:
+    from _typeshed import Incomplete
+
+    SupportsBufferProtocol: TypeAlias = Incomplete
+    Array: TypeAlias = Incomplete
+    Device: TypeAlias = Incomplete
+    DType: TypeAlias = Incomplete
+else:
+    SupportsBufferProtocol = object
+    Array = object
+    Device = object
+    DType = object
+
 
 _T_co = TypeVar("_T_co", covariant=True)
 
@@ -20,6 +35,7 @@ class HasShape(Protocol[_T_co]):
     def shape(self, /) -> _T_co: ...
 
 
+# Return type of `__array_namespace_info__.default_dtypes`
 Capabilities = TypedDict(
     "Capabilities",
     {
@@ -29,17 +45,98 @@ Capabilities = TypedDict(
     },
 )
 
+# Return type of `__array_namespace_info__.default_dtypes`
+DefaultDTypes = TypedDict(
+    "DefaultDTypes",
+    {
+        "real floating": DType,
+        "complex floating": DType,
+        "integral": DType,
+        "indexing": DType,
+    },
+)
 
-SupportsBufferProtocol: TypeAlias = Any
-Array: TypeAlias = Any
-Device: TypeAlias = Any
-DType: TypeAlias = Any
+
+_DTypeKind: TypeAlias = Literal[
+    "bool",
+    "signed integer",
+    "unsigned integer",
+    "integral",
+    "real floating",
+    "complex floating",
+    "numeric",
+]
+# Type of the `kind` parameter in `__array_namespace_info__.dtypes`
+DTypeKind: TypeAlias = _DTypeKind | tuple[_DTypeKind, ...]
+
+
+# `__array_namespace_info__.dtypes(kind="bool")`
+class DTypesBool(TypedDict):
+    bool: DType
+
+
+# `__array_namespace_info__.dtypes(kind="signed integer")`
+class DTypesSigned(TypedDict):
+    int8: DType
+    int16: DType
+    int32: DType
+    int64: DType
+
+
+# `__array_namespace_info__.dtypes(kind="unsigned integer")`
+class DTypesUnsigned(TypedDict):
+    uint8: DType
+    uint16: DType
+    uint32: DType
+    uint64: DType
+
+
+# `__array_namespace_info__.dtypes(kind="integral")`
+class DTypesIntegral(DTypesSigned, DTypesUnsigned):
+    pass
+
+
+# `__array_namespace_info__.dtypes(kind="real floating")`
+class DTypesReal(TypedDict):
+    float32: DType
+    float64: DType
+
+
+# `__array_namespace_info__.dtypes(kind="complex floating")`
+class DTypesComplex(TypedDict):
+    complex64: DType
+    complex128: DType
+
+
+# `__array_namespace_info__.dtypes(kind="numeric")`
+class DTypesNumeric(DTypesIntegral, DTypesReal, DTypesComplex):
+    pass
+
+
+# `__array_namespace_info__.dtypes(kind=None)` (default)
+class DTypesAll(DTypesBool, DTypesNumeric):
+    pass
+
+
+# `__array_namespace_info__.dtypes(kind=?)` (fallback)
+DTypesAny: TypeAlias = Mapping[str, DType]
 
 
 __all__ = [
     "Array",
     "Capabilities",
     "DType",
+    "DTypeKind",
+    "DTypesAny",
+    "DTypesAll",
+    "DTypesBool",
+    "DTypesNumeric",
+    "DTypesIntegral",
+    "DTypesSigned",
+    "DTypesUnsigned",
+    "DTypesReal",
+    "DTypesComplex",
+    "DefaultDTypes",
     "Device",
     "HasShape",
     "Namespace",
