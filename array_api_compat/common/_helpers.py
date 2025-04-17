@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     # TODO: import from typing (requires Python >=3.13)
     from typing_extensions import TypeIs, TypeVar
 
-    _SizeT = TypeVar("_SizeT", bound=int | None)
+    _SizeT = TypeVar("_SizeT", bound = int | None)
 
     _ZeroGradientArray: TypeAlias = npt.NDArray[np.void]
     _CupyArray: TypeAlias = Any  # cupy has no py.typed
