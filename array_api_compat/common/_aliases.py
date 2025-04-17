@@ -652,7 +652,7 @@ def sign(x: Array, /, xp: Namespace, **kwargs: object) -> Array:
     if isdtype(x.dtype, "complex floating", xp=xp):
         out = (x / xp.abs(x, **kwargs))[...]
         # sign(0) = 0 but the above formula would give nan
-        out[x == 0 + 0j] = 0 + 0j
+        out[x == 0j] = 0j
     else:
         out = xp.sign(x, **kwargs)
     # CuPy sign() does not propagate nans. See

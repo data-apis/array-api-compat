@@ -15,6 +15,8 @@ from ._typing import Array, Device, DType
 if TYPE_CHECKING:
     from typing_extensions import Buffer, TypeIs
 
+# The values of the `_CopyMode` enum can be either `False`, `True`, or `2`:
+# https://github.com/numpy/numpy/blob/5a8a6a79d9c2fff8f07dcab5d41e14f8508d673f/numpy/_globals.pyi#L7-L10
 _Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
 
 bool = np.bool_
@@ -130,7 +132,9 @@ def count_nonzero(
     axis: int | tuple[int, ...] | None = None,
     keepdims: py_bool = False,
 ) -> Array:
-    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore
+    # NOTE: this is currently incorrectly typed in numpy, but will be fixed in
+    # numpy 2.2.5 and 2.3.0: https://github.com/numpy/numpy/pull/28750
+    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore[reportArgumentType, reportCallIssue]
     if axis is None and not keepdims:
         return np.asarray(result)
     return result

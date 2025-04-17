@@ -4,7 +4,7 @@ from typing import Literal
 
 import dask.array as da
 
-# These functions are in both the main and linalg namespaces
+# The `matmul` and `tensordot` functions are in both the main and linalg namespaces
 from dask.array import matmul, outer, tensordot
 
 # Exports

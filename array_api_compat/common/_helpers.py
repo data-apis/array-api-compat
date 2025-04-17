@@ -16,6 +16,7 @@ from collections.abc import Collection
 from typing import (
     TYPE_CHECKING,
     Any,
+    Final,
     Literal,
     SupportsIndex,
     TypeAlias,
@@ -55,6 +56,9 @@ if TYPE_CHECKING:
         | SupportsArrayNamespace[Any]
         | _CupyArray
     )
+
+_API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12"})
+_API_VERSIONS: Final = _API_VERSIONS_OLD | frozenset({"2024.12"})
 
 
 def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
@@ -477,16 +481,11 @@ def is_array_api_strict_namespace(xp: Namespace) -> bool:
 
 
 def _check_api_version(api_version: str | None) -> None:
-    if api_version in ["2021.12", "2022.12", "2023.12"]:
+    if api_version in _API_VERSIONS_OLD:
         warnings.warn(
             f"The {api_version} version of the array API specification was requested but the returned namespace is actually version 2024.12"
         )
-    elif api_version is not None and api_version not in [
-        "2021.12",
-        "2022.12",
-        "2023.12",
-        "2024.12",
-    ]:
+    elif api_version is not None and api_version not in _API_VERSIONS:
         raise ValueError(
             "Only the 2024.12 version of the array API specification is currently supported"
         )
