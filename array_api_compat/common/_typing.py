@@ -160,8 +160,6 @@ class DTypesAll(DTypesBool, DTypesNumeric):
 # `__array_namespace_info__.dtypes(kind=?)` (fallback)
 DTypesAny: TypeAlias = Mapping[str, DType]
 
-NormOrder: TypeAlias = JustFloat | Literal[-2, -1, 1, 2]
-
 
 __all__ = [
     "Array",
