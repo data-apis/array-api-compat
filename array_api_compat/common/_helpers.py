@@ -80,7 +80,7 @@ def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
     """
     # Fast exit
     try:
-        dtype = x.dtype
+        dtype = x.dtype  # type: ignore[attr-defined]
     except AttributeError:
         return False
     if not _issubclass_fast(type(dtype), "numpy.dtypes", "VoidDType"):
