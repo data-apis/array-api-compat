@@ -7,7 +7,7 @@ from __future__ import annotations
 import inspect
 from typing import TYPE_CHECKING, Any, NamedTuple, Optional, Sequence, cast
 
-from ._helpers import _check_device, array_namespace
+from ._helpers import _device_ctx, array_namespace
 from ._helpers import device as _get_device
 from ._helpers import is_cupy_namespace as _is_cupy_namespace
 from ._typing import Array, Device, DType, Namespace
@@ -32,8 +32,8 @@ def arange(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.arange(start, stop=stop, step=step, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.arange(start, stop=stop, step=step, dtype=dtype, **kwargs)
 
 
 def empty(
@@ -44,8 +44,8 @@ def empty(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.empty(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.empty(shape, dtype=dtype, **kwargs)
 
 
 def empty_like(
@@ -57,8 +57,8 @@ def empty_like(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.empty_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.empty_like(x, dtype=dtype, **kwargs)
 
 
 def eye(
@@ -72,8 +72,8 @@ def eye(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.eye(n_rows, M=n_cols, k=k, dtype=dtype, **kwargs)
 
 
 def full(
@@ -85,8 +85,8 @@ def full(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.full(shape, fill_value, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.full(shape, fill_value, dtype=dtype, **kwargs)
 
 
 def full_like(
@@ -99,8 +99,8 @@ def full_like(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.full_like(x, fill_value, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.full_like(x, fill_value, dtype=dtype, **kwargs)
 
 
 def linspace(
@@ -115,8 +115,8 @@ def linspace(
     endpoint: bool = True,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.linspace(start, stop, num, dtype=dtype, endpoint=endpoint, **kwargs)
 
 
 def ones(
@@ -127,8 +127,8 @@ def ones(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.ones(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.ones(shape, dtype=dtype, **kwargs)
 
 
 def ones_like(
@@ -140,8 +140,8 @@ def ones_like(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.ones_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.ones_like(x, dtype=dtype, **kwargs)
 
 
 def zeros(
@@ -152,8 +152,8 @@ def zeros(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.zeros(shape, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device):
+        return xp.zeros(shape, dtype=dtype, **kwargs)
 
 
 def zeros_like(
@@ -165,8 +165,8 @@ def zeros_like(
     device: Device | None = None,
     **kwargs: object,
 ) -> Array:
-    _check_device(xp, device)
-    return xp.zeros_like(x, dtype=dtype, **kwargs)
+    with _device_ctx(xp, device, like=x):
+        return xp.zeros_like(x, dtype=dtype, **kwargs)
 
 
 # np.unique() is split into four functions in the array API:
