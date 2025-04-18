@@ -12,7 +12,7 @@ import inspect
 import math
 import sys
 import warnings
-from collections.abc import Collection
+from collections.abc import Collection, Hashable
 from functools import lru_cache
 from typing import (
     TYPE_CHECKING,
@@ -83,7 +83,8 @@ def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
         dtype = x.dtype  # type: ignore[attr-defined]
     except AttributeError:
         return False
-    if not _issubclass_fast(type(dtype), "numpy.dtypes", "VoidDType"):
+    cls = cast(Hashable, type(dtype))
+    if not _issubclass_fast(cls, "numpy.dtypes", "VoidDType"):
         return False
 
     if "jax" not in sys.modules:
@@ -116,7 +117,7 @@ def is_numpy_array(x: object) -> TypeGuard[npt.NDArray[Any]]:
     is_pydata_sparse_array
     """
     # TODO: Should we reject ndarray subclasses?
-    cls = type(x)
+    cls = cast(Hashable, type(x))
     return (
         _issubclass_fast(cls, "numpy", "ndarray") 
         or _issubclass_fast(cls, "numpy", "generic")
@@ -144,7 +145,8 @@ def is_cupy_array(x: object) -> bool:
     is_jax_array
     is_pydata_sparse_array
     """
-    return _issubclass_fast(type(x), "cupy", "ndarray")
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "cupy", "ndarray")
 
 
 def is_torch_array(x: object) -> TypeIs[torch.Tensor]:
@@ -165,7 +167,8 @@ def is_torch_array(x: object) -> TypeIs[torch.Tensor]:
     is_jax_array
     is_pydata_sparse_array
     """
-    return _issubclass_fast(type(x), "torch", "Tensor")
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "torch", "Tensor")
 
 
 def is_ndonnx_array(x: object) -> TypeIs[ndx.Array]:
@@ -187,7 +190,8 @@ def is_ndonnx_array(x: object) -> TypeIs[ndx.Array]:
     is_jax_array
     is_pydata_sparse_array
     """
-    return _issubclass_fast(type(x), "ndonnx", "Array")
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "ndonnx", "Array")
 
 
 def is_dask_array(x: object) -> TypeIs[da.Array]:
@@ -209,7 +213,8 @@ def is_dask_array(x: object) -> TypeIs[da.Array]:
     is_jax_array
     is_pydata_sparse_array
     """
-    return _issubclass_fast(type(x), "dask.array", "Array")
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "dask.array", "Array")
 
 
 def is_jax_array(x: object) -> TypeIs[jax.Array]:
@@ -232,7 +237,8 @@ def is_jax_array(x: object) -> TypeIs[jax.Array]:
     is_dask_array
     is_pydata_sparse_array
     """
-    return _issubclass_fast(type(x), "jax", "Array") or _is_jax_zero_gradient_array(x)
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "jax", "Array") or _is_jax_zero_gradient_array(x)
 
 
 def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
@@ -256,7 +262,8 @@ def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     is_jax_array
     """
     # TODO: Account for other backends.
-    return _issubclass_fast(type(x), "sparse", "SparseArray")
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "sparse", "SparseArray")
 
 
 def is_array_api_obj(x: object) -> TypeIs[_ArrayApiObj]:  # pyright: ignore[reportUnknownParameterType]
@@ -274,7 +281,10 @@ def is_array_api_obj(x: object) -> TypeIs[_ArrayApiObj]:  # pyright: ignore[repo
     is_dask_array
     is_jax_array
     """
-    return hasattr(x, '__array_namespace__') or _is_array_api_cls(type(x))
+    return (
+        hasattr(x, '__array_namespace__') 
+        or _is_array_api_cls(cast(Hashable, type(x)))
+    )
 
 
 @lru_cache(100)
@@ -946,9 +956,9 @@ def is_writeable_array(x: object) -> bool:
     As there is no standard way to check if an array is writeable without actually
     writing to it, this function blindly returns True for all unknown array types.
     """
-    cls = type(x)
+    cls = cast(Hashable, type(x))
     if _issubclass_fast(cls, "numpy", "ndarray"):
-        return x.flags.writeable
+        return cast(npt.NDArray, x).flags.writeable
     res = _is_writeable_cls(cls)
     if res is not None:
         return res
@@ -998,7 +1008,8 @@ def is_lazy_array(x: object) -> bool:
 
     # Note: skipping reclassification of JAX zero gradient arrays, as one will
     # exclusively get them once they leave a jax.grad JIT context.
-    res = _is_lazy_cls(type(x))
+    cls = cast(Hashable, type(x))
+    res = _is_lazy_cls(cls)
     if res is not None:
         return res
 
