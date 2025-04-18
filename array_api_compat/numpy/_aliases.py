@@ -88,14 +88,14 @@ def asarray(
     """
     _helpers._check_device(np, device)
 
+    # None is unsupported in NumPy 1.0, but we can use an internal enum
+    # False in NumPy 1.0 means None in NumPy 2.0 and in the Array API
     if copy is None:
-        np1_copy = np._CopyMode.IF_NEEDED  # type: ignore[attr-defined]
-    elif copy:
-        np1_copy = np._CopyMode.ALWAYS  # type: ignore[attr-defined]
-    else:
-        np1_copy = np._CopyMode.NEVER  # type: ignore[attr-defined]
+        copy = np._CopyMode.IF_NEEDED  # type: ignore[assignment,attr-defined]
+    elif copy is False:
+        copy = np._CopyMode.NEVER  # type: ignore[assignment,attr-defined]
 
-    return np.array(obj, copy=np1_copy, dtype=dtype, **kwargs)
+    return np.array(obj, copy=copy, dtype=dtype, **kwargs)
 
 
 def astype(
