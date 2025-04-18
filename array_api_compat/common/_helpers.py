@@ -958,7 +958,7 @@ def is_writeable_array(x: object) -> bool:
     """
     cls = cast(Hashable, type(x))
     if _issubclass_fast(cls, "numpy", "ndarray"):
-        return cast(npt.NDArray, x).flags.writeable
+        return cast("npt.NDArray", x).flags.writeable
     res = _is_writeable_cls(cls)
     if res is not None:
         return res
