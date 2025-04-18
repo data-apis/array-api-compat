@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional
+from builtins import bool as py_bool
 
 import cupy as cp
-
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from .._internal import get_xp
@@ -69,18 +68,13 @@ _copy_default = object()
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
-    obj: (
-        Array 
-        | bool | int | float | complex 
-        | NestedSequence[bool | int | float | complex] 
-        | SupportsBufferProtocol
-    ),
+    obj: Array | complex | NestedSequence[complex] | SupportsBufferProtocol,
     /,
     *,
-    dtype: Optional[DType] = None,
-    device: Optional[Device] = None,
-    copy: Optional[bool] = _copy_default,
-    **kwargs,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    copy: py_bool | None = _copy_default,
+    **kwargs: object,
 ) -> Array:
     """
     Array API compatibility wrapper for asarray().
@@ -115,8 +109,8 @@ def astype(
     dtype: DType,
     /,
     *,
-    copy: bool = True,
-    device: Optional[Device] = None,
+    copy: py_bool = True,
+    device: Device | None = None,
 ) -> Array:
     if device is None:
         return x.astype(dtype=dtype, copy=copy)
@@ -127,8 +121,8 @@ def astype(
 # cupy.count_nonzero does not have keepdims
 def count_nonzero(
     x: Array,
-    axis=None,
-    keepdims=False
+    axis: int | tuple[int, ...] | None = None,
+    keepdims: py_bool = False,
 ) -> Array:
    result = cp.count_nonzero(x, axis)
    if keepdims:
@@ -161,4 +155,4 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'bitwise_invert', 'bitwise_right_shift',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign']
 
-_all_ignore = ['cp', 'get_xp']
+_all_ignore = ['cp', 'get_xp', 'py_bool']

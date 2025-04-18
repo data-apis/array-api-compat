@@ -7,6 +7,7 @@ https://data-apis.org/array-api/latest/API_specification/inspection.html for
 more details.
 
 """
+
 from __future__ import annotations
 
 from numpy import bool_ as bool
@@ -27,6 +28,7 @@ from numpy import (
     uint64,
 )
 
+from ..common._typing import DefaultDTypes
 from ._typing import Device, DType
 
 
@@ -62,7 +64,7 @@ class __array_namespace_info__:
 
     """
 
-    __module__ = 'numpy'
+    __module__ = "numpy"
 
     def capabilities(self):
         """
@@ -139,7 +141,7 @@ class __array_namespace_info__:
         self,
         *,
         device: Device | None = None,
-    ) -> dict[str, dtype[intp | float64 | complex128]]:
+    ) -> DefaultDTypes:
         """
         The default data types used for new NumPy arrays.
 
@@ -181,8 +183,7 @@ class __array_namespace_info__:
         """
         if device not in ["cpu", None]:
             raise ValueError(
-                'Device not understood. Only "cpu" is allowed, but received:'
-                f' {device}'
+                f'Device not understood. Only "cpu" is allowed, but received: {device}'
             )
         return {
             "real floating": dtype(float64),
@@ -253,8 +254,7 @@ class __array_namespace_info__:
         """
         if device not in ["cpu", None]:
             raise ValueError(
-                'Device not understood. Only "cpu" is allowed, but received:'
-                f' {device}'
+                f'Device not understood. Only "cpu" is allowed, but received: {device}'
             )
         if kind is None:
             return {

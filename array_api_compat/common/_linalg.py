@@ -8,7 +8,7 @@ import numpy as np
 if np.__version__[0] == "2":
     from numpy.lib.array_utils import normalize_axis_tuple
 else:
-    from numpy.core.numeric import normalize_axis_tuple
+    from numpy.core.numeric import normalize_axis_tuple  # type: ignore[no-redef]
 
 from .._internal import get_xp
 from ._aliases import isdtype, matmul, matrix_transpose, tensordot, vecdot
@@ -164,7 +164,7 @@ def vector_norm(
     if axis is None:
         # Note: xp.linalg.norm() doesn't handle 0-D arrays
         _x = x.ravel()
-        _axis = 0
+        axis = 0
     elif isinstance(axis, tuple):
         # Note: The axis argument supports any number of axes, whereas
         # xp.linalg.norm() only supports a single axis for vector norm.
@@ -176,25 +176,24 @@ def vector_norm(
         newshape = axis + rest
         _x = xp.transpose(x, newshape).reshape(
             (math.prod([x.shape[i] for i in axis]), *[x.shape[i] for i in rest]))
-        _axis = 0
+        axis = 0
     else:
         _x = x
-        _axis = axis
 
-    res = xp.linalg.norm(_x, axis=_axis, ord=ord)
+    res = xp.linalg.norm(_x, axis=axis, ord=ord)
 
     if keepdims:
         # We can't reuse xp.linalg.norm(keepdims) because of the reshape hacks
         # above to avoid matrix norm logic.
         shape = list(x.shape)
-        _axis = cast(
+        axis = cast(
             "tuple[int, ...]",
             normalize_axis_tuple(  # pyright: ignore[reportCallIssue]
                 range(x.ndim) if axis is None else axis,
                 x.ndim,
             ),
         )
-        for i in _axis:
+        for i in axis:
             shape[i] = 1
         res = xp.reshape(res, tuple(shape))
 
