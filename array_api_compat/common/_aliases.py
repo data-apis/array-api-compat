@@ -5,11 +5,13 @@ These are functions that are just aliases of existing functions in NumPy.
 from __future__ import annotations
 
 import inspect
-from typing import TYPE_CHECKING, Any, NamedTuple, Optional, Sequence, cast
+from collections.abc import Sequence
+from types import NoneType
+from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 from ._helpers import _check_device, array_namespace
 from ._helpers import device as _get_device
-from ._helpers import is_cupy_namespace as _is_cupy_namespace
+from ._helpers import is_cupy_namespace
 from ._typing import Array, Device, DType, Namespace
 
 if TYPE_CHECKING:
@@ -381,8 +383,8 @@ def clip(
     # TODO: np.clip has other ufunc kwargs
     out: Array | None = None,
 ) -> Array:
-    def _isscalar(a: object) -> TypeIs[int | float | None]:
-        return isinstance(a, (int, float, type(None)))
+    def _isscalar(a: object) -> TypeIs[float | None]:
+        return isinstance(a, int | float | NoneType)
 
     min_shape = () if _isscalar(min) else min.shape
     max_shape = () if _isscalar(max) else max.shape
@@ -450,7 +452,7 @@ def reshape(
     shape: tuple[int, ...],
     xp: Namespace,
     *,
-    copy: Optional[bool] = None,
+    copy: bool | None = None,
     **kwargs: object,
 ) -> Array:
     if copy is True:
@@ -657,7 +659,7 @@ def sign(x: Array, /, xp: Namespace, **kwargs: object) -> Array:
         out = xp.sign(x, **kwargs)
     # CuPy sign() does not propagate nans. See
     # https://github.com/data-apis/array-api-compat/issues/136
-    if _is_cupy_namespace(xp) and isdtype(x.dtype, "real floating", xp=xp):
+    if is_cupy_namespace(xp) and isdtype(x.dtype, "real floating", xp=xp):
         out[xp.isnan(x)] = xp.nan
     return out[()]
 
@@ -720,7 +722,7 @@ __all__ = [
     "finfo",
     "iinfo",
 ]
-_all_ignore = ["inspect", "array_namespace", "NamedTuple"]
+_all_ignore = ["is_cupy_namespace", "inspect", "array_namespace", "NamedTuple"]
 
 
 def __dir__() -> list[str]:

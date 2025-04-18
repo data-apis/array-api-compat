@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
 from types import ModuleType as Namespace
 from typing import TYPE_CHECKING, Literal, Protocol, TypeAlias, TypedDict, TypeVar
 
@@ -26,13 +25,13 @@ class NestedSequence(Protocol[_T_co]):
     def __len__(self, /) -> int: ...
 
 
-class SupportsArrayNamespace(Protocol[_T_co]):
-    def __array_namespace__(self, /, *, api_version: str | None) -> _T_co: ...
+class SupportsArrayNamespace(Protocol):
+    def __array_namespace__(self, /, *, api_version: str | None) -> Namespace: ...
 
 
 class HasShape(Protocol[_T_co]):
     @property
-    def shape(self, /) -> _T_co: ...
+    def shape(self, /) -> tuple[_T_co, ...]: ...
 
 
 # Return type of `__array_namespace_info__.default_dtypes`
@@ -70,72 +69,11 @@ _DTypeKind: TypeAlias = Literal[
 DTypeKind: TypeAlias = _DTypeKind | tuple[_DTypeKind, ...]
 
 
-# `__array_namespace_info__.dtypes(kind="bool")`
-class DTypesBool(TypedDict):
-    bool: DType
-
-
-# `__array_namespace_info__.dtypes(kind="signed integer")`
-class DTypesSigned(TypedDict):
-    int8: DType
-    int16: DType
-    int32: DType
-    int64: DType
-
-
-# `__array_namespace_info__.dtypes(kind="unsigned integer")`
-class DTypesUnsigned(TypedDict):
-    uint8: DType
-    uint16: DType
-    uint32: DType
-    uint64: DType
-
-
-# `__array_namespace_info__.dtypes(kind="integral")`
-class DTypesIntegral(DTypesSigned, DTypesUnsigned):
-    pass
-
-
-# `__array_namespace_info__.dtypes(kind="real floating")`
-class DTypesReal(TypedDict):
-    float32: DType
-    float64: DType
-
-
-# `__array_namespace_info__.dtypes(kind="complex floating")`
-class DTypesComplex(TypedDict):
-    complex64: DType
-    complex128: DType
-
-
-# `__array_namespace_info__.dtypes(kind="numeric")`
-class DTypesNumeric(DTypesIntegral, DTypesReal, DTypesComplex):
-    pass
-
-
-# `__array_namespace_info__.dtypes(kind=None)` (default)
-class DTypesAll(DTypesBool, DTypesNumeric):
-    pass
-
-
-# `__array_namespace_info__.dtypes(kind=?)` (fallback)
-DTypesAny: TypeAlias = Mapping[str, DType]
-
-
 __all__ = [
     "Array",
     "Capabilities",
     "DType",
     "DTypeKind",
-    "DTypesAny",
-    "DTypesAll",
-    "DTypesBool",
-    "DTypesNumeric",
-    "DTypesIntegral",
-    "DTypesSigned",
-    "DTypesUnsigned",
-    "DTypesReal",
-    "DTypesComplex",
     "DefaultDTypes",
     "Device",
     "HasShape",

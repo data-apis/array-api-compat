@@ -4,21 +4,22 @@ from typing import Literal
 
 import dask.array as da
 
-# The `matmul` and `tensordot` functions are in both the main and linalg namespaces
-from dask.array import matmul, outer, tensordot
-
 # Exports
 from dask.array.linalg import *  # noqa: F403
+from dask.array import outer
+# The `matmul` and `tensordot` functions are in both the main and linalg namespaces
+from dask.array import matmul, tensordot
+
 
 from ..._internal import get_xp
 from ...common import _linalg
-from ...common._typing import Array as _Array
+from ...common._typing import Array
 from ._aliases import matrix_transpose, vecdot
 
 # dask.array.linalg doesn't have __all__. If it is added, replace this with
 #
 # from dask.array.linalg import __all__ as linalg_all
-_n = {}
+_n: dict[str, object] = {}
 exec('from dask.array.linalg import *', _n)
 for k in ('__builtins__', 'annotations', 'operator', 'warnings', 'Array'):
     _n.pop(k, None)
@@ -33,8 +34,8 @@ SVDResult = _linalg.SVDResult
 # supports the mode keyword on QR
 # https://github.com/dask/dask/issues/10388
 #qr = get_xp(da)(_linalg.qr)
-def qr(
-    x: _Array,
+def qr(  # type: ignore[no-redef]
+    x: Array,
     mode: Literal["reduced", "complete"] = "reduced",
     **kwargs: object,
 ) -> QRResult:
@@ -50,12 +51,12 @@ matrix_norm = get_xp(da)(_linalg.matrix_norm)
 # Wrap the svd functions to not pass full_matrices to dask
 # when full_matrices=False (as that is the default behavior for dask),
 # and dask doesn't have the full_matrices keyword
-def svd(x: _Array, full_matrices: bool = True, **kwargs) -> SVDResult:
+def svd(x: Array, full_matrices: bool = True, **kwargs: object) -> SVDResult:  # type: ignore[no-redef]
     if full_matrices:
         raise ValueError("full_matrics=True is not supported by dask.")
     return da.linalg.svd(x, coerce_signs=False, **kwargs)
 
-def svdvals(x: _Array) -> _Array:
+def svdvals(x: Array) -> Array:
     # TODO: can't avoid computing U or V for dask
     _, s, _ =  svd(x)
     return s
