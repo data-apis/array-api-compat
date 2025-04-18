@@ -13,6 +13,7 @@ import math
 import sys
 import warnings
 from collections.abc import Collection
+from functools import lru_cache
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -61,8 +62,7 @@ _API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12"})
 _API_VERSIONS: Final = _API_VERSIONS_OLD | frozenset({"2024.12"})
 
 
-def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
-@cache
+@lru_cache(100)
 def _issubclass_fast(cls: type, modname: str, clsname: str) -> bool:
     try:
         mod = sys.modules[modname]
@@ -72,6 +72,7 @@ def _issubclass_fast(cls: type, modname: str, clsname: str) -> bool:
     return issubclass(cls, parent_cls)
 
 
+def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
     """Return True if `x` is a zero-gradient array.
 
     These arrays are a design quirk of Jax that may one day be removed.
@@ -276,7 +277,7 @@ def is_array_api_obj(x: object) -> TypeIs[_ArrayApiObj]:  # pyright: ignore[repo
     return hasattr(x, '__array_namespace__') or _is_array_api_cls(type(x))
 
 
-@cache
+@lru_cache(100)
 def _is_array_api_cls(cls: type) -> bool:
     return (
         # TODO: drop support for numpy<2 which didn't have __array_namespace__
@@ -296,7 +297,7 @@ def _compat_module_name() -> str:
     return __name__.removesuffix(".common._helpers")
 
 
-@cache
+@lru_cache(100)
 def is_numpy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a NumPy namespace.
@@ -318,7 +319,7 @@ def is_numpy_namespace(xp: Namespace) -> bool:
     return xp.__name__ in {"numpy", _compat_module_name() + ".numpy"}
 
 
-@cache
+@lru_cache(100)
 def is_cupy_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a CuPy namespace.
@@ -340,7 +341,7 @@ def is_cupy_namespace(xp: Namespace) -> bool:
     return xp.__name__ in {"cupy", _compat_module_name() + ".cupy"}
 
 
-@cache
+@lru_cache(100)
 def is_torch_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a PyTorch namespace.
@@ -381,7 +382,7 @@ def is_ndonnx_namespace(xp: Namespace) -> bool:
     return xp.__name__ == "ndonnx"
 
 
-@cache
+@lru_cache(100)
 def is_dask_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is a Dask namespace.
@@ -922,7 +923,7 @@ def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None:
     return None if math.isnan(out) else out
 
 
-@cache
+@lru_cache(100)
 def _is_writeable_cls(cls: type) -> bool | None:
     if (
         _issubclass_fast(cls, "numpy", "generic")
@@ -954,7 +955,7 @@ def is_writeable_array(x: object) -> bool:
     return hasattr(x, '__array_namespace__')
 
 
-@cache
+@lru_cache(100)
 def _is_lazy_cls(cls: type) -> bool | None:
     if (
         _issubclass_fast(cls, "numpy", "ndarray")
@@ -1054,7 +1055,7 @@ __all__ = [
     "to_device",
 ]
 
-_all_ignore = ['cache', 'sys', 'math', 'inspect', 'warnings']
+_all_ignore = ['lru_cache', 'sys', 'math', 'inspect', 'warnings']
 
 def __dir__() -> list[str]:
     return __all__
