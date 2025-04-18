@@ -8,12 +8,13 @@ users of the compat library.
 
 from __future__ import annotations
 
+import contextlib
 import enum
 import inspect
 import math
 import sys
 import warnings
-from collections.abc import Collection, Hashable
+from collections.abc import Collection, Generator, Hashable
 from functools import lru_cache
 from typing import (
     TYPE_CHECKING,
@@ -669,26 +670,42 @@ def array_namespace(
 get_namespace = array_namespace
 
 
-def _check_device(bare_xp: Namespace, device: Device) -> None:  # pyright: ignore[reportUnusedFunction]
-    """
-    Validate dummy device on device-less array backends.
+def _device_ctx(
+    bare_xp: Namespace, device: Device, like: Array | None = None
+) -> Generator[None]:
+    """Context manager which changes the current device in CuPy.
 
-    Notes
-    -----
-    This function is also invoked by CuPy, which does have multiple devices
-    if there are multiple GPUs available.
-    However, CuPy multi-device support is currently impossible
-    without using the global device or a context manager:
-
-    https://github.com/data-apis/array-api-compat/pull/293
+    Used internally by array creation functions in common._aliases.
     """
-    if bare_xp is sys.modules.get("numpy"):
-        if device not in ("cpu", None):
+    if device is None:
+        if like is None:
+            return contextlib.nullcontext()    
+        device = _device(like)
+
+    if bare_xp is sys.modules.get('numpy'):
+        if device != "cpu":
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
+        return contextlib.nullcontext()
 
-    elif bare_xp is sys.modules.get("dask.array"):
-        if device not in ("cpu", _DASK_DEVICE, None):
+    if bare_xp is sys.modules.get('dask.array'):
+        if device not in ("cpu", _DASK_DEVICE):
             raise ValueError(f"Unsupported device for Dask: {device!r}")
+        return contextlib.nullcontext()
+
+    if bare_xp is sys.modules.get('cupy'):
+        if not isinstance(device, bare_xp.cuda.Device):
+            raise TypeError(f"device is not a cupy.cuda.Device: {device!r}")
+        return device
+
+    # PyTorch doesn't have a "current device" context manager and you
+    # can't use array creation functions from common._aliases.
+    raise AssertionError("unreachable")  # pragma: nocover
+
+
+def _check_device(bare_xp: Namespace, device: Device) -> None:
+    """Validate dummy device on device-less array backends."""
+    with _device_ctx(bare_xp, device):
+        pass
 
 
 # Placeholder object to represent the dask device
