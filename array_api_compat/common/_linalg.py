@@ -139,7 +139,7 @@ def matrix_norm(
     xp: Namespace,
     *,
     keepdims: bool = False,
-    ord: JustInt | JustFloat | Literal["fro", "nuc"] | None = "fro",
+    ord: Literal[1, 2, -1, -2] | JustFloat | Literal["fro", "nuc"] | None = "fro",
 ) -> Array:
     return xp.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
