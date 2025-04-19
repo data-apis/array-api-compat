@@ -8,11 +8,12 @@ users of the compat library.
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 import math
 import sys
 import warnings
-from collections.abc import Collection
+from collections.abc import Collection, Generator
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -663,26 +664,42 @@ def array_namespace(
 get_namespace = array_namespace
 
 
-def _check_device(bare_xp: Namespace, device: Device) -> None:  # pyright: ignore[reportUnusedFunction]
-    """
-    Validate dummy device on device-less array backends.
+def _device_ctx(
+    bare_xp: Namespace, device: Device, like: Array | None = None
+) -> Generator[None]:
+    """Context manager which changes the current device in CuPy.
 
-    Notes
-    -----
-    This function is also invoked by CuPy, which does have multiple devices
-    if there are multiple GPUs available.
-    However, CuPy multi-device support is currently impossible
-    without using the global device or a context manager:
-
-    https://github.com/data-apis/array-api-compat/pull/293
+    Used internally by array creation functions in common._aliases.
     """
-    if bare_xp is sys.modules.get("numpy"):
-        if device not in ("cpu", None):
+    if device is None:
+        if like is None:
+            return contextlib.nullcontext()    
+        device = _device(like)
+
+    if bare_xp is sys.modules.get('numpy'):
+        if device != "cpu":
             raise ValueError(f"Unsupported device for NumPy: {device!r}")
+        return contextlib.nullcontext()
 
-    elif bare_xp is sys.modules.get("dask.array"):
-        if device not in ("cpu", _DASK_DEVICE, None):
+    if bare_xp is sys.modules.get('dask.array'):
+        if device not in ("cpu", _DASK_DEVICE):
             raise ValueError(f"Unsupported device for Dask: {device!r}")
+        return contextlib.nullcontext()
+
+    if bare_xp is sys.modules.get('cupy'):
+        if not isinstance(device, bare_xp.cuda.Device):
+            raise TypeError(f"device is not a cupy.cuda.Device: {device!r}")
+        return device
+
+    # PyTorch doesn't have a "current device" context manager and you
+    # can't use array creation functions from common._aliases.
+    raise AssertionError("unreachable")  # pragma: nocover
+
+
+def _check_device(bare_xp: Namespace, device: Device) -> None:
+    """Validate dummy device on device-less array backends."""
+    with _device_ctx(bare_xp, device):
+        pass
 
 
 # Placeholder object to represent the dask device
@@ -781,42 +798,28 @@ def _cupy_to_device(
     /,
     stream: int | Any | None = None,
 ) -> _CupyArray:
-    import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
-    from cupy.cuda import Device as _Device  # pyright: ignore
-    from cupy.cuda import stream as stream_module  # pyright: ignore
-    from cupy_backends.cuda.api import runtime  # pyright: ignore
+    import cupy as cp
 
-    if device == x.device:
-        return x
-    elif device == "cpu":
+    if device == "cpu":
         # allowing us to use `to_device(x, "cpu")`
         # is useful for portable test swapping between
         # host and device backends
         return x.get()
-    elif not isinstance(device, _Device):
-        raise ValueError(f"Unsupported device {device!r}")
-    else:
-        # see cupy/cupy#5985 for the reason how we handle device/stream here
-        prev_device: Any = runtime.getDevice()  # pyright: ignore[reportUnknownMemberType]
-        prev_stream = None
-        if stream is not None:
-            prev_stream: Any = stream_module.get_current_stream()  # pyright: ignore
-            # stream can be an int as specified in __dlpack__, or a CuPy stream
-            if isinstance(stream, int):
-                stream = cp.cuda.ExternalStream(stream)  # pyright: ignore
-            elif isinstance(stream, cp.cuda.Stream):  # pyright: ignore[reportUnknownMemberType]
-                pass
-            else:
-                raise ValueError("the input stream is not recognized")
-            stream.use()  # pyright: ignore[reportUnknownMemberType]
-        try:
-            runtime.setDevice(device.id)  # pyright: ignore[reportUnknownMemberType]
-            arr = x.copy()
-        finally:
-            runtime.setDevice(prev_device)  # pyright: ignore[reportUnknownMemberType]
-            if stream is not None:
-                prev_stream.use()
-        return arr
+    if not isinstance(device, cp.cuda.Device):
+        raise TypeError(f"Unsupported device type {device!r}")
+
+    if stream is None:
+        with device:
+            return cp.asarray(x)
+
+    # stream can be an int as specified in __dlpack__, or a CuPy stream
+    if isinstance(stream, int):
+        stream = cp.cuda.ExternalStream(stream)
+    elif not isinstance(stream, cp.cuda.Stream):
+        raise TypeError(f"Unsupported stream type {stream!r}")
+
+    with device, stream:
+        return cp.asarray(x)
 
 
 def _torch_to_device(
