@@ -63,6 +63,7 @@ tensordot = get_xp(cp)(_aliases.tensordot)
 sign = get_xp(cp)(_aliases.sign)
 finfo = get_xp(cp)(_aliases.finfo)
 iinfo = get_xp(cp)(_aliases.iinfo)
+take_along_axis = get_xp(cp)(_aliases.take_along_axis)
 
 _copy_default = object()
 

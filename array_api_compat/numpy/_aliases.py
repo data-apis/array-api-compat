@@ -72,6 +72,7 @@ tensordot = get_xp(np)(_aliases.tensordot)
 sign = get_xp(np)(_aliases.sign)
 finfo = get_xp(np)(_aliases.finfo)
 iinfo = get_xp(np)(_aliases.iinfo)
+take_along_axis = get_xp(np)(_aliases.take_along_axis)
 
 
 def _supports_buffer_protocol(obj: object) -> TypeIs[Buffer]:  # pyright: ignore[reportUnusedFunction]
@@ -138,13 +139,6 @@ def count_nonzero(
     if axis is None and not keepdims:
         return np.asarray(result)
     return result
-
-
-# "axis=-1" is an optional argument of `take_along_axis` but numpy has no default
-def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
-    if axis is None:
-        axis = -1
-    return np.take_along_axis(x, indices, axis=axis)
 
 
 # These functions are completely new here. If the library already has them
