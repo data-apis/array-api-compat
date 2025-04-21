@@ -18,4 +18,6 @@ fftfreq = get_xp(da)(_fft.fftfreq)
 rfftfreq = get_xp(da)(_fft.rfftfreq)
 
 __all__ = fft_all + ["fftfreq", "rfftfreq"]
-_all_ignore = ["da", "fft_all", "get_xp", "warnings"]
+
+def __dir__() -> list[str]:
+    return __all__

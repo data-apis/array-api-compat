@@ -160,5 +160,3 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign']
-
-_all_ignore = ['cp', 'get_xp']

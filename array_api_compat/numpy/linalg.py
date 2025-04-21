@@ -120,7 +120,7 @@ else:
     vector_norm = get_xp(np)(_linalg.vector_norm)
 
 
-__all__ = [
+__all__ = _linalg.__all__ + [
     "LinAlgError",
     "cond",
     "det",
@@ -132,12 +132,11 @@ __all__ = [
     "matrix_power",
     "multi_dot",
     "norm",
+    "solve", 
     "tensorinv",
     "tensorsolve",
+    "vector_norm",
 ]
-__all__ += _linalg.__all__
-__all__ += ["solve", "vector_norm"]
-
 
 def __dir__() -> list[str]:
     return __all__

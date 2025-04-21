@@ -369,8 +369,6 @@ __all__ = [
     "bitwise_left_shift", "bitwise_right_shift", "bitwise_invert",
 ]  # fmt: skip
 __all__ += _aliases.__all__
-_all_ignore = ["array_namespace", "get_xp", "da", "np"]
-
 
 def __dir__() -> list[str]:
     return __all__

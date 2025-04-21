@@ -157,7 +157,7 @@ if hasattr(np, "unstack"):
 else:
     unstack = get_xp(np)(_aliases.unstack)
 
-__all__ = [
+__all__ = _aliases.__all__ + [
     "__array_namespace_info__",
     "asarray",
     "astype",
@@ -176,8 +176,6 @@ __all__ = [
     "count_nonzero",
     "pow",
 ]
-__all__ += _aliases.__all__
-_all_ignore = ["np", "get_xp"]
 
 
 def __dir__() -> list[str]:

@@ -69,4 +69,5 @@ __all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
                         "cholesky", "matrix_rank", "matrix_norm", "svdvals",
                         "vector_norm", "diagonal"]
 
-_all_ignore = ['get_xp', 'da', 'linalg_all', 'warnings']
+def __dir__() -> list[str]:
+    return __all__

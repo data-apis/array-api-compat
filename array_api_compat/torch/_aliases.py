@@ -841,5 +841,3 @@ __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
            'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat']
-
-_all_ignore = ['torch', 'get_xp']
