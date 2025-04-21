@@ -140,6 +140,13 @@ def count_nonzero(
     return result
 
 
+# "axis=-1" is an optional argument of `take_along_axis` but numpy has no default
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+    if axis is None:
+        axis = -1
+    return np.take_along_axis(x, indices, axis=axis)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, "vecdot"):
@@ -156,6 +163,7 @@ if hasattr(np, "unstack"):
     unstack = np.unstack
 else:
     unstack = get_xp(np)(_aliases.unstack)
+
 
 __all__ = [
     "__array_namespace_info__",
@@ -175,6 +183,7 @@ __all__ = [
     "concat",
     "count_nonzero",
     "pow",
+    "take_along_axis"
 ]
 __all__ += _aliases.__all__
 _all_ignore = ["np", "get_xp"]
@@ -182,3 +191,4 @@ _all_ignore = ["np", "get_xp"]
 
 def __dir__() -> list[str]:
     return __all__
+
