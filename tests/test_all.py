@@ -249,6 +249,31 @@ def test_dir(library, module):
     assert not fails, "Missing exports: %s" % fails
 
 
+@pytest.mark.parametrize("module", list(NAMES))
+@pytest.mark.parametrize("library", wrapped_libraries)
+def test_all(library, module):
+    """Test that __all__ isn't missing any exports."""
+    modname = f"array_api_compat.{library}"
+    pytest.importorskip(modname)
+    if module:
+        modname += f".{module}"
+
+    objs = {}
+    exec(f"from {modname} import *", objs)
+
+    missing = set(NAMES[module]) - objs.keys()
+    xfail = set(XFAILS.get((library, module), []))
+
+    # FIXME are these canonically meant to be in __all__?
+    if module == "":
+        xfail |= {"__array_namespace_info__", "__array_api_version__"}
+
+    xpass = xfail - missing
+    fails = missing - xfail
+    assert not xpass, "Names in XFAILS are defined: %s" % xpass
+    assert not fails, "Missing exports: %s" % fails
+
+
 @pytest.mark.parametrize(
     "name", [name for name in NAMES[""] if hasattr(builtins, name)]
 )
