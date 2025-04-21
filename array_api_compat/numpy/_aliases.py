@@ -142,7 +142,7 @@ def count_nonzero(
 
 # take_along_axis: axis defaults to -1 but in numpy axis is a required arg
 def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
-    return xp.take_along_axis(x, indices, axis=axis)
+    return np.take_along_axis(x, indices, axis=axis)
 
 
 # These functions are completely new here. If the library already has them
