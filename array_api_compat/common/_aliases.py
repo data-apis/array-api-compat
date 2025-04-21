@@ -722,7 +722,7 @@ __all__ = [
     "finfo",
     "iinfo",
 ]
-_all_ignore = ["is_cupy_namespace", "inspect", "array_namespace", "NamedTuple"]
+_all_ignore = ["inspect", "array_namespace", "NamedTuple"]
 
 
 def __dir__() -> list[str]:
