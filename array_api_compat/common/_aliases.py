@@ -517,12 +517,6 @@ def sort(
     return res
 
 
-# take_along_axis: axis defaults to -1; numpy, cupy do not have a default value;
-# pytorch defaults to None, which ravels.
-def take_along_axis(x: Array, indices: Array, /, *, xp: Namespace, axis: int = -1):
-    return xp.take_along_axis(x, indices, axis=axis)
-
-
 # nonzero should error for zero-dimensional arrays
 def nonzero(x: Array, /, xp: Namespace, **kwargs: object) -> tuple[Array, ...]:
     if x.ndim == 0:
@@ -719,7 +713,6 @@ __all__ = [
     "matmul",
     "matrix_transpose",
     "tensordot",
-    "take_along_axis",
     "vecdot",
     "isdtype",
     "unstack",

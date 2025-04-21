@@ -72,7 +72,6 @@ tensordot = get_xp(np)(_aliases.tensordot)
 sign = get_xp(np)(_aliases.sign)
 finfo = get_xp(np)(_aliases.finfo)
 iinfo = get_xp(np)(_aliases.iinfo)
-take_along_axis = get_xp(np)(_aliases.take_along_axis)
 
 
 def _supports_buffer_protocol(obj: object) -> TypeIs[Buffer]:  # pyright: ignore[reportUnusedFunction]
@@ -141,6 +140,11 @@ def count_nonzero(
     return result
 
 
+# take_along_axis: axis defaults to -1 but in numpy axis is a required arg
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+    return xp.take_along_axis(x, indices, axis=axis)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, "vecdot"):
@@ -157,7 +161,6 @@ if hasattr(np, "unstack"):
     unstack = np.unstack
 else:
     unstack = get_xp(np)(_aliases.unstack)
-
 
 __all__ = [
     "__array_namespace_info__",
@@ -185,4 +188,3 @@ _all_ignore = ["np", "get_xp"]
 
 def __dir__() -> list[str]:
     return __all__
-
