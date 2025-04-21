@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 from types import ModuleType as Namespace
-from typing import TYPE_CHECKING, Literal, Protocol, TypeAlias, TypedDict, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+    Protocol,
+    TypeAlias,
+    TypedDict,
+    TypeVar,
+    final,
+)
 
 if TYPE_CHECKING:
     from _typeshed import Incomplete
@@ -18,6 +26,37 @@ else:
 
 
 _T_co = TypeVar("_T_co", covariant=True)
+
+
+# These "Just" types are equivalent to the `Just` type from the `optype` library,
+# apart from them not being `@runtime_checkable`.
+# - docs: https://github.com/jorenham/optype/blob/master/README.md#just
+# - code: https://github.com/jorenham/optype/blob/master/optype/_core/_just.py
+@final
+class JustInt(Protocol):
+    @property
+    def __class__(self, /) -> type[int]: ...
+    @__class__.setter
+    def __class__(self, value: type[int], /) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+
+
+@final
+class JustFloat(Protocol):
+    @property
+    def __class__(self, /) -> type[float]: ...
+    @__class__.setter
+    def __class__(self, value: type[float], /) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+
+
+@final
+class JustComplex(Protocol):
+    @property
+    def __class__(self, /) -> type[complex]: ...
+    @__class__.setter
+    def __class__(self, value: type[complex], /) -> None: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+
+
+#
 
 
 class NestedSequence(Protocol[_T_co]):
@@ -78,6 +117,9 @@ __all__ = [
     "Device",
     "HasShape",
     "Namespace",
+    "JustInt",
+    "JustFloat",
+    "JustComplex",
     "NestedSequence",
     "SupportsArrayNamespace",
     "SupportsBufferProtocol",

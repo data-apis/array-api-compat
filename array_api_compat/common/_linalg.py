@@ -12,7 +12,7 @@ else:
 
 from .._internal import get_xp
 from ._aliases import isdtype, matmul, matrix_transpose, tensordot, vecdot
-from ._typing import Array, DType, Namespace
+from ._typing import Array, DType, JustFloat, JustInt, Namespace
 
 
 # These are in the main NumPy namespace but not in numpy.linalg
@@ -139,7 +139,7 @@ def matrix_norm(
     xp: Namespace,
     *,
     keepdims: bool = False,
-    ord: float | Literal["fro", "nuc"] | None = "fro",
+    ord: Literal[1, 2, -1, -2] | JustFloat | Literal["fro", "nuc"] | None = "fro",
 ) -> Array:
     return xp.linalg.norm(x, axis=(-2, -1), keepdims=keepdims, ord=ord)
 
@@ -155,7 +155,7 @@ def vector_norm(
     *,
     axis: int | tuple[int, ...] | None = None,
     keepdims: bool = False,
-    ord: float = 2,
+    ord: JustInt | JustFloat = 2,
 ) -> Array:
     # xp.linalg.norm tries to do a matrix norm whenever axis is a 2-tuple or
     # when axis=None and the input is 2-D, so to force a vector norm, we make
