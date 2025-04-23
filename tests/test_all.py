@@ -312,10 +312,7 @@ def test_compat_spurious_names(library, module):
     compat_mod = getattr(compat_xp, module) if module else compat_xp
     aapi_names = set(NAMES[module])
     compat_spurious_names = (
-        set(dir(compat_mod))
-        - set(dir(bare_mod))
-        - aapi_names 
-        - {"__all__"}
+        set(dir(compat_mod)) - set(dir(bare_mod)) - aapi_names - {"__all__"}
     )
     # Quietly ignore *Result dataclasses
     compat_spurious_names = {

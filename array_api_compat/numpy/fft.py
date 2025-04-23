@@ -20,7 +20,7 @@ fftshift = get_xp(np)(_fft.fftshift)
 ifftshift = get_xp(np)(_fft.ifftshift)
 
 
-__all__ = _fft.__all__ + ["rfft2", "irfft2", "fft2", "ifft2"]
+__all__ = _fft.__all__ + ["fft2", "ifft2", "irfft2", "rfft2"]
 
 def __dir__() -> list[str]:
     return __all__
