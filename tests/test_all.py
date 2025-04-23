@@ -5,6 +5,8 @@ import builtins
 import numpy as np
 import pytest
 
+from array_api_compat._internal import clone_module
+
 from ._helpers import wrapped_libraries
 
 NAMES = {
@@ -241,10 +243,7 @@ XFAILS = {
 def all_names(mod):
     """Return all names available in a module."""
     objs = {}
-    exec(f"from {mod.__name__} import *", objs)
-    for n in dir(mod):
-        if not n.startswith("_") and hasattr(mod, n):
-            objs[n] = getattr(mod, n)
+    clone_module(mod.__name__, objs)
     return set(objs)
 
 

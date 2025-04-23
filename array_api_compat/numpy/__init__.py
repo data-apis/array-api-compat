@@ -3,6 +3,9 @@ from typing import Final
 
 from .._internal import clone_module
 
+# This needs to be loaded explicitly before cloning
+import numpy.typing  # noqa: F401
+
 __all__ = clone_module("numpy", globals())
 
 # These imports may overwrite names from the import * above.

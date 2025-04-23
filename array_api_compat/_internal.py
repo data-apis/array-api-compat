@@ -58,12 +58,17 @@ def clone_module(mod_name: str, globals_: dict[str, object]) -> list[str]:
     Returns __all__.
     """
     mod = importlib.import_module(mod_name)
-    all_ = []
+    # Neither of these two methods is sufficient by itself,
+    # depending on various idiosyncrasies of the libraries we're wrapping.
+    objs = {}
+    exec(f"from {mod.__name__} import *", objs)
+
     for n in dir(mod):
         if not n.startswith("_") and hasattr(mod, n):
-            all_.append(n)
-            globals_[n] = getattr(mod, n)
-    return all_
+            objs[n] = getattr(mod, n)
+
+    globals_.update(objs)
+    return list(objs)
 
 
 __all__ = ["get_xp", "clone_module"]
