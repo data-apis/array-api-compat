@@ -4,13 +4,11 @@ from typing import Union, Sequence, Literal
 
 import torch
 import torch.fft
-from torch.fft import * # noqa: F403
 
 from ._typing import Array
+from .._internal import clone_module
 
-# The above is missing a wealth of stuff
-__all__ = [n for n in dir(torch.fft) if not n.startswith("_")]
-globals().update({n: getattr(torch.fft, n) for n in __all__})
+__all__ = clone_module("torch.fft", globals())
 
 # Several torch fft functions do not map axes to dim
 
@@ -77,10 +75,7 @@ def ifftshift(
     return torch.fft.ifftshift(x, dim=axes, **kwargs)
 
 
-__all__ = sorted(
-    set(__all__)
-    | {"fftn", "ifftn", "rfftn", "irfftn", "fftshift", "ifftshift"}
-)
+__all__ += ["fftn", "ifftn", "rfftn", "irfftn", "fftshift", "ifftshift"]
 
 def __dir__() -> list[str]:
     return __all__

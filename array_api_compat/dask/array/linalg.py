@@ -8,20 +8,13 @@ import dask.array as da
 from dask.array import matmul, outer, tensordot
 
 # Exports
-from dask.array.linalg import *  # noqa: F403
-
-from ..._internal import get_xp
+from ..._internal import clone_module, get_xp
 from ...common import _linalg
 from ...common._typing import Array as _Array
-from ._aliases import matrix_transpose, vecdot
 
-# dask.array.linalg doesn't have __all__. If it is added, replace this with
-#
-# from dask.array.linalg import __all__ as linalg_all
-_n = {}
-exec('from dask.array.linalg import *', _n)
-linalg_all = list(_n)
-del _n
+__all__ = clone_module("dask.array.linalg", globals())
+
+from ._aliases import matrix_transpose, vecdot
 
 EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult
@@ -61,11 +54,11 @@ def svdvals(x: _Array) -> _Array:
 vector_norm = get_xp(da)(_linalg.vector_norm)
 diagonal = get_xp(da)(_linalg.diagonal)
 
-__all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
-                        "matrix_transpose", "vecdot", "EighResult",
-                        "QRResult", "SlogdetResult", "SVDResult", "qr",
-                        "cholesky", "matrix_rank", "matrix_norm", "svdvals",
-                        "vector_norm", "diagonal"]
+__all__ += ["trace", "outer", "matmul", "tensordot",
+            "matrix_transpose", "vecdot", "EighResult",
+            "QRResult", "SlogdetResult", "SVDResult", "qr",
+            "cholesky", "matrix_rank", "matrix_norm", "svdvals",
+            "vector_norm", "diagonal"]
 
 def __dir__() -> list[str]:
     return __all__

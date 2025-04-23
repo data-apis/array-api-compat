@@ -3,12 +3,9 @@ from __future__ import annotations
 import torch
 from typing import Optional, Union, Tuple
 
-from torch.linalg import * # noqa: F403
+from .._internal import clone_module
 
-# torch.linalg doesn't define __all__
-# from torch.linalg import __all__ as linalg_all
-from torch import linalg as torch_linalg
-linalg_all = [i for i in dir(torch_linalg) if not i.startswith('_')]
+__all__ = clone_module("torch.linalg", globals())
 
 # outer is implemented in torch but aren't in the linalg namespace
 from torch import outer
@@ -110,8 +107,8 @@ def vector_norm(
         return out
     return torch.linalg.vector_norm(x, ord=ord, axis=axis, keepdim=keepdims, **kwargs)
 
-__all__ = linalg_all + ['outer', 'matmul', 'matrix_transpose', 'tensordot',
-                        'cross', 'vecdot', 'solve', 'trace', 'vector_norm']
+__all__ += ['outer', 'matmul', 'matrix_transpose', 'tensordot',
+            'cross', 'vecdot', 'solve', 'trace', 'vector_norm']
 
 def __dir__() -> list[str]:
     return __all__

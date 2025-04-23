@@ -7,17 +7,16 @@ from __future__ import annotations
 
 import numpy as np
 
-from numpy.linalg import *  # noqa: F403
-
-from .._internal import get_xp
+from .._internal import clone_module, get_xp
 from ..common import _linalg
+
+from .._internal import clone_module
+
+__all__ = clone_module("numpy.linalg", globals())
 
 # These functions are in both the main and linalg namespaces
 from ._aliases import matmul, matrix_transpose, tensordot, vecdot  # noqa: F401
 from ._typing import Array
-
-__all__ = [n for n in dir(np.linalg) if not n.startswith("_")]
-globals().update({n: getattr(np.linalg, n) for n in __all__})
 
 cross = get_xp(np)(_linalg.cross)
 outer = get_xp(np)(_linalg.outer)

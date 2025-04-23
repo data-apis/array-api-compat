@@ -1,8 +1,8 @@
 import numpy as np
-from numpy.fft import *  # noqa: F403
 
-__all__ = [n for n in dir(np.fft) if not n.startswith("_")]
-globals().update({n: getattr(np.fft, n) for n in __all__})
+from .._internal import clone_module
+
+__all__ = clone_module("numpy.fft", globals())
 
 from .._internal import get_xp
 from ..common import _fft

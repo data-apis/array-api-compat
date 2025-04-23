@@ -1,12 +1,8 @@
 from typing import Final
 
-from dask.array import *  # noqa: F403
+from ..._internal import clone_module
 
-# The above is missing a wealth of stuff
-import dask.array as da
-__all__ = [n for n in dir(da) if not n.startswith("_")]
-globals().update({n: getattr(da, n) for n in __all__})
-del da
+__all__ = clone_module("dask.array", globals())
 
 # These imports may overwrite names from the import * above.
 from . import _aliases
@@ -20,6 +16,11 @@ del Final
 __import__(__package__ + '.linalg')
 __import__(__package__ + '.fft')
 
-__all__ += _aliases.__all__
-__all__ += ["__array_api_version__", "__array_namespace_info__", "linalg", "fft"]
-__all__ = sorted(set(__all__))
+__all__ = sorted(
+    set(__all__)
+    | set(_aliases.__all__)
+    | {"__array_api_version__", "__array_namespace_info__", "linalg", "fft"}
+)
+
+def __dir__() -> list[str]:
+    return __all__
