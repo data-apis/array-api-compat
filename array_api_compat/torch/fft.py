@@ -73,11 +73,15 @@ def ifftshift(
     return torch.fft.ifftshift(x, dim=axes, **kwargs)
 
 
-__all__ = torch.fft.__all__ + [
+_all = {
     "fftn",
     "ifftn",
     "rfftn",
     "irfftn",
     "fftshift",
     "ifftshift",
-]
+}
+__all__ = sorted(set(torch.fft.__all__) |_all)
+
+def __dir__() -> list[str]:
+    return sorted(set(dir(torch.fft)) | _all)

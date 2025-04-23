@@ -12,6 +12,9 @@ NAMES = {
         # Inspection
         "__array_api_version__",
         "__array_namespace_info__",
+        # Submodules
+        "fft",
+        "linalg",
         # Constants
         "e",
         "inf",
@@ -240,6 +243,8 @@ def all_names(mod):
     This is typically `__all__` but, if not defined, Python
     implements automated fallbacks.
     """
+    # Note: this method also makes the test trip if a name is
+    # in __all__ but doesn't actually appear in the module.
     objs = {}
     exec(f"from {mod.__name__} import *", objs)
     return list(objs)
