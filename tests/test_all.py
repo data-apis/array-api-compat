@@ -245,6 +245,13 @@ def all_names(mod):
     return list(objs)
 
 
+def get_mod(library, module, *, compat):
+    if compat:
+        library = f"array_api_compat.{library}"
+    xp = pytest.importorskip(library)
+    return getattr(xp, module) if module else xp
+
+
 @pytest.mark.parametrize("func", [all_names, dir])
 @pytest.mark.parametrize("module", list(NAMES))
 @pytest.mark.parametrize("library", wrapped_libraries)
@@ -252,8 +259,7 @@ def test_array_api_names(library, module, func):
     """Test that __all__ and dir() aren't missing any exports
     dictated by the Standard.
     """
-    xp = pytest.importorskip(f"array_api_compat.{library}")
-    mod = getattr(xp, module) if module else xp
+    mod = get_mod(library, module, compat=True)
     missing = set(NAMES[module]) - set(func(mod))
     xfail = set(XFAILS.get((library, module), []))
     xpass = xfail - missing
@@ -269,10 +275,8 @@ def test_compat_doesnt_hide_names(library, module, func):
     """The base namespace can have more names than the ones explicitly exported
     by array-api-compat. Test that we're not suppressing them.
     """
-    bare_xp = pytest.importorskip(library)
-    compat_xp = pytest.importorskip(f"array_api_compat.{library}")
-    bare_mod = getattr(bare_xp, module) if module else bare_xp
-    compat_mod = getattr(compat_xp, module) if module else compat_xp
+    bare_mod = get_mod(library, module, compat=False)
+    compat_mod = get_mod(library, module, compat=True)
 
     missing = set(func(bare_mod)) - set(func(compat_mod))
     missing = {name for name in missing if not name.startswith("_")}
@@ -286,10 +290,8 @@ def test_compat_doesnt_add_names(library, module, func):
     """Test that array-api-compat isn't adding names to the namespace
     besides those defined by the Array API Standard.
     """
-    bare_xp = pytest.importorskip(library)
-    compat_xp = pytest.importorskip(f"array_api_compat.{library}")
-    bare_mod = getattr(bare_xp, module) if module else bare_xp
-    compat_mod = getattr(compat_xp, module) if module else compat_xp
+    bare_mod = get_mod(library, module, compat=False)
+    compat_mod = get_mod(library, module, compat=True)
 
     aapi_names = set(NAMES[module])
     spurious = set(func(compat_mod)) - set(func(bare_mod)) - aapi_names - {"__all__"}
