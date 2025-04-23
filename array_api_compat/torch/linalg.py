@@ -16,6 +16,7 @@ from ._aliases import _fix_promotion, sum
 # These functions are in both the main and linalg namespaces
 from ._aliases import matmul, matrix_transpose, tensordot
 from ._typing import Array, DType
+from ..common._typing import JustInt, JustFloat
 
 # Note: torch.linalg.cross does not default to axis=-1 (it defaults to the
 # first axis with size 3), see https://github.com/pytorch/pytorch/issues/58743
@@ -84,8 +85,8 @@ def vector_norm(
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
     keepdims: bool = False,
-    # float stands for inf | -inf, which are not valid for Literal
-    ord: Union[int, float] = 2,
+    # JustFloat stands for inf | -inf, which are not valid for Literal
+    ord: JustInt | JustFloat = 2,
     **kwargs,
 ) -> Array:
     # torch.vector_norm incorrectly treats axis=() the same as axis=None
@@ -115,3 +116,6 @@ __all__ = linalg_all + ['outer', 'matmul', 'matrix_transpose', 'tensordot',
 _all_ignore = ['torch_linalg', 'sum']
 
 del linalg_all
+
+def __dir__() -> list[str]:
+    return __all__
