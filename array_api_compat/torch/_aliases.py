@@ -9,7 +9,6 @@ import torch
 from .._internal import get_xp
 from ..common import _aliases
 from ..common._typing import NestedSequence, SupportsBufferProtocol
-from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 _int_dtypes = {
@@ -824,7 +823,7 @@ def sign(x: Array, /) -> Array:
         return out
 
 
-__all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
+__all__ = ['asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',

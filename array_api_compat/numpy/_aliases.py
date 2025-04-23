@@ -9,7 +9,6 @@ import numpy as np
 from .._internal import get_xp
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
-from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 if TYPE_CHECKING:
@@ -158,7 +157,6 @@ else:
     unstack = get_xp(np)(_aliases.unstack)
 
 __all__ = _aliases.__all__ + [
-    "__array_namespace_info__",
     "asarray",
     "astype",
     "acos",

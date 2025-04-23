@@ -20,10 +20,8 @@ from ._aliases import matrix_transpose, vecdot
 # from dask.array.linalg import __all__ as linalg_all
 _n = {}
 exec('from dask.array.linalg import *', _n)
-for k in ('__builtins__', 'annotations', 'operator', 'warnings', 'Array'):
-    _n.pop(k, None)
 linalg_all = list(_n)
-del _n, k
+del _n
 
 EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult

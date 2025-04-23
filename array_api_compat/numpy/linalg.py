@@ -7,22 +7,7 @@ from __future__ import annotations
 
 import numpy as np
 
-# intersection of `np.linalg.__all__` on numpy 1.22 and 2.2, minus `_linalg.__all__`
-from numpy.linalg import (
-    LinAlgError,
-    cond,
-    det,
-    eig,
-    eigvals,
-    eigvalsh,
-    inv,
-    lstsq,
-    matrix_power,
-    multi_dot,
-    norm,
-    tensorinv,
-    tensorsolve,
-)
+from numpy.linalg import *  # noqa: F403
 
 from .._internal import get_xp
 from ..common import _linalg
@@ -120,7 +105,7 @@ else:
     vector_norm = get_xp(np)(_linalg.vector_norm)
 
 
-__all__ = _linalg.__all__ + [
+_all = [
     "LinAlgError",
     "cond",
     "det",
@@ -137,6 +122,7 @@ __all__ = _linalg.__all__ + [
     "tensorsolve",
     "vector_norm",
 ]
+__all__ = sorted(set(np.linalg.__all__) | set(_linalg.__all__) | set(_all))
 
 def __dir__() -> list[str]:
-    return __all__
+    return sorted(set(dir(np.linalg)) | set(_linalg.__all__) | set(_all))

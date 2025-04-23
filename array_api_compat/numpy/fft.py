@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.fft import fft2, ifft2, irfft2, rfft2
+from numpy.fft import *  # noqa: F403
 
 from .._internal import get_xp
 from ..common import _fft
@@ -20,7 +20,7 @@ fftshift = get_xp(np)(_fft.fftshift)
 ifftshift = get_xp(np)(_fft.ifftshift)
 
 
-__all__ = _fft.__all__ + ["fft2", "ifft2", "irfft2", "rfft2"]
+__all__ = sorted(set(np.fft.__all__) | set(_fft.__all__))
 
 def __dir__() -> list[str]:
-    return __all__
+    return sorted(set(dir(np.fft)) | set(_fft.__all__))
