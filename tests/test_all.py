@@ -274,6 +274,59 @@ def test_all(library, module):
     assert not fails, "Missing exports: %s" % fails
 
 
+@pytest.mark.parametrize("module", list(NAMES))
+@pytest.mark.parametrize("library", wrapped_libraries)
+def test_compat_doesnt_hide_names(library, module):
+    """The base namespace can have more names than the ones explicitly exported
+    by array-api-compat. Test that we're not suppressing them.
+    """
+    bare_xp = pytest.importorskip(library)
+    compat_xp = pytest.importorskip(f"array_api_compat.{library}")
+    bare_mod = getattr(bare_xp, module) if module else bare_xp
+    compat_mod = getattr(compat_xp, module) if module else compat_xp
+    aapi_names = set(NAMES[module])
+    extra_names = {
+        name
+        for name in dir(bare_mod)
+        if not name.startswith("_") and name not in aapi_names
+    }
+    missing = extra_names - set(dir(compat_mod))
+
+    # These are spurious to begin with in the bare libraries
+    missing -= {"annotations", "importlib", "warnings", "operator", "sys", "Sequence"}
+    if module != "":
+        missing -= {"Array", "test"}
+
+    assert not missing, "Non-Array API names have been hidden: %s" % missing
+
+
+@pytest.mark.parametrize("module", list(NAMES))
+@pytest.mark.parametrize("library", wrapped_libraries)
+def test_compat_spurious_names(library, module):
+    """Test that array-api-compat isn't adding non-Array API names
+    to the namespace.
+    """
+    bare_xp = pytest.importorskip(library)
+    compat_xp = pytest.importorskip(f"array_api_compat.{library}")
+    bare_mod = getattr(bare_xp, module) if module else bare_xp
+    compat_mod = getattr(compat_xp, module) if module else compat_xp
+    aapi_names = set(NAMES[module])
+    compat_spurious_names = (
+        set(dir(compat_mod))
+        - set(dir(bare_mod))
+        - aapi_names 
+        - {"__all__"}
+    )
+    # Quietly ignore *Result dataclasses
+    compat_spurious_names = {
+        name for name in compat_spurious_names if not name.endswith("Result")
+    }
+
+    assert not compat_spurious_names, (
+        "array-api-compat is adding non-Array API names: %s" % compat_spurious_names
+    )
+
+
 @pytest.mark.parametrize(
     "name", [name for name in NAMES[""] if hasattr(builtins, name)]
 )
