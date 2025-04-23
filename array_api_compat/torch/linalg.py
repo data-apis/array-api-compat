@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import torch
+import torch.linalg
 from typing import Optional, Union, Tuple
 
 from .._internal import clone_module
@@ -27,7 +28,7 @@ def cross(x1: Array, x2: Array, /, *, axis: int = -1) -> Array:
     if not (x1.shape[axis] == x2.shape[axis] == 3):
         raise ValueError(f"cross product axis must have size 3, got {x1.shape[axis]} and {x2.shape[axis]}")
     x1, x2 = torch.broadcast_tensors(x1, x2)
-    return torch_linalg.cross(x1, x2, dim=axis)
+    return torch.linalg.cross(x1, x2, dim=axis)
 
 def vecdot(x1: Array, x2: Array, /, *, axis: int = -1, **kwargs) -> Array:
     from ._aliases import isdtype

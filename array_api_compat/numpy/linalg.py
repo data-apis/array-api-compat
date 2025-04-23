@@ -10,8 +10,6 @@ import numpy as np
 from .._internal import clone_module, get_xp
 from ..common import _linalg
 
-from .._internal import clone_module
-
 __all__ = clone_module("numpy.linalg", globals())
 
 # These functions are in both the main and linalg namespaces
