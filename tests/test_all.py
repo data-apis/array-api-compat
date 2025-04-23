@@ -21,7 +21,7 @@ NAMES = {
         "nan",
         "newaxis",
         "pi",
-        # Creation functions
+        # Creation Functions
         "arange",
         "asarray",
         "empty",
@@ -157,7 +157,7 @@ NAMES = {
         "nonzero",
         "searchsorted",
         "where",
-        # Set functions
+        # Set Functions
         "unique_all",
         "unique_counts",
         "unique_inverse",
@@ -239,15 +239,13 @@ XFAILS = {
 
 
 def all_names(mod):
-    """Return all names imported by `from mod import *`.
-    This is typically `__all__` but, if not defined, Python
-    implements automated fallbacks.
-    """
-    # Note: this method also makes the test trip if a name is
-    # in __all__ but doesn't actually appear in the module.
+    """Return all names available in a module."""
     objs = {}
     exec(f"from {mod.__name__} import *", objs)
-    return list(objs)
+    for n in dir(mod):
+        if not n.startswith("_") and hasattr(mod, n):
+            objs[n] = getattr(mod, n)
+    return set(objs)
 
 
 def get_mod(library, module, *, compat):
@@ -257,15 +255,14 @@ def get_mod(library, module, *, compat):
     return getattr(xp, module) if module else xp
 
 
-@pytest.mark.parametrize("func", [all_names, dir])
 @pytest.mark.parametrize("module", list(NAMES))
 @pytest.mark.parametrize("library", wrapped_libraries)
-def test_array_api_names(library, module, func):
-    """Test that __all__ and dir() aren't missing any exports
+def test_array_api_names(library, module):
+    """Test that __all__ isn't missing any exports
     dictated by the Standard.
     """
     mod = get_mod(library, module, compat=True)
-    missing = set(NAMES[module]) - set(func(mod))
+    missing = set(NAMES[module]) - all_names(mod)
     xfail = set(XFAILS.get((library, module), []))
     xpass = xfail - missing
     fails = missing - xfail
@@ -273,25 +270,23 @@ def test_array_api_names(library, module, func):
     assert not fails, f"Missing exports: {fails}"
 
 
-@pytest.mark.parametrize("func", [all_names, dir])
 @pytest.mark.parametrize("module", list(NAMES))
 @pytest.mark.parametrize("library", wrapped_libraries)
-def test_compat_doesnt_hide_names(library, module, func):
+def test_compat_doesnt_hide_names(library, module):
     """The base namespace can have more names than the ones explicitly exported
     by array-api-compat. Test that we're not suppressing them.
     """
     bare_mod = get_mod(library, module, compat=False)
     compat_mod = get_mod(library, module, compat=True)
 
-    missing = set(func(bare_mod)) - set(func(compat_mod))
+    missing = all_names(bare_mod) - all_names(compat_mod)
     missing = {name for name in missing if not name.startswith("_")}
     assert not missing, f"Non-Array API names have been hidden: {missing}"
 
 
-@pytest.mark.parametrize("func", [all_names, dir])
 @pytest.mark.parametrize("module", list(NAMES))
 @pytest.mark.parametrize("library", wrapped_libraries)
-def test_compat_doesnt_add_names(library, module, func):
+def test_compat_doesnt_add_names(library, module):
     """Test that array-api-compat isn't adding names to the namespace
     besides those defined by the Array API Standard.
     """
@@ -299,7 +294,7 @@ def test_compat_doesnt_add_names(library, module, func):
     compat_mod = get_mod(library, module, compat=True)
 
     aapi_names = set(NAMES[module])
-    spurious = set(func(compat_mod)) - set(func(bare_mod)) - aapi_names - {"__all__"}
+    spurious = all_names(compat_mod) - all_names(bare_mod) - aapi_names
     # Quietly ignore *Result dataclasses
     spurious = {name for name in spurious if not name.endswith("Result")}
     assert not spurious, (

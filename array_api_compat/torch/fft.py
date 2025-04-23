@@ -8,6 +8,10 @@ from torch.fft import * # noqa: F403
 
 from ._typing import Array
 
+# The above is missing a wealth of stuff
+__all__ = [n for n in dir(torch.fft) if not n.startswith("_")]
+globals().update({n: getattr(torch.fft, n) for n in __all__})
+
 # Several torch fft functions do not map axes to dim
 
 def fftn(
@@ -73,15 +77,10 @@ def ifftshift(
     return torch.fft.ifftshift(x, dim=axes, **kwargs)
 
 
-_all = {
-    "fftn",
-    "ifftn",
-    "rfftn",
-    "irfftn",
-    "fftshift",
-    "ifftshift",
-}
-__all__ = sorted(set(torch.fft.__all__) |_all)
+__all__ = sorted(
+    set(__all__)
+    | {"fftn", "ifftn", "rfftn", "irfftn", "fftshift", "ifftshift"}
+)
 
 def __dir__() -> list[str]:
-    return sorted(set(dir(torch.fft)) | _all)
+    return __all__

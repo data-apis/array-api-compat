@@ -16,6 +16,9 @@ from ..common import _linalg
 from ._aliases import matmul, matrix_transpose, tensordot, vecdot  # noqa: F401
 from ._typing import Array
 
+__all__ = [n for n in dir(np.linalg) if not n.startswith("_")]
+globals().update({n: getattr(np.linalg, n) for n in __all__})
+
 cross = get_xp(np)(_linalg.cross)
 outer = get_xp(np)(_linalg.outer)
 EighResult = _linalg.EighResult
@@ -122,7 +125,7 @@ _all = [
     "tensorsolve",
     "vector_norm",
 ]
-__all__ = sorted(set(np.linalg.__all__) | set(_linalg.__all__) | set(_all))
+__all__ = sorted(set(__all__) | set(_linalg.__all__) | set(_all))
 
 def __dir__() -> list[str]:
-    return sorted(set(dir(np.linalg)) | set(_linalg.__all__) | set(_all))
+    return __all__
