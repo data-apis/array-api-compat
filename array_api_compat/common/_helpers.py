@@ -12,7 +12,7 @@ import inspect
 import math
 import sys
 import warnings
-from collections.abc import Collection, Hashable
+from collections.abc import Hashable
 from functools import lru_cache
 from types import NoneType
 from typing import (
