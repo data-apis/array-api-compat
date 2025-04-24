@@ -12,7 +12,7 @@ def test_to_device_with_stream():
         Stream(non_blocking=True), 
         Stream(null=True),
         Stream(ptds=True), 
-        123,  # lapack stream
+        123,  # dlpack stream
     ]
 
     a = xp.asarray([1, 2, 3])
