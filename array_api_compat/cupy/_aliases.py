@@ -71,7 +71,7 @@ def asarray(
     *,
     dtype: DType | None = None,
     device: Device | None = None,
-    copy: py_bool | None = _copy_default,
+    copy: py_bool | None = None,
     **kwargs: object,
 ) -> Array:
     """
