@@ -154,7 +154,7 @@ def qr(x: array, mode: Optional[str] = None) -> array:
 
 def svd(x: array, full_matrices: Optional[bool]= None) -> array:
     if full_matrices is None :
-        return tuple_to_namedtuple(paddle.linalg.svd(x), ['U', 'S', 'Vh'])
+        return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices=True), ['U', 'S', 'Vh'])
     return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices), ['U', 'S', 'Vh'])
 
 __all__ = linalg_all + [

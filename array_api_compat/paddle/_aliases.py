@@ -891,7 +891,11 @@ def full(
 ) -> array:
     if isinstance(shape, int):
         shape = (shape,)
-
+    if dtype is None :
+        if isinstance(fill_value, (bool)):
+            dtype = "bool"
+        elif isinstance(fill_value, int):
+            dtype = 'int64'
     return paddle.full(shape, fill_value, dtype=dtype, **kwargs).to(device)
 
 
@@ -1148,11 +1152,9 @@ def take(x: array, indices: array, /, *, axis: Optional[int] = None, **kwargs) -
 def sign(x: array, /) -> array:
     # paddle sign() does not support complex numbers and does not propagate
     # nans. See https://github.com/data-apis/array-api-compat/issues/136
-    if paddle.is_complex(x):
-        out = x / paddle.abs(x)
-        # sign(0) = 0 but the above formula would give nan
-        out[x == 0 + 0j] = 0 + 0j
-        return out
+    if paddle.is_complex(x) and x.ndim == 0 and x.item() == 0j:
+         # Handle 0-D complex zero explicitly
+        return paddle.zeros_like(x, dtype=x.dtype)
     else:
         out = paddle.sign(x)
         if paddle.is_floating_point(x):
