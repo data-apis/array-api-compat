@@ -37,6 +37,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub
 array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]
 # floating point inaccuracy
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
+# incomplete NEP50 support in CuPy 13.x (fixed in 14.0.0a1)
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[pow]
 
 # cupy (arg)min/max wrong with infinities
 # https://github.com/cupy/cupy/issues/7424
