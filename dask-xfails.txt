@@ -24,6 +24,9 @@ array_api_tests/test_creation_functions.py::test_linspace
 # Shape mismatch
 array_api_tests/test_indexing_functions.py::test_take
 
+# missing `take_along_axis`, https://github.com/dask/dask/issues/3663
+array_api_tests/test_indexing_functions.py::test_take_along_axis
+
 # Array methods and attributes not already on da.Array cannot be wrapped
 array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
 array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
