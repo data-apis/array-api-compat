@@ -7,7 +7,6 @@ import numpy as np
 Device: TypeAlias = Literal["cpu"]
 
 if TYPE_CHECKING:
-
     # NumPy 1.x on Python 3.10 fails to parse np.dtype[]
     DType: TypeAlias = np.dtype[
         np.bool_
