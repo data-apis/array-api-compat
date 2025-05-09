@@ -17,6 +17,7 @@ from array_api_compat import (  # noqa: F401
 from array_api_compat import (
     device, is_array_api_obj, is_lazy_array, is_writeable_array, size, to_device
 )
+from array_api_compat.common._helpers import _DASK_DEVICE
 from ._helpers import all_libraries, import_, wrapped_libraries, xfail
 
 
@@ -189,23 +190,26 @@ def test_is_array_any_object(func):
 
 
 @pytest.mark.parametrize("library", all_libraries)
-def test_device(library, request):
+def test_device_to_device(library, request):
     if library == "ndonnx":
-        xfail(request, reason="Needs ndonnx >=0.9.4")
+        xfail(request, reason="Stub raises ValueError")
+    if library == "sparse":
+        xfail(request, reason="No __array_namespace_info__()")
 
     xp = import_(library, wrapper=True)
+    devices = xp.__array_namespace_info__().devices()
 
-    # We can't test much for device() and to_device() other than that
-    # x.to_device(x.device) works.
-
+    # Default device
     x = xp.asarray([1, 2, 3])
     dev = device(x)
 
-    x2 = to_device(x, dev)
-    assert device(x2) == device(x)
-
-    x3 = xp.asarray(x, device=dev)
-    assert device(x3) == device(x)
+    for dev in devices:
+        if dev is None:  # JAX >=0.5.3
+            continue
+        if dev is _DASK_DEVICE:  # TODO this needs a better design
+            continue
+        y = to_device(x, dev)
+        assert device(y) == dev
 
 
 @pytest.mark.parametrize("library", wrapped_libraries)

@@ -64,8 +64,6 @@ sign = get_xp(cp)(_aliases.sign)
 finfo = get_xp(cp)(_aliases.finfo)
 iinfo = get_xp(cp)(_aliases.iinfo)
 
-_copy_default = object()
-
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
@@ -79,7 +77,7 @@ def asarray(
     *,
     dtype: Optional[DType] = None,
     device: Optional[Device] = None,
-    copy: Optional[bool] = _copy_default,
+    copy: Optional[bool] = None,
     **kwargs,
 ) -> Array:
     """
@@ -89,25 +87,13 @@ def asarray(
     specification for more details.
     """
     with cp.cuda.Device(device):
-        # cupy is like NumPy 1.26 (except without _CopyMode). See the comments
-        # in asarray in numpy/_aliases.py.
-        if copy is not _copy_default:
-            # A future version of CuPy will change the meaning of copy=False
-            # to mean no-copy. We don't know for certain what version it will
-            # be yet, so to avoid breaking that version, we use a different
-            # default value for copy so asarray(obj) with no copy kwarg will
-            # always do the copy-if-needed behavior.
-
-            # This will still need to be updated to remove the
-            # NotImplementedError for copy=False, but at least this won't
-            # break the default or existing behavior.
-            if copy is None:
-                copy = False
-            elif copy is False:
-                raise NotImplementedError("asarray(copy=False) is not yet supported in cupy")
-            kwargs['copy'] = copy
-
-        return cp.array(obj, dtype=dtype, **kwargs)
+        if copy is None:
+            return cp.asarray(obj, dtype=dtype, **kwargs)
+        else:
+            res = cp.array(obj, dtype=dtype, copy=copy, **kwargs)
+            if not copy and res is not obj:
+                raise ValueError("Unable to avoid copy while creating an array as requested")
+            return res
 
 
 def astype(
@@ -138,6 +124,11 @@ def count_nonzero(
    return result
 
 
+# take_along_axis: axis defaults to -1 but in cupy (and numpy) axis is a required arg
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+    return cp.take_along_axis(x, indices, axis=axis)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -159,6 +150,7 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'count_nonzero', 'pow', 'sign']
+                              'bool', 'concat', 'count_nonzero', 'pow', 'sign',
+                              'take_along_axis']
 
 _all_ignore = ['cp', 'get_xp']
