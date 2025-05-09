@@ -39,6 +39,9 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x,
 array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
 # incomplete NEP50 support in CuPy 13.x (fixed in 14.0.0a1)
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[pow]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[logaddexp]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[nextafter]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[hypot]
 
 # cupy (arg)min/max wrong with infinities
 # https://github.com/cupy/cupy/issues/7424
@@ -187,7 +190,6 @@ array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 
 # 2024.12 support
-array_api_tests/test_signatures.py::test_func_signature[count_nonzero]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
 array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
