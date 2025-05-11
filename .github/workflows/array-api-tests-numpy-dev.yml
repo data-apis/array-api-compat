@@ -10,3 +10,5 @@ jobs:
       extra-requires: '--pre --extra-index https://pypi.anaconda.org/scientific-python-nightly-wheels/simple'
       xfails-file-extra: '-dev'
       python-versions: '[''3.11'', ''3.13'']'
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip

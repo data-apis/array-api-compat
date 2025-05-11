@@ -10,3 +10,5 @@ jobs:
       package-version: '== 1.22.*'
       xfails-file-extra: '-1-22'
       python-versions: '[''3.10'']'
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip

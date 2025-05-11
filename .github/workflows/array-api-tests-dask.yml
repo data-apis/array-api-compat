@@ -16,3 +16,5 @@ jobs:
       # the full test suite with at least 200 examples.
       pytest-extra-args: --max-examples=5
       python-versions: '[''3.10'', ''3.13'']'
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip

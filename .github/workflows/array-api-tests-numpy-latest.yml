@@ -8,3 +8,5 @@ jobs:
     with:
       package-name: numpy
       python-versions: '[''3.10'', ''3.13'']'
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip
