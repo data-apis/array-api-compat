@@ -56,7 +56,8 @@ jobs:
     - name: Checkout array-api-tests
       uses: actions/checkout@v4
       with:
-        repository: data-apis/array-api-tests
+        repository: ev-br/array-api-tests
+        ref: skip_xfails
         submodules: 'true'
         path: array-api-tests
 
