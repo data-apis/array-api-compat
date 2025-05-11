@@ -37,7 +37,7 @@ on:
         description: Multiline string of environment variables to set for the test run.
 
 env:
-  PYTEST_ARGS: "--max-examples 200 -v -rxXfE --ci ${{ inputs.pytest-extra-args }} --hypothesis-disable-deadline --durations 10"
+  PYTEST_ARGS: "--max-examples 500 -v -rxXfE --ci ${{ inputs.pytest-extra-args }} --hypothesis-disable-deadline --durations 20"
 
 jobs:
   tests:
