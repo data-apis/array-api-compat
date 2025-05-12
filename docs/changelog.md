@@ -1,5 +1,42 @@
 # Changelog
 
+## 1.12.0 (2025-05-13)
+
+
+### Major changes
+
+- The build system has been updated to use `pyproject.toml` instead of `setup.py`
+- Support for Python 3.9 has been dropped. The minimum supported Python version is now
+  3.10; the minimum supported NumPy version is 1.22; the minimum supported `ndonnx`
+  version is 0.10.1.
+- The `linalg` extension works correctly with `pytorch==2.7`.
+- Multiple improvements to handling of `device` arguments in `numpy`, `cupy`, `torch`,
+  and `dask` backends. Support for multiple devices is still relatively immature,
+  and rough edges can be expected. Please report any issues you encounter.
+
+### Minor changes
+
+- `finfo` and `iinfo` functions now accept array arguments, in accordance with the
+   Array API spec;
+- `torch.asarray` function propagates the device of the input array. This works around
+   the [pytorch issue #150199](https://github.com/pytorch/pytorch/issues/150199);
+- `torch.repeat` function is now available;
+- `torch.count_nonzero` function now correctly handles the case of a tuple `axis`
+  arguments and `keepdims=True`;
+- `torch.meshgrid` wrapper defaults to `indexing="xy"`, in accordance with the
+  array API specification;
+- `cupy.asarray` function now implements the `copy=True` argument;
+
+
+The following users contributed to this release:
+
+Evgeni Burovski,
+Lucas Colley,
+Neil Girdhar,
+Joren Hammudoglu,
+Guido Imperiale
+
+
 ## 1.11.2 (2025-03-20)
 
 This is a bugfix release with no new features compared to version 1.11.
