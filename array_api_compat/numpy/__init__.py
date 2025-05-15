@@ -23,6 +23,6 @@ __import__(__package__ + ".linalg")
 
 __import__(__package__ + ".fft")
 
-from .linalg import matrix_transpose, vecdot  # type: ignore[no-redef] # noqa: F401
+from .linalg import matrix_transpose, vecdot  # type: ignore[no-redef]  # noqa: F401
 
 __array_api_version__: Final = "2024.12"
