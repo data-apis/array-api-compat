@@ -7,12 +7,12 @@
 
 - The build system has been updated to use `pyproject.toml` instead of `setup.py`
 - Support for Python 3.9 has been dropped. The minimum supported Python version is now
-  3.10; the minimum supported NumPy version is 1.22; the minimum supported `ndonnx`
-  version is 0.10.1.
-- The `linalg` extension works correctly with `pytorch==2.7`.
-- Multiple improvements to handling of `device` arguments in `numpy`, `cupy`, `torch`,
-  and `dask` backends. Support for multiple devices is still relatively immature,
-  and rough edges can be expected. Please report any issues you encounter.
+  3.10; the minimum supported NumPy version is 1.22.
+- The `linalg` extension works correctly with `pytorch>=2.7`.
+- Multiple improvements to handling of devices in CuPy and PyTorch backends.
+  Support for multiple devices in CuPy is still immature and you should use
+  context managers rather than relying on input-output device propagation or
+  on the `device` parameter.
 
 ### Minor changes
 
@@ -25,7 +25,10 @@
   arguments and `keepdims=True`;
 - `torch.meshgrid` wrapper defaults to `indexing="xy"`, in accordance with the
   array API specification;
-- `cupy.asarray` function now implements the `copy=True` argument;
+- `cupy.asarray` function now implements the `copy=False` argument, albeit
+  at the cost of risking to make a temporary copy.
+- In `numpy.take_along_axis` and `cupy.take_along_axis` the `axis` parameter now
+  defaults to -1, in accordance to the Array API spec.
 
 
 The following users contributed to this release:
