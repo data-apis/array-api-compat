@@ -23,13 +23,6 @@ __import__(__package__ + ".linalg")
 
 __import__(__package__ + ".fft")
 
-from ..common._helpers import *  # noqa: F403
-from .linalg import matrix_transpose, vecdot  # noqa: F401
-
-try:
-    # Used in asarray(). Not present in older versions.
-    from numpy import _CopyMode  # noqa: F401
-except ImportError:
-    pass
+from .linalg import matrix_transpose, vecdot  # type: ignore[no-redef]  # noqa: F401
 
 __array_api_version__: Final = "2024.12"
