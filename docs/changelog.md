@@ -12,7 +12,7 @@
 - Multiple improvements to handling of devices in CuPy and PyTorch backends.
   Support for multiple devices in CuPy is still immature and you should use
   context managers rather than relying on input-output device propagation or
-  on the `device` parameter.
+  on the `device` parameter.  Please report any issues you encounter.
 
 ### Minor changes
 
