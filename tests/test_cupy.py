@@ -5,20 +5,26 @@ xp = pytest.importorskip("array_api_compat.cupy")
 from cupy.cuda import Stream
 
 
-def test_to_device_with_stream():
-    devices = xp.__array_namespace_info__().devices()
-    streams = [
+@pytest.mark.parametrize(
+    "make_stream",
+    [
         lambda: Stream(),
-        lambda: Stream(non_blocking=True), 
+        lambda: Stream(non_blocking=True),
         lambda: Stream(null=True),
-        lambda: Stream(ptds=True), 
+        lambda: Stream(ptds=True),
         lambda: 123,  # dlpack stream
-    ]
+    ],
+)
+def test_to_device_with_stream(make_stream):
+    devices = xp.__array_namespace_info__().devices()
 
     a = xp.asarray([1, 2, 3])
     for dev in devices:
-        for stream_gen in streams:
-            with dev:
-                stream = stream_gen()
-            b = to_device(a, dev, stream=stream)
-            assert device(b) == dev
+        # Streams are device-specific and must be created within
+        # the context of the device...
+        with dev:
+            stream = make_stream()
+        # ... however, to_device() does not need to be inside the
+        # device context.
+        b = to_device(a, dev, stream=stream)
+        assert device(b) == dev
