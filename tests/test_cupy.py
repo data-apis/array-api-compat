@@ -12,7 +12,11 @@ from cupy.cuda import Stream
         lambda: Stream(non_blocking=True),
         lambda: Stream(null=True),
         lambda: Stream(ptds=True),
-        lambda: 123,  # dlpack stream
+        pytest.param(
+            lambda: 123,
+            id="dlpack stream",
+            marks=pytest.mark.skip(reason="segmentation fault reported (#326)")
+        ),
     ],
 )
 def test_to_device_with_stream(make_stream):
