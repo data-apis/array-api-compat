@@ -100,3 +100,20 @@ class TestResultType:
             assert dtype_1 == dtype_2
         finally:
             torch.set_default_dtype(prev_default)
+
+
+def test_meshgrid():
+    """Verify that array_api_compat.torch.meshgrid defaults to indexing='xy'."""
+
+    x, y = xp.asarray([1, 2]), xp.asarray([4])
+
+    X, Y = xp.meshgrid(x, y)
+
+    # output of torch.meshgrid(x, y, indexing='xy') -- indexing='ij' is different
+    X_xy, Y_xy = xp.asarray([[1, 2]]), xp.asarray([[4, 4]])
+
+    assert X.shape == X_xy.shape
+    assert xp.all(X == X_xy)
+
+    assert Y.shape == Y_xy.shape
+    assert xp.all(Y == Y_xy)

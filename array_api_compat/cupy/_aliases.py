@@ -123,6 +123,11 @@ def count_nonzero(
    return result
 
 
+# take_along_axis: axis defaults to -1 but in cupy (and numpy) axis is a required arg
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+    return cp.take_along_axis(x, indices, axis=axis)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -144,7 +149,8 @@ __all__ = _aliases.__all__ + ['asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
-                              'bool', 'concat', 'count_nonzero', 'pow', 'sign']
+                              'bool', 'concat', 'count_nonzero', 'pow', 'sign',
+                              'take_along_axis']
 
 def __dir__() -> list[str]:
     return __all__
