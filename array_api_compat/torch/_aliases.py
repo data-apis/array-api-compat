@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from functools import reduce as _reduce, wraps as _wraps
 from builtins import all as _builtin_all, any as _builtin_any
-from typing import Any
+from typing import Any, List, Optional, Sequence, Tuple, Union, Literal
 
 import torch
 
@@ -547,8 +547,12 @@ def count_nonzero(
 ) -> Array:
     result = torch.count_nonzero(x, dim=axis)
     if keepdims:
-        if axis is not None:
+        if isinstance(axis, int):
             return result.unsqueeze(axis)
+        elif isinstance(axis, tuple):
+            n_axis = [x.ndim + ax if ax < 0 else ax for ax in axis]
+            sh = [1 if i in n_axis else x.shape[i] for i in range(x.ndim)]
+            return torch.reshape(result, sh)
         return _axis_none_keepdims(result, x.ndim, keepdims)
     else:
         return result
@@ -820,6 +824,12 @@ def sign(x: Array, /) -> Array:
         return out
 
 
+def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> List[Array]:
+    # enforce the default of 'xy'
+    # TODO: is the return type a list or a tuple
+    return list(torch.meshgrid(*arrays, indexing='xy'))
+
+
 __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
@@ -836,6 +846,6 @@ __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat']
+           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat', 'meshgrid']
 
 _all_ignore = ['torch', 'get_xp']
