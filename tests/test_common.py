@@ -268,7 +268,6 @@ def test_asarray_cross_library(source_library, target_library, request):
     assert b.dtype == tgt_lib.int32
 
 
-
 @pytest.mark.parametrize("library", wrapped_libraries)
 def test_asarray_copy(library):
     # Note, we have this test here because the test suite currently doesn't
@@ -323,21 +322,21 @@ def test_asarray_copy(library):
 
     # Python built-in types
     for obj in [True, 0, 0.0, 0j, [0], [[0]]]:
-        asarray(obj, copy=True) # No error
-        asarray(obj, copy=None) # No error
+        asarray(obj, copy=True)  # No error
+        asarray(obj, copy=None)  # No error
 
         with pytest.raises(ValueError):
             asarray(obj, copy=False)
 
     # Use the standard library array to test the buffer protocol
-    a = array.array('f', [1.0])
+    a = array.array("f", [1.0])
     b = asarray(a, copy=True)
     assert is_lib_func(b)
     a[0] = 0.0
     assert b[0] == 1.0
 
-    a = array.array('f', [1.0])
-    if library in ('cupy', 'dask.array'):
+    a = array.array("f", [1.0])
+    if library in ("cupy", "dask.array"):
         with pytest.raises(ValueError):
             asarray(a, copy=False)
     else:
@@ -346,11 +345,11 @@ def test_asarray_copy(library):
         a[0] = 0.0
         assert b[0] == 0.0
 
-    a = array.array('f', [1.0])
+    a = array.array("f", [1.0])
     b = asarray(a, copy=None)
     assert is_lib_func(b)
     a[0] = 0.0
-    if library in ('cupy', 'dask.array'):
+    if library in ("cupy", "dask.array"):
         # A copy is required for libraries where the default device is not CPU
         # dask changed behaviour of copy=None in 2024.12 to copy;
         # this wrapper ensures the same behaviour in older versions too.
