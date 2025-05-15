@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from functools import reduce as _reduce, wraps as _wraps
 from builtins import all as _builtin_all, any as _builtin_any
-from typing import Any, List, Optional, Sequence, Tuple, Union, Literal
+from typing import Any, Literal
 
 import torch
 
@@ -824,7 +824,7 @@ def sign(x: Array, /) -> Array:
         return out
 
 
-def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> List[Array]:
+def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> list[Array]:
     # enforce the default of 'xy'
     # TODO: is the return type a list or a tuple
     return list(torch.meshgrid(*arrays, indexing='xy'))
