@@ -152,6 +152,7 @@ def asarray(
     dtype: DType | None = None,
     device: Device | None = None,
     copy: py_bool | None = None,
+    like: Array | None = None,
     **kwargs: object,
 ) -> Array:
     """
@@ -168,7 +169,11 @@ def asarray(
             if copy is False:
                 raise ValueError("Unable to avoid copy when changing dtype")
             obj = obj.astype(dtype)
-        return obj.copy() if copy else obj  # pyright: ignore[reportAttributeAccessIssue]
+        if copy:
+            obj = obj.copy()
+        if like is not None:
+            obj = da.asarray(obj, like=like)
+        return obj
 
     if copy is False:
         raise ValueError(
@@ -177,7 +182,11 @@ def asarray(
 
     # copy=None to be uniform across dask < 2024.12 and >= 2024.12
     # see https://github.com/dask/dask/pull/11524/
-    obj = np.array(obj, dtype=dtype, copy=True)
+    if like is not None:
+        mxp = array_namespace(like)
+        obj = mxp.asarray(obj, dtype=dtype, copy=True)
+    else:
+        obj = np.array(obj, dtype=dtype, copy=True)
     return da.from_array(obj)
 
 
