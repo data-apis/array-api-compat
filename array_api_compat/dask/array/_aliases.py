@@ -171,7 +171,7 @@ def asarray(
         return obj.copy() if copy else obj  # pyright: ignore[reportAttributeAccessIssue]
 
     if copy is False:
-        raise NotImplementedError(
+        raise ValueError(
             "Unable to avoid copy when converting a non-dask object to dask"
         )
 
