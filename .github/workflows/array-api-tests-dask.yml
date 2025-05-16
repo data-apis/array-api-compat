@@ -14,5 +14,7 @@ jobs:
       # workflow is barely more than a smoke test, and one should expect extreme 
       # flakiness. Before changes to dask-xfails.txt or dask-skips.txt, please run
       # the full test suite with at least 200 examples.
-      pytest-extra-args: --max-examples=5
+      pytest-extra-args: --max-examples=200 -n 4
       python-versions: '[''3.10'', ''3.13'']'
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip
