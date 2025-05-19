@@ -12,7 +12,7 @@ more details.
 
 from __future__ import annotations
 
-from typing import Literal, TypeAlias
+from typing import Literal, TypeAlias, overload
 
 import dask.array as da
 from numpy import bool_ as bool
@@ -34,8 +34,21 @@ from numpy import (
 )
 
 from ...common._helpers import _DASK_DEVICE, _check_device, _dask_device
-from ...common._typing import Capabilities, DefaultDTypes, DType, DTypeKind
-
+from ...common._typing import (
+    Capabilities,
+    DefaultDTypes,
+    DType,
+    DTypeKind,
+    DTypesAll,
+    DTypesAny,
+    DTypesBool,
+    DTypesComplex,
+    DTypesIntegral,
+    DTypesNumeric,
+    DTypesReal,
+    DTypesSigned,
+    DTypesUnsigned,
+)
 Device: TypeAlias = Literal["cpu"] | _dask_device
 
 
@@ -202,9 +215,41 @@ class __array_namespace_info__:
             "indexing": dtype(intp),
         }
 
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: None = None
+    ) -> DTypesAll: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["bool"]
+    ) -> DTypesBool: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["signed integer"]
+    ) -> DTypesSigned: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["unsigned integer"]
+    ) -> DTypesUnsigned: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["integral"]
+    ) -> DTypesIntegral: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["real floating"]
+    ) -> DTypesReal: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["complex floating"]
+    ) -> DTypesComplex: ...
+    @overload
+    def dtypes(
+        self, /, *, device: Device | None = None, kind: Literal["numeric"]
+    ) -> DTypesNumeric: ...
     def dtypes(
         self, /, *, device: Device | None = None, kind: DTypeKind | None = None
-    ) -> dict[str, DType]:
+    ) -> DTypesAny:
         """
         The array API data types supported by Dask.
 
