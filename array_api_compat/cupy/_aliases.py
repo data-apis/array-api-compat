@@ -148,4 +148,6 @@ __all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign',
                               'take_along_axis']
 
-_all_ignore = ['cp', 'get_xp']
+
+def __dir__() -> list[str]:
+    return __all__
