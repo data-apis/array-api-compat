@@ -187,14 +187,14 @@ def vector_norm(
         # We can't reuse xp.linalg.norm(keepdims) because of the reshape hacks
         # above to avoid matrix norm logic.
         shape = list(x.shape)
-        _axis = cast(
+        axes = cast(
             "tuple[int, ...]",
             normalize_axis_tuple(  # pyright: ignore[reportCallIssue]
                 range(x.ndim) if axis is None else axis,
                 x.ndim,
             ),
         )
-        for i in _axis:
+        for i in axes:
             shape[i] = 1
         res = xp.reshape(res, tuple(shape))
 

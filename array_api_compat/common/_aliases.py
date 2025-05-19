@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Sequence
-from types import NoneType
 from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 from ._helpers import _check_device, array_namespace
@@ -384,7 +383,7 @@ def clip(
     out: Array | None = None,
 ) -> Array:
     def _isscalar(a: object) -> TypeIs[float | None]:
-        return isinstance(a, int | float | NoneType)
+        return isinstance(a, int | float) or a is None
 
     min_shape = () if _isscalar(min) else min.shape
     max_shape = () if _isscalar(max) else max.shape

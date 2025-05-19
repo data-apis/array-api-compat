@@ -61,13 +61,13 @@ class NestedSequence(Protocol[_T_co]):
     def __len__(self, /) -> int: ...
 
 
-class SupportsArrayNamespace(Protocol):
-    def __array_namespace__(self, /, *, api_version: str | None) -> Namespace: ...
+class SupportsArrayNamespace(Protocol[_T_co]):
+    def __array_namespace__(self, /, *, api_version: str | None) -> _T_co: ...
 
 
 class HasShape(Protocol[_T_co]):
     @property
-    def shape(self, /) -> tuple[_T_co, ...]: ...
+    def shape(self, /) -> _T_co: ...
 
 
 # Return type of `__array_namespace_info__.default_dtypes`

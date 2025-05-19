@@ -3,6 +3,7 @@ from __future__ import annotations
 from builtins import bool as py_bool
 
 import cupy as cp
+
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from .._internal import get_xp
@@ -119,7 +120,7 @@ def count_nonzero(
 
 
 # take_along_axis: axis defaults to -1 but in cupy (and numpy) axis is a required arg
-def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
     return cp.take_along_axis(x, indices, axis=axis)
 
 

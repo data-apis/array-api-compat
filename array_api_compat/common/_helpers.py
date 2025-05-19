@@ -12,14 +12,14 @@ import inspect
 import math
 import sys
 import warnings
-from collections.abc import Hashable
+from collections.abc import Collection, Hashable
 from functools import lru_cache
-from types import NoneType
 from typing import (
     TYPE_CHECKING,
     Any,
     Final,
     Literal,
+    SupportsIndex,
     TypeAlias,
     TypeGuard,
     cast,
@@ -51,7 +51,7 @@ if TYPE_CHECKING:
         | ndx.Array
         | sparse.SparseArray
         | torch.Tensor
-        | SupportsArrayNamespace
+        | SupportsArrayNamespace[Any]
     )
 
 _API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12"})
@@ -630,9 +630,9 @@ def array_namespace(
                 raise ValueError(
                     "The given array does not have an array-api-compat wrapper"
                 )
-            x = cast(SupportsArrayNamespace, x)
+            x = cast("SupportsArrayNamespace[Any]", x)
             namespaces.add(x.__array_namespace__(api_version=api_version))
-        elif isinstance(x, int | float | complex | NoneType):
+        elif isinstance(x, int | float | complex) or x is None:
             continue
         else:
             # TODO: Support Python scalars?
@@ -890,12 +890,10 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
 
 
 @overload
-def size(x: HasShape[int]) -> int: ...
+def size(x: HasShape[Collection[SupportsIndex]]) -> int: ...
 @overload
-def size(x: HasShape[int | None]) -> int | None: ...
-@overload
-def size(x: HasShape[float]) -> int | None: ...  # Dask special case
-def size(x: HasShape[float | None]) -> int | None:
+def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None: ...
+def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None:
     """
     Return the total number of elements of x.
 
@@ -910,9 +908,9 @@ def size(x: HasShape[float | None]) -> int | None:
     # Lazy API compliant arrays, such as ndonnx, can contain None in their shape
     if None in x.shape:
         return None
-    out = math.prod(cast(tuple[float, ...], x.shape))
+    out = math.prod(cast("Collection[SupportsIndex]", x.shape))
     # dask.array.Array.shape can contain NaN
-    return None if math.isnan(out) else cast(int, out)
+    return None if math.isnan(out) else out
 
 
 @lru_cache(100)
@@ -1003,7 +1001,7 @@ def is_lazy_array(x: object) -> TypeGuard[_ArrayApiObj]:
     # on __bool__ (dask is one such example, which however is special-cased above).
 
     # Select a single point of the array
-    s = size(cast(HasShape, x))
+    s = size(cast("HasShape[Collection[SupportsIndex | None]]", x))
     if s is None:
         return True
     xp = array_namespace(x)

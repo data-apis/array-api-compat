@@ -119,14 +119,14 @@ def count_nonzero(
 ) -> Array:
     # NOTE: this is currently incorrectly typed in numpy, but will be fixed in
     # numpy 2.2.5 and 2.3.0: https://github.com/numpy/numpy/pull/28750
-    result = cast(Any, np.count_nonzero(x, axis=axis, keepdims=keepdims))  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType, reportCallIssue]
+    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore[reportArgumentType, reportCallIssue]
     if axis is None and not keepdims:
         return np.asarray(result)
     return result
 
 
 # take_along_axis: axis defaults to -1 but in numpy axis is a required arg
-def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
     return np.take_along_axis(x, indices, axis=axis)
 
 
