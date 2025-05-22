@@ -720,8 +720,6 @@ __all__ = [
     "finfo",
     "iinfo",
 ]
-_all_ignore = ["inspect", "array_namespace", "NamedTuple"]
-
 
 def __dir__() -> list[str]:
     return __all__

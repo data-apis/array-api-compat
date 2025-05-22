@@ -43,7 +43,5 @@ else:
 
 __all__ = linalg_all + _linalg.__all__
 
-del get_xp
-del cp
-del linalg_all
-del _linalg
+def __dir__() -> list[str]:
+    return __all__
