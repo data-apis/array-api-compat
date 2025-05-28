@@ -32,14 +32,14 @@ def test_array_namespace(request, library, api_version, use_compat):
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and not hasattr(xp, "__array_api_version__"):
             # Backwards compatibility for JAX <0.4.32
-            import jax.experimental.array_api as xp
+            import jax.experimental.array_api
+            assert namespace == jax.experimental.array_api
         else:
             assert namespace == xp
+    elif library == "dask.array":
+        assert namespace == array_api_compat.dask.array
     else:
-        if library == "dask.array":
-            assert namespace == array_api_compat.dask.array
-        else:
-            assert namespace == getattr(array_api_compat, library)
+        assert namespace == getattr(array_api_compat, library)
 
     if library == "numpy":
         # check that the same namespace is returned for NumPy scalars
