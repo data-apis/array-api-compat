@@ -22,7 +22,6 @@ from typing import (
     SupportsIndex,
     TypeAlias,
     TypeGuard,
-    TypeVar,
     cast,
     overload,
 )
@@ -30,32 +29,29 @@ from typing import (
 from ._typing import Array, Device, HasShape, Namespace, SupportsArrayNamespace
 
 if TYPE_CHECKING:
-
+    import cupy as cp
     import dask.array as da
     import jax
     import ndonnx as ndx
     import numpy as np
     import numpy.typing as npt
-    import sparse  # pyright: ignore[reportMissingTypeStubs]
+    import sparse
     import torch
 
     # TODO: import from typing (requires Python >=3.13)
-    from typing_extensions import TypeIs, TypeVar
-
-    _SizeT = TypeVar("_SizeT", bound = int | None)
+    from typing_extensions import TypeIs
 
     _ZeroGradientArray: TypeAlias = npt.NDArray[np.void]
-    _CupyArray: TypeAlias = Any  # cupy has no py.typed
 
     _ArrayApiObj: TypeAlias = (
         npt.NDArray[Any]
+        | cp.ndarray
         | da.Array
         | jax.Array
         | ndx.Array
         | sparse.SparseArray
         | torch.Tensor
         | SupportsArrayNamespace[Any]
-        | _CupyArray
     )
 
 _API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12"})
@@ -95,7 +91,7 @@ def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
     return dtype == jax.float0
 
 
-def is_numpy_array(x: object) -> TypeGuard[npt.NDArray[Any]]:
+def is_numpy_array(x: object) -> TypeIs[npt.NDArray[Any]]:
     """
     Return True if `x` is a NumPy array.
 
@@ -266,7 +262,7 @@ def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     return _issubclass_fast(cls, "sparse", "SparseArray")
 
 
-def is_array_api_obj(x: object) -> TypeIs[_ArrayApiObj]:  # pyright: ignore[reportUnknownParameterType]
+def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     """
     Return True if `x` is an array API compatible array object.
 
@@ -581,7 +577,7 @@ def array_namespace(
 
                 namespaces.add(cupy_namespace)
             else:
-                import cupy as cp  # pyright: ignore[reportMissingTypeStubs]
+                import cupy as cp
 
                 namespaces.add(cp)
         elif is_torch_array(x):
@@ -618,14 +614,14 @@ def array_namespace(
                 if hasattr(jax.numpy, "__array_api_version__"):
                     jnp = jax.numpy
                 else:
-                    import jax.experimental.array_api as jnp  # pyright: ignore[reportMissingImports]
+                    import jax.experimental.array_api as jnp  # type: ignore[no-redef]
             namespaces.add(jnp)
         elif is_pydata_sparse_array(x):
             if use_compat is True:
                 _check_api_version(api_version)
                 raise ValueError("`sparse` does not have an array-api-compat wrapper")
             else:
-                import sparse  # pyright: ignore[reportMissingTypeStubs]
+                import sparse
             # `sparse` is already an array namespace. We do not have a wrapper
             # submodule for it.
             namespaces.add(sparse)
@@ -636,7 +632,7 @@ def array_namespace(
                 )
             x = cast("SupportsArrayNamespace[Any]", x)
             namespaces.add(x.__array_namespace__(api_version=api_version))
-        elif isinstance(x, (bool, int, float, complex, type(None))):
+        elif isinstance(x, int | float | complex) or x is None:
             continue
         else:
             # TODO: Support Python scalars?
@@ -732,7 +728,7 @@ def device(x: _ArrayApiObj, /) -> Device:
         return "cpu"
     elif is_dask_array(x):
         # Peek at the metadata of the Dask array to determine type
-        if is_numpy_array(x._meta):  # pyright: ignore
+        if is_numpy_array(x._meta):
             # Must be on CPU since backed by numpy
             return "cpu"
         return _DASK_DEVICE
@@ -761,7 +757,7 @@ def device(x: _ArrayApiObj, /) -> Device:
             return "cpu"
         # Return the device of the constituent array
         return device(inner)  # pyright: ignore
-    return x.device  # pyright: ignore
+    return x.device  # type: ignore  # pyright: ignore
 
 
 # Prevent shadowing, used below
@@ -770,11 +766,11 @@ _device = device
 
 # Based on cupy.array_api.Array.to_device
 def _cupy_to_device(
-    x: _CupyArray,
+    x: cp.ndarray,
     device: Device,
     /,
     stream: int | Any | None = None,
-) -> _CupyArray:
+) -> cp.ndarray:
     import cupy as cp
 
     if device == "cpu":
@@ -803,7 +799,7 @@ def _torch_to_device(
     x: torch.Tensor,
     device: torch.device | str | int,
     /,
-    stream: None = None,
+    stream: int | Any | None = None,
 ) -> torch.Tensor:
     if stream is not None:
         raise NotImplementedError
@@ -869,7 +865,7 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
         # cupy does not yet have to_device
         return _cupy_to_device(x, device, stream=stream)
     elif is_torch_array(x):
-        return _torch_to_device(x, device, stream=stream)  # pyright: ignore[reportArgumentType]
+        return _torch_to_device(x, device, stream=stream)
     elif is_dask_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
@@ -895,8 +891,6 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
 
 @overload
 def size(x: HasShape[Collection[SupportsIndex]]) -> int: ...
-@overload
-def size(x: HasShape[Collection[None]]) -> None: ...
 @overload
 def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None: ...
 def size(x: HasShape[Collection[SupportsIndex | None]]) -> int | None:
@@ -932,7 +926,7 @@ def _is_writeable_cls(cls: type) -> bool | None:
     return None
 
 
-def is_writeable_array(x: object) -> bool:
+def is_writeable_array(x: object) -> TypeGuard[_ArrayApiObj]:
     """
     Return False if ``x.__setitem__`` is expected to raise; True otherwise.
     Return False if `x` is not an array API compatible object.
@@ -970,7 +964,7 @@ def _is_lazy_cls(cls: type) -> bool | None:
     return  None
 
 
-def is_lazy_array(x: object) -> bool:
+def is_lazy_array(x: object) -> TypeGuard[_ArrayApiObj]:
     """Return True if x is potentially a future or it may be otherwise impossible or
     expensive to eagerly read its contents, regardless of their size, e.g. by
     calling ``bool(x)`` or ``float(x)``.
