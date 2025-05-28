@@ -23,7 +23,7 @@ def test_array_namespace(request, library, api_version, use_compat):
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
     if (library == "sparse" and api_version in ("2023.12", "2024.12")) or (
-        library == "jax.numpy" and api_version in ("2021.12", "2022.12", "2024.12")
+        library == "jax.numpy" and api_version in ("2021.12", "2022.12", "2023.12")
     ):
         xfail(request, "Unsupported API version")
 
