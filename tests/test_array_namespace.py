@@ -54,7 +54,7 @@ def test_jax_backwards_compat():
     jax.experimental.array_api has not been imported yet.
     """
     pytest.importorskip("jax")
-    code = f"""\
+    code = """\
 import sys
 import jax.numpy
 import array_api_compat
