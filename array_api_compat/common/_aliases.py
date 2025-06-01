@@ -524,27 +524,6 @@ def nonzero(x: Array, /, xp: Namespace, **kwargs: object) -> tuple[Array, ...]:
     return xp.nonzero(x, **kwargs)
 
 
-# ceil, floor, and trunc return integers for integer inputs
-
-
-def ceil(x: Array, /, xp: Namespace, **kwargs: object) -> Array:
-    if xp.issubdtype(x.dtype, xp.integer):
-        return x
-    return xp.ceil(x, **kwargs)
-
-
-def floor(x: Array, /, xp: Namespace, **kwargs: object) -> Array:
-    if xp.issubdtype(x.dtype, xp.integer):
-        return x
-    return xp.floor(x, **kwargs)
-
-
-def trunc(x: Array, /, xp: Namespace, **kwargs: object) -> Array:
-    if xp.issubdtype(x.dtype, xp.integer):
-        return x
-    return xp.trunc(x, **kwargs)
-
-
 # linear algebra functions
 
 
@@ -707,9 +686,6 @@ __all__ = [
     "argsort",
     "sort",
     "nonzero",
-    "ceil",
-    "floor",
-    "trunc",
     "matmul",
     "matrix_transpose",
     "tensordot",

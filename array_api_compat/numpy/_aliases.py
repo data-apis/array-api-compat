@@ -63,9 +63,6 @@ reshape = get_xp(np)(_aliases.reshape)
 argsort = get_xp(np)(_aliases.argsort)
 sort = get_xp(np)(_aliases.sort)
 nonzero = get_xp(np)(_aliases.nonzero)
-ceil = get_xp(np)(_aliases.ceil)
-floor = get_xp(np)(_aliases.floor)
-trunc = get_xp(np)(_aliases.trunc)
 matmul = get_xp(np)(_aliases.matmul)
 matrix_transpose = get_xp(np)(_aliases.matrix_transpose)
 tensordot = get_xp(np)(_aliases.tensordot)
@@ -145,6 +142,29 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
     return np.take_along_axis(x, indices, axis=axis)
 
 
+# ceil, floor, and trunc return integers for integer inputs in NumPy < 2
+
+def ceil(x: Array, /) -> Array:
+    if np.issubdtype(x.dtype, np.integer):
+        if np.__version__ < '2':
+            return x.copy()
+    return np.ceil(x)
+
+
+def floor(x: Array, /) -> Array:
+    if np.issubdtype(x.dtype, np.integer):
+        if np.__version__ < '2':
+            return x.copy()
+    return np.floor(x)
+
+
+def trunc(x: Array, /) -> Array:
+    if np.issubdtype(x.dtype, np.integer):
+        if np.__version__ < '2':
+            return x.copy()
+    return np.trunc(x)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(np, "vecdot"):
@@ -173,6 +193,9 @@ __all__ = [
     "atan",
     "atan2",
     "atanh",
+    "ceil",
+    "floor",
+    "trunc",
     "bitwise_left_shift",
     "bitwise_invert",
     "bitwise_right_shift",
