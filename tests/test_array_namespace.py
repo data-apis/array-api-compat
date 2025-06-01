@@ -23,7 +23,9 @@ def test_array_namespace(library, api_version, use_compat):
     if library == "ndonnx" and api_version in ("2021.12", "2022.12"):
         pytest.skip("Unsupported API version")
 
-    namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and use_compat is None:
@@ -45,10 +47,13 @@ def test_array_namespace(library, api_version, use_compat):
 
     if library == "numpy":
         # check that the same namespace is returned for NumPy scalars
-        scalar_namespace = array_namespace(
-            xp.float64(0.0), api_version=api_version, use_compat=use_compat
-        )
-        assert scalar_namespace == namespace
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', UserWarning)
+
+            scalar_namespace = array_namespace(
+                xp.float64(0.0), api_version=api_version, use_compat=use_compat
+            )
+            assert scalar_namespace == namespace
 
     # Check that array_namespace works even if jax.experimental.array_api
     # hasn't been imported yet (it monkeypatches __array_namespace__
@@ -97,7 +102,9 @@ def test_api_version_torch():
     torch = import_("torch")
     x = torch.asarray([1, 2])
     torch_ = import_("torch", wrapper=True)
-    assert array_namespace(x, api_version="2023.12") == torch_
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        assert array_namespace(x, api_version="2023.12") == torch_
     assert array_namespace(x, api_version=None) == torch_
     assert array_namespace(x) == torch_
     # Should issue a warning
