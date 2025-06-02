@@ -4,6 +4,7 @@ from dask.array import *  # noqa: F403
 
 # These imports may overwrite names from the import * above.
 from ._aliases import *  # noqa: F403
+from ._meta import wrap_namespace # noqa: F401
 
 __array_api_version__: Final = "2024.12"
 
