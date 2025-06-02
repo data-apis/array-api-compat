@@ -32,20 +32,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest
 
+          # Don't `pip install .[dev]` as it would pull in the whole torch cuda stack
+          python -m pip install array-api-strict
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+
           if [ "${{ matrix.numpy-version }}" == "dev" ]; then
             python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
+            python -m pip install dask[array] jax[cpu] sparse ndonnx
           elif [ "${{ matrix.numpy-version }}" == "1.22" ]; then
             python -m pip install 'numpy==1.22.*'
           elif [ "${{ matrix.numpy-version }}" == "1.26" ]; then
             python -m pip install 'numpy==1.26.*'
           else
-            # Don't `pip install .[dev]` as it would pull in the whole torch cuda stack
-            python -m pip install array-api-strict dask[array] jax[cpu] numpy sparse
-            python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-            if [ "${{ matrix.python-version }}" != "3.13" ]; then
-              # onnx wheels are not available on Python 3.13 at the moment of writing
-              python -m pip install ndonnx
-            fi
+            python -m pip install numpy
+            python -m pip install dask[array] jax[cpu] sparse ndonnx
           fi
 
       - name: Dump pip environment

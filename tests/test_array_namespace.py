@@ -27,7 +27,9 @@ def test_array_namespace(request, library, api_version, use_compat):
     ):
         xfail(request, "Unsupported API version")
 
-    namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        namespace = array_namespace(array, api_version=api_version, use_compat=use_compat)
 
     if use_compat is False or use_compat is None and library not in wrapped_libraries:
         if library == "jax.numpy" and not hasattr(xp, "__array_api_version__"):
@@ -43,10 +45,13 @@ def test_array_namespace(request, library, api_version, use_compat):
 
     if library == "numpy":
         # check that the same namespace is returned for NumPy scalars
-        scalar_namespace = array_namespace(
-            xp.float64(0.0), api_version=api_version, use_compat=use_compat
-        )
-        assert scalar_namespace == namespace
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', UserWarning)
+
+            scalar_namespace = array_namespace(
+                xp.float64(0.0), api_version=api_version, use_compat=use_compat
+            )
+            assert scalar_namespace == namespace
 
 
 def test_jax_backwards_compat():

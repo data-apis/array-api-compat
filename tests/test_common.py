@@ -195,6 +195,9 @@ def test_device_to_device(library, request):
         xfail(request, reason="Stub raises ValueError")
     if library == "sparse":
         xfail(request, reason="No __array_namespace_info__()")
+    if library == "array_api_strict":
+        if np.__version__ < "2":
+            xfail(request, reason="no copy argument of np.asarray")
 
     xp = import_(library, wrapper=True)
     devices = xp.__array_namespace_info__().devices()
