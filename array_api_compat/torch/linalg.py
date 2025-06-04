@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import torch
 import torch.linalg
-from typing import Optional, Union, Tuple
 
 from .._internal import clone_module
 

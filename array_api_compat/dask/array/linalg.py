@@ -4,10 +4,13 @@ from typing import Literal
 
 import dask.array as da
 
+# The `matmul` and `tensordot` functions are in both the main and linalg namespaces
+from dask.array import matmul, outer, tensordot
+
 # Exports
 from ..._internal import clone_module, get_xp
 from ...common import _linalg
-from ...common._typing import Array as _Array
+from ...common._typing import Array
 
 __all__ = clone_module("dask.array.linalg", globals())
 

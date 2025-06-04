@@ -147,8 +147,6 @@ __all__ = _aliases.__all__ + ['asarray', 'astype',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign',
                               'take_along_axis']
 
-def __dir__() -> list[str]:
-    return __all__
 
 def __dir__() -> list[str]:
     return __all__
