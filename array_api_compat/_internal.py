@@ -47,8 +47,8 @@ See the corresponding documentation in NumPy/CuPy and/or the array API
 specification for more details.
 
 """
-        wrapped_f.__signature__ = new_sig  # pyright: ignore[reportAttributeAccessIssue]
-        return wrapped_f  # pyright: ignore[reportReturnType]
+        wrapped_f.__signature__ = new_sig  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        return wrapped_f  # type: ignore[return-value] # pyright: ignore[reportReturnType]
 
     return inner
 

@@ -145,7 +145,7 @@ iinfo = get_xp(np)(_aliases.iinfo)
 
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 def asarray(
-    obj: complex | NestedSequence[complex] | Array | SupportsBufferProtocol,
+    obj: Array | complex | NestedSequence[complex] | SupportsBufferProtocol,
     /,
     *,
     dtype: DType | None = None,

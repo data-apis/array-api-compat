@@ -10,7 +10,7 @@ __all__ = clone_module("numpy", globals())
 
 # These imports may overwrite names from the import * above.
 from . import _aliases
-from ._aliases import *  # noqa: F403
+from ._aliases import *  # type: ignore[assignment,no-redef] # noqa: F403
 from ._info import __array_namespace_info__  # noqa: F401
 
 # Don't know why, but we have to do an absolute import to import linalg. If we

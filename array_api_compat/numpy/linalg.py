@@ -50,7 +50,7 @@ trace = get_xp(np)(_linalg.trace)
 # https://github.com/cupy/cupy/blob/main/cupy/cublas.py#L43).
 def solve(x1: Array, x2: Array, /) -> Array:
     try:
-        from numpy.linalg._linalg import (
+        from numpy.linalg._linalg import (  # type: ignore[attr-defined]
             _assert_stacked_2d,
             _assert_stacked_square,
             _commonType,
@@ -59,7 +59,7 @@ def solve(x1: Array, x2: Array, /) -> Array:
             isComplexType,
         )
     except ImportError:
-        from numpy.linalg.linalg import (
+        from numpy.linalg.linalg import (  # type: ignore[attr-defined]
             _assert_stacked_2d,
             _assert_stacked_square,
             _commonType,

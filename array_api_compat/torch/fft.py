@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Union, Sequence, Literal
+from collections.abc import Sequence
+from typing import Literal
 
 import torch
 import torch.fft
@@ -19,7 +20,7 @@ def fftn(
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
     norm: Literal["backward", "ortho", "forward"] = "backward",
-    **kwargs,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.fftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
@@ -30,7 +31,7 @@ def ifftn(
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
     norm: Literal["backward", "ortho", "forward"] = "backward",
-    **kwargs,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
@@ -41,7 +42,7 @@ def rfftn(
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
     norm: Literal["backward", "ortho", "forward"] = "backward",
-    **kwargs,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.rfftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
@@ -52,7 +53,7 @@ def irfftn(
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
     norm: Literal["backward", "ortho", "forward"] = "backward",
-    **kwargs,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.irfftn(x, s=s, dim=axes, norm=norm, **kwargs)
 
@@ -60,8 +61,8 @@ def fftshift(
     x: Array,
     /,
     *,
-    axes: Union[int, Sequence[int]] = None,
-    **kwargs,
+    axes: int | Sequence[int] = None,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.fftshift(x, dim=axes, **kwargs)
 
@@ -69,8 +70,8 @@ def ifftshift(
     x: Array,
     /,
     *,
-    axes: Union[int, Sequence[int]] = None,
-    **kwargs,
+    axes: int | Sequence[int] = None,
+    **kwargs: object,
 ) -> Array:
     return torch.fft.ifftshift(x, dim=axes, **kwargs)
 

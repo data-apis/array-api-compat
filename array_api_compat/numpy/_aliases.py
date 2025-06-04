@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from builtins import bool as py_bool
-from typing import TYPE_CHECKING, Any, Literal, TypeAlias, cast
+from typing import Any, cast
 
 import numpy as np
 
@@ -10,13 +10,6 @@ from .._internal import get_xp
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._typing import Array, Device, DType
-
-if TYPE_CHECKING:
-    from typing_extensions import Buffer, TypeIs
-
-# The values of the `_CopyMode` enum can be either `False`, `True`, or `2`:
-# https://github.com/numpy/numpy/blob/5a8a6a79d9c2fff8f07dcab5d41e14f8508d673f/numpy/_globals.pyi#L7-L10
-_Copy: TypeAlias = py_bool | Literal[2] | np._CopyMode
 
 bool = np.bool_
 
@@ -73,14 +66,6 @@ finfo = get_xp(np)(_aliases.finfo)
 iinfo = get_xp(np)(_aliases.iinfo)
 
 
-def _supports_buffer_protocol(obj: object) -> TypeIs[Buffer]:  # pyright: ignore[reportUnusedFunction]
-    try:
-        memoryview(obj)  # pyright: ignore[reportArgumentType]
-    except TypeError:
-        return False
-    return True
-
-
 # asarray also adds the copy keyword, which is not present in numpy 1.0.
 # asarray() is different enough between numpy, cupy, and dask, the logic
 # complicated enough that it's easier to define it separately for each module
@@ -91,7 +76,7 @@ def asarray(
     *,
     dtype: DType | None = None,
     device: Device | None = None,
-    copy: _Copy | None = None,
+    copy: py_bool | None = None,
     **kwargs: Any,
 ) -> Array:
     """
@@ -102,14 +87,14 @@ def asarray(
     """
     _helpers._check_device(np, device)
 
+    # None is unsupported in NumPy 1.0, but we can use an internal enum
+    # False in NumPy 1.0 means None in NumPy 2.0 and in the Array API
     if copy is None:
-        copy = np._CopyMode.IF_NEEDED
+        copy = np._CopyMode.IF_NEEDED  # type: ignore[assignment,attr-defined]
     elif copy is False:
-        copy = np._CopyMode.NEVER
-    elif copy is True:
-        copy = np._CopyMode.ALWAYS
+        copy = np._CopyMode.NEVER  # type: ignore[assignment,attr-defined]
 
-    return np.array(obj, copy=copy, dtype=dtype, **kwargs)  # pyright: ignore
+    return np.array(obj, copy=copy, dtype=dtype, **kwargs)
 
 
 def astype(
@@ -140,7 +125,7 @@ def count_nonzero(
 
 
 # take_along_axis: axis defaults to -1 but in numpy axis is a required arg
-def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
+def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
     return np.take_along_axis(x, indices, axis=axis)
 
 
@@ -149,7 +134,7 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
 if hasattr(np, "vecdot"):
     vecdot = np.vecdot
 else:
-    vecdot = get_xp(np)(_aliases.vecdot)
+    vecdot = get_xp(np)(_aliases.vecdot)  # type: ignore[assignment]
 
 if hasattr(np, "isdtype"):
     isdtype = np.isdtype
