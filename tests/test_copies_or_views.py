@@ -6,8 +6,6 @@ import pytest
 from ._helpers import import_, wrapped_libraries
 
 
-LIB_NAMES = ['numpy', 'cupy', 'torch', 'dask.array', 'array_api_strict']
-
 FUNC_INPUTS = [
     # func_name, arr_input, dtype,  scalar_value
     ('abs', [1, 2], 'int8', 3),
@@ -40,7 +38,7 @@ def is_view(func, a, value):
     return a[0] == value
 
 
-@pytest.mark.parametrize('xp_name', wrapped_libraries) 
+@pytest.mark.parametrize('xp_name', wrapped_libraries + ['array_api_strict'])
 @pytest.mark.parametrize('inputs', FUNC_INPUTS, ids=[inp[0] for inp in FUNC_INPUTS])
 def test_view_or_copy(inputs, xp_name):
     bare_xp = import_(xp_name, wrapper=False)
