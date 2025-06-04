@@ -10,7 +10,7 @@ from numpy import min as min
 from numpy import round as round
 
 # These imports may overwrite names from the import * above.
-from ._aliases import *  # noqa: F403
+from ._aliases import *  # type: ignore[assignment,no-redef] # noqa: F403
 
 # Don't know why, but we have to do an absolute import to import linalg. If we
 # instead do
