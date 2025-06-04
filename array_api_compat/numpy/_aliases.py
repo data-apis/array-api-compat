@@ -145,23 +145,20 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1):
 # ceil, floor, and trunc return integers for integer inputs in NumPy < 2
 
 def ceil(x: Array, /) -> Array:
-    if np.issubdtype(x.dtype, np.integer):
-        if np.__version__ < '2':
-            return x.copy()
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+        return x.copy()
     return np.ceil(x)
 
 
 def floor(x: Array, /) -> Array:
-    if np.issubdtype(x.dtype, np.integer):
-        if np.__version__ < '2':
-            return x.copy()
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+        return x.copy()
     return np.floor(x)
 
 
 def trunc(x: Array, /) -> Array:
-    if np.issubdtype(x.dtype, np.integer):
-        if np.__version__ < '2':
-            return x.copy()
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+        return x.copy()
     return np.trunc(x)
 
 
