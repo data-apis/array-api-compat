@@ -3,7 +3,7 @@ A collection of tests to make sure that wrapped namespaces agree with the bare o
 on whether to return a view or a copy of inputs.
 """
 import pytest
-from ._helpers import import_
+from ._helpers import import_, wrapped_libraries
 
 
 LIB_NAMES = ['numpy', 'cupy', 'torch', 'dask.array', 'array_api_strict']
@@ -40,7 +40,7 @@ def is_view(func, a, value):
     return a[0] == value
 
 
-@pytest.mark.parametrize('xp_name', LIB_NAMES) 
+@pytest.mark.parametrize('xp_name', wrapped_libraries) 
 @pytest.mark.parametrize('inputs', FUNC_INPUTS, ids=[inp[0] for inp in FUNC_INPUTS])
 def test_view_or_copy(inputs, xp_name):
     bare_xp = import_(xp_name, wrapper=False)
