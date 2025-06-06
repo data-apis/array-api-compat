@@ -9,7 +9,6 @@ import numpy as np
 from .._internal import get_xp
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
-from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 bool = np.bool_
@@ -147,8 +146,7 @@ if hasattr(np, "unstack"):
 else:
     unstack = get_xp(np)(_aliases.unstack)
 
-__all__ = [
-    "__array_namespace_info__",
+__all__ = _aliases.__all__ + [
     "asarray",
     "astype",
     "acos",
@@ -167,8 +165,6 @@ __all__ = [
     "pow",
     "take_along_axis"
 ]
-__all__ += _aliases.__all__
-_all_ignore = ["np", "get_xp"]
 
 
 def __dir__() -> list[str]:

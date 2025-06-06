@@ -7,7 +7,6 @@ import cupy as cp
 from ..common import _aliases, _helpers
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from .._internal import get_xp
-from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 bool = cp.bool_
@@ -141,7 +140,7 @@ if hasattr(cp, 'unstack'):
 else:
     unstack = get_xp(cp)(_aliases.unstack)
 
-__all__ = _aliases.__all__ + ['__array_namespace_info__', 'asarray', 'astype',
+__all__ = _aliases.__all__ + ['asarray', 'astype',
                               'acos', 'acosh', 'asin', 'asinh', 'atan',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',

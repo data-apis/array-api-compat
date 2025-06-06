@@ -10,7 +10,6 @@ import torch
 from .._internal import get_xp
 from ..common import _aliases
 from ..common._typing import NestedSequence, SupportsBufferProtocol
-from ._info import __array_namespace_info__
 from ._typing import Array, Device, DType
 
 _int_dtypes = {
@@ -830,7 +829,7 @@ def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> list[Array
     return list(torch.meshgrid(*arrays, indexing='xy'))
 
 
-__all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
+__all__ = ['asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',
@@ -847,5 +846,3 @@ __all__ = ['__array_namespace_info__', 'asarray', 'result_type', 'can_cast',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
            'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat', 'meshgrid']
-
-_all_ignore = ['torch', 'get_xp']

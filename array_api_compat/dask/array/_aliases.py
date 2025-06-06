@@ -41,7 +41,6 @@ from ...common._typing import (
     NestedSequence,
     SupportsBufferProtocol,
 )
-from ._info import __array_namespace_info__
 
 isdtype = get_xp(np)(_aliases.isdtype)
 unstack = get_xp(da)(_aliases.unstack)
@@ -355,7 +354,6 @@ def count_nonzero(
 
 
 __all__ = [
-    "__array_namespace_info__",
     "count_nonzero",
     "bool",
     "int8", "int16", "int32", "int64",
@@ -369,8 +367,6 @@ __all__ = [
     "bitwise_left_shift", "bitwise_right_shift", "bitwise_invert",
 ]  # fmt: skip
 __all__ += _aliases.__all__
-_all_ignore = ["array_namespace", "get_xp", "da", "np"]
-
 
 def __dir__() -> list[str]:
     return __all__

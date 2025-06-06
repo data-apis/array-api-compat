@@ -5,9 +5,11 @@ from typing import Literal
 
 import torch
 import torch.fft
-from torch.fft import * # noqa: F403
 
 from ._typing import Array
+from .._internal import clone_module
+
+__all__ = clone_module("torch.fft", globals())
 
 # Several torch fft functions do not map axes to dim
 
@@ -74,13 +76,7 @@ def ifftshift(
     return torch.fft.ifftshift(x, dim=axes, **kwargs)
 
 
-__all__ = torch.fft.__all__ + [
-    "fftn",
-    "ifftn",
-    "rfftn",
-    "irfftn",
-    "fftshift",
-    "ifftshift",
-]
+__all__ += ["fftn", "ifftn", "rfftn", "irfftn", "fftshift", "ifftshift"]
 
-_all_ignore = ['torch']
+def __dir__() -> list[str]:
+    return __all__

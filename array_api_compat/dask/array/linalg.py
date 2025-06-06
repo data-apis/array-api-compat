@@ -4,27 +4,17 @@ from typing import Literal
 
 import dask.array as da
 
-# Exports
-from dask.array.linalg import *  # noqa: F403
-from dask.array import outer
 # The `matmul` and `tensordot` functions are in both the main and linalg namespaces
-from dask.array import matmul, tensordot
+from dask.array import matmul, outer, tensordot
 
-
-from ..._internal import get_xp
+# Exports
+from ..._internal import clone_module, get_xp
 from ...common import _linalg
 from ...common._typing import Array
-from ._aliases import matrix_transpose, vecdot
 
-# dask.array.linalg doesn't have __all__. If it is added, replace this with
-#
-# from dask.array.linalg import __all__ as linalg_all
-_n: dict[str, object] = {}
-exec('from dask.array.linalg import *', _n)
-for k in ('__builtins__', 'annotations', 'operator', 'warnings', 'Array'):
-    _n.pop(k, None)
-linalg_all = list(_n)
-del _n, k
+__all__ = clone_module("dask.array.linalg", globals())
+
+from ._aliases import matrix_transpose, vecdot
 
 EighResult = _linalg.EighResult
 QRResult = _linalg.QRResult
@@ -64,10 +54,11 @@ def svdvals(x: Array) -> Array:
 vector_norm = get_xp(da)(_linalg.vector_norm)
 diagonal = get_xp(da)(_linalg.diagonal)
 
-__all__ = linalg_all + ["trace", "outer", "matmul", "tensordot",
-                        "matrix_transpose", "vecdot", "EighResult",
-                        "QRResult", "SlogdetResult", "SVDResult", "qr",
-                        "cholesky", "matrix_rank", "matrix_norm", "svdvals",
-                        "vector_norm", "diagonal"]
+__all__ += ["trace", "outer", "matmul", "tensordot",
+            "matrix_transpose", "vecdot", "EighResult",
+            "QRResult", "SlogdetResult", "SVDResult", "qr",
+            "cholesky", "matrix_rank", "matrix_norm", "svdvals",
+            "vector_norm", "diagonal"]
 
-_all_ignore = ['get_xp', 'da', 'linalg_all', 'warnings']
+def __dir__() -> list[str]:
+    return __all__

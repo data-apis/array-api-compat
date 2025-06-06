@@ -225,8 +225,6 @@ __all__ = ['cross', 'matmul', 'outer', 'tensordot', 'EighResult',
            'matrix_transpose', 'svdvals', 'vecdot', 'vector_norm', 'diagonal',
            'trace']
 
-_all_ignore = ['math', 'normalize_axis_tuple', 'get_xp', 'np', 'isdtype']
-
 
 def __dir__() -> list[str]:
     return __all__

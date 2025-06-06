@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import torch
-from torch.linalg import * # noqa: F403
+import torch.linalg
 
-# torch.linalg doesn't define __all__
-# from torch.linalg import __all__ as linalg_all
-from torch import linalg as torch_linalg
-linalg_all = [i for i in dir(torch_linalg) if not i.startswith('_')]
+from .._internal import clone_module
+
+__all__ = clone_module("torch.linalg", globals())
 
 # outer is implemented in torch but aren't in the linalg namespace
 from torch import outer
@@ -28,7 +27,7 @@ def cross(x1: Array, x2: Array, /, *, axis: int = -1) -> Array:
     if not (x1.shape[axis] == x2.shape[axis] == 3):
         raise ValueError(f"cross product axis must have size 3, got {x1.shape[axis]} and {x2.shape[axis]}")
     x1, x2 = torch.broadcast_tensors(x1, x2)
-    return torch_linalg.cross(x1, x2, dim=axis)
+    return torch.linalg.cross(x1, x2, dim=axis)
 
 def vecdot(x1: Array, x2: Array, /, *, axis: int = -1, **kwargs: object) -> Array:
     from ._aliases import isdtype
@@ -108,12 +107,8 @@ def vector_norm(
         return out
     return torch.linalg.vector_norm(x, ord=ord, axis=axis, keepdim=keepdims, **kwargs)
 
-__all__ = linalg_all + ['outer', 'matmul', 'matrix_transpose', 'tensordot',
-                        'cross', 'vecdot', 'solve', 'trace', 'vector_norm']
-
-_all_ignore = ['torch_linalg', 'sum']
-
-del linalg_all
+__all__ += ['outer', 'matmul', 'matrix_transpose', 'tensordot',
+            'cross', 'vecdot', 'solve', 'trace', 'vector_norm']
 
 def __dir__() -> list[str]:
     return __all__
