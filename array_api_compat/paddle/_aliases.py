@@ -319,6 +319,7 @@ def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
     }
     return can_cast_dict[from_][to]
 
+
 # Basic renames
 bitwise_invert = paddle.bitwise_not
 newaxis = None
@@ -520,15 +521,16 @@ def prod(
         dtype = _NP_2_PADDLE_DTYPE[dtype.name]
     
     if axis == ():
-        # We can't upcast uint8 according to the spec because there is no
-        # paddle.uint64, so at least upcast to int64 which is what sum does
-        # when axis=None.
         if dtype is None:
+            # We can't upcast uint8 according to the spec because there is no
+            # paddle.uint64, so at least upcast to int64 which is what sum does
+            # when axis=None.
             if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.uint8]:
                 return x.to(paddle.int64)
             return x.clone()
         return x.to(dtype)
 
+    # paddle.prod doesn't support multiple axes
     if isinstance(axis, tuple):
         return _reduce_multiple_axes(
             paddle.prod, x, axis, keepdim=keepdims, dtype=dtype, **kwargs
@@ -536,7 +538,7 @@ def prod(
 
     
     if axis is None:
-        # paddle.prod doesn't support multiple axes
+        # paddle doesn't support keepdims with axis=None
         if dtype is None and x.dtype == paddle.int32:
             dtype = 'int64' 
         res = paddle.prod(x, dtype=dtype, **kwargs)
@@ -1283,6 +1285,7 @@ def floor(x: array, /) -> array:
 def ceil(x: array, /) -> array:
     return paddle.ceil(x).to(x.dtype)
 
+
 def clip(
     x: array,
     /,
@@ -1357,6 +1360,7 @@ def cumulative_sum(
                 "axis must be specified in cumulative_sum for more than one dimension"
             )
         axis = 0
+
     res = paddle.cumsum(x, axis=axis, dtype=dtype)
 
     # np.cumsum does not support include_initial
@@ -1386,6 +1390,7 @@ def searchsorted(
         x2,
         right=(side == "right"),
     )
+
 
 __all__ = [
     "__array_namespace_info__",
