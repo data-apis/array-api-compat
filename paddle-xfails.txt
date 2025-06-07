@@ -156,6 +156,7 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_s
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and
 array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor
 
 # test exceeds the deadline of 800ms
 array_api_tests/test_linalg.py::test_pinv

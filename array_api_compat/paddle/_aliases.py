@@ -319,13 +319,6 @@ def can_cast(from_: Union[Dtype, array], to: Dtype, /) -> bool:
     }
     return can_cast_dict[from_][to]
 
-def test_bitwise_or(x: array, y: array):
-    if not paddle.is_tensor(x):
-        x = paddle.to_tensor(x)
-    if not paddle.is_tensor(y):
-        y = paddle.to_tensor(y)
-    return paddle.bitwise_or(x, y)
-
 # Basic renames
 bitwise_invert = paddle.bitwise_not
 newaxis = None
@@ -339,7 +332,7 @@ add = _two_arg(paddle.add)
 atan2 = _two_arg(paddle.atan2)
 bitwise_and = _two_arg(paddle.bitwise_and)
 bitwise_left_shift = _two_arg(paddle.bitwise_left_shift)
-bitwise_or = _two_arg(test_bitwise_or)
+bitwise_or = _two_arg(paddle.bitwise_or)
 bitwise_right_shift = _two_arg(paddle.bitwise_right_shift)
 bitwise_xor = _two_arg(paddle.bitwise_xor)
 copysign = _two_arg(paddle.copysign)
@@ -527,6 +520,9 @@ def prod(
         dtype = _NP_2_PADDLE_DTYPE[dtype.name]
     
     if axis == ():
+        # We can't upcast uint8 according to the spec because there is no
+        # paddle.uint64, so at least upcast to int64 which is what sum does
+        # when axis=None.
         if dtype is None:
             if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.uint8]:
                 return x.to(paddle.int64)
@@ -537,8 +533,10 @@ def prod(
         return _reduce_multiple_axes(
             paddle.prod, x, axis, keepdim=keepdims, dtype=dtype, **kwargs
         )
-        
+
+    
     if axis is None:
+        # paddle.prod doesn't support multiple axes
         if dtype is None and x.dtype == paddle.int32:
             dtype = 'int64' 
         res = paddle.prod(x, dtype=dtype, **kwargs)

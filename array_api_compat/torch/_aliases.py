@@ -611,9 +611,6 @@ def triu(x: array, /, *, k: int = 0) -> array:
 
 # Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
 def expand_dims(x: array, /, *, axis: int = 0) -> array:
-    if axis == 2:
-        import pdb
-        pdb.set_trace()
     return torch.unsqueeze(x, axis)
 
 def astype(x: array, dtype: Dtype, /, *, copy: bool = True) -> array:
