@@ -125,12 +125,24 @@ def matrix_norm(
     keepdims: bool = False,
     ord: Optional[Union[int, float, Literal["fro", "nuc"]]] = "fro",
 ) -> array:
-    return paddle.linalg.matrix_norm(x, p=ord, axis=(-2, -1), keepdim=keepdims)
-
+    res = paddle.linalg.matrix_norm(x, p=ord, axis=(-2, -1), keepdim=keepdims)
+    if res.dtype == paddle.complex64 :
+        res = paddle.cast(res, "float32")
+    if res.dtype == paddle.complex128:
+        res = paddle.cast(res, "float64")
+    return res
 
 def pinv(x: array, /, *, rtol: Optional[Union[float, array]] = None) -> array:
     if rtol is None:
         return paddle.linalg.pinv(x)
+    
+    # change rtol shape 
+    if isinstance(rtol, (int, float)):
+        rtol = paddle.to_tensor(rtol, dtype=x.dtype)
+    
+    # broadcast rtol to [..., 1] 
+    if rtol.ndim > 0:
+        rtol = rtol.unsqueeze(-1)  
 
     return paddle.linalg.pinv(x, rcond=rtol)
 
@@ -157,6 +169,9 @@ def svd(x: array, full_matrices: Optional[bool]= None) -> array:
         return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices=True), ['U', 'S', 'Vh'])
     return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices), ['U', 'S', 'Vh'])
 
+def svdvals(x: array) -> array:
+    return paddle.linalg.svd(x)[1]
+
 __all__ = linalg_all + [
     "outer",
     "matmul",
@@ -171,6 +186,7 @@ __all__ = linalg_all + [
     "slogdet",
     "eigh",
     "diagonal",
+    "svdvals"
 ]
 
 _all_ignore = ["paddle_linalg", "sum"]

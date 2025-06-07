@@ -496,33 +496,56 @@ def prod(
         x = paddle.to_tensor(x)
     ndim = x.ndim
 
+    # fix reducing on the zero dimension
+    if x.numel() == 0:
+        if dtype is not None:
+            output_dtype = _NP_2_PADDLE_DTYPE[dtype.name]
+        else:
+            if x.dtype == paddle.bool:
+                 output_dtype = paddle.int64 
+            else:
+                 output_dtype = x.dtype
+        
+        if axis is None:
+            return paddle.to_tensor(1, dtype=output_dtype)
+        
+        if keepdims:
+            output_shape = list(x.shape)
+            if isinstance(axis, int):
+                axis = (axis,)
+            for ax in axis:
+                output_shape[ax] = 1
+        else:
+            output_shape = [dim for i, dim in enumerate(x.shape) if i not in (axis if isinstance(axis, tuple) else [axis])]
+            if not output_shape:
+                 return paddle.to_tensor(1, dtype=output_dtype)
+
+        return paddle.ones(output_shape, dtype=output_dtype)
+
+
     if dtype is not None:
-        # import pdb
-        # pdb.set_trace()
-        dtype = _NP_2_PADDLE_DTYPE[dtype.name] 
-    # below because it still needs to upcast.
+        dtype = _NP_2_PADDLE_DTYPE[dtype.name]
+    
     if axis == ():
         if dtype is None:
-            # We can't upcast uint8 according to the spec because there is no
-            # paddle.uint64, so at least upcast to int64 which is what sum does
-            # when axis=None.
             if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.uint8]:
                 return x.to(paddle.int64)
             return x.clone()
         return x.to(dtype)
 
-    # paddle.prod doesn't support multiple axes
     if isinstance(axis, tuple):
         return _reduce_multiple_axes(
             paddle.prod, x, axis, keepdim=keepdims, dtype=dtype, **kwargs
         )
+        
     if axis is None:
-        # paddle doesn't support keepdims with axis=None
+        if dtype is None and x.dtype == paddle.int32:
+            dtype = 'int64' 
         res = paddle.prod(x, dtype=dtype, **kwargs)
         res = _axis_none_keepdims(res, ndim, keepdims)
         return res
-
-    return paddle.prod(x, axis, dtype=dtype, keepdim=keepdims, **kwargs)
+        
+    return paddle.prod(x, axis=axis, keepdims=keepdims, dtype=dtype, **kwargs)
 
 
 def sum(
@@ -771,7 +794,17 @@ def roll(
 def nonzero(x: array, /, **kwargs) -> Tuple[array, ...]:
     if x.ndim == 0:
         raise ValueError("nonzero() does not support zero-dimensional arrays")
-    return paddle.nonzero(x, as_tuple=True, **kwargs)
+
+    if paddle.is_floating_point(x) or paddle.is_complex(x) :
+        # Use paddle.isclose() to determine which elements are 
+        # "close enough" to zero.
+        zero_tensor = paddle.zeros(shape=x.shape ,dtype=x.dtype)
+        is_zero_mask = paddle.isclose(x, zero_tensor)
+        is_nonzero_mask = paddle.logical_not(is_zero_mask)
+        return paddle.nonzero(is_nonzero_mask, as_tuple=True, **kwargs)
+    
+    else:
+        return paddle.nonzero(x, as_tuple=True, **kwargs)
 
 
 def where(condition: array, x1: array, x2: array, /) -> array:
@@ -1003,6 +1036,22 @@ def unique_values(x: array) -> array:
 
 def matmul(x1: array, x2: array, /, **kwargs) -> array:
     # paddle.matmul doesn't type promote (but differently from _fix_promotion)
+    d1 = x1.ndim
+    d2 = x2.ndim
+
+    if d1 == 0 or d2 == 0:
+        raise ValueError("matmul does not support 0-D (scalar) inputs.")
+
+    k1 = x1.shape[-1]
+    
+    if d2 == 1:
+        k2 = x2.shape[0]
+    else:
+        k2 = x2.shape[-2]
+
+    if k1 != k2:
+        raise ValueError(f"Shapes {x1.shape} and {x2.shape} are not aligned for matmul: "
+                         f"{k1} (dim -1 of x1) != {k2} (dim -2 of x2)")
     x1, x2 = _fix_promotion(x1, x2, only_scalar=False)
     return paddle.matmul(x1, x2, **kwargs)
 
