@@ -106,3 +106,62 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_ceil
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[greater_equal(x1, x2)]
 array_api_tests/test_searching_functions.py::test_where
+
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[__eq__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[multiply(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x, s)] 
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[greater_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[not_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[add(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__iadd__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__iadd__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__itruediv__(x, s)] 
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__itruediv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[subtract(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)] 
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isub__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isub__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[pow(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_hypot
+array_api_tests/test_operators_and_elementwise_functions.py::test_copysign
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[greater(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
+array_api_tests/test_linalg.py::test_outer
+array_api_tests/test_linalg.py::test_vecdot 
+array_api_tests/test_operators_and_elementwise_functions.py::test_clip
+array_api_tests/test_manipulation_functions.py::test_stack 
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide
+
+# do not pass 
+array_api_tests/test_has_names[array_attribute-device] 
+array_api_tests/test_signatures.py::test_func_signature[meshgrid] 
+
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[equal(x1, x2)]
+array_api_tests/test_indexing_functions.py::test_take
+array_api_tests/test_linalg.py::test_linalg_vecdot 
+array_api_tests/test_creation_functions.py::test_asarray_arrays
+
+array_api_tests/test_linalg.py::test_qr
+
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor
+
+# test exceeds the deadline of 800ms
+array_api_tests/test_linalg.py::test_pinv
+array_api_tests/test_linalg.py::test_det
+
+# only supports access to dimension 0 to 9, but received dimension is 10.
+array_api_tests/test_linalg.py::test_tensordot
+array_api_tests/test_linalg.py::test_linalg_tensordot 

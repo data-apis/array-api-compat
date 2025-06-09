@@ -84,6 +84,8 @@ def trace(x: array, /, *, offset: int = 0, dtype: Optional[Dtype] = None) -> arr
     # Use our wrapped sum to make sure it does upcasting correctly
     return sum(paddle.diagonal(x, offset=offset, axis1=-2, axis2=-1), axis=-1, dtype=dtype)
 
+def diagonal(x: ndarray, / , *, offset: int = 0, **kwargs) -> ndarray:
+    return paddle.diagonal(x, offset=offset, axis1=-2, axis2=-1, **kwargs)
 
 def vector_norm(
     x: array,
@@ -123,24 +125,52 @@ def matrix_norm(
     keepdims: bool = False,
     ord: Optional[Union[int, float, Literal["fro", "nuc"]]] = "fro",
 ) -> array:
-    return paddle.linalg.matrix_norm(x, p=ord, axis=(-2, -1), keepdim=keepdims)
-
+    res = paddle.linalg.matrix_norm(x, p=ord, axis=(-2, -1), keepdim=keepdims)
+    if res.dtype == paddle.complex64 :
+        res = paddle.cast(res, "float32")
+    if res.dtype == paddle.complex128:
+        res = paddle.cast(res, "float64")
+    return res
 
 def pinv(x: array, /, *, rtol: Optional[Union[float, array]] = None) -> array:
     if rtol is None:
         return paddle.linalg.pinv(x)
+    
+    # change rtol shape 
+    if isinstance(rtol, (int, float)):
+        rtol = paddle.to_tensor(rtol, dtype=x.dtype)
+    
+    # broadcast rtol to [..., 1] 
+    if rtol.ndim > 0:
+        rtol = rtol.unsqueeze(-1)  
 
     return paddle.linalg.pinv(x, rcond=rtol)
 
 
 def slogdet(x: array):
-    det = paddle.linalg.det(x)
-    sign = paddle.sign(det)
-    log_det = paddle.log(det)
+    return tuple_to_namedtuple(paddle.linalg.slogdet(x), ["sign", "logabsdet"])
 
-    slotdet = namedtuple("slotdet", ["sign", "logabsdet"])
-    return slotdet(sign, log_det)
+def tuple_to_namedtuple(data, fields):
+    nt_class = namedtuple('DynamicNameTuple', fields)
+    return nt_class(*data)
 
+def eigh(x: array):
+    return tuple_to_namedtuple(paddle.linalg.eigh(x), ['eigenvalues', 'eigenvectors'])
+
+def qr(x: array, mode: Optional[str] = None) -> array:
+    if mode is None:
+        return tuple_to_namedtuple(paddle.linalg.qr(x), ['Q', 'R'])
+
+    return tuple_to_namedtuple(paddle.linalg.qr(x, mode), ['Q', 'R'])
+
+
+def svd(x: array, full_matrices: Optional[bool]= None) -> array:
+    if full_matrices is None :
+        return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices=True), ['U', 'S', 'Vh'])
+    return tuple_to_namedtuple(paddle.linalg.svd(x, full_matrices), ['U', 'S', 'Vh'])
+
+def svdvals(x: array) -> array:
+    return paddle.linalg.svd(x)[1]
 
 __all__ = linalg_all + [
     "outer",
@@ -154,6 +184,9 @@ __all__ = linalg_all + [
     "trace",
     "vector_norm",
     "slogdet",
+    "eigh",
+    "diagonal",
+    "svdvals"
 ]
 
 _all_ignore = ["paddle_linalg", "sum"]
