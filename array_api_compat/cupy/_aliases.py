@@ -77,7 +77,8 @@ def asarray(
     See the corresponding documentation in the array library and/or the array API
     specification for more details.
     """
-    with cp.cuda.Device(device):
+    like = obj if isinstance(obj, cp.ndarray) else None
+    with _helpers._device_ctx(cp, device, like=like):
         if copy is None:
             return cp.asarray(obj, dtype=dtype, **kwargs)
         else:
