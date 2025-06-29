@@ -826,7 +826,7 @@ def sign(x: Array, /) -> Array:
 def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> list[Array]:
     # enforce the default of 'xy'
     # TODO: is the return type a list or a tuple
-    return list(torch.meshgrid(*arrays, indexing='xy'))
+    return list(torch.meshgrid(*arrays, indexing=indexing))
 
 
 __all__ = ['asarray', 'result_type', 'can_cast',
