@@ -49,12 +49,12 @@ jobs:
 
     steps:
     - name: Checkout array-api-compat
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: array-api-compat
 
     - name: Checkout array-api-tests
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: data-apis/array-api-tests
         submodules: 'true'
