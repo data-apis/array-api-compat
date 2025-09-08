@@ -102,6 +102,18 @@ class TestResultType:
             torch.set_default_dtype(prev_default)
 
 
+def test_clip_vmap():
+    # https://github.com/data-apis/array-api-compat/issues/350
+    def apply_clip_compat(a):
+        return xp.clip(a, min=0, max=30)
+
+    a = xp.asarray([[5.1, 2.0, 64.1, -1.5]])
+
+    ref = apply_clip_compat(a)
+    v1 = torch.vmap(apply_clip_compat)
+    assert xp.all(v1(a) == ref)
+
+
 def test_meshgrid():
     """Verify that array_api_compat.torch.meshgrid defaults to indexing='xy'."""
 

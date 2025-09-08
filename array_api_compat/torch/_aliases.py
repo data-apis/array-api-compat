@@ -220,7 +220,6 @@ def min(x: Array, /, *, axis: int | tuple[int, ...] |None = None, keepdims: bool
         return torch.clone(x)
     return torch.amin(x, axis, keepdims=keepdims)
 
-clip = get_xp(torch)(_aliases.clip)
 unstack = get_xp(torch)(_aliases.unstack)
 cumulative_sum = get_xp(torch)(_aliases.cumulative_sum)
 cumulative_prod = get_xp(torch)(_aliases.cumulative_prod)
@@ -806,6 +805,38 @@ def take(x: Array, indices: Array, /, *, axis: int | None = None, **kwargs: obje
 
 def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
     return torch.take_along_dim(x, indices, dim=axis)
+
+
+def clip(
+    x: Array,
+    /,
+    min: int | float | Array | None = None,
+    max: int | float | Array | None = None,
+    **kwargs
+) -> Array:
+    def _isscalar(a: object):
+        return isinstance(a, int | float) or a is None
+
+    # cf clip in common/_aliases.py
+    if not x.is_floating_point():
+        if type(min) is int and min <= torch.iinfo(x.dtype).min:
+            min = None
+        if type(max) is int and max >= torch.iinfo(x.dtype).max:
+            max = None
+
+    if min is None and max is None:
+        return torch.clone(x)
+
+    min_is_scalar = _isscalar(min)
+    max_is_scalar = _isscalar(max)
+
+    if min is not None and max is not None:
+        if min_is_scalar and not max_is_scalar:
+            min = torch.as_tensor(min, dtype=x.dtype, device=x.device)
+        if max_is_scalar and not min_is_scalar:
+            max = torch.as_tensor(max, dtype=x.dtype, device=x.device)
+
+    return torch.clamp(x, min, max, **kwargs)
 
 
 def sign(x: Array, /) -> Array:
