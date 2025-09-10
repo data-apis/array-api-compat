@@ -12,8 +12,8 @@ each array library itself fully compatible with the array API, but this
 requires making backwards incompatible changes in many cases, so this will
 take some time.
 
-Currently all libraries here are implemented against the [2023.12
-version](https://data-apis.org/array-api/2023.12/) of the standard.
+Currently all libraries here are implemented against the [2024.12
+version](https://data-apis.org/array-api/2024.12/) of the standard.
 
 ## Installation
 

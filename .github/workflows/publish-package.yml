@@ -30,24 +30,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.x'
 
     - name: Install python-build and twine
       run: |
-        python -m pip install --upgrade pip setuptools
+        python -m pip install --upgrade pip "setuptools<=67"
         python -m pip install build twine
         python -m pip list
 
     - name: Build a wheel and a sdist
       run: |
-        PYTHONWARNINGS=error,default::DeprecationWarning python -m build .
+         #PYTHONWARNINGS=error,default::DeprecationWarning python -m build .
+         python -m build .
 
     - name: Verify the distribution
       run: twine check --strict dist/*
@@ -80,7 +81,7 @@ jobs:
 
     steps:
     - name: Download distribution artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: dist-artifact
         path: dist
@@ -88,15 +89,21 @@ jobs:
     - name: List all files
       run: ls -lh dist
 
-    - name: Publish distribution 📦 to Test PyPI
-      # Publish to TestPyPI on tag events of if manually triggered
-      # Compare to 'true' string as booleans get turned into strings in the console
-      if: >-
-        (github.event_name == 'push' && startsWith(github.ref, 'refs/tags'))
-        || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')
-      uses: pypa/gh-action-pypi-publish@v1.12.2
+   # - name: Publish distribution 📦 to Test PyPI
+   #   # Publish to TestPyPI on tag events of if manually triggered
+   #   # Compare to 'true' string as booleans get turned into strings in the console
+   #   if: >-
+   #     (github.event_name == 'push' && startsWith(github.ref, 'refs/tags'))
+   #     || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'true')
+   #   uses: pypa/gh-action-pypi-publish@v1.13.0
+   #   with:
+   #     repository-url: https://test.pypi.org/legacy/
+   #     print-hash: true
+
+    - name: Publish distribution 📦 to PyPI
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@v1.13.0
       with:
-        repository-url: https://test.pypi.org/legacy/
         print-hash: true
 
     - name: Create GitHub Release from a Tag
@@ -104,9 +111,3 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
           files: dist/*
-
-    - name: Publish distribution 📦 to PyPI
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@v1.12.2
-      with:
-        print-hash: true

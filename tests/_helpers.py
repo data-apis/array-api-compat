@@ -1,18 +1,14 @@
 from importlib import import_module
-import sys
 
 import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array", "paddle"]
-all_libraries = wrapped_libraries + ["jax.numpy"]
-
-# `sparse` added array API support as of Python 3.10.
-if sys.version_info >= (3, 10):
-    all_libraries.append('sparse')
+all_libraries = wrapped_libraries + [
+    "array_api_strict", "jax.numpy", "ndonnx", "sparse"
+]
 
 def import_(library, wrapper=False):
-    if library == 'cupy':
-        pytest.importorskip(library)
+    pytest.importorskip(library)
     if wrapper:
         if 'jax' in library:
             # JAX v0.4.32 implements the array API directly in jax.numpy
@@ -20,9 +16,7 @@ def import_(library, wrapper=False):
             jax_numpy = import_module("jax.numpy")
             if not hasattr(jax_numpy, "__array_api_version__"):
                 library = 'jax.experimental.array_api'
-        elif library.startswith('sparse'):
-            library = 'sparse'
-        else:
+        elif library in wrapped_libraries:
             library = 'array_api_compat.' + library
 
     if library == 'paddle':
@@ -31,3 +25,14 @@ def import_(library, wrapper=False):
         return xp
 
     return import_module(library)
+
+
+def xfail(request: pytest.FixtureRequest, reason: str) -> None:
+    """
+    XFAIL the currently running test.
+
+    Unlike ``pytest.xfail``, allow rest of test to execute instead of immediately
+    halting it, so that it may result in a XPASS.
+    xref https://github.com/pandas-dev/pandas/issues/38902
+    """
+    request.node.add_marker(pytest.mark.xfail(reason=reason))

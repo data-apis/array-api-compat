@@ -1,4 +1,4 @@
-name: Array API Tests (NumPy Latest)
+name: Array API Tests (NumPy latest)
 
 on: [push, pull_request]
 
@@ -7,3 +7,7 @@ jobs:
     uses: ./.github/workflows/array-api-tests.yml
     with:
       package-name: numpy
+      python-versions: '[''3.10'', ''3.13'']'
+      pytest-extra-args: -n 4
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip

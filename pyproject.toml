@@ -1,0 +1,120 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "array-api-compat"
+dynamic = ["version"]
+description = "A wrapper around NumPy and other array libraries to make them compatible with the Array API standard"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Consortium for Python Data API Standards"}]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+cupy = ["cupy"]
+dask = ["dask>=2024.9.0"]
+jax = ["jax"]
+# Note: array-api-compat follows scikit-learn minimum dependencies, which support
+# much older versions of NumPy than what SPEC0 recommends.
+numpy = ["numpy>=1.22"]
+pytorch = ["torch"]
+sparse = ["sparse>=0.15.1"]
+ndonnx = ["ndonnx"]
+docs = [
+    "furo",
+    "linkify-it-py",
+    "myst-parser",
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-autobuild",
+]
+dev = [
+    "array-api-strict",
+    "dask[array]>=2024.9.0",
+    "jax[cpu]",
+    "ndonnx",
+    "numpy>=1.22",
+    "pytest",
+    "torch",
+    "sparse>=0.15.1",
+]
+
+[project.urls]
+homepage = "https://data-apis.org/array-api-compat/"
+repository = "https://github.com/data-apis/array-api-compat/"
+
+[tool.setuptools.dynamic]
+version = {attr = "array_api_compat.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["array_api_compat*"]
+namespaces = false
+
+[tool.ruff.lint]
+preview = true
+select = [
+# Defaults
+"E4", "E7", "E9", "F",
+# Undefined export
+"F822",
+# Useless import alias
+"PLC0414"
+]
+
+ignore = [
+  # Module import not at top of file
+  "E402",
+  # Do not use bare `except`
+  "E722"
+]
+
+
+[tool.mypy]
+files = ["array_api_compat"]
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = false  # TODO
+ignore_missing_imports = false
+no_implicit_optional = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = ["cupy.*", "cupy_backends.*", "dask.*", "jax.*", "ndonnx.*", "sparse.*", "torch.*"]
+ignore_missing_imports = true
+
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonPlatform = "All"
+
+reportAny = false
+reportExplicitAny = false
+# missing type stubs
+reportAttributeAccessIssue = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+# Redundant with mypy checks
+reportMissingImports = false
+reportMissingTypeStubs = false
+# false positives for input validation
+reportUnreachable = false
+# ruff handles this
+reportUnusedParameter = false
+
+executionEnvironments = [
+  { root = "array_api_compat" },
+]

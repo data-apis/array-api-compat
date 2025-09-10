@@ -23,7 +23,7 @@ def _test_torch():
     assert isinstance(b, torch.Tensor)
     assert isinstance(res, torch.Tensor)
 
-    torch.testing.assert_allclose(res, [[1., 2., 3.]])
+    torch.testing.assert_close(res, torch.as_tensor([[1., 2., 3.]]))
 
     assert is_torch_array(res)
     assert is_torch_namespace(torch) and is_torch_namespace(torch_compat)

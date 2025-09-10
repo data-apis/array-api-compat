@@ -1,0 +1,175 @@
+# attributes are np.float32 instead of float
+# (see also https://github.com/data-apis/array-api/issues/405)
+array_api_tests/test_data_type_functions.py::test_finfo[float32]
+array_api_tests/test_data_type_functions.py::test_finfo[complex64]
+
+# Array methods and attributes not already on np.ndarray cannot be wrapped
+array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
+array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-device]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
+
+# Array methods and attributes not already on np.ndarray cannot be wrapped
+array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
+array_api_tests/test_signatures.py::test_array_method_signature[to_device]
+
+# NumPy deviates in some special cases for floordiv
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+
+# https://github.com/numpy/numpy/issues/21213
+array_api_tests/meta/test_hypothesis_helpers.py::test_symmetric_matrices
+
+# NumPy 1.22 specific XFAILS
+############################
+
+# cross has some promotion bug that is fixed in newer numpy versions
+array_api_tests/test_linalg.py::test_cross
+
+# linspace(-0.0, -1.0, num=1) returns +0.0 instead of -0.0.
+# Fixed in newer numpy versions.
+array_api_tests/test_creation_functions.py::test_linspace
+
+# vector_norm with ord=-1 which has since been fixed
+# https://github.com/numpy/numpy/issues/21083
+array_api_tests/test_linalg.py::test_vector_norm
+
+# NumPy 1.22 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
+# type promotion issues
+# NOTE: some of these may not fail until one runs array-api-tests with
+# --max-examples 100000
+array_api_tests/test_manipulation_functions.py::test_concat
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__iadd__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[add(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_atan2
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__iand__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[bitwise_and(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__ilshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__lshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__lshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[bitwise_left_shift(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__ior__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__or__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__or__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[bitwise_or(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__irshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__rshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__rshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[bitwise_right_shift(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__ixor__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[bitwise_xor(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_copysign
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[divide(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[__eq__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__ifloordiv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[floor_divide(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[greater(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[greater_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_hypot
+array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less[less(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[less_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_logaddexp
+array_api_tests/test_operators_and_elementwise_functions.py::test_maximum
+array_api_tests/test_operators_and_elementwise_functions.py::test_minimum
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[multiply(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[not_equal(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[pow(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[remainder(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isub__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[subtract(x1, x2)]
+array_api_tests/test_searching_functions.py::test_where
+array_api_tests/test_special_cases.py::test_iop[__iadd__(x1_i is -0 and x2_i is -0) -> -0]
+
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[add]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[divide]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[hypot]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[subtract]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[logaddexp]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[nextafter]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[multiply]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[maximum]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[minimum]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[copysign]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[pow]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[minimum]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[atan2]
+
+array_api_tests/test_operators_and_elementwise_functions.py::test_where_with_scalars
+
+# 2023.12 support
+array_api_tests/test_has_names.py::test_has_names[creation-from_dlpack]
+array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
+array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
+# uint64 repeats not supported
+array_api_tests/test_manipulation_functions.py::test_repeat
+
+# 2024.12 support
+array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
+array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
+array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
+array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
+array_api_tests/test_signatures.py::test_func_signature[bitwise_xor]
+array_api_tests/test_data_type_functions.py::TestResultType::test_with_scalars
+
+# Stubs have a comment: (**note**: libraries may return ``NaN`` to match Python behavior.); Apparently,NumPy does just that
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[floor_divide(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_binary[__floordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i > 0) -> -infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(x1_i is -infinity and isfinite(x2_i) and x2_i < 0) -> +infinity]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i > 0 and x2_i is -infinity) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__ifloordiv__(isfinite(x1_i) and x1_i < 0 and x2_i is +infinity) -> -0]
