@@ -241,6 +241,21 @@ def sort(
 ) -> Array:
     return torch.sort(x, dim=axis, descending=descending, stable=stable, **kwargs).values
 
+
+# Wrap torch.argsort to set stable=True by default
+def argsort(
+    x: Array,
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    **kwargs: object,
+) -> Array:
+    
+    return torch.argsort(x, dim=axis, descending=descending, stable=stable, **kwargs)
+
+
 def _normalize_axes(axis, ndim):
     axes = []
     if ndim == 0 and axis:
