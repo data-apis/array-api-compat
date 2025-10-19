@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Literal
 
-import torch
+import torch  # noqa: F401
 import torch.fft
 
 from ._typing import Array
