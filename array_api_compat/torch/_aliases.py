@@ -252,7 +252,6 @@ def argsort(
     stable: bool = True,
     **kwargs: object,
 ) -> Array:
-    
     return torch.argsort(x, dim=axis, descending=descending, stable=stable, **kwargs)
 
 
