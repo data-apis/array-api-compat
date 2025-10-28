@@ -22,9 +22,9 @@ _int_dtypes = {
 try:
     # torch >=2.3
     _int_dtypes |= {torch.uint16, torch.uint32, torch.uint64}
+    _HAS_LARGE_UINT = True
 except AttributeError:
-    pass
-
+    _HAS_LARGE_UINT = False
 
 _array_api_dtypes = {
     torch.bool,
@@ -58,6 +58,28 @@ _promotion_table = {
     (torch.float64, torch.complex64): torch.complex128,
     (torch.float64, torch.complex128): torch.complex128,
 }
+
+if _HAS_LARGE_UINT:  # torch >=2.3
+    _promotion_table.update(
+        {
+            # uints
+            (torch.uint8, torch.uint16): torch.uint16,
+            (torch.uint8, torch.uint32): torch.uint32,
+            (torch.uint8, torch.uint64): torch.uint64,
+            (torch.uint16, torch.uint32): torch.uint32,
+            (torch.uint16, torch.uint64): torch.uint64,
+            (torch.uint32, torch.uint64): torch.uint64,
+            # ints and uints (mixed sign)
+            (torch.uint16, torch.int8): torch.int32,
+            (torch.uint16, torch.int16): torch.int32,
+            (torch.uint16, torch.int32): torch.int32,
+            (torch.uint16, torch.int64): torch.int64,
+            (torch.uint32, torch.int8): torch.int64,
+            (torch.uint32, torch.int16): torch.int64,
+            (torch.uint32, torch.int32): torch.int64,
+            (torch.uint32, torch.int64): torch.int64,
+        }
+    )
 
 _promotion_table.update({(b, a): c for (a, b), c in _promotion_table.items()})
 _promotion_table.update({(a, a): a for a in _array_api_dtypes})
@@ -307,10 +329,16 @@ def _sum_prod_no_axis(x: Array, dtype: DType | None) -> Array:
     if dtype is not None:
         return x.clone() if dtype == x.dtype else x.to(dtype)
 
-    # We can't upcast uint8 according to the spec because there is no
-    # torch.uint64, so at least upcast to int64 which is what prod does
-    # when axis=None.
-    if x.dtype in (torch.uint8, torch.int8, torch.int16, torch.int32):
+    if x.dtype in (torch.int8, torch.int16, torch.int32):
+        return x.to(torch.int64)
+
+    if _HAS_LARGE_UINT and x.dtype in (torch.uint8, torch.uint16, torch.uint32):
+        return x.to(torch.uint64)
+
+    if x.dtype == torch.uint8:
+        # We can't upcast uint8 according to the spec because there is no
+        # torch.uint64, so at least upcast to int64 which is what prod does
+        # when axis=None.
         return x.to(torch.int64)
 
     return x.clone()
