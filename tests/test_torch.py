@@ -117,3 +117,16 @@ def test_meshgrid():
 
     assert Y.shape == Y_xy.shape
     assert xp.all(Y == Y_xy)
+
+    # repeat with an explicit indexing
+    X, Y = xp.meshgrid(x, y, indexing='ij')
+
+    # output of torch.meshgrid(x, y, indexing='ij')
+    X_ij, Y_ij = xp.asarray([[1], [2]]), xp.asarray([[4], [4]])
+
+    assert X.shape == X_ij.shape
+    assert xp.all(X == X_ij)
+
+    assert Y.shape == Y_ij.shape
+    assert xp.all(Y == Y_ij)
+

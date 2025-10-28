@@ -1,3 +1,4 @@
+import sys
 from contextlib import contextmanager
 
 import numpy as np
@@ -167,6 +168,10 @@ def test_sort_argsort_chunk_size(xp, func, shape, chunks):
     )
 
 
+@pytest.mark.skipif(
+    sys.version_info.major*100 + sys.version_info.minor < 312,
+    reason="dask interop requires numpy >= 3.12"
+)
 @pytest.mark.parametrize("func", ["sort", "argsort"])
 def test_sort_argsort_meta(xp, func):
     """Test meta-namespace other than numpy"""
