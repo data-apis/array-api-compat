@@ -819,7 +819,11 @@ def take(x: Array, indices: Array, /, *, axis: int | None = None, **kwargs: obje
 
 
 def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
-    return torch.take_along_dim(x, indices, dim=axis)
+    return torch.take_along_dim(
+        x,
+        torch.where(indices < 0, indices + x.shape[axis], indices),
+        dim=axis
+    )
 
 
 def sign(x: Array, /) -> Array:
