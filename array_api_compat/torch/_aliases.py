@@ -815,7 +815,12 @@ def take(x: Array, indices: Array, /, *, axis: int | None = None, **kwargs: obje
         if x.ndim != 1:
             raise ValueError("axis must be specified when ndim > 1")
         axis = 0
-    return torch.index_select(x, axis, indices, **kwargs)
+    return torch.index_select(
+        x,
+        axis,
+        torch.where(indices < 0, indices + x.shape[axis], indices),
+        **kwargs
+    )
 
 
 def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
