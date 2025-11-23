@@ -76,6 +76,8 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install '${{ inputs.package-name }} ${{ inputs.package-version }}' ${{ inputs.extra-requires }}
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
+        python -m pip uninstall hypothesis -y
+        python -m pip install hypothesis==6.144
         python -m pip install pytest-xdist
 
     - name: Dump pip environment
