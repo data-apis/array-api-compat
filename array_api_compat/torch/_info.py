@@ -170,78 +170,58 @@ class __array_namespace_info__:
             "indexing": default_integral,
         }
 
-
     def _dtypes(self, kind):
-        bool = torch.bool
-        int8 = torch.int8
-        int16 = torch.int16
-        int32 = torch.int32
-        int64 = torch.int64
-        uint8 = torch.uint8
-        # uint16, uint32, and uint64 are present in newer versions of pytorch,
-        # but they aren't generally supported by the array API functions, so
-        # we omit them from this function.
-        float32 = torch.float32
-        float64 = torch.float64
-        complex64 = torch.complex64
-        complex128 = torch.complex128
-
         if kind is None:
-            return {
-                "bool": bool,
-                "int8": int8,
-                "int16": int16,
-                "int32": int32,
-                "int64": int64,
-                "uint8": uint8,
-                "float32": float32,
-                "float64": float64,
-                "complex64": complex64,
-                "complex128": complex128,
-            }
+            return self._dtypes(
+                (
+                    "bool",
+                    "signed integer",
+                    "unsigned integer",
+                    "real floating",
+                    "complex floating",
+                )
+            )
         if kind == "bool":
-            return {"bool": bool}
+            return {"bool": torch.bool}
         if kind == "signed integer":
             return {
-                "int8": int8,
-                "int16": int16,
-                "int32": int32,
-                "int64": int64,
+                "int8": torch.int8,
+                "int16": torch.int16,
+                "int32": torch.int32,
+                "int64": torch.int64,
             }
         if kind == "unsigned integer":
-            return {
-                "uint8": uint8,
-            }
+            try:
+                # torch >=2.3
+                return {
+                    "uint8": torch.uint8,
+                    "uint16": torch.uint16,
+                    "uint32": torch.uint32,
+                    "uint64": torch.uint32,
+                }
+            except AttributeError:
+                return {"uint8": torch.uint8}
         if kind == "integral":
-            return {
-                "int8": int8,
-                "int16": int16,
-                "int32": int32,
-                "int64": int64,
-                "uint8": uint8,
-            }
+            return self._dtypes(("signed integer", "unsigned integer"))
         if kind == "real floating":
             return {
-                "float32": float32,
-                "float64": float64,
+                "float32": torch.float32,
+                "float64": torch.float64,
             }
         if kind == "complex floating":
             return {
-                "complex64": complex64,
-                "complex128": complex128,
+                "complex64": torch.complex64,
+                "complex128": torch.complex128,
             }
         if kind == "numeric":
-            return {
-                "int8": int8,
-                "int16": int16,
-                "int32": int32,
-                "int64": int64,
-                "uint8": uint8,
-                "float32": float32,
-                "float64": float64,
-                "complex64": complex64,
-                "complex128": complex128,
-            }
+            return self._dtypes(
+                (
+                    "signed integer",
+                    "unsigned integer",
+                    "real floating",
+                    "complex floating",
+                )
+            )
         if isinstance(kind, tuple):
             res = {}
             for k in kind:
@@ -261,7 +241,6 @@ class __array_namespace_info__:
         ----------
         device : Device, optional
             The device to get the data types for.
-            Unused for PyTorch, as all devices use the same dtypes.
         kind : str or tuple of str, optional
             The kind of data types to return. If ``None``, all data types are
             returned. If a string, only data types of that kind are returned.
