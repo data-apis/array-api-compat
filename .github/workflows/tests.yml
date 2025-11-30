@@ -42,14 +42,20 @@ jobs:
 
           if [ "${{ matrix.numpy-version }}" == "dev" ]; then
             python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
-            python -m pip install dask[array] jax[cpu] sparse ndonnx
+            python -m pip install dask[array] jax[cpu]
+            if ["${{ matrix.python-version }}" != "3.14]; then
+               python -m pip install sparse ndonnx
+            fi
           elif [ "${{ matrix.numpy-version }}" == "1.22" ]; then
             python -m pip install 'numpy==1.22.*'
           elif [ "${{ matrix.numpy-version }}" == "1.26" ]; then
             python -m pip install 'numpy==1.26.*'
           else
             python -m pip install numpy
-            python -m pip install dask[array] jax[cpu] sparse ndonnx
+            python -m pip install dask[array] jax[cpu]
+            if ["${{ matrix.python-version }}" != "3.14]; then
+               python -m pip install sparse ndonnx
+            fi
           fi
 
       - name: Dump pip environment
