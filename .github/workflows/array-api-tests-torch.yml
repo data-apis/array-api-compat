@@ -11,5 +11,5 @@ jobs:
       extra-env-vars: |
         ARRAY_API_TESTS_SKIP_DTYPES=uint16,uint32,uint64
         ARRAY_API_TESTS_XFAIL_MARK=skip
-      python-versions: '[''3.10'', ''3.13'']'
+      python-versions: '[''3.10'', ''3.13'', ''3.14'']'
       pytest-extra-args: -n 4
