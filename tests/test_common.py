@@ -56,6 +56,15 @@ def test_is_xp_array(library, func):
     assert is_array_api_obj(x)
 
 
+def test_is_jax_array_jitted():
+    import jax
+    import jax.numpy as jnp
+
+    x = jnp.asarray([1, 2, 3])
+    assert is_jax_array(x)
+    assert jax.jit(lambda y: is_jax_array(y))(x)
+
+
 @pytest.mark.parametrize('library', is_namespace_functions.keys())
 @pytest.mark.parametrize('func', is_namespace_functions.values())
 def test_is_xp_namespace(library, func):

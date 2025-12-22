@@ -235,7 +235,11 @@ def is_jax_array(x: object) -> TypeIs[jax.Array]:
     is_pydata_sparse_array
     """
     cls = cast(Hashable, type(x))
-    return _issubclass_fast(cls, "jax", "Array") or _is_jax_zero_gradient_array(x)
+    return (
+        _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "jax.core", "Tracer")
+        or _is_jax_zero_gradient_array(x)
+    )
 
 
 def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
