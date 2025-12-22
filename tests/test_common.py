@@ -57,7 +57,7 @@ def test_is_xp_array(library, func):
 
 
 def test_is_jax_array_jitted():
-    import jax
+    jax = pytest.importorskip("jax")
     import jax.numpy as jnp
 
     x = jnp.asarray([1, 2, 3])
