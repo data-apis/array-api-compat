@@ -300,6 +300,7 @@ def _is_array_api_cls(cls: type) -> bool:
         or _issubclass_fast(cls, "sparse", "SparseArray")
         # TODO: drop support for jax<0.4.32 which didn't have __array_namespace__
         or _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "jax.core", "Tracer")
     )
 
 
@@ -938,6 +939,7 @@ def _is_writeable_cls(cls: type) -> bool | None:
     if (
         _issubclass_fast(cls, "numpy", "generic")
         or _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "jax.core", "Tracer")
         or _issubclass_fast(cls, "sparse", "SparseArray")
     ):
         return False
@@ -977,6 +979,7 @@ def _is_lazy_cls(cls: type) -> bool | None:
         return False
     if (
         _issubclass_fast(cls, "jax", "Array")
+        or _issubclass_fast(cls, "jax.core", "Tracer")
         or _issubclass_fast(cls, "dask.array", "Array")
         or _issubclass_fast(cls, "ndonnx", "Array")
     ):

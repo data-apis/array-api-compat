@@ -1,7 +1,14 @@
 from numpy.testing import assert_equal
 import pytest
 
-from array_api_compat import device, to_device
+from array_api_compat import (
+    device,
+    to_device,
+    is_jax_array,
+    is_lazy_array,
+    is_array_api_obj,
+    is_writeable_array,
+)
 
 try:
     import jax
@@ -13,7 +20,7 @@ HAS_JAX_0_4_31 = jax.__version__ >= "0.4.31"
 
 
 @pytest.mark.parametrize(
-    "func", 
+    "func",
     [
         lambda x: jnp.zeros(1, device=device(x)),
         lambda x: jnp.zeros_like(jnp.ones(1, device=device(x))),
@@ -26,7 +33,7 @@ HAS_JAX_0_4_31 = jax.__version__ >= "0.4.31"
             ),
         ),
         lambda x: to_device(jnp.zeros(1), device(x)),
-    ]
+    ],
 )
 def test_device_jit(func):
     # Test work around to https://github.com/jax-ml/jax/issues/26000
@@ -36,3 +43,14 @@ def test_device_jit(func):
     x = jnp.ones(1)
     assert_equal(func(x), jnp.asarray([0]))
     assert_equal(jax.jit(func)(x), jnp.asarray([0]))
+
+
+def test_inside_jit():
+    jax = pytest.importorskip("jax")
+    import jax.numpy as jnp
+
+    x = jnp.asarray([1, 2, 3])
+    assert jax.jit(is_jax_array)(x)
+    assert jax.jit(is_array_api_obj)(x)
+    assert not jax.jit(is_writeable_array)(x)
+    assert jax.jit(is_lazy_array)(x)
