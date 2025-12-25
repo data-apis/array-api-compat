@@ -235,6 +235,12 @@ def is_jax_array(x: object) -> TypeIs[jax.Array]:
     is_pydata_sparse_array
     """
     cls = cast(Hashable, type(x))
+    # We test for jax.core.Tracer here to identify jax arrays during jit tracing. From jax 0.8.2 on,
+    # tracers are not a subclass of jax.Array anymore. Note that tracers can also represent
+    # non-array values and a fully correct implementation would need to use isinstance checks. Since
+    # we use hash-based caching with type names as keys, we cannot use instance checks without
+    # losing performance here. For more information, see
+    # https://github.com/data-apis/array-api-compat/pull/369 and the corresponding issue.
     return (
         _issubclass_fast(cls, "jax", "Array")
         or _issubclass_fast(cls, "jax.core", "Tracer")
@@ -300,7 +306,7 @@ def _is_array_api_cls(cls: type) -> bool:
         or _issubclass_fast(cls, "sparse", "SparseArray")
         # TODO: drop support for jax<0.4.32 which didn't have __array_namespace__
         or _issubclass_fast(cls, "jax", "Array")
-        or _issubclass_fast(cls, "jax.core", "Tracer")
+        or _issubclass_fast(cls, "jax.core", "Tracer")  # see is_jax_array for limitations
     )
 
 
@@ -939,7 +945,7 @@ def _is_writeable_cls(cls: type) -> bool | None:
     if (
         _issubclass_fast(cls, "numpy", "generic")
         or _issubclass_fast(cls, "jax", "Array")
-        or _issubclass_fast(cls, "jax.core", "Tracer")
+        or _issubclass_fast(cls, "jax.core", "Tracer")  # see is_jax_array for limitations
         or _issubclass_fast(cls, "sparse", "SparseArray")
     ):
         return False
@@ -979,7 +985,7 @@ def _is_lazy_cls(cls: type) -> bool | None:
         return False
     if (
         _issubclass_fast(cls, "jax", "Array")
-        or _issubclass_fast(cls, "jax.core", "Tracer")
+        or _issubclass_fast(cls, "jax.core", "Tracer")  # see is_jax_array for limitations
         or _issubclass_fast(cls, "dask.array", "Array")
         or _issubclass_fast(cls, "ndonnx", "Array")
     ):

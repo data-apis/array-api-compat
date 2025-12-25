@@ -46,9 +46,10 @@ def test_device_jit(func):
 
 
 def test_inside_jit():
-    jax = pytest.importorskip("jax")
-    import jax.numpy as jnp
-
+    # Test if jax arrays are handled correctly inside jax.jit.
+    # Jax tracers are not a subclass of jax.Array from 0.8.2 on. We explicitly test that
+    # tracers are handled appropriately. For limitations, see is_jax_array() docstring.
+    # Reference issue: https://github.com/data-apis/array-api-compat/issues/368
     x = jnp.asarray([1, 2, 3])
     assert jax.jit(is_jax_array)(x)
     assert jax.jit(is_array_api_obj)(x)
