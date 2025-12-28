@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.13.0 (2025-12-28)
+
+
+### Major changes
+
+- Support for Python 3.14 has been added.
+- Symbols exported in public namespaces have been reviewed and adjusted.
+- `torch.take` and `torch.take_along_axis` now support negative indices.
+- `torch.meshgrid` now correctly processes the `indexing` argument.
+- View/copy semantics are now observed for the `ceil`, `floor`, and `trunc` functions.
+
+### Minor changes
+
+- `array_namespace` has been sped up via caching.
+- The `stable` parameter of `torch.argsort` now defaults to `True`, per the standard.
+- Type annotations have seen progress.
+- `is_jax_array` has been adjusted for compatibility with `jax>=0.8.2`
+
+
+The following users contributed to this release:
+
+Evgeni Burovski,
+Guido Imperiale,
+Lucas Colley,
+Arthur Lacote,
+Martin Schuck,
+Matt Haberland.
+
+
 ## 1.12.0 (2025-05-13)
 
 
