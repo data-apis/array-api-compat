@@ -130,3 +130,5 @@ dmypy.json
 
 # macOS specific iles
 .DS_Store
+
+pixi.lock
