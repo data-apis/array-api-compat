@@ -1,6 +1,6 @@
 # Basic test that vendoring works
 
-from .vendored._compat import (
+from .array_api_compat import (
     is_torch_array,
     is_torch_namespace,
     torch as torch_compat,

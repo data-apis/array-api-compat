@@ -44,14 +44,13 @@
 
 - [ ] **Update the version.**
 
-  You must edit
+  You must edit the version in:
 
   ```
   array_api_compat/__init__.py
+  pyproject.toml
+  meson.build
   ```
-
-  and update the version (the version is not computed from the tag because
-  that would break vendorability).
 
 - [ ] **Update the [changelog](../changelog.md).**
 

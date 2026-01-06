@@ -1,0 +1,65 @@
+[workspace]
+channels = ["https://prefix.dev/conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+preview = ["pixi-build"]
+requires-pixi = ">=0.68.1"
+
+### array-api-compat package definition ###
+
+[package.build.backend]
+name = "pixi-build-python"
+version = ">=0.5.1"
+
+[package.host-dependencies]
+meson-python = "*"
+
+### workspace environments ###
+
+[environments]
+docs = ["docs"]
+tests = ["tests"]
+
+### default feature definition ###
+
+[dev]
+# this pulls in array-api-compat's host dependencies
+array-api-compat.path = "."
+
+[dependencies]
+array-api-compat.path = "."
+
+### non-default feature definitions ###
+
+[feature.tests.dependencies]
+pytest = "*"
+array-api-strict = "*"
+numpy = "*"
+
+[feature.tests.tasks.tests]
+cmd = "pytest -v"
+description = "Run tests"
+
+[feature.tests.tasks.clean-vendor-compat]
+cmd = "rm -rf vendor_tests/array_api_compat"
+description = "Delete the existing vendored version of array-api-compat"
+
+[feature.tests.tasks.copy-vendor-compat]
+cmd = "cp -r src/array_api_compat vendor_tests/"
+depends-on = ["clean-vendor-compat"]
+description = "Vendor a clean copy of array-api-extra"
+
+[feature.tests.tasks.tests-vendor]
+cmd = "pytest -v vendor_tests"
+depends-on = ["copy-vendor-compat"]
+description = "Run vendoring tests"
+
+[feature.docs.dependencies]
+furo = "*"
+linkify-it-py = "*"
+myst-parser = "*"
+sphinx = "*"
+sphinx-copybutton = "*"
+sphinx-autobuild = "*"
+
+[feature.docs.tasks]
+docs = { cmd = "make html", cwd = "docs", description = "Build docs" }

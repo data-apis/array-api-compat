@@ -1,6 +1,6 @@
 # Basic test that vendoring works
 
-from .vendored._compat import (
+from .array_api_compat import (
     is_numpy_array,
     is_numpy_namespace,
     numpy as np_compat,

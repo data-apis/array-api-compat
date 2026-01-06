@@ -1,6 +1,6 @@
 # Basic test that vendoring works
 
-from .vendored._compat import (
+from .array_api_compat import (
     cupy as cp_compat,
     is_cupy_array,
     is_cupy_namespace,

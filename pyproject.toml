@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
+requires = ["meson-python"]
+build-backend = "mesonpy"
 
 [project]
 name = "array-api-compat"
-dynamic = ["version"]
+version = "1.15.0.dev0"
 description = "A wrapper around NumPy and other array libraries to make them compatible with the Array API standard"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -55,15 +55,10 @@ dev = [
 homepage = "https://data-apis.org/array-api-compat/"
 repository = "https://github.com/data-apis/array-api-compat/"
 
-[tool.setuptools.dynamic]
-version = { attr = "array_api_compat.__version__" }
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-namespaces = false
 
 [tool.ruff.lint]
 preview = true

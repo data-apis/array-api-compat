@@ -41,7 +41,7 @@ jobs:
 
     - name: Install python-build and twine
       run: |
-        python -m pip install --upgrade pip "setuptools<=67"
+        python -m pip install --upgrade pip meson-python
         python -m pip install build twine
         python -m pip list
 
