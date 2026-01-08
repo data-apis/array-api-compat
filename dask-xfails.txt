@@ -135,6 +135,7 @@ array_api_tests/test_signatures.py::test_func_signature[broadcast_shapes]
 array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_broadcast_shapes
 array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_empty
 array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_error
+array_api_tests/test_searching_functions.py::test_searchsorted_with_scalars
 
 array_api_tests/test_linalg.py::test_eig
 array_api_tests/test_linalg.py::test_eigvals
