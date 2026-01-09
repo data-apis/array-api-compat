@@ -102,8 +102,8 @@
 
 - [ ] **Bump the `__version__` attribute in `__init__.py`**
 
- After an M.N.0 release, further development is towards version `M.(N+1).0`, thus the main branch's 
- version is `M.(N+1).0.dev0`.
+  After an M.N.0 release, further development is towards version `M.(N+1).0`, thus the main branch's 
+  version is `M.(N+1).0.dev0`.
 
 - [ ] **Update conda-forge.**
 
