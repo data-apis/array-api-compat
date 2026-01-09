@@ -1,0 +1,6 @@
+array_api_tests/test_array_object.py::test_getitem_masking
+array_api_tests/test_data_type_functions.py::test_result_type
+array_api_tests/test_data_type_functions.py::test_broadcast_arrays
+array_api_tests/test_manipulation_functions.py::test_roll
+array_api_tests/test_data_type_functions.py::test_broadcast_to
+array_api_tests/test_linalg.py::test_cholesky
