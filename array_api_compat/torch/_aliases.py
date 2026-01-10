@@ -706,9 +706,9 @@ def astype(
     return x.to(dtype=dtype, copy=copy)
 
 
-def broadcast_arrays(*arrays: Array) -> list[Array]:
+def broadcast_arrays(*arrays: Array) -> tuple[Array, ...]:
     shape = torch.broadcast_shapes(*[a.shape for a in arrays])
-    return [torch.broadcast_to(a, shape) for a in arrays]
+    return tuple(torch.broadcast_to(a, shape) for a in arrays)
 
 # Note that these named tuples aren't actually part of the standard namespace,
 # but I don't see any issue with exporting the names here regardless.
