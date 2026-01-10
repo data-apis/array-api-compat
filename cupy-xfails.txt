@@ -24,6 +24,10 @@ array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
 
 array_api_tests/test_linalg.py::test_solve
 
+# 2025.12 support; {eig,eigvals} are new in CuPy 14
+array_api_tests/test_linalg.py::test_eig
+array_api_tests/test_linalg.py::test_eigvals
+
 # We cannot modify array methods
 array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
 array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x, s)]
