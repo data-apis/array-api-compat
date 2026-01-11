@@ -881,10 +881,11 @@ def sign(x: Array, /) -> Array:
         return out
 
 
-def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> list[Array]:
-    # enforce the default of 'xy'
-    # TODO: is the return type a list or a tuple
-    return list(torch.meshgrid(*arrays, indexing=indexing))
+def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Array, ...]:
+    # torch <= 2.9 emits a UserWarning: "torch.meshgrid: in an upcoming release, it
+    # will be required to pass the indexing argument."
+    # Thus always pass it explicitly.
+    return torch.meshgrid(*arrays, indexing=indexing)
 
 
 __all__ = ['asarray', 'result_type', 'can_cast',
