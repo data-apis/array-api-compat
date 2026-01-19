@@ -176,6 +176,17 @@ array_api_tests/test_special_cases.py::test_unary[tan(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[tanh(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[trunc(x_i is -0) -> -0]
 
+# complex cases
+array_api_tests/test_special_cases.py::test_unary[acosh(real(x_i) is +0 and imag(x_i) is NaN) -> NaN \xb1 \u03c0j/2]
+array_api_tests/test_special_cases.py::test_unary[log(real(x_i) is -0 and imag(x_i) is +0) -> -infinity + \u03c0j]
+array_api_tests/test_special_cases.py::test_unary[log((real(x_i) is +infinity or real(x_i) == -infinity) and imag(x_i) is NaN) -> +infinity + NaN j]
+array_api_tests/test_special_cases.py::test_unary[log(real(x_i) is NaN and imag(x_i) is +infinity) -> +infinity + NaN j]
+array_api_tests/test_special_cases.py::test_unary[log1p((real(x_i) is +infinity or real(x_i) == -infinity) and imag(x_i) is NaN) -> +infinity + NaN j]
+array_api_tests/test_special_cases.py::test_unary[log1p(real(x_i) is NaN and imag(x_i) is +infinity) -> +infinity + NaN j]
+array_api_tests/test_special_cases.py::test_unary[sqrt(real(x_i) is +infinity and isfinite(imag(x_i)) and imag(x_i) > 0) -> +0 + infinity j]
+array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +0 and imag(x_i) is +infinity) -> +0 + NaN j]
+array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +0 and imag(x_i) is NaN) -> +0 + NaN j]
+
 # CuPy gives the wrong shape for n-dim fft funcs. See
 # https://github.com/data-apis/array-api-compat/pull/78#issuecomment-1984527870
 array_api_tests/test_fft.py::test_fftn
