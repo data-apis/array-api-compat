@@ -62,3 +62,15 @@ def test_view_or_copy(inputs, xp_name):
     is_view_wrapped = is_view(wrapped_func, a1, value)
 
     assert is_view_bare == is_view_wrapped
+
+
+@pytest.mark.parametrize('xp_name', wrapped_libraries + ['array_api_strict'])
+def test_clip_none(xp_name):
+    xp = import_(xp_name, wrapper=True)
+
+    if xp_name == 'array_api_strict' and xp.__version__ < "2.5":
+        # https://github.com/data-apis/array-api-strict/pull/180
+        pytest.xfail("clip(x) was only fixed in -strict == 2.5")
+
+    x = xp.arange(8)
+    assert not is_view(xp.clip, x, 42)
