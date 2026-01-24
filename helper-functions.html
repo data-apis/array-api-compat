@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Supported Array Libraries" href="supported-array-libraries.html"><link rel="prev" title="Array API compatibility library" href="index.html">
 
-    <link rel="shortcut icon" href="_static/favicon.png"><!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+    <link rel="shortcut icon" href="_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>Helper Functions - array-api-compat 1.14.0.dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=acfd86a5" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -375,7 +375,7 @@ specified <code class="docutils literal notranslate"><span class="pre">device</s
 device is the CPU. For CuPy, this method supports CuPy CUDA
 <a class="reference external" href="https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Device.html#cupy.cuda.Device" title="(in CuPy v13.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a> and
 <a class="reference external" href="https://docs.cupy.dev/en/stable/reference/generated/cupy.cuda.Stream.html#cupy.cuda.Stream" title="(in CuPy v13.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stream</span></code></a> objects. For PyTorch,
-this is the same as <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.to.html#torch.Tensor.to" title="(in PyTorch v2.9)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.to(device)</span></code></a>
+this is the same as <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.to.html#torch.Tensor.to" title="(in PyTorch v2.10)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.to(device)</span></code></a>
 (the <code class="docutils literal notranslate"><span class="pre">stream</span></code> argument is not supported in PyTorch).</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -394,7 +394,7 @@ this is the same as <a class="reference external" href="https://docs.pytorch.org
 <dd><p>Return the total number of elements of x.</p>
 <p>This is equivalent to <code class="code docutils literal notranslate"><span class="pre">x.size</span></code> according to the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/array_api.array.size.html">standard</a>.</p>
 <p>This helper is included because PyTorch defines <code class="code docutils literal notranslate"><span class="pre">size</span></code> in an
-<a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.9)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">incompatible</span> <span class="pre">way</span></code></a>.
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.10)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">incompatible</span> <span class="pre">way</span></code></a>.
 It also fixes dask.array’s behaviour which returns nan for unknown sizes, whereas
 the standard requires None.</p>
 </dd></dl>
@@ -713,8 +713,8 @@ older versions of JAX.</p>
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=b37a29d0"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
