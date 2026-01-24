@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "array-api-compat"
-dynamic = ["version"]
+version = "1.13.0"
 description = "A wrapper around NumPy and other array libraries to make them compatible with the Array API standard"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -55,11 +55,65 @@ homepage = "https://data-apis.org/array-api-compat/"
 repository = "https://github.com/data-apis/array-api-compat/"
 
 [tool.setuptools.dynamic]
-version = {attr = "array_api_compat.__version__"}
+version = { attr = "array_api_compat.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["array_api_compat*"]
 namespaces = false
+
+
+# Pixi
+
+[tool.pixi.workspace]
+channels = ["https://prefix.dev/conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+preview = ["pixi-build"]
+
+### array-api-compat package definition ###
+
+[tool.pixi.package.build.backend]
+name = "pixi-build-python"
+version = "*"
+
+[tool.pixi.package.host-dependencies]
+setuptools = "*"
+
+### workspace environments ###
+
+[tool.pixi.environments]
+docs = ["docs"]
+tests = ["tests"]
+
+### default feature definition ###
+
+[tool.pixi.dev]
+# this pulls in array-api-compat's host dependencies
+array-api-compat.path = "."
+
+[tool.pixi.dependencies]
+array-api-compat.path = "."
+
+### non-default feature definitions ###
+
+[tool.pixi.feature.tests.dependencies]
+pytest = "*"
+array-api-strict = "*"
+numpy = "*"
+
+[tool.pixi.feature.tests.tasks]
+tests = { cmd = "pytest -v", description = "Run tests" }
+
+[tool.pixi.feature.docs.dependencies]
+furo = "*"
+linkify-it-py = "*"
+myst-parser = "*"
+sphinx = "*"
+sphinx-copybutton = "*"
+sphinx-autobuild = "*"
+
+[tool.pixi.feature.docs.tasks]
+docs = { cmd = "make html", cwd = "docs", description = "Build docs" }
+
 
 [tool.ruff.lint]
 preview = true
