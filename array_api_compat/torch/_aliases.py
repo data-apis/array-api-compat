@@ -690,9 +690,24 @@ def triu(x: Array, /, *, k: int = 0) -> Array:
     return torch.triu(x, k)
 
 # Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
-def expand_dims(x: Array, /, *, axis: int = 0) -> Array:
-    return torch.unsqueeze(x, axis)
+def expand_dims(x: Array, /, *, axis: int | tuple[int, ...]) -> Array:
+    if isinstance(axis, int):
+        return torch.unsqueeze(x, axis)
+    else:
+        # follow https://github.com/numpy/numpy/blob/maintenance/2.4.x/numpy/lib/_shape_base_impl.py#L596-L602
+        y_ndim = x.ndim + len(axis)
 
+        # normalize
+        n_axis = tuple(ax + y_ndim if ax < 0 else ax for ax in axis)
+        if (len(n_axis) != len(set(n_axis)) or
+            _builtin_any(ax < 0 or ax >= y_ndim for ax in n_axis)
+        ):
+            raise ValueError(f"{axis=} not allowed for {x.shape = }")
+
+        shape_it = iter(x.shape)
+        shape = [1 if ax in n_axis else next(shape_it) for ax in range(y_ndim)]
+
+        return torch.reshape(x, shape)
 
 def astype(
     x: Array,
