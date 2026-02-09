@@ -44,6 +44,11 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_sc
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[copysign]
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[divide]
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[maximum]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[add]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[minimum]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[multiply]
+array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[subtract]
+
 
 # cupy (arg)min/max wrong with infinities
 # https://github.com/cupy/cupy/issues/7424
@@ -176,7 +181,7 @@ array_api_tests/test_special_cases.py::test_unary[tan(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[tanh(x_i is -0) -> -0]
 array_api_tests/test_special_cases.py::test_unary[trunc(x_i is -0) -> -0]
 
-# complex cases
+# complex spec cases
 array_api_tests/test_special_cases.py::test_unary[acosh(real(x_i) is +0 and imag(x_i) is NaN) -> NaN \xb1 \u03c0j/2]
 array_api_tests/test_special_cases.py::test_unary[log(real(x_i) is -0 and imag(x_i) is +0) -> -infinity + \u03c0j]
 array_api_tests/test_special_cases.py::test_unary[log((real(x_i) is +infinity or real(x_i) == -infinity) and imag(x_i) is NaN) -> +infinity + NaN j]
@@ -186,6 +191,7 @@ array_api_tests/test_special_cases.py::test_unary[log1p(real(x_i) is NaN and ima
 array_api_tests/test_special_cases.py::test_unary[sqrt(real(x_i) is +infinity and isfinite(imag(x_i)) and imag(x_i) > 0) -> +0 + infinity j]
 array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +0 and imag(x_i) is +infinity) -> +0 + NaN j]
 array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +0 and imag(x_i) is NaN) -> +0 + NaN j]
+array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +infinity and isfinite(imag(x_i)) and imag(x_i) > 0) -> 1 + 0j]
 
 # CuPy gives the wrong shape for n-dim fft funcs. See
 # https://github.com/data-apis/array-api-compat/pull/78#issuecomment-1984527870
