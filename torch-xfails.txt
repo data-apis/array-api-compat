@@ -146,17 +146,6 @@ array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 # Argument 'max_version' missing from signature
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 
-# 2024.12 support
-array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
-array_api_tests/test_signatures.py::test_func_signature[bitwise_left_shift]
-array_api_tests/test_signatures.py::test_func_signature[bitwise_or]
-array_api_tests/test_signatures.py::test_func_signature[bitwise_right_shift]
-array_api_tests/test_signatures.py::test_func_signature[bitwise_xor]
-array_api_tests/test_signatures.py::test_array_method_signature[__and__]
-array_api_tests/test_signatures.py::test_array_method_signature[__lshift__]
-array_api_tests/test_signatures.py::test_array_method_signature[__or__]
-array_api_tests/test_signatures.py::test_array_method_signature[__rshift__]
-array_api_tests/test_signatures.py::test_array_method_signature[__xor__]
 
 # 2024.12 support: binary functions reject python scalar arguments
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[atan2]
