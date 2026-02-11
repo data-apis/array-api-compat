@@ -139,6 +139,11 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
     return cp.take_along_axis(x, indices, axis=axis)
 
 
+# https://github.com/cupy/cupy/pull/9582
+def broadcast_arrays(*arrays: Array) -> tuple[Array, ...]:
+    return tuple(cp.broadcast_arrays(*arrays))
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -161,7 +166,8 @@ __all__ = _aliases.__all__ + ['asarray', 'astype',
                               'atan2', 'atanh', 'bitwise_left_shift',
                               'bitwise_invert', 'bitwise_right_shift',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign',
-                              'ceil', 'floor', 'trunc', 'take_along_axis']
+                              'ceil', 'floor', 'trunc', 'take_along_axis',
+                              'broadcast_arrays',]
 
 
 def __dir__() -> list[str]:

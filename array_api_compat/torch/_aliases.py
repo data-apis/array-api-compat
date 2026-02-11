@@ -707,9 +707,9 @@ def astype(
     return x.to(dtype=dtype, copy=copy)
 
 
-def broadcast_arrays(*arrays: Array) -> list[Array]:
+def broadcast_arrays(*arrays: Array) -> tuple[Array, ...]:
     shape = torch.broadcast_shapes(*[a.shape for a in arrays])
-    return [torch.broadcast_to(a, shape) for a in arrays]
+    return tuple(torch.broadcast_to(a, shape) for a in arrays)
 
 # Note that these named tuples aren't actually part of the standard namespace,
 # but I don't see any issue with exporting the names here regardless.
@@ -893,10 +893,11 @@ def sign(x: Array, /) -> Array:
         return out
 
 
-def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> list[Array]:
-    # enforce the default of 'xy'
-    # TODO: is the return type a list or a tuple
-    return list(torch.meshgrid(*arrays, indexing=indexing))
+def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Array, ...]:
+    # torch <= 2.9 emits a UserWarning: "torch.meshgrid: in an upcoming release, it
+    # will be required to pass the indexing argument."
+    # Thus always pass it explicitly.
+    return torch.meshgrid(*arrays, indexing=indexing)
 
 
 __all__ = ['asarray', 'result_type', 'can_cast',
