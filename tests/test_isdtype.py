@@ -10,7 +10,7 @@ from ._helpers import import_, wrapped_libraries
 # Check the known dtypes by their string names
 
 def _spec_dtypes(library):
-    if library == 'torch':
+    if library in ['torch', 'paddle']:
         # torch does not have unsigned integer dtypes
         return {
             'bool',

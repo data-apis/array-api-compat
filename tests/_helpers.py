@@ -2,7 +2,7 @@ from importlib import import_module
 
 import pytest
 
-wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
+wrapped_libraries = ["numpy", "cupy", "torch", "dask.array", "paddle"]
 all_libraries = wrapped_libraries + [
     "array_api_strict", "jax.numpy", "ndonnx", "sparse"
 ]
@@ -18,6 +18,11 @@ def import_(library, wrapper=False):
                 library = 'jax.experimental.array_api'
         elif library in wrapped_libraries:
             library = 'array_api_compat.' + library
+
+    if library == 'paddle':
+        xp = import_module(library)
+        xp.asarray = xp.to_tensor
+        return xp
 
     return import_module(library)
 

@@ -49,8 +49,12 @@ def _test_dependency(mod):
 # TODO: Test that wrapper for library X doesn't depend on wrappers for library
 # Y (except most array libraries actually do themselves depend on numpy).
 
-@pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array",
-                                     "jax.numpy", "sparse", "array_api_strict"])
+@pytest.mark.parametrize("library",
+    [
+        "numpy", "cupy", "numpy", "torch", "dask.array",
+        "jax.numpy", "sparse", "paddle", "array_api_strict"
+    ]
+)
 def test_numpy_dependency(library):
     # This import is here because it imports numpy
     from ._helpers import import_

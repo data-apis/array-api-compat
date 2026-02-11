@@ -38,6 +38,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
     import sparse
     import torch
+    import paddle
 
     # TODO: import from typing (requires Python >=3.13)
     from typing_extensions import TypeIs
@@ -116,7 +117,7 @@ def is_numpy_array(x: object) -> TypeIs[npt.NDArray[Any]]:
     # TODO: Should we reject ndarray subclasses?
     cls = cast(Hashable, type(x))
     return (
-        _issubclass_fast(cls, "numpy", "ndarray") 
+        _issubclass_fast(cls, "numpy", "ndarray")
         or _issubclass_fast(cls, "numpy", "generic")
     ) and not _is_jax_zero_gradient_array(x)
 
@@ -273,6 +274,33 @@ def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     return _issubclass_fast(cls, "sparse", "SparseArray")
 
 
+def is_paddle_array(x):
+    """
+    Return True if `x` is a Paddle tensor.
+
+    This function does not import Paddle if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    # Avoid importing paddle if it isn't already
+    if 'paddle' not in sys.modules:
+        return False
+
+    import paddle
+
+    return paddle.is_tensor(x)
+
+
 def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     """
     Return True if `x` is an array API compatible array object.
@@ -289,7 +317,7 @@ def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     is_jax_array
     """
     return (
-        hasattr(x, '__array_namespace__') 
+        hasattr(x, '__array_namespace__')
         or _is_array_api_cls(cast(Hashable, type(x)))
     )
 
@@ -463,6 +491,27 @@ def is_pydata_sparse_namespace(xp: Namespace) -> bool:
     return xp.__name__ == "sparse"
 
 
+def is_paddle_namespace(xp) -> bool:
+    """
+    Returns True if `xp` is a Paddle namespace.
+
+    This includes both Paddle itself and the version wrapped by array-api-compat.
+
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_namespace
+    is_cupy_namespace
+    is_ndonnx_namespace
+    is_dask_namespace
+    is_jax_namespace
+    is_pydata_sparse_namespace
+    is_array_api_strict_namespace
+    """
+    return xp.__name__ in {'paddle', _compat_module_name() + '.paddle'}
+
+
 def is_array_api_strict_namespace(xp: Namespace) -> bool:
     """
     Returns True if `xp` is an array-api-strict namespace.
@@ -510,7 +559,7 @@ def _cls_to_namespace(
     cls_ = cast(Hashable, cls)  # Make mypy happy
 
     if (
-        _issubclass_fast(cls_, "numpy", "ndarray") 
+        _issubclass_fast(cls_, "numpy", "ndarray")
         or _issubclass_fast(cls_, "numpy", "generic")
     ):
         if use_compat is True:
@@ -784,6 +833,15 @@ def device(x: _ArrayApiObj, /) -> Device:
             return "cpu"
         # Return the device of the constituent array
         return device(inner)  # pyright: ignore
+    elif is_paddle_array(x):
+        raw_place_str = str(x.place)
+        if "gpu_pinned" in raw_place_str:
+            return "cpu"
+        elif "cpu" in raw_place_str:
+            return "cpu"
+        elif "gpu" in raw_place_str:
+            return "gpu"
+        raise ValueError(f"Unsupported Paddle device: {x.place}")
     return x.device  # type: ignore  # pyright: ignore
 
 
@@ -831,6 +889,14 @@ def _torch_to_device(
     if stream is not None:
         raise NotImplementedError
     return x.to(device)
+
+
+def _paddle_to_device(x: paddle.Tensor, device, /, stream=None):
+    if stream is not None:
+        raise NotImplementedError(
+            "paddle.Tensor.to() do not support 'stream' argument yet"
+        )
+    return x.to(device=device)
 
 
 def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -> Array:
@@ -909,6 +975,8 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
             if not hasattr(x, "to_device"):
                 return x
         return x.to_device(device, stream=stream)
+    elif is_paddle_array(x):
+        return _paddle_to_device(x, device, stream=stream)
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.
@@ -980,6 +1048,7 @@ def _is_lazy_cls(cls: type) -> bool | None:
         or _issubclass_fast(cls, "numpy", "generic")
         or _issubclass_fast(cls, "cupy", "ndarray")
         or _issubclass_fast(cls, "torch", "Tensor")
+        or _issubclass_fast(cls, "paddle", "Tensor")
         or _issubclass_fast(cls, "sparse", "SparseArray")
     ):
         return False
@@ -1067,6 +1136,8 @@ __all__ = [
     "is_torch_namespace",
     "is_ndonnx_array",
     "is_ndonnx_namespace",
+    "is_paddle_array",
+    "is_paddle_namespace",
     "is_pydata_sparse_array",
     "is_pydata_sparse_namespace",
     "is_writeable_array",
