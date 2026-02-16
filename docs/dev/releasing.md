@@ -24,7 +24,7 @@
 
   This does mean you can ignore CI failures, but ideally you should fix any
   failures or update the `*-xfails.txt` files before tagging, so that CI and
-  the CuPy tests fully pass. Otherwise it will be hard to tell what things are
+  the CuPy tests fully pass. Otherwise, it will be hard to tell what things are
   breaking in the future. It's also a good idea to remove any xpasses from
   those files (but be aware that some xfails are from flaky failures, so
   unless you know the underlying issue has been fixed, an xpass test is
