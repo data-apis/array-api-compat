@@ -221,7 +221,7 @@ Thomas Li
     `xp.__array_namespace_info__()`.
   - Various fixes to the `clip()` wrappers.
 
-- `torch.conj` now wrapps `torch.conj_physical`, which makes a copy rather
+- `torch.conj` now wraps `torch.conj_physical`, which makes a copy rather
   than setting the conjugation bit, as arrays with the conjugation bit set do
   not support some APIs.
 
