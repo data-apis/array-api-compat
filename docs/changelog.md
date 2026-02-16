@@ -298,7 +298,7 @@ Thomas Li
 
 - New flag `use_compat` to {func}`~.array_namespace` to force the use or
   non-use of the compat wrapper namespace. The default is to return a compat
-  namespace when it is appropiate.
+  namespace when it is appropriate.
 
 - Fix the `copy` flag to `asarray` for NumPy, CuPy, and Dask.
 
