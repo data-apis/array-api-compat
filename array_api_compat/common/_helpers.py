@@ -593,7 +593,7 @@ def array_namespace(
 
     use_compat: bool or None
         If None (the default), the native namespace will be returned if it is
-        already array API compatible, otherwise a compat wrapper is used. If
+        already array API compatible; otherwise, a compat wrapper is used. If
         True, the compat library wrapped library will be returned. If False,
         the native library namespace is returned.
 
