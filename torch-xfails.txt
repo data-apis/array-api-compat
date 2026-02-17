@@ -139,8 +139,6 @@ array_api_tests/test_data_type_functions.py::test_finfo_dtype
 array_api_tests/test_data_type_functions.py::test_iinfo_dtype
 
 # 2023.12 support
-# https://github.com/pytorch/pytorch/issues/151311: torch.repeat_interleave rejects short integers
-array_api_tests/test_manipulation_functions.py::test_repeat
 # Argument 'device' missing from signature
 array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 # Argument 'max_version' missing from signature

@@ -143,8 +143,6 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_where_with_sca
 array_api_tests/test_has_names.py::test_has_names[creation-from_dlpack]
 array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
-# uint64 repeats not supported
-array_api_tests/test_manipulation_functions.py::test_repeat
 
 # 2024.12 support
 array_api_tests/test_signatures.py::test_func_signature[bitwise_and]
