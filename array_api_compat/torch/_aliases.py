@@ -573,6 +573,10 @@ def count_nonzero(
 
 # "repeat" is torch.repeat_interleave;  also the dim argument
 def repeat(x: Array, repeats: int | Array, /, *, axis: int | None = None) -> Array:
+    if isinstance(repeats, torch.Tensor) and repeats.dtype in (torch.int8, torch.int16):
+        # torch rejects short integers for the `repeat` argument:
+        # https://github.com/pytorch/pytorch/issues/151311
+        repeats = repeats.to(torch.int32)
     return torch.repeat_interleave(x, repeats, axis)
 
 
