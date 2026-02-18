@@ -474,7 +474,7 @@ to the wrapped namespaces. These can be accessed with
 <li><p>Various fixes to the <code class="docutils literal notranslate"><span class="pre">clip()</span></code> wrappers.</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">torch.conj</span></code> now wrapps <code class="docutils literal notranslate"><span class="pre">torch.conj_physical</span></code>, which makes a copy rather
+<li><p><code class="docutils literal notranslate"><span class="pre">torch.conj</span></code> now wraps <code class="docutils literal notranslate"><span class="pre">torch.conj_physical</span></code>, which makes a copy rather
 than setting the conjugation bit, as arrays with the conjugation bit set do
 not support some APIs.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">torch.sign</span></code> is now wrapped to support complex numbers and propogate nans
@@ -559,7 +559,7 @@ array-api-compat does not contain any wrappers for <code class="docutils literal
 <li><p>NumPy 2.0 is now left completely unwrapped.</p></li>
 <li><p>New flag <code class="docutils literal notranslate"><span class="pre">use_compat</span></code> to <a class="reference internal" href="helper-functions.html#array_api_compat.array_namespace" title="array_api_compat.array_namespace"><code class="xref py py-func docutils literal notranslate"><span class="pre">array_namespace()</span></code></a> to force the use or
 non-use of the compat wrapper namespace. The default is to return a compat
-namespace when it is appropiate.</p></li>
+namespace when it is appropriate.</p></li>
 <li><p>Fix the <code class="docutils literal notranslate"><span class="pre">copy</span></code> flag to <code class="docutils literal notranslate"><span class="pre">asarray</span></code> for NumPy, CuPy, and Dask.</p></li>
 <li><p>Fix the <code class="docutils literal notranslate"><span class="pre">device</span></code> flag to <code class="docutils literal notranslate"><span class="pre">asarray</span></code> for CuPy.</p></li>
 <li><p>Fix various issues with <code class="docutils literal notranslate"><span class="pre">asarray</span></code> for Dask.</p></li>
