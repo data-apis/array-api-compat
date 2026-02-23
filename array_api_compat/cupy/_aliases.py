@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from builtins import bool as py_bool
+from typing import Literal
 
 import cupy as cp
 
@@ -144,6 +145,10 @@ def broadcast_arrays(*arrays: Array) -> tuple[Array, ...]:
     return tuple(cp.broadcast_arrays(*arrays))
 
 
+def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Array, ...]:
+    return tuple(cp.meshgrid(*arrays, indexing=indexing))
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -167,7 +172,7 @@ __all__ = _aliases.__all__ + ['asarray', 'astype',
                               'bitwise_invert', 'bitwise_right_shift',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign',
                               'ceil', 'floor', 'trunc', 'take_along_axis',
-                              'broadcast_arrays',]
+                              'broadcast_arrays', 'meshgrid']
 
 
 def __dir__() -> list[str]:
