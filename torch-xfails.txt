@@ -144,6 +144,11 @@ array_api_tests/test_signatures.py::test_func_signature[from_dlpack]
 # Argument 'max_version' missing from signature
 array_api_tests/test_signatures.py::test_array_method_signature[__dlpack__]
 
+# 2025.12 support
+
+# broadcast_shapes emits a RuntimeError where the spec says ValueError
+array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_error
+
 
 # 2024.12 support: binary functions reject python scalar arguments
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_real[atan2]
