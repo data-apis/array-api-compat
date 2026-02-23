@@ -166,3 +166,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_sc
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_bool[logical_and]
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_bool[logical_or]
 array_api_tests/test_operators_and_elementwise_functions.py::test_binary_with_scalars_bool[logical_xor]
+
+# 2025.12 support
+
+# torch raises a RuntimeError while the spec requires a ValueError
+array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_error
