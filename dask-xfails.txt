@@ -129,6 +129,13 @@ array_api_tests/test_linalg.py::test_matrix_norm
 array_api_tests/test_linalg.py::test_qr
 array_api_tests/test_manipulation_functions.py::test_roll
 
+# 2025.12 support
+array_api_tests/test_has_names.py::test_has_names[manipulation-broadcast_shapes]
+array_api_tests/test_signatures.py::test_func_signature[broadcast_shapes]
+array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_broadcast_shapes
+array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_empty
+array_api_tests/test_data_type_functions.py::TestBroadcastShapes::test_error
+
 # Stubs have a comment: (**note**: libraries may return ``NaN`` to match Python behavior.)
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i < 0) -> -infinity]
