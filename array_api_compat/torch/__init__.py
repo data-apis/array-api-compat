@@ -13,7 +13,7 @@ from ._info import __array_namespace_info__  # noqa: F401
 __import__(__package__ + '.linalg')
 __import__(__package__ + '.fft')
 
-__array_api_version__: Final = '2024.12'
+__array_api_version__: Final = '2025.12'
 
 __all__ = sorted(
     set(__all__)
