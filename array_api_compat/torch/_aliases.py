@@ -694,7 +694,7 @@ def triu(x: Array, /, *, k: int = 0) -> Array:
     return torch.triu(x, k)
 
 # Functions that aren't in torch https://github.com/pytorch/pytorch/issues/58742
-def expand_dims(x: Array, /, *, axis: int | tuple[int, ...]) -> Array:
+def expand_dims(x: Array, /, axis: int | tuple[int, ...]) -> Array:
     if isinstance(axis, int):
         return torch.unsqueeze(x, axis)
     else:
