@@ -55,8 +55,8 @@ if TYPE_CHECKING:
         | SupportsArrayNamespace[Any]
     )
 
-_API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12"})
-_API_VERSIONS: Final = _API_VERSIONS_OLD | frozenset({"2024.12"})
+_API_VERSIONS_OLD: Final = frozenset({"2021.12", "2022.12", "2023.12", "2024.12"})
+_API_VERSIONS: Final = _API_VERSIONS_OLD | frozenset({"2025.12"})
 
 
 @lru_cache(100)
@@ -485,11 +485,11 @@ def is_array_api_strict_namespace(xp: Namespace) -> bool:
 def _check_api_version(api_version: str | None) -> None:
     if api_version in _API_VERSIONS_OLD:
         warnings.warn(
-            f"The {api_version} version of the array API specification was requested but the returned namespace is actually version 2024.12"
+            f"The {api_version} version of the array API specification was requested but the returned namespace is actually version 2025.12"
         )
     elif api_version is not None and api_version not in _API_VERSIONS:
         raise ValueError(
-            "Only the 2024.12 version of the array API specification is currently supported"
+            "Only the 2025.12 version of the array API specification is currently supported"
         )
 
 
@@ -589,7 +589,7 @@ def array_namespace(
 
     api_version: str
         The newest version of the spec that you need support for (currently
-        the compat library wrapped APIs support v2024.12).
+        the compat library wrapped APIs support v2025.12).
 
     use_compat: bool or None
         If None (the default), the native namespace will be returned if it is
