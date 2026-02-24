@@ -50,6 +50,8 @@ array_api_tests/test_operators_and_elementwise_functions.py::test_where_with_sca
 array_api_tests/test_creation_functions.py::test_meshgrid
 array_api_tests/test_data_type_functions.py::test_broadcast_arrays
 
+# observed with numpy==1.26 only, looks like is fixed on numpy 2.x
+array_api_tests/test_set_functions.py::TestIsin::test_isin_scalars
 
 # Stubs have a comment: (**note**: libraries may return ``NaN`` to match Python behavior.); Apparently, NumPy does just that
 array_api_tests/test_special_cases.py::test_binary[floor_divide(x1_i is +infinity and isfinite(x2_i) and x2_i > 0) -> +infinity]
