@@ -149,6 +149,24 @@ def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Arra
     return tuple(cp.meshgrid(*arrays, indexing=indexing))
 
 
+# Match https://github.com/cupy/cupy/pull/9512/ until cupy v14 is the minimum
+# supported version
+def searchsorted(
+    x1: Array,
+    x2: Array | int | float,
+    /,
+    *,
+    side: Literal['left', 'right'] = 'left',
+    sorter: Array | None = None
+) -> Array:
+    if not isinstance(x2, cp.ndarray):
+        if not isinstance(x2, int | float | complex):
+            raise NotImplementedError(
+                'Only python scalars or ndarrays are supported for x2')
+        x2 = cp.asarray(x2)
+    return cp.searchsorted(x1, x2, side, sorter)
+
+
 # These functions are completely new here. If the library already has them
 # (i.e., numpy 2.0), use the library version instead of our wrapper.
 if hasattr(cp, 'vecdot'):
@@ -172,7 +190,9 @@ __all__ = _aliases.__all__ + ['asarray', 'astype',
                               'bitwise_invert', 'bitwise_right_shift',
                               'bool', 'concat', 'count_nonzero', 'pow', 'sign',
                               'ceil', 'floor', 'trunc', 'take_along_axis',
-                              'broadcast_arrays', 'meshgrid']
+                              'broadcast_arrays', 'meshgrid',
+                              'searchsorted',
+]
 
 
 def __dir__() -> list[str]:
