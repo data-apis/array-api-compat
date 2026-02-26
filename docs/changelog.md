@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.14.0 (2026-02-26)
+
+### Major changes
+
+This release targets the 2025.12 Array API revision. This includes
+
+  - `__array_api_version__` for the wrapped APIs is now set to `2025.12`;
+  - wrappers for `linalg.eig` and `linalg.eigvals`;
+  - wrappers for `isin` and `searchsorted` to accept Python scalars;
+  - wrappers for `expand_dims` accepting tuple axes;
+  - `broadcast_arrays`, `meshgrid` and `__array_api_info__().devices()` have been
+    changed to return tuples, not lists;
+
+Additionally,
+
+  - `clip` wrappers have been fixed to be compatible with `torch.vmap`.
+
+
+### Minor changes
+
+  - `expand_dims` wrappers have been fixed to accept its `axis` argument as a keyword
+    or positional argument;
+  - `torch.clip` wrappers have been fixed to correctly handle `nan` scalars;
+  - `torch.repeat` wrapper has been fixed to not error out for short integers;
+
+
+The following users contributed to this release:
+
+Evgeni Burovski,
+Josh Soref.
+
+
 ## 1.13.0 (2025-12-28)
 
 
