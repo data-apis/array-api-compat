@@ -140,6 +140,7 @@ NAMES = {
         # Manipulation Functions
         "broadcast_arrays",
         "broadcast_to",
+        "broadcast_shapes",
         "concat",
         "expand_dims",
         "flip",
@@ -164,6 +165,7 @@ NAMES = {
         "unique_counts",
         "unique_inverse",
         "unique_values",
+        "isin",
         # Sorting Functions
         "argsort",
         "sort",
@@ -205,6 +207,8 @@ NAMES = {
         "diagonal",
         "eigh",
         "eigvalsh",
+        "eig",
+        "eigvals",
         "inv",
         "matmul",
         "matrix_norm",
@@ -227,12 +231,14 @@ NAMES = {
 
 XFAILS = {
     ("numpy", ""): ["from_dlpack"] if np.__version__ < "1.23" else [],
-    ("dask.array", ""): ["from_dlpack", "take_along_axis"],
+    ("dask.array", ""): ["from_dlpack", "take_along_axis", "broadcast_shapes"],
     ("dask.array", "linalg"): [
         "cross",
         "det",
         "eigh",
         "eigvalsh",
+        "eig",
+        "eigvals",
         "matrix_power",
         "pinv",
         "slogdet",
