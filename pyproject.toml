@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["meson-python"]
+build-backend = "mesonpy"
 
 [project]
 name = "array-api-compat"
@@ -54,10 +54,6 @@ dev = [
 homepage = "https://data-apis.org/array-api-compat/"
 repository = "https://github.com/data-apis/array-api-compat/"
 
-[tool.setuptools.packages.find]
-include = ["array_api_compat*"]
-namespaces = false
-
 
 # Pixi
 
@@ -73,7 +69,7 @@ name = "pixi-build-python"
 version = "*"
 
 [tool.pixi.package.host-dependencies]
-setuptools = "*"
+meson-python = "*"
 
 ### workspace environments ###
 
