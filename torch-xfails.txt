@@ -130,7 +130,6 @@ array_api_tests/test_statistical_functions.py::test_var
 
 
 # These functions do not yet support complex numbers
-array_api_tests/test_operators_and_elementwise_functions.py::test_round
 array_api_tests/test_set_functions.py::test_unique_counts
 array_api_tests/test_set_functions.py::test_unique_values
 

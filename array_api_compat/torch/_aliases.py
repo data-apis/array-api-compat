@@ -916,6 +916,22 @@ def sign(x: Array, /) -> Array:
         return out
 
 
+def round(x: Array, /, **kwargs) -> Array:
+    # torch.round fails for complex inputs
+    # https://github.com/pytorch/pytorch/issues/58743#issuecomment-2727603845
+    if x.dtype.is_complex:
+        out = kwargs.pop('out', None)
+        res_r = torch.round(x.real, **kwargs)
+        res_i = torch.round(x.imag, **kwargs)
+        res = res_r + 1j*res_i
+        if out is not None:
+            out.copy_(res)
+            return out
+        return res
+    else:
+        return torch.round(x, **kwargs)
+
+
 def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Array, ...]:
     # torch <= 2.9 emits a UserWarning: "torch.meshgrid: in an upcoming release, it
     # will be required to pass the indexing argument."
@@ -927,7 +943,7 @@ __all__ = ['asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
            'bitwise_right_shift', 'bitwise_xor', 'copysign', 'count_nonzero',
-           'diff', 'divide',
+           'diff', 'divide', 'round',
            'equal', 'floor_divide', 'greater', 'greater_equal', 'hypot',
            'less', 'less_equal', 'logaddexp', 'maximum', 'minimum',
            'multiply', 'not_equal', 'pow', 'remainder', 'subtract', 'max',
