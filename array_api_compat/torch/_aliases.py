@@ -616,8 +616,12 @@ def arange(start: float,
                 dtype = torch.int64
             else:
                 dtype = torch.float32
-        return torch.empty(0, dtype=dtype, device=device, **kwargs)
-    return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
+        return torch.empty(0, device=device, **kwargs).to(dtype)
+    try:
+        return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
+    # torch 2.7 raises RuntimeError, 2.9 emits NotImplementedError
+    except (NotImplementedError, RuntimeError):
+        return torch.arange(start, stop, step, device=device, **kwargs).to(dtype)
 
 # torch.eye does not accept None as a default for the second argument and
 # doesn't support off-diagonals (https://github.com/pytorch/pytorch/issues/70910)
