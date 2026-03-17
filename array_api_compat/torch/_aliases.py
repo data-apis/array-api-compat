@@ -616,10 +616,7 @@ def arange(start: float,
                 dtype = torch.int64
             else:
                 dtype = torch.float32
-        try:
-            return torch.empty(0, dtype=dtype, device=device, **kwargs)
-        except NotImplementedError:
-            return torch.empty(0, device=device, **kwargs).to(dtype)
+        return torch.empty(0, device=device, **kwargs).to(dtype)
     try:
         return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
     except NotImplementedError:
