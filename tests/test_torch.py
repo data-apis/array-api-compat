@@ -152,3 +152,12 @@ def test_argsort_stable():
 
     t = xp.zeros(50)    # should be >16
     assert xp.all(xp.argsort(t) == xp.arange(50))
+
+
+def test_round():
+    """Verify the out= argument of xp.round with complex inputs."""
+    x = torch.as_tensor([1.23456786]*3) + 3.456789j
+    o = torch.empty(3, dtype=torch.complex64)
+    r = xp.round(x, decimals=1, out=o)
+    assert xp.all(r == o)
+    assert r is o
