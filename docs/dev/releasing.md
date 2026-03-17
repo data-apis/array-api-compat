@@ -49,6 +49,7 @@
   ```
   array_api_compat/__init__.py
   pyproject.toml
+  meson.build
   ```
 
   and update the version.
