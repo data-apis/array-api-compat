@@ -619,6 +619,7 @@ def arange(start: float,
         return torch.empty(0, device=device, **kwargs).to(dtype)
     try:
         return torch.arange(start, stop, step, dtype=dtype, device=device, **kwargs)
+    # torch 2.7 raises RuntimeError, 2.9 emits NotImplementedError
     except (NotImplementedError, RuntimeError):
         return torch.arange(start, stop, step, device=device, **kwargs).to(dtype)
 
