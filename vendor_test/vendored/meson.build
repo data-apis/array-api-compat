@@ -4,8 +4,12 @@ py.install_sources([
   subdir: 'array_api_compat/vendor_test/vendored'
 )
 
-install_symlink(
-  '_compat',
-  install_dir: py.get_install_dir() / 'array_api_compat/vendor_test/vendored',
-  pointing_to: '../../',
-)
+# mimicking the symlink
+# TODO: this seems to fail for editable builds
+foreach subdir, paths : sources_raw
+  foreach path : paths
+    filename = path.split('/')[-1]
+    vendor_subdir = subdir.replace('array_api_compat/', 'array_api_compat/vendor_test/vendored/_compat/')
+    vendor_file = configure_file(input: '../..' / path, output: filename, copy: true, build_subdir: subdir, install_dir: py.get_install_dir() / vendor_subdir)
+  endforeach
+endforeach

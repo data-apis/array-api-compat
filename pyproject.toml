@@ -69,6 +69,7 @@ name = "pixi-build-python"
 version = "*"
 
 [tool.pixi.package.host-dependencies]
+uv = "*"
 meson-python = "*"
 
 ### workspace environments ###
