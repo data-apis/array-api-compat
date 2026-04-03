@@ -217,3 +217,8 @@ array_api_tests/test_special_cases.py::test_binary[nextafter(x1_i is +0 and x2_i
 
 # cupy 13.x follows numpy 1.x w/o weak promotion: result_type(int32, uint8, 1) != result_type(int32, uint8)
 array_api_tests/test_data_type_functions.py::TestResultType::test_with_scalars
+
+# CuPy 14 does not support copy= dlpack argument
+array_api_tests/test_dlpack.py::test_dunder_dlpack
+array_api_tests/test_dlpack.py::test_from_dlpack
+
