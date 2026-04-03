@@ -641,7 +641,7 @@ def array_namespace(
     is_pydata_sparse_array
 
     """
-    namespaces: set[Namespace] = set()
+    namespaces: list[Namespace] = []
     for x in xs:
         xp, info = _cls_to_namespace(cast(Hashable, type(x)), api_version, use_compat)
         if info is _ClsToXPInfo.SCALAR:
@@ -663,10 +663,22 @@ def array_namespace(
                 )
             xp = get_ns(api_version=api_version)
 
-        namespaces.add(xp)
+        namespaces.append(xp)
+
+    # Use a list of modules to avoid a graph break under torch.compile:
+    # torch._dynamo.exc.Unsupported: Dynamo cannot determine whether the underlying object is hashable
+    # Explanation: Dynamo does not know whether the underlying python object for
+    # PythonModuleVariable(<module 'array_api_compat.torch' from ...) is hashable
+    names = set(x.__name__ for x in namespaces)
+    unique_namespaces = []
+    for ns in namespaces:
+        if (name := ns.__name__) in names:
+            unique_namespaces.append(ns)
+            names.remove(name)
+    namespaces = unique_namespaces
 
     try:
-        (xp,) = namespaces
+        (xp,) = tuple(namespaces)
         return xp
     except ValueError:
         if not namespaces:

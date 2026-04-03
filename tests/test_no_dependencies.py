@@ -17,7 +17,7 @@ class Array:
     # Dummy array namespace that doesn't depend on any array library
     def __array_namespace__(self, api_version=None):
         class Namespace:
-            pass
+            __name__: str = "foobar"
         return Namespace()
 
 def _test_dependency(mod):
