@@ -85,6 +85,9 @@ array_api_tests/test_special_cases.py::test_unary[sqrt(real(x_i) is +infinity an
 array_api_tests/test_special_cases.py::test_unary[acosh(real(x_i) is +0 and imag(x_i) is NaN) -> NaN \xb1 \u03c0j/2]
 array_api_tests/test_special_cases.py::test_unary[tanh(real(x_i) is +infinity and isfinite(imag(x_i)) and imag(x_i) > 0) -> 1 + 0j]
 
-
+# no dlpack support
+array_api_tests/test_dlpack.py::test_dlpack_device
+array_api_tests/test_dlpack.py::test_dunder_dlpack
+array_api_tests/test_dlpack.py::test_from_dlpack
 
 
