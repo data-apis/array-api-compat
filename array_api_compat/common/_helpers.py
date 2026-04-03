@@ -678,7 +678,7 @@ def array_namespace(
     namespaces = unique_namespaces
 
     try:
-        (xp,) = tuple(namespaces)
+        (xp,) = namespaces
         return xp
     except ValueError:
         if not namespaces:
