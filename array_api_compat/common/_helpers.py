@@ -669,7 +669,7 @@ def array_namespace(
     # torch._dynamo.exc.Unsupported: Dynamo cannot determine whether the underlying object is hashable
     # Explanation: Dynamo does not know whether the underlying python object for
     # PythonModuleVariable(<module 'array_api_compat.torch' from ...) is hashable
-    names = set(x.__name__ for x in namespaces)
+    names = {x.__name__ for x in namespaces}
     unique_namespaces = []
     for ns in namespaces:
         if (name := ns.__name__) in names:
