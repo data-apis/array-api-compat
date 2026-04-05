@@ -56,7 +56,7 @@ else:
 __all__ = linalg_all + _linalg.__all__
 
 # cupy 13 does not have __all__, cupy 14 has it: remove duplicates
-__all__ = sorted(list(set(__all__)))
+__all__ = sorted(set(__all__))
 
 def __dir__() -> list[str]:
     return __all__
