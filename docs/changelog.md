@@ -257,7 +257,7 @@ Thomas Li
   than setting the conjugation bit, as arrays with the conjugation bit set do
   not support some APIs.
 
-- `torch.sign` is now wrapped to support complex numbers and propogate nans
+- `torch.sign` is now wrapped to support complex numbers and propagate nans
   properly.
 
 ### Minor Changes

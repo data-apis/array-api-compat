@@ -6,7 +6,7 @@
 # Indexing does not support negative step
 array_api_tests/test_array_object.py::test_getitem
 array_api_tests/test_array_object.py::test_setitem
-# Masking doesn't suport 0 dimensions in the mask
+# Masking doesn't support 0 dimensions in the mask
 array_api_tests/test_array_object.py::test_getitem_masking
 
 # Overflow error from large inputs
