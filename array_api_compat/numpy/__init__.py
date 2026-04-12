@@ -1,4 +1,3 @@
-# ruff: noqa: PLC0414
 from typing import Final
 
 from .._internal import clone_module

@@ -19,4 +19,4 @@ this implementation for the default when working with NumPy arrays.
 """
 __version__ = '1.15.0.dev0'
 
-from .common import *  # noqa: F401, F403
+from .common import *  # noqa: F403

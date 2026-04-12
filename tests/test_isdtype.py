@@ -61,7 +61,7 @@ def isdtype_(dtype_, kind):
         res = dtype_categories[kind](dtype_)
     else:
         res = dtype_ == kind
-    assert type(res) is bool #  noqa: E721
+    assert type(res) is bool
     return res
 
 @pytest.mark.parametrize("library", wrapped_libraries)

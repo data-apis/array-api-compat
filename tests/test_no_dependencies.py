@@ -38,11 +38,11 @@ def _test_dependency(mod):
         assert not is_mod_array(a)
         assert mod not in sys.modules
 
-    is_array_api_obj = getattr(array_api_compat, "is_array_api_obj")
+    is_array_api_obj = array_api_compat.is_array_api_obj
     assert is_array_api_obj(a)
     assert mod not in sys.modules
 
-    array_namespace = getattr(array_api_compat, "array_namespace")
+    array_namespace = array_api_compat.array_namespace
     array_namespace(Array())
     assert mod not in sys.modules
 
