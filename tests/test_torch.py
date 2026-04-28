@@ -115,7 +115,7 @@ def test_clip_vmap():
 
 
 def test_meshgrid():
-    """Verify that array_api_compat.torch.meshgrid defaults to indexing='xy'."""
+    """Verify that array_api_compat.torch.meshgrid defaults to indexing='xy', and supports passing no arrays."""
 
     x, y = xp.asarray([1, 2]), xp.asarray([4])
 
@@ -141,6 +141,8 @@ def test_meshgrid():
 
     assert Y.shape == Y_ij.shape
     assert xp.all(Y == Y_ij)
+
+    assert not xp.meshgrid()
 
 
 def test_argsort_stable():

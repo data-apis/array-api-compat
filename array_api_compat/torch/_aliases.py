@@ -936,7 +936,9 @@ def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Arra
     # torch <= 2.9 emits a UserWarning: "torch.meshgrid: in an upcoming release, it
     # will be required to pass the indexing argument."
     # Thus always pass it explicitly.
-    return torch.meshgrid(*arrays, indexing=indexing)
+    if indexing not in ("xy", "ij"):
+        raise ValueError(f'torch.meshgrid: indexing must be one of "xy" or "ij", but received: {indexing}')
+    return torch.meshgrid(*arrays, indexing=indexing) if arrays else ()
 
 
 __all__ = ['asarray', 'result_type', 'can_cast',
