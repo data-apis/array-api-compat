@@ -288,8 +288,14 @@ def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     is_dask_array
     is_jax_array
     """
+    try:
+        # TODO: drop this check after np.matrix is gone
+        if _issubclass_fast(type(x), "numpy", "matrix"):
+            return False
+    except Exception:
+        pass
     return (
-        hasattr(x, '__array_namespace__') 
+        hasattr(x, '__array_namespace__')
         or _is_array_api_cls(cast(Hashable, type(x)))
     )
 
