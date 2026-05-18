@@ -60,6 +60,10 @@ import array_api_compat.torch as torch
 import array_api_compat.dask as da
 ```
 
+```py
+import array_api_compat.paddle as paddle
+```
+
 ```{note}
 There are no `array_api_compat` submodules for JAX, sparse, or ndonnx. These
 support for these libraries is contained in the libraries themselves (JAX
