@@ -22,7 +22,13 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-[project.optional-dependencies]
+
+[project.urls]
+homepage = "https://data-apis.org/array-api-compat/"
+repository = "https://github.com/data-apis/array-api-compat/"
+
+
+[dependency-groups]
 cupy = ["cupy"]
 dask = ["dask>=2024.9.0"]
 jax = ["jax"]
@@ -51,9 +57,6 @@ dev = [
     "sparse>=0.15.1",
 ]
 
-[project.urls]
-homepage = "https://data-apis.org/array-api-compat/"
-repository = "https://github.com/data-apis/array-api-compat/"
 
 [tool.setuptools.dynamic]
 version = { attr = "array_api_compat.__version__" }
