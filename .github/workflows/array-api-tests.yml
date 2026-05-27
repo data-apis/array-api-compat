@@ -78,6 +78,9 @@ jobs:
         python -m pip install -r ${GITHUB_WORKSPACE}/array-api-tests/requirements.txt
         python -m pip install pytest-xdist
 
+    - name: Install array-api-compat
+      run: python -m pip install ${GITHUB_WORKSPACE}/array-api-compat
+
     - name: Dump pip environment
       run: pip freeze
 

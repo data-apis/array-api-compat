@@ -56,10 +56,13 @@ homepage = "https://data-apis.org/array-api-compat/"
 repository = "https://github.com/data-apis/array-api-compat/"
 
 [tool.setuptools.dynamic]
-version = {attr = "array_api_compat.__version__"}
+version = { attr = "array_api_compat.__version__" }
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-include = ["array_api_compat*"]
+where = ["src"]
 namespaces = false
 
 [tool.ruff.lint]
@@ -92,7 +95,7 @@ ignore = [
 
 
 [tool.mypy]
-files = ["array_api_compat"]
+files = ["src/array_api_compat"]
 disallow_incomplete_defs = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = false  # TODO
