@@ -66,3 +66,9 @@ jobs:
 
       - name: Run Tests
         run: pytest -v
+
+      - name: Run vendoring tests
+        run: |
+          rm -rf vendor_tests/array_api_compat
+          cp -r src/array_api_compat vendor_tests/
+          pytest -v vendor_tests

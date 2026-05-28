@@ -1,7 +1,7 @@
 # Basic test that vendoring works
 
-from .vendored._compat.dask import array as dask_compat
-from .vendored._compat import is_dask_array, is_dask_namespace
+from .array_api_compat.dask import array as dask_compat
+from .array_api_compat import is_dask_array, is_dask_namespace
 
 import dask.array as da
 import numpy as np
