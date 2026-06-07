@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.15.0 (TODO)
+## 1.15.0 (2026-06-07)
 
 ### Major changes
 
