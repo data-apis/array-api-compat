@@ -99,7 +99,7 @@
   docs update (the docs are published automatically from the sources on
   `main`).
 
-- [ ] **Bump the `__version__` attribute in `__init__.py`**
+- [ ] **Bump the version in all locations mentioned above**
 
   After an M.N.0 release, further development is towards version `M.(N+1).0`, thus the main branch's 
   version is `M.(N+1).0.dev0`.
