@@ -278,12 +278,12 @@ probably still xfail).</p>
 <p>on a machine with a CUDA GPU.</p>
 </li>
 <li class="task-list-item enabled"><p><input class="task-list-item-checkbox" type="checkbox"><strong>Update the version.</strong></p>
-<p>You must edit</p>
+<p>You must edit the version in:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array_api_compat</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span>
+<span class="n">meson</span><span class="o">.</span><span class="n">build</span>
 </pre></div>
 </div>
-<p>and update the version (the version is not computed from the tag because
-that would break vendorability).</p>
 </li>
 <li class="task-list-item enabled"><p><input class="task-list-item-checkbox" type="checkbox"><strong>Update the <a class="reference internal" href="../changelog.html"><span class="std std-doc">changelog</span></a>.</strong></p>
 <p>Edit</p>
