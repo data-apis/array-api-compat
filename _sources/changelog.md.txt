@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.15.0 (2026-06-07)
+
+### Major changes
+
+- `array_namespace` can now be used under `torch.compile`.
+- The build system has changed from `setuptools` to `meson-python`.
+  Projects vendoring array-api-compat inside a meson project can now
+  rely on the in-tree meson project definition, which exposes the Python
+  sources via the `sources` variable. For example:
+  ```meson
+  array_api_compat = subproject('array_api_compat')
+  array_api_compat_sources = array_api_compat.get_variable('sources')
+  foreach prefix, files : array_api_compat_sources
+    py3.install_sources(files, subdir: external_dir / prefix)
+  endforeach
+  ```
+
+### Minor changes
+
+- `torch.round` now supports complex input.
+- `torch.arange` now works around missing dtype implementations instead of raising
+  an exception.
+
+Bug fixes:
+  - `np.matrix` instances are no longer considered to be standard array objects.
+  - `torch.meshgrid` now correctly handles the case of no input arrays.
+
+### Contributors
+
+The following users contributed to this release:
+
+Lucas Colley,
+Evgeni Burovski,
+Chris Ninham,
+Dimitri Papadopoulos Orfanos.
+
 ## 1.14.0 (2026-02-26)
 
 ### Major changes
