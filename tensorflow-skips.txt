@@ -23,6 +23,8 @@ array_api_tests/test_dlpack.py::test_dunder_dlpack
 array_api_tests/test_linalg.py::test_cross
 array_api_tests/test_linalg.py::test_outer
 array_api_tests/test_linalg.py::test_solve
+array_api_tests/test_linalg.py::test_linalg_tensordot
+array_api_tests/test_linalg.py::test_tensordot
 array_api_tests/test_manipulation_functions.py::test_repeat
 array_api_tests/test_operators_and_elementwise_functions.py::test_clip
 array_api_tests/test_operators_and_elementwise_functions.py::test_where_with_scalars
