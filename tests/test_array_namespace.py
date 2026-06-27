@@ -8,7 +8,7 @@ import pytest
 import array_api_compat
 from array_api_compat import array_namespace
 
-from ._helpers import all_libraries, wrapped_libraries, xfail
+from ._helpers import all_libraries, import_, wrapped_libraries, xfail
 
 
 @pytest.mark.parametrize("use_compat", [True, False, None])
@@ -18,8 +18,9 @@ from ._helpers import all_libraries, wrapped_libraries, xfail
 @pytest.mark.parametrize("library", all_libraries)
 def test_array_namespace(request, library, api_version, use_compat):
     xp = pytest.importorskip(library)
+    compat_xp = import_(library, wrapper=True)
 
-    array = xp.asarray([1.0, 2.0, 3.0])
+    array = compat_xp.asarray([1.0, 2.0, 3.0])
     if use_compat and library not in wrapped_libraries:
         pytest.raises(ValueError, lambda: array_namespace(array, use_compat=use_compat))
         return
@@ -96,7 +97,7 @@ def test_array_namespace_errors():
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_array_namespace_many_args(library):
-    xp = pytest.importorskip(library)
+    xp = import_(library, wrapper=True)
     a = xp.asarray(1)
     b = xp.asarray(2)
     assert array_namespace(a, b) is array_namespace(a)
@@ -115,7 +116,7 @@ def test_get_namespace():
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_python_scalars(library):
-    xp = pytest.importorskip(library)
+    xp = import_(library, wrapper=True)
     a = xp.asarray([1, 2])
     xp = array_namespace(a)
 

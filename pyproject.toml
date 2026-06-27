@@ -38,6 +38,7 @@ numpy = ["numpy>=1.22"]
 pytorch = ["torch"]
 sparse = ["sparse>=0.15.1"]
 ndonnx = ["ndonnx"]
+tensorflow = ["tensorflow"]
 docs = [
     "furo",
     "linkify-it-py",
@@ -55,6 +56,7 @@ dev = [
     "pytest",
     "torch",
     "sparse>=0.15.1",
+    "tensorflow",
 ]
 
 
@@ -105,7 +107,7 @@ warn_unused_ignores = true
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["cupy.*", "cupy_backends.*", "dask.*", "jax.*", "ndonnx.*", "sparse.*", "torch.*"]
+module = ["cupy.*", "cupy_backends.*", "dask.*", "jax.*", "ndonnx.*", "sparse.*", "tensorflow.*", "torch.*"]
 ignore_missing_imports = true
 
 
