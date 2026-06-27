@@ -210,8 +210,9 @@ def vector_norm(
     keepdims: bool = False,
     ord: JustInt | JustFloat = 2,
 ) -> Array:
+    out_dtype = _real_dtype_for(x.dtype)
     if axis == ():
-        return tf.cast(x != 0, x.dtype) if ord == 0 else abs(x)
+        return tf.cast(x != 0, out_dtype) if ord == 0 else tf.cast(abs(x), out_dtype)
 
     if axis is None:
         x_ = tf.reshape(x, (-1,))
@@ -230,7 +231,6 @@ def vector_norm(
         axis_ = axis
 
     abs_x = tf.abs(x_)
-    out_dtype = _real_dtype_for(x.dtype)
     abs_x = tf.cast(abs_x, out_dtype)
     if ord == 0:
         out = tf.cast(count_nonzero(x_, axis=axis_), out_dtype)
