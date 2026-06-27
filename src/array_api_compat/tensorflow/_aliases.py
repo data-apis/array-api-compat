@@ -666,9 +666,9 @@ def full(
     del kwargs
     if isinstance(shape, int):
         shape = (shape,)
-    value = tf.convert_to_tensor(fill_value, dtype=dtype)
     with tf.device(device):
-        return tf.fill(shape, value)
+        value = _to_tensor(fill_value, dtype=dtype)
+        return tf.broadcast_to(value, shape)
 
 
 def full_like(

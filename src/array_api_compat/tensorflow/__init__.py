@@ -78,7 +78,7 @@ def _patch_eager_tensor_getitem() -> None:
         x_shape = py_tuple(self.shape)
         key_shape = py_tuple(key.shape)
         if key.ndim > self.ndim or py_any(
-            ks not in (xs, 0) for xs, ks in zip(x_shape, key_shape)
+            ks not in (xs, 0) for xs, ks in zip(x_shape, key_shape, strict=False)
         ):
             raise IndexError("boolean index did not match indexed array")
         if key.ndim == 0:
@@ -100,13 +100,13 @@ def _patch_eager_tensor_getitem() -> None:
         if not py_all(isinstance(k, py_int) and not isinstance(k, py_bool) for k in key):
             return None
         normalized = []
-        for k, side in zip(key, shape):
+        for k, side in zip(key, shape, strict=True):
             k = k + side if k < 0 else k
             if k < 0 or k >= side:
                 raise IndexError("index out of bounds")
             normalized.append(k)
         flat_index = 0
-        for k, stride in zip(normalized, _strides(shape)):
+        for k, stride in zip(normalized, _strides(shape), strict=True):
             flat_index += k * stride
         return _tf.gather(_tf.reshape(self, (-1,)), flat_index)
 
