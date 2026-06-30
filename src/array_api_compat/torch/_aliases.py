@@ -63,6 +63,8 @@ _promotion_table = {
 _promotion_table.update({(b, a): c for (a, b), c in _promotion_table.items()})
 _promotion_table.update({(a, a): a for a in _array_api_dtypes})
 
+_real_dtype_for = {torch.complex64: torch.float32, torch.complex128: torch.float64}
+
 
 def _two_arg(f):
     @_wraps(f)
@@ -435,16 +437,18 @@ def std(x: Array,
     # https://github.com/pytorch/pytorch/issues/61492. We don't try to
     # implement it here for now.
 
-    if isinstance(correction, float):
-        _correction = int(correction)
-        if correction != _correction:
-            raise NotImplementedError("float correction in torch std() is not yet supported")
-    else:
-        _correction = correction
+    #if isinstance(correction, float):
+    #    _correction = int(correction)
+    #    if correction != _correction:
+    #        raise NotImplementedError("float correction in torch std() is not yet supported")
+    #else:
+    #    _correction = correction
+    _correction = correction
 
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
-        return torch.zeros_like(x)
+        dtyp = _real_dtype_for[x.dtype] if x.is_complex() else x.dtype
+        return torch.zeros_like(x, dtype=dtyp)
     if isinstance(axis, int):
         axis = (axis,)
     if axis is None:
@@ -471,7 +475,8 @@ def var(x: Array,
 
     # https://github.com/pytorch/pytorch/issues/29137
     if axis == ():
-        return torch.zeros_like(x)
+        dtyp = _real_dtype_for[x.dtype] if x.is_complex() else x.dtype
+        return torch.zeros_like(x, dtype=dtyp)
     if isinstance(axis, int):
         axis = (axis,)
     if axis is None:
