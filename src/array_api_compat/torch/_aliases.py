@@ -941,6 +941,26 @@ def meshgrid(*arrays: Array, indexing: Literal['xy', 'ij'] = 'xy') -> tuple[Arra
     return torch.meshgrid(*arrays, indexing=indexing) if arrays else ()
 
 
+def top_k(
+    a: Array,
+    k: int,
+    /,
+    *,
+    axis: int = -1,
+    mode: Literal["largest", "smallest"] = "largest",
+    **kwargs : object
+) -> tuple[Array, Array]:
+    if mode not in ["largest", "smallest"]:
+        raise ValueError(f"Invalid {mode = }.")
+    return torch.topk(
+        a,
+        k,
+        dim=axis,
+        largest = (mode == "largest"),
+        **kwargs
+    )
+
+
 __all__ = ['asarray', 'result_type', 'can_cast',
            'permute_dims', 'bitwise_invert', 'newaxis', 'conj', 'add',
            'atan2', 'bitwise_and', 'bitwise_left_shift', 'bitwise_or',
@@ -957,4 +977,5 @@ __all__ = ['asarray', 'result_type', 'can_cast',
            'UniqueAllResult', 'UniqueCountsResult', 'UniqueInverseResult',
            'unique_all', 'unique_counts', 'unique_inverse', 'unique_values',
            'matmul', 'matrix_transpose', 'vecdot', 'tensordot', 'isdtype',
-           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat', 'meshgrid']
+           'take', 'take_along_axis', 'sign', 'finfo', 'iinfo', 'repeat', 'meshgrid',
+           'top_k']
