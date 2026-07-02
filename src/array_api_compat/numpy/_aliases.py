@@ -110,8 +110,8 @@ def clip(
     /,
     min: float | Array | None = None,
     max: float | Array | None = None,
-    *,
     out: Array | None = None,
+    **kwargs,
 ) -> Array:
     """Array API compatible clip implementation for NumPy.
 
@@ -175,7 +175,7 @@ def clip(
     if out is None:
         out = np.empty(result_shape, dtype=dtype)
 
-    np.clip(x, a_min, a_max, out=out, casting="no")
+    np.clip(x, a_min, a_max, out=out, casting="no", **kwargs)
     return out[()]
 
 
