@@ -49,7 +49,6 @@ std = get_xp(np)(_aliases.std)
 var = get_xp(np)(_aliases.var)
 cumulative_sum = get_xp(np)(_aliases.cumulative_sum)
 cumulative_prod = get_xp(np)(_aliases.cumulative_prod)
-clip = get_xp(np)(_aliases.clip)
 permute_dims = get_xp(np)(_aliases.permute_dims)
 reshape = get_xp(np)(_aliases.reshape)
 argsort = get_xp(np)(_aliases.argsort)
@@ -106,6 +105,80 @@ def astype(
     return x.astype(dtype=dtype, copy=copy)
 
 
+def clip(
+    x: Array,
+    /,
+    min: float | Array | None = None,
+    max: float | Array | None = None,
+    *,
+    out: Array | None = None,
+) -> Array:
+    """Array API compatible clip implementation for NumPy.
+
+    NumPy's native ``clip`` is used directly after casting bounds to the
+    input dtype. This keeps the result dtype aligned with ``x.dtype`` and
+    avoids NumPy's default promotion behavior.
+
+    Args:
+        x: Input array.
+        min: Minimum bound. If None, no lower bound is applied.
+        max: Maximum bound. If None, no upper bound is applied.
+        out: Optional output array to store the result, has to have dtype of x
+    """
+
+    def _bound_shape(a: object) -> tuple[int, ...]:
+        if a is None or np.isscalar(a):
+            return ()
+        return np.asarray(a).shape
+
+    dtype = x.dtype
+    out_dtype = out.dtype if out is not None else dtype
+    if out_dtype != dtype:
+        raise ValueError(f"Output array has dtype {out_dtype}, but input array has dtype {dtype}")
+    min_shape = _bound_shape(min)
+    max_shape = _bound_shape(max)
+
+    # avoid shape broadcasting and copying when not necessary
+    if min_shape == () and max_shape == ():
+        result_shape = x.shape
+    else:
+        result_shape = np.broadcast_shapes(x.shape, min_shape, max_shape)
+
+    # At least handle the case of Python integers correctly.
+    if np.issubdtype(dtype, np.integer):
+        if type(min) is int and min <= np.iinfo(dtype).min:
+            min = None
+        if type(max) is int and max >= np.iinfo(dtype).max:
+            max = None
+
+    if min is None and max is None:
+        if out is None:
+            return x.copy()[()]
+        np.copyto(out, x)
+        return out[()]
+
+    # Cast clip parameters to the input dtype and broadcast them to the result shape.
+    a_min = None
+    if min is not None:
+        a_min = np.asarray(min, dtype=dtype)
+        if a_min.shape != result_shape:
+            # Casting first keeps NumPy from promoting the output dtype.
+            a_min = np.broadcast_to(a_min, result_shape)
+
+    a_max = None
+    if max is not None:
+        a_max = np.asarray(max, dtype=dtype)
+        if a_max.shape != result_shape:
+            # Casting first keeps NumPy from promoting the output dtype.
+            a_max = np.broadcast_to(a_max, result_shape)
+
+    if out is None:
+        out = np.empty(result_shape, dtype=dtype)
+
+    np.clip(x, a_min, a_max, out=out, casting="no")
+    return out[()]
+
+
 # count_nonzero returns a python int for axis=None and keepdims=False
 # https://github.com/numpy/numpy/issues/17562
 def count_nonzero(
@@ -115,7 +188,9 @@ def count_nonzero(
 ) -> Array:
     # NOTE: this is currently incorrectly typed in numpy, but will be fixed in
     # numpy 2.2.5 and 2.3.0: https://github.com/numpy/numpy/pull/28750
-    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore[reportArgumentType, reportCallIssue]
+    result = cast(
+        "Any", np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    )  # pyright: ignore[reportArgumentType, reportCallIssue]
     if axis is None and not keepdims:
         return np.asarray(result)
     return result
@@ -128,20 +203,21 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
 
 # ceil, floor, and trunc return integers for integer inputs in NumPy < 2
 
+
 def ceil(x: Array, /) -> Array:
-    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.ceil(x)
 
 
 def floor(x: Array, /) -> Array:
-    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.floor(x)
 
 
 def trunc(x: Array, /) -> Array:
-    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.trunc(x)
 
@@ -173,6 +249,7 @@ __all__ = _aliases.__all__ + [
     "atan",
     "atan2",
     "atanh",
+    "clip",
     "ceil",
     "floor",
     "trunc",
@@ -183,7 +260,7 @@ __all__ = _aliases.__all__ + [
     "concat",
     "count_nonzero",
     "pow",
-    "take_along_axis"
+    "take_along_axis",
 ]
 
 
