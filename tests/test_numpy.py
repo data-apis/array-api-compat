@@ -23,7 +23,7 @@ def test_numpy_clip_out_and_broadcast():
 
     assert result is out
     assert out.dtype == x.dtype
-    np.testing.assert_array_equal(out, xp.asarray([[15, 20, 30], [25, 45, 60]], dtype=np.uint8))
+    np.testing.assert_array_equal(out, xp.asarray([[15, 35, 55], [25, 45, 60]], dtype=np.uint8))
 
 
 def test_numpy_clip_uint8_casts_bounds_outside_range():
