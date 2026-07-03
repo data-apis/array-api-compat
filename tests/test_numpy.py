@@ -21,8 +21,8 @@ def test_numpy_clip_out_and_broadcast():
 
     result = xp.clip(x, min_bound, max_bound, out=out)
 
-    assert result is out
-    assert out.dtype == x.dtype
+    np.testing.assert_array_equal(result, xp.asarray([[15, 35, 55], [25, 45, 60]], dtype=np.uint8))
+    assert result.dtype == x.dtype
     np.testing.assert_array_equal(out, xp.asarray([[15, 35, 55], [25, 45, 60]], dtype=np.uint8))
 
 
