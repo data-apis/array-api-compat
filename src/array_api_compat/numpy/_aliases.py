@@ -110,7 +110,6 @@ def clip(
     /,
     min: float | Array | None = None,
     max: float | Array | None = None,
-    out: Array | None = None,
     **kwargs,
 ) -> Array:
     """Array API compatible clip implementation for NumPy.
@@ -125,6 +124,13 @@ def clip(
         max: Maximum bound. If None, no upper bound is applied.
         out: Optional output array to store the result, has to have dtype of x
     """
+    # out is a possible *kwarg for numpy.clip, but not in the array API spec. We handle it here to
+    # avoid having to add it to the array API spec, which would be a breaking change
+    # check if out in kwargs, if so pop it and use it as the out parameter
+    if "out" in kwargs:
+        out = kwargs.pop("out")
+    else:
+        out = None
 
     def _bound_shape(a: object) -> tuple[int, ...]:
         if a is None or np.isscalar(a):
@@ -134,7 +140,9 @@ def clip(
     dtype = x.dtype
     out_dtype = out.dtype if out is not None else dtype
     if out_dtype != dtype:
-        raise ValueError(f"Output array has dtype {out_dtype}, but input array has dtype {dtype}")
+        raise ValueError(
+            f"Output array has dtype {out_dtype}, but input array has dtype {dtype}"
+            )
     min_shape = _bound_shape(min)
     max_shape = _bound_shape(max)
 
