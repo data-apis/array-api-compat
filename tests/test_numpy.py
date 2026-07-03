@@ -26,6 +26,56 @@ def test_numpy_clip_out_and_broadcast():
     np.testing.assert_array_equal(out, xp.asarray([[15, 20, 30], [25, 45, 60]], dtype=np.uint8))
 
 
+def test_numpy_clip_uint8_casts_bounds_outside_range():
+    from array_api_compat import numpy as xp
+
+    x = xp.asarray([0, 10, 250], dtype=np.uint8)
+    min_bound = np.int16(-1)
+    max_bound = np.int16(200)
+
+    result = xp.clip(x, min_bound, max_bound)
+
+    assert result.dtype == x.dtype
+    np.testing.assert_array_equal(result, xp.asarray([200, 200, 200], dtype=np.uint8))
+
+
+def test_numpy_clip_int64_casts_bounds_outside_range():
+    from array_api_compat import numpy as xp
+
+    x = xp.asarray([-(2**63), -1, 0, 2**63 - 1], dtype=np.int64)
+    min_bound = np.float64(-1e20)
+    max_bound = np.float64(1e20)
+
+    result = xp.clip(x, min_bound, max_bound)
+
+    assert result.dtype == x.dtype
+    np.testing.assert_array_equal(
+        result,
+        xp.asarray(
+            [
+                np.iinfo(np.int64).min,
+                np.iinfo(np.int64).min,
+                np.iinfo(np.int64).min,
+                np.iinfo(np.int64).min,
+            ],
+            dtype=np.int64,
+        ),
+    )
+
+
+def test_numpy_clip_float16_casts_bounds_outside_range():
+    from array_api_compat import numpy as xp
+
+    x = xp.asarray([0.0, 1.5, 3.0], dtype=np.float16)
+    min_bound = np.float32(-1e10)
+    max_bound = np.float32(2.0)
+
+    result = xp.clip(x, min_bound, max_bound)
+
+    assert result.dtype == x.dtype
+    np.testing.assert_array_equal(result, xp.asarray([0.0, 1.5, 2.0], dtype=np.float16))
+
+
 def test_numpy_clip_returns_copy_when_unbounded():
     from array_api_compat import numpy as xp
 
