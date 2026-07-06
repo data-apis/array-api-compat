@@ -152,12 +152,27 @@ def clip(
     else:
         result_shape = np.broadcast_shapes(x.shape, min_shape, max_shape)
 
-    # At least handle the case of Python integers correctly.
+    # Handle cases where the bounds are outside the range of the integer input dtype
+    # this covers integer arrays for float and integer bounds
+    # Also handle cases where the min/max are arrays/lists (replace values below min with iinfo.min and above max with iinfo.max)
     if np.issubdtype(dtype, np.integer):
-        if type(min) is int and min <= np.iinfo(dtype).min:
+        if np.issubdtype(type(min), np.integer) and min <= np.iinfo(dtype).min:
             min = None
-        if type(max) is int and max >= np.iinfo(dtype).max:
+        elif np.issubdtype(type(min), np.floating) and min < np.iinfo(dtype).min:
+            min = np.iinfo(dtype).min
+        elif isinstance(min, (list, tuple, Array)):
+            min[min < np.iinfo(dtype).min] = np.iinfo(dtype).min
+        if np.issubdtype(type(max), np.integer) and max >= np.iinfo(dtype).max:
             max = None
+        
+        elif np.issubdtype(type(max), np.floating) and max > np.iinfo(dtype).max:
+            max = np.iinfo(dtype).max
+
+        elif isinstance(max, (list, tuple, Array)):
+            max[max > np.iinfo(dtype).max] = np.iinfo(dtype).max
+    
+    # In the case of downcasting floats numpy replaces out of bounds with inf 
+    # This automatically handles those cases
 
     if min is None and max is None:
         if out is None:
@@ -208,7 +223,6 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
 
 
 # ceil, floor, and trunc return integers for integer inputs in NumPy < 2
-
 
 def ceil(x: Array, /) -> Array:
     if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
