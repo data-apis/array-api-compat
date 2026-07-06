@@ -9,10 +9,10 @@ except ImportError:
     pytestmark = pytest.skip(allow_module_level=True, reason="numpy not found")
 
 from array_api_compat import is_array_api_obj
-
+from array_api_compat import numpy as xp
 
 def test_numpy_clip_out_and_broadcast():
-    from array_api_compat import numpy as xp
+    
 
     x = xp.asarray([[10, 20, 30], [40, 50, 60]], dtype=np.uint8)
     min_bound = xp.asarray([15, 35, 55], dtype=np.int16)
@@ -27,7 +27,6 @@ def test_numpy_clip_out_and_broadcast():
 
 
 def test_numpy_clip_uint8_casts_bounds_outside_range():
-    from array_api_compat import numpy as xp
 
     x = xp.asarray([0, 10, 250], dtype=np.uint8)
     min_bound = np.int16(-1)
@@ -40,7 +39,6 @@ def test_numpy_clip_uint8_casts_bounds_outside_range():
 
 
 def test_numpy_clip_int64_casts_bounds_outside_range():
-    from array_api_compat import numpy as xp
 
     x = xp.asarray([-(2**63), -1, 0, 2**63 - 1], dtype=np.int64)
     min_bound = np.float64(-1e20)

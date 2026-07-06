@@ -196,9 +196,7 @@ def count_nonzero(
 ) -> Array:
     # NOTE: this is currently incorrectly typed in numpy, but will be fixed in
     # numpy 2.2.5 and 2.3.0: https://github.com/numpy/numpy/pull/28750
-    result = cast(
-        "Any", np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    )  # pyright: ignore[reportArgumentType, reportCallIssue]
+    result = cast("Any", np.count_nonzero(x, axis=axis, keepdims=keepdims))  # pyright: ignore[reportArgumentType, reportCallIssue]
     if axis is None and not keepdims:
         return np.asarray(result)
     return result
@@ -213,19 +211,19 @@ def take_along_axis(x: Array, indices: Array, /, *, axis: int = -1) -> Array:
 
 
 def ceil(x: Array, /) -> Array:
-    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.ceil(x)
 
 
 def floor(x: Array, /) -> Array:
-    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.floor(x)
 
 
 def trunc(x: Array, /) -> Array:
-    if np.__version__ < "2" and np.issubdtype(x.dtype, np.integer):
+    if np.__version__ < '2' and np.issubdtype(x.dtype, np.integer):
         return x.copy()
     return np.trunc(x)
 
