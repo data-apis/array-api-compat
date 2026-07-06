@@ -36,10 +36,9 @@ def test_numpy_clip_all_bounds_work_with_int_arrays():
     assert result.dtype == x.dtype
     np.testing.assert_array_equal(result, xp.asarray([0, 10, 200], dtype=np.uint8))
 
-    """
-    min and max bounds are below what can be represented by int64, 
-    so they should be clipped to the min/max of int64
-    """
+
+    # min and max bounds are below what can be represented by int64, 
+    # so they should be clipped to the min/max of int64
     x = xp.asarray([-(2**63), -1, 0, 2**63 - 1], dtype=np.int64)
     min_bound = np.float64(-1e20)
     max_bound = np.float64(1e20)
@@ -81,7 +80,7 @@ def test_array_min_max_broadcasting_when_clipped():
     np.testing.assert_array_equal(result, xp.asarray([0, 10, 200], dtype=np.uint8))
 
 def test_numpy_type_promotion():
-    """ Added to adress comment from main alias file:
+    """ Added to address comment from main alias file:
     # np.clip does type promotion but the array API clip requires that the
     # output have the same dtype as x. We do this instead of just downcasting
     # the result of xp.clip() to handle some corner cases better (e.g.,
