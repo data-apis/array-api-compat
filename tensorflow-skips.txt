@@ -1,0 +1,127 @@
+# We do not wrap or patch the TensorFlow Tensor object. TensorFlow tensors are
+# immutable and do not implement the full Array API array object surface. Tests
+# below exercise tf.Tensor itself, or use tf.Tensor.shape/dunder operators while
+# constructing expected results.
+array_api_tests/test_creation_functions.py::test_asarray_arrays
+
+array_api_tests/test_array_object.py::test_setitem
+array_api_tests/test_array_object.py::test_setitem_masking
+array_api_tests/test_array_object.py::test_getitem_masking
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_1
+array_api_tests/test_array_object.py::test_getitem_arrays_and_ints_2
+
+# TensorFlow exposes shape as TensorShape, not tuple. These tests feed x.shape
+# back into Hypothesis strategies which require tuple shapes.
+array_api_tests/test_data_type_functions.py::test_broadcast_to
+array_api_tests/test_indexing_functions.py::test_take_along_axis
+array_api_tests/test_manipulation_functions.py::test_concat
+array_api_tests/test_manipulation_functions.py::test_reshape
+array_api_tests/test_manipulation_functions.py::test_stack
+
+# These tests validate results using tf.Tensor indexing/dunders directly.
+array_api_tests/test_dlpack.py::test_dunder_dlpack
+array_api_tests/test_linalg.py::test_cross
+array_api_tests/test_linalg.py::test_outer
+array_api_tests/test_linalg.py::test_solve
+array_api_tests/test_linalg.py::test_linalg_tensordot
+array_api_tests/test_linalg.py::test_tensordot
+array_api_tests/test_manipulation_functions.py::test_repeat
+array_api_tests/test_operators_and_elementwise_functions.py::test_clip
+array_api_tests/test_operators_and_elementwise_functions.py::test_where_with_scalars
+array_api_tests/test_searching_functions.py::test_where
+
+# TensorFlow's native dunder operators handle operands before our
+# namespace-level dtype promotion can run.
+array_api_tests/test_operators_and_elementwise_functions.py::test_abs[__abs__]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__add__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__iadd__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_add[__iadd__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__and__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__iand__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_and[__iand__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__lshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__lshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__ilshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_left_shift[__ilshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_invert[__invert__]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__or__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__or__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__ior__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_or[__ior__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__rshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__rshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__irshift__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_right_shift[__irshift__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__xor__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__ixor__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_bitwise_xor[__ixor__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__truediv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__itruediv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_divide[__itruediv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[__eq__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_equal[__eq__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__floordiv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__ifloordiv__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide[__ifloordiv__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater[__gt__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_greater_equal[__ge__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less[__lt__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_less_equal[__le__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__mul__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_multiply[__imul__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_negative[__neg__]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_not_equal[__ne__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_positive[__pos__]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__pow__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_pow[__ipow__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__mod__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_remainder[__imod__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__sub__(x, s)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isub__(x1, x2)]
+array_api_tests/test_operators_and_elementwise_functions.py::test_subtract[__isub__(x, s)]
+
+array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is -0 and x2_i > 0) -> +0]
+array_api_tests/test_special_cases.py::test_binary[__mod__(x1_i is +0 and x2_i < 0) -> -0]
+array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is -0 and x2_i > 0) -> +0]
+array_api_tests/test_special_cases.py::test_iop[__imod__(x1_i is +0 and x2_i < 0) -> -0]
+array_api_tests/test_special_cases.py::test_nan_propagation[max]
+array_api_tests/test_special_cases.py::test_nan_propagation[mean]
+array_api_tests/test_special_cases.py::test_nan_propagation[min]
+array_api_tests/test_special_cases.py::test_nan_propagation[prod]
+array_api_tests/test_special_cases.py::test_nan_propagation[std]
+array_api_tests/test_special_cases.py::test_nan_propagation[sum]
+array_api_tests/test_special_cases.py::test_nan_propagation[var]
+
+array_api_tests/test_has_names.py::test_has_names[array_method-__array_namespace__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__lshift__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__pos__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__rshift__]
+array_api_tests/test_has_names.py::test_has_names[array_method-__setitem__]
+array_api_tests/test_has_names.py::test_has_names[array_method-to_device]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-T]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-mT]
+array_api_tests/test_has_names.py::test_has_names[array_attribute-size]
+
+array_api_tests/test_signatures.py::test_array_method_signature[__array_namespace__]
+array_api_tests/test_signatures.py::test_array_method_signature[__lshift__]
+array_api_tests/test_signatures.py::test_array_method_signature[__pos__]
+array_api_tests/test_signatures.py::test_array_method_signature[__rshift__]
+array_api_tests/test_signatures.py::test_array_method_signature[__setitem__]
+array_api_tests/test_signatures.py::test_array_method_signature[to_device]

@@ -245,6 +245,12 @@ XFAILS = {
     ],
 }
 
+DYNAMIC_NUMPY_NAMES = {
+    # TensorFlow imports can add this alias to the already-imported bare NumPy
+    # module after array_api_compat.numpy has cloned NumPy's namespace.
+    "expm1x",
+}
+
 
 def all_names(mod):
     """Return all names available in a module."""
@@ -257,6 +263,8 @@ def get_mod(library, module, *, compat):
     if compat:
         library = f"array_api_compat.{library}"
     xp = pytest.importorskip(library)
+    if library == "tensorflow" and module == "fft":
+        return xp.signal
     return getattr(xp, module) if module else xp
 
 
@@ -286,6 +294,8 @@ def test_compat_doesnt_hide_names(library, module):
 
     missing = all_names(bare_mod) - all_names(compat_mod)
     missing = {name for name in missing if not name.startswith("_")}
+    if library == "numpy" and module == "":
+        missing -= DYNAMIC_NUMPY_NAMES
     assert not missing, f"Non-Array API names have been hidden: {missing}"
 
 
