@@ -162,14 +162,21 @@ def clip(
             min = None
         elif np.issubdtype(type(min), np.floating) and min < np.iinfo(dtype).min:
             min = np.iinfo(dtype).min
-        elif isinstance(min, (list, tuple, Array)):
+        elif isinstance(min, (list, Array)):
             min[min < np.iinfo(dtype).min] = np.iinfo(dtype).min
+        elif isinstance(min, tuple):
+            min = np.asarray(min)
+            min[min < np.iinfo(dtype).min] = np.iinfo(dtype).min
+            
         
         if np.issubdtype(type(max), np.integer) and max >= np.iinfo(dtype).max:
             max = None
         elif np.issubdtype(type(max), np.floating) and max > np.iinfo(dtype).max:
             max = np.iinfo(dtype).max
-        elif isinstance(max, (list, tuple, Array)):
+        elif isinstance(max, (list, Array)):
+            max[max > np.iinfo(dtype).max] = np.iinfo(dtype).max
+        elif isinstance(max, tuple):
+            max = np.asarray(max)
             max[max > np.iinfo(dtype).max] = np.iinfo(dtype).max
     
     # In the case of downcasting floats numpy replaces out of bounds with inf 

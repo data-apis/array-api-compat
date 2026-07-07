@@ -92,14 +92,14 @@ def test_numpy_type_promotion():
     max_bound = np.float64(1.0001)
     result = xp.clip(x, min_bound, max_bound)
     assert result.dtype == x.dtype
-    assert result == xp.asarray([-1, -1, 0, 1], dtype=np.int64)
+    np.testing.assert_array_equal(result, xp.asarray([-1, -1, 0, 1], dtype=np.int64))
     
     # ensure clipping with int16 bounds
     min_bound = np.int16(-1)
     max_bound = np.int16(1)
     result = xp.clip(x, min_bound, max_bound)
     assert result.dtype == x.dtype
-    assert result == xp.asarray([-1, -1, 0, 1], dtype=np.int64)
+    np.testing.assert_array_equal(result, xp.asarray([-1, -1, 0, 1], dtype=np.int64))
     
     # final test with uint8 image and int64 bounds
     x = xp.asarray([0, 10, 250], dtype=np.uint8)
@@ -107,8 +107,8 @@ def test_numpy_type_promotion():
     max_bound = np.int64(32)
     result = xp.clip(x, min_bound, max_bound)
     assert result.dtype == x.dtype
-    assert result == xp.asarray([0, 10, 32], dtype=np.uint8)
-
+    np.testing.assert_array_equal(result, xp.asarray([0, 10, 32], dtype=np.uint8))
+    
 def test_numpy_clip_float16_casts_bounds_outside_range():
     """Test that float16 bounds outside the range of input dtype still work for float16 arrays"""
     x = xp.asarray([0.0, 1.5, 3.0], dtype=np.float16)
