@@ -273,6 +273,29 @@ def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     return _issubclass_fast(cls, "sparse", "SparseArray")
 
 
+def is_mlx_array(x: object) -> bool:
+    """
+    Return True if `x` is an MLX array.
+
+    This function does not import MLX if it has not already been imported
+    and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "mlx.core", "array")
+
+
 def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     """
     Return True if `x` is an array API compatible array object.
@@ -313,6 +336,7 @@ def _is_array_api_cls(cls: type) -> bool:
         # TODO: drop support for jax<0.4.32 which didn't have __array_namespace__
         or _issubclass_fast(cls, "jax", "Array")
         or _issubclass_fast(cls, "jax.core", "Tracer")  # see is_jax_array for limitations
+        or _issubclass_fast(cls, "mlx.core", "array")
     )
 
 
@@ -488,6 +512,27 @@ def is_array_api_strict_namespace(xp: Namespace) -> bool:
     return xp.__name__ == "array_api_strict"
 
 
+@lru_cache(100)
+def is_mlx_namespace(xp: Namespace) -> bool:
+    """
+    Returns True if `xp` is an MLX namespace.
+
+    This includes both ``mlx.core`` itself and the version wrapped by array-api-compat.
+
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_namespace
+    is_cupy_namespace
+    is_torch_namespace
+    is_dask_namespace
+    is_jax_namespace
+    is_pydata_sparse_namespace
+    """
+    return xp.__name__ in {"mlx.core", _compat_module_name() + ".mlx"}
+
+
 def _check_api_version(api_version: str | None) -> None:
     if api_version in _API_VERSIONS_OLD:
         warnings.warn(
@@ -557,6 +602,14 @@ def _cls_to_namespace(
             from ..dask import array as xp  # type: ignore[no-redef]
         else:
             import dask.array as xp  # type: ignore[no-redef]
+        return xp, None
+
+    if _issubclass_fast(cls_, "mlx.core", "array"):
+        if _use_compat:
+            _check_api_version(api_version)
+            from .. import mlx as xp  # type: ignore[no-redef]
+        else:
+            import mlx.core as xp  # type: ignore[no-redef]
         return xp, None
 
     # Backwards compatibility for jax<0.4.32
@@ -1079,6 +1132,8 @@ __all__ = [
     "is_dask_namespace",
     "is_jax_array",
     "is_jax_namespace",
+    "is_mlx_array",
+    "is_mlx_namespace",
     "is_numpy_array",
     "is_numpy_namespace",
     "is_torch_array",

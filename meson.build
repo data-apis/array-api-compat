@@ -61,6 +61,15 @@ sources_raw = {
     'src/array_api_compat/torch/fft.py',
     'src/array_api_compat/torch/linalg.py',
   ],
+
+  'array_api_compat/mlx': [
+    'src/array_api_compat/mlx/__init__.py',
+    'src/array_api_compat/mlx/_aliases.py',
+    'src/array_api_compat/mlx/_info.py',
+    'src/array_api_compat/mlx/_typing.py',
+    'src/array_api_compat/mlx/fft.py',
+    'src/array_api_compat/mlx/linalg.py',
+  ],
 }
 
 sources = {}

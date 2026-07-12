@@ -2,13 +2,13 @@ from importlib import import_module
 
 import pytest
 
-wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
+wrapped_libraries = ["numpy", "cupy", "torch", "dask.array", "mlx.core"]
 all_libraries = wrapped_libraries + [
     "array_api_strict", "jax.numpy", "ndonnx", "sparse"
 ]
 
 def import_(library, wrapper=False):
-    pytest.importorskip(library)
+    pytest.importorskip(library.split(".")[0])
     if wrapper:
         if 'jax' in library:
             # JAX v0.4.32 implements the array API directly in jax.numpy
@@ -17,7 +17,10 @@ def import_(library, wrapper=False):
             if not hasattr(jax_numpy, "__array_api_version__"):
                 library = 'jax.experimental.array_api'
         elif library in wrapped_libraries:
-            library = 'array_api_compat.' + library
+            if library == 'mlx.core':
+                library = 'array_api_compat.mlx'
+            else:
+                library = 'array_api_compat.' + library
 
     return import_module(library)
 
