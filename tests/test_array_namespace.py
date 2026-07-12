@@ -42,7 +42,8 @@ def test_array_namespace(request, library, api_version, use_compat):
     elif library == "dask.array":
         assert namespace == array_api_compat.dask.array
     else:
-        assert namespace == getattr(array_api_compat, library)
+        compat_attr = "mlx" if library == "mlx.core" else library
+        assert namespace == getattr(array_api_compat, compat_attr)
 
     if library == "numpy":
         # check that the same namespace is returned for NumPy scalars

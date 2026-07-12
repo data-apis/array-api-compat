@@ -24,6 +24,21 @@ def _spec_dtypes(library):
             'float32',
             'float64',
         }
+    elif library == 'mlx.core':
+        # mlx does not support float64 or complex128
+        return {
+            'bool',
+            'complex64',
+            'float32',
+            'int16',
+            'int32',
+            'int64',
+            'int8',
+            'uint16',
+            'uint32',
+            'uint64',
+            'uint8',
+        }
     else:
         return {
             'bool',

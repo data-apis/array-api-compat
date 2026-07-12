@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 from builtins import bool as py_bool
+from types import SimpleNamespace
 from typing import Any
 
 import mlx.core as mx
 
 from .._internal import get_xp
 from ..common import _aliases
+from ..common._helpers import _check_device
 from ..common._typing import NestedSequence, SupportsBufferProtocol
 from ._typing import Array, Device, DType
 
@@ -34,17 +36,67 @@ concat = mx.concatenate
 pow = mx.power
 
 # --- Creation functions: delegate to common (adds device kwarg handling) ---
-arange = get_xp(mx)(_aliases.arange)
+# arange/eye/linspace need MLX-specific overrides due to kwarg name differences.
 empty = get_xp(mx)(_aliases.empty)
 empty_like = get_xp(mx)(_aliases.empty_like)
-eye = get_xp(mx)(_aliases.eye)
 full = get_xp(mx)(_aliases.full)
 full_like = get_xp(mx)(_aliases.full_like)
-linspace = get_xp(mx)(_aliases.linspace)
 ones = get_xp(mx)(_aliases.ones)
 ones_like = get_xp(mx)(_aliases.ones_like)
 zeros = get_xp(mx)(_aliases.zeros)
 zeros_like = get_xp(mx)(_aliases.zeros_like)
+
+
+def arange(
+    start: float,
+    /,
+    stop: float | None = None,
+    step: float = 1,
+    *,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    **kwargs: Any,
+) -> Array:
+    """Array API wrapper: MLX arange doesn't accept stop=None as keyword."""
+    _check_device(mx, device)
+    if stop is None:
+        # MLX arange(stop) form, step ignored when only stop given
+        return mx.arange(start, dtype=dtype)
+    return mx.arange(start, stop, step, dtype=dtype)
+
+
+def eye(
+    n_rows: int,
+    n_cols: int | None = None,
+    /,
+    *,
+    k: int = 0,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    **kwargs: Any,
+) -> Array:
+    """Array API wrapper: MLX eye uses 'm' not 'M'."""
+    _check_device(mx, device)
+    return mx.eye(n_rows, m=n_cols, k=k, dtype=dtype)
+
+
+def linspace(
+    start: float,
+    stop: float,
+    /,
+    num: int = 50,
+    *,
+    dtype: DType | None = None,
+    device: Device | None = None,
+    endpoint: py_bool = True,
+    **kwargs: Any,
+) -> Array:
+    """Array API wrapper: MLX linspace has no endpoint kwarg."""
+    _check_device(mx, device)
+    if not endpoint:
+        # Emulate endpoint=False: generate num+1 points, drop the last
+        return mx.linspace(start, stop, num + 1, dtype=dtype)[:-1]
+    return mx.linspace(start, stop, num, dtype=dtype)
 
 # --- Unique (split from mx.unique like NumPy) ---
 UniqueAllResult = get_xp(mx)(_aliases.UniqueAllResult)
@@ -55,16 +107,54 @@ unique_counts = get_xp(mx)(_aliases.unique_counts)
 unique_inverse = get_xp(mx)(_aliases.unique_inverse)
 unique_values = get_xp(mx)(_aliases.unique_values)
 
-# --- std/var use ddof instead of correction ---
-std = get_xp(mx)(_aliases.std)
-var = get_xp(mx)(_aliases.var)
+# --- std/var: MLX requires ddof as int, not float ---
+def std(
+    x: Array,
+    /,
+    *,
+    axis: int | tuple[int, ...] | None = None,
+    correction: float = 0.0,
+    keepdims: py_bool = False,
+    **kwargs: Any,
+) -> Array:
+    """Array API wrapper: MLX std requires ddof as int."""
+    return mx.std(x, axis=axis, ddof=int(correction), keepdims=keepdims)
+
+
+def var(
+    x: Array,
+    /,
+    *,
+    axis: int | tuple[int, ...] | None = None,
+    correction: float = 0.0,
+    keepdims: py_bool = False,
+    **kwargs: Any,
+) -> Array:
+    """Array API wrapper: MLX var requires ddof as int."""
+    return mx.var(x, axis=axis, ddof=int(correction), keepdims=keepdims)
 
 # --- cumulative_sum/prod: rename from cumsum/cumprod + include_initial ---
 cumulative_sum = get_xp(mx)(_aliases.cumulative_sum)
 cumulative_prod = get_xp(mx)(_aliases.cumulative_prod)
 
-# --- clip: common wrapper handles type-promotion quirks ---
-clip = get_xp(mx)(_aliases.clip)
+def clip(
+    x: Array,
+    /,
+    min: float | Array | None = None,
+    max: float | Array | None = None,
+    **kwargs: Any,
+) -> Array:
+    """
+    Array API compatibility wrapper for clip().
+    """
+    if min is None and max is None:
+        return mx.array(x)
+    if min is None:
+        return mx.minimum(x, mx.array(max, dtype=x.dtype))
+    if max is None:
+        return mx.maximum(x, mx.array(min, dtype=x.dtype))
+    return mx.clip(x, mx.array(min, dtype=x.dtype), mx.array(max, dtype=x.dtype))
+
 
 # --- permute_dims: MLX has this natively (unlike NumPy which has transpose) ---
 permute_dims = mx.permute_dims
@@ -191,17 +281,11 @@ def iinfo(type_: DType | Array, /) -> Any:
         raise TypeError(f"iinfo is not supported for dtype {dtype}")
 
     mn, mx_, bits, dt = _info[dtype]
-
-    class _IInfo:
-        min = mn
-        max = mx_
-        bits = bits
-        dtype = dt
-
-        def __repr__(self) -> str:
-            return f"iinfo(min={self.min}, max={self.max}, dtype={self.dtype})"
-
-    return _IInfo()
+    # Class bodies can't close over enclosing function locals in Python;
+    # use SimpleNamespace to avoid the `bits = bits` NameError scoping trap.
+    result = SimpleNamespace(min=mn, max=mx_, bits=bits, dtype=dt)
+    result.__repr__ = lambda: f"iinfo(min={mn}, max={mx_}, dtype={dt})"
+    return result
 
 
 # --- asarray: MLX has no asarray; wrap mx.array with spec-compatible signature ---
@@ -216,13 +300,23 @@ def asarray(
 ) -> Array:
     """
     Array API compatibility wrapper for asarray().
-
-    See the corresponding documentation in MLX and/or the array API
-    specification for more details.
     """
-    # MLX uses unified memory (no device routing needed), ignore device.
-    # copy semantics: mx.array always allocates; copy=False is best-effort.
-    return mx.array(obj, dtype=dtype, **kwargs)
+    _check_device(mx, device)
+    if isinstance(obj, mx.array):
+        if dtype is None:
+            dtype = obj.dtype
+        if copy is False:
+            if dtype != obj.dtype:
+                raise ValueError("Cannot perform copy=False with a different dtype")
+            return obj
+        elif copy is None or copy is True:
+            if copy is True:
+                return mx.array(obj, dtype=dtype)
+            else:
+                if dtype == obj.dtype:
+                    return obj
+                return mx.array(obj, dtype=dtype)
+    return mx.array(obj, dtype=dtype)
 
 
 # --- astype: MLX astype has no copy kwarg ---

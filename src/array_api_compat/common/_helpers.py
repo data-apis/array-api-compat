@@ -116,7 +116,7 @@ def is_numpy_array(x: object) -> TypeIs[npt.NDArray[Any]]:
     # TODO: Should we reject ndarray subclasses?
     cls = cast(Hashable, type(x))
     return (
-        _issubclass_fast(cls, "numpy", "ndarray") 
+        _issubclass_fast(cls, "numpy", "ndarray")
         or _issubclass_fast(cls, "numpy", "generic")
     ) and not _is_jax_zero_gradient_array(x)
 
@@ -561,7 +561,7 @@ def _cls_to_namespace(
     cls_ = cast(Hashable, cls)  # Make mypy happy
 
     if (
-        _issubclass_fast(cls_, "numpy", "ndarray") 
+        _issubclass_fast(cls_, "numpy", "ndarray")
         or _issubclass_fast(cls_, "numpy", "generic")
     ):
         if use_compat is True:
@@ -784,12 +784,45 @@ class _dask_device:
 _DASK_DEVICE = _dask_device()
 
 
-# device() is not on numpy.ndarray or dask.array and to_device() is not on numpy.ndarray
-# or cupy.ndarray. They are not included in array objects of this library
-# because this library just reuses the respective ndarray classes without
-# wrapping or subclassing them. These helper functions can be used instead of
-# the wrapper functions for libraries that need to support both NumPy/CuPy and
-# other libraries that use devices.
+_mlx_device_map = {}
+
+
+def _mlx_cleanup(ref_id):
+    _mlx_device_map.pop(ref_id, None)
+
+
+def _get_mlx_device(x):
+    import mlx.core as mx
+    return _mlx_device_map.get(id(x), mx.default_device())
+
+
+def _set_mlx_device(x, device):
+    import weakref
+    ref_id = id(x)
+    _mlx_device_map[ref_id] = device
+    try:
+        # Register callback to pop ref_id when x is garbage collected.
+        # This prevents memory leaks without keeping a strong reference to x.
+        weakref.finalize(x, _mlx_cleanup, ref_id)
+    except TypeError:
+        # If x doesn't support weak references (though mlx arrays do)
+        pass
+
+
+def _normalize_mlx_device(device):
+    import mlx.core as mx
+    if isinstance(device, str):
+        if device == "cpu":
+            return mx.Device(mx.DeviceType.cpu)
+        elif device == "gpu":
+            return mx.Device(mx.DeviceType.gpu)
+        else:
+            raise ValueError(f"Unsupported device: {device!r}")
+    if not isinstance(device, mx.Device):
+        raise TypeError(f"Unsupported device type: {type(device)}")
+    return device
+
+
 def device(x: _ArrayApiObj, /) -> Device:
     """
     Hardware device the array data resides on.
@@ -855,6 +888,8 @@ def device(x: _ArrayApiObj, /) -> Device:
             return "cpu"
         # Return the device of the constituent array
         return device(inner)  # pyright: ignore
+    elif is_mlx_array(x):
+        return _get_mlx_device(x)
     return x.device  # type: ignore  # pyright: ignore
 
 
@@ -980,6 +1015,16 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
             if not hasattr(x, "to_device"):
                 return x
         return x.to_device(device, stream=stream)
+    elif is_mlx_array(x):
+        if stream is not None:
+            raise ValueError("The stream argument to to_device() is not supported for MLX")
+        dev = _normalize_mlx_device(device)
+        import mlx.core as mx
+        # MLX unified memory, so we just construct a new array reference
+        # and store its mapped device in WeakKeyDictionary.
+        y = mx.array(x)
+        _set_mlx_device(y, dev)
+        return y
     elif is_pydata_sparse_array(x) and device == _device(x):
         # Perform trivial check to return the same array if
         # device is same instead of err-ing.

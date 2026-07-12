@@ -16,7 +16,9 @@ SlogdetResult = _linalg.SlogdetResult
 SVDResult = _linalg.SVDResult
 
 # Wrap spec-compliant versions of linalg functions via common helpers
-eigh = get_xp(mx)(_linalg.eigh)
+# eigh only works on CPU in MLX; pass stream=mx.cpu explicitly
+def eigh(x: mx.array, /) -> _linalg.EighResult:
+    return EighResult(*mx_linalg.eigh(x, stream=mx.cpu))
 qr = get_xp(mx)(_linalg.qr)
 slogdet = get_xp(mx)(_linalg.slogdet)
 svd = get_xp(mx)(_linalg.svd)

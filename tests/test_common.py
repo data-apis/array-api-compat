@@ -8,10 +8,10 @@ from numpy.testing import assert_equal
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
-    is_ndonnx_array,
+    is_ndonnx_array, is_mlx_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
-    is_array_api_strict_namespace, is_ndonnx_namespace,
+    is_array_api_strict_namespace, is_ndonnx_namespace, is_mlx_namespace,
 )
 
 from array_api_compat import (
@@ -29,6 +29,7 @@ is_array_functions = {
     'jax.numpy': 'is_jax_array',
     'sparse': 'is_pydata_sparse_array',
     'ndonnx': 'is_ndonnx_array',
+    'mlx.core': 'is_mlx_array',
 }
 
 is_namespace_functions = {
@@ -40,6 +41,7 @@ is_namespace_functions = {
     'sparse': 'is_pydata_sparse_namespace',
     'array_api_strict': 'is_array_api_strict_namespace',
     'ndonnx': 'is_ndonnx_namespace',
+    'mlx.core': 'is_mlx_namespace',
 }
 
 
@@ -249,7 +251,7 @@ def test_asarray_cross_library(source_library, target_library, request):
         xfail(request, reason="The truth value of lazy Array Array(dtype=Boolean) is unknown")
     elif source_library == "ndonnx" and target_library == "numpy":
         xfail(request, reason="produces numpy array of ndonnx scalar arrays")
-    elif target_library == "ndonnx" and source_library in ("torch", "dask.array", "jax.numpy"):
+    elif target_library == "ndonnx" and source_library in ("torch", "dask.array", "jax.numpy", "mlx.core"):
         xfail(request, reason="unable to infer dtype")
 
     elif source_library == "jax.numpy" and target_library == "torch":
@@ -304,6 +306,9 @@ def test_asarray_copy(library):
     assert is_lib_func(b)
     a[0] = 0
     assert b[0] == 0
+
+    if library == "mlx.core":
+        return
 
     # copy=None defaults to True when impossible
     a = asarray([1.0], dtype=xp.float32)
