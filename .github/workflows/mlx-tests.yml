@@ -1,0 +1,24 @@
+name: MLX Tests
+
+on: [push, pull_request]
+
+jobs:
+  mlx-tests:
+    runs-on: macos-14 # Apple Silicon runner
+    steps:
+      - uses: actions/checkout@v7.0.0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest mlx numpy array-api-strict ndonnx
+
+      - name: Run MLX Compat Tests
+        run: |
+          export PYTHONPATH="${GITHUB_WORKSPACE}/src"
+          pytest tests/test_mlx.py tests/test_common.py tests/test_isdtype.py tests/test_copies_or_views.py -k mlx -v
