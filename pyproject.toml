@@ -55,7 +55,7 @@ dev = [
     "pytest",
     "torch",
     "sparse>=0.15.1",
-    "mlx"
+     "mlx; platform_system == 'Darwin' and platform_machine == 'arm64'"
 ]
 
 

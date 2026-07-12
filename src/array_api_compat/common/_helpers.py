@@ -1021,7 +1021,7 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
         dev = _normalize_mlx_device(device)
         import mlx.core as mx
         # MLX unified memory, so we just construct a new array reference
-        # and store its mapped device in WeakKeyDictionary.
+        # and store its mapped device in the id->device registry (_mlx_device_map).
         y = mx.array(x)
         _set_mlx_device(y, dev)
         return y

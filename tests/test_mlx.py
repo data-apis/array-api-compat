@@ -201,6 +201,12 @@ def test_namespace_info_capabilities():
     assert "data-dependent shapes" in caps
 
 
+def test_boolean_indexing_getitem():
+    x = mx.array([1, 2, 3])
+    mask = x < 3
+    y = x[mask]
+    assert list(y.tolist()) == [1, 2]
+
 def test_namespace_info_dtypes():
     info = mlx_compat.__array_namespace_info__()
     dtypes = info.dtypes()
@@ -236,6 +242,7 @@ def test_to_device():
     d = device(x)
     y = to_device(x, d)
     assert is_mlx_array(y)
+    assert device(y) == d
 
 
 # --- linalg submodule ---

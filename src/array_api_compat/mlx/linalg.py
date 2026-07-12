@@ -5,6 +5,7 @@ import mlx.core.linalg as mx_linalg
 
 from .._internal import clone_module, get_xp
 from ..common import _linalg
+from ._aliases import matmul, matrix_transpose, tensordot, vecdot  # noqa: F401
 
 __all__ = clone_module("mlx.core.linalg", globals())
 

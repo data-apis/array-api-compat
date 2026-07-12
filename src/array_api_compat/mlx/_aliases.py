@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from builtins import bool as py_bool
-from types import SimpleNamespace
 from typing import Any
 
 import mlx.core as mx
@@ -250,6 +249,17 @@ unstack = get_xp(mx)(_aliases.unstack)
 finfo = get_xp(mx)(_aliases.finfo)
 
 
+class iinfo_result:
+    def __init__(self, min: int, max: int, bits: int, dtype: DType):
+        self.min = min
+        self.max = max
+        self.bits = bits
+        self.dtype = dtype
+
+    def __repr__(self) -> str:
+        return f"iinfo(min={self.min}, max={self.max}, dtype={self.dtype})"
+
+
 def iinfo(type_: DType | Array, /) -> Any:
     """
     Array API compatibility wrapper for iinfo().
@@ -281,11 +291,7 @@ def iinfo(type_: DType | Array, /) -> Any:
         raise TypeError(f"iinfo is not supported for dtype {dtype}")
 
     mn, mx_, bits, dt = _info[dtype]
-    # Class bodies can't close over enclosing function locals in Python;
-    # use SimpleNamespace to avoid the `bits = bits` NameError scoping trap.
-    result = SimpleNamespace(min=mn, max=mx_, bits=bits, dtype=dt)
-    result.__repr__ = lambda: f"iinfo(min={mn}, max={mx_}, dtype={dt})"
-    return result
+    return iinfo_result(mn, mx_, bits, dt)
 
 
 # --- asarray: MLX has no asarray; wrap mx.array with spec-compatible signature ---
