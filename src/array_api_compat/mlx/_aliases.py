@@ -41,16 +41,18 @@ def arange(
 ):
     """
     Note on MLX Compatibility:
-        Native `mx.arange` fails with Python `int` arguments exceeding 2**31 - 1
-        due to underlying C++ type binding limits. Large bounds must be cast or
-        handled directly by this wrapper.
+        Native `mx.arange` rejects some Python `int` arguments above 2**31 - 1.
+        This wrapper handles empty and single-element ranges directly; larger
+        int64 and uint64 ranges remain unsupported by MLX.
     """
     if stop is None:
         stop = start
         start = 0 if isinstance(stop, int) else 0.0
     # MLX defaults to float32 even when all arguments are integers,
     # so we must explicitly set the dtype to int32 in that case.
-    is_float = isinstance(start, float) or isinstance(stop, float) or isinstance(step, float)
+    is_float = (
+        isinstance(start, float) or isinstance(stop, float) or isinstance(step, float)
+    )
     dtype = dtype if dtype is not None else (mx.float32 if is_float else mx.int32)
     # MLX may overflow while converting a large step before determining that the
     # result has at most one element (for example, arange(0, 1, 2**31) is [0]),
@@ -84,11 +86,14 @@ def eye(
     n_cols = n_rows if n_cols is None else n_cols
     if n_rows == 0 or n_cols == 0 or k >= n_cols or k <= -n_rows:
         return mx.zeros((n_rows, n_cols), dtype=dtype, stream=device)
-    # MLX does not support int64 or uint64 dtypes, so we must create the eye matrix in int32 and cast it to the desired dtype if necessary.
+    # mx.eye uses GPU scatter, which does not support int64 or uint64.
+    # Build from exact 0/1 values in int32, then cast to the requested dtype.
     is_int64 = False
     if dtype is not None:
         is_int64 = dtype in (mx.int64, mx.uint64)
-    result = mx.eye(n_rows, n_cols, k, dtype=mx.int32 if is_int64 else dtype , stream=device)
+    result = mx.eye(
+        n_rows, n_cols, k, dtype=mx.int32 if is_int64 else dtype, stream=device
+    )
     return result.astype(dtype=dtype) if is_int64 else result
 
 
@@ -114,6 +119,7 @@ def zeros_like(
     device: None | Device = None,
 ):
     return mx.zeros(x.shape, dtype=x.dtype if dtype is None else dtype, stream=device)
+
 
 __all__ = [
     "arange",
