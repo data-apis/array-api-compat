@@ -50,7 +50,10 @@ var = get_xp(np)(_aliases.var)
 cumulative_sum = get_xp(np)(_aliases.cumulative_sum)
 cumulative_prod = get_xp(np)(_aliases.cumulative_prod)
 permute_dims = get_xp(np)(_aliases.permute_dims)
-reshape = get_xp(np)(_aliases.reshape)
+if np.__version__ < '2.1':
+    reshape = get_xp(np)(_aliases.reshape)
+else:
+    reshape = np.reshape
 argsort = get_xp(np)(_aliases.argsort)
 sort = get_xp(np)(_aliases.sort)
 nonzero = get_xp(np)(_aliases.nonzero)

@@ -1,5 +1,6 @@
 import pytest
 from array_api_compat import device, to_device
+import warnings
 
 xp = pytest.importorskip("array_api_compat.cupy")
 from cupy.cuda import Stream
@@ -43,3 +44,13 @@ def test_to_device_with_dlpack_stream():
         # device context.
         b = to_device(a, dev, stream=s1.ptr)
         assert device(b) == dev
+
+
+def test_reshape_copy_false_returns_a_view_without_deprecation():
+    x = xp.arange(12)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        y = xp.reshape(x, (3, 4), copy=False)
+
+    assert y.shape == (3, 4)
+    assert xp.shares_memory(x, y)

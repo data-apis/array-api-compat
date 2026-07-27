@@ -139,3 +139,18 @@ def test_matrix_is_not_array_api_obj():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", PendingDeprecationWarning)
         assert not is_array_api_obj(np.matrix(3))
+
+
+def test_reshape_copy_false_returns_a_view_without_deprecation():
+    x = np.arange(12)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        y = xp.reshape(x, (3, 4), copy=False)
+
+    assert y.shape == (3, 4)
+    assert np.shares_memory(x, y)
+
+
+def test_reshape_copy_false_rejects_an_input_that_needs_a_copy():
+    with pytest.raises((ValueError, AttributeError)):
+        xp.reshape(np.arange(12).reshape(3, 4).T, (2, 6), copy=False)
