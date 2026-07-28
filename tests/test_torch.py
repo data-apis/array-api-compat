@@ -12,6 +12,21 @@ except ImportError:
 from array_api_compat import torch as xp
 
 
+def test_reshape_copy():
+    array = xp.arange(12).reshape((3, 4))
+
+    view = xp.reshape(array, (4, 3), copy=False)
+    view[0, 0] = -1
+    assert array[0, 0] == -1
+
+    with pytest.raises(ValueError):
+        xp.reshape(array.T, (12,), copy=False)
+
+    copied = xp.reshape(array, (4, 3), copy=True)
+    copied[0, 0] = -2
+    assert array[0, 0] == -1
+
+
 class TestResultType:
     def test_empty(self):
         with pytest.raises(ValueError):

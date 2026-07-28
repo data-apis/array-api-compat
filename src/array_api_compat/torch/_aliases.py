@@ -585,15 +585,19 @@ def where(condition: Array, x1: Array | complex, x2: Array | complex, /) -> Arra
     return torch.where(condition, x1, x2)
 
 
-# torch.reshape doesn't have the copy keyword
 def reshape(x: Array,
             /,
             shape: tuple[int, ...],
             *,
             copy: bool | None = None,
             **kwargs: object) -> Array:
-    if copy is not None:
-        raise NotImplementedError("torch.reshape doesn't yet support the copy keyword")
+    if copy is True:
+        return x.clone(memory_format=torch.contiguous_format).view(shape, **kwargs)
+    if copy is False:
+        try:
+            return x.view(shape, **kwargs)
+        except RuntimeError as error:
+            raise ValueError(str(error)) from error
     return torch.reshape(x, shape, **kwargs)
 
 # torch.arange doesn't support returning empty arrays
