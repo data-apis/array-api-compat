@@ -203,7 +203,7 @@ def test_device_to_device(library, request):
     devices = xp.__array_namespace_info__().devices()
 
     # Default device
-    x = xp.asarray([1, 2, 3])
+    x = xp.asarray([1, 2, 3], dtype=xp.int32)
     dev = device(x)
 
     for dev in devices:
