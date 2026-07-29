@@ -90,4 +90,5 @@ array_api_tests/test_dlpack.py::test_dlpack_device
 array_api_tests/test_dlpack.py::test_dunder_dlpack
 array_api_tests/test_dlpack.py::test_from_dlpack
 
-
+# reshape copy=False code path does not handle scalars under NumPy < 2
+array_api_tests/test_manipulation_functions.py::test_reshape
