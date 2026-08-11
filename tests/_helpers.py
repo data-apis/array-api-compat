@@ -2,7 +2,7 @@ from importlib import import_module
 
 import pytest
 
-wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
+wrapped_libraries = ["numpy", "cupy", "torch", "tensorflow", "dask.array"]
 all_libraries = wrapped_libraries + [
     "array_api_strict", "jax.numpy", "ndonnx", "sparse"
 ]

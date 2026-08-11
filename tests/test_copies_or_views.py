@@ -3,6 +3,7 @@ A collection of tests to make sure that wrapped namespaces agree with the bare o
 on whether to return a view or a copy of inputs.
 """
 import pytest
+from array_api_compat import is_writeable_array
 from ._helpers import import_, wrapped_libraries
 
 
@@ -46,6 +47,9 @@ def test_view_or_copy(inputs, xp_name):
 
     func_name, arr_input, dtype_str, value = inputs
     dtype = getattr(bare_xp, dtype_str)
+    sample = wrapped_xp.asarray(arr_input, dtype=dtype)
+    if not is_writeable_array(sample):
+        pytest.skip("View/copy checks require mutable arrays")
 
     bare_func = getattr(bare_xp, func_name)
     bare_func = ensure_unary(bare_func, arr_input)
@@ -67,10 +71,12 @@ def test_view_or_copy(inputs, xp_name):
 @pytest.mark.parametrize('xp_name', wrapped_libraries + ['array_api_strict'])
 def test_clip_none(xp_name):
     xp = import_(xp_name, wrapper=True)
+    x = xp.arange(8)
+    if not is_writeable_array(x):
+        pytest.skip("View/copy checks require mutable arrays")
 
     if xp_name == 'array_api_strict' and xp.__version__ < "2.5":
         # https://github.com/data-apis/array-api-strict/pull/180
         pytest.xfail("clip(x) was only fixed in -strict == 2.5")
 
-    x = xp.arange(8)
     assert not is_view(xp.clip, x, 42)

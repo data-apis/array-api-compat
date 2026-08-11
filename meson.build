@@ -61,6 +61,15 @@ sources_raw = {
     'src/array_api_compat/torch/fft.py',
     'src/array_api_compat/torch/linalg.py',
   ],
+
+  'array_api_compat/tensorflow': [
+    'src/array_api_compat/tensorflow/__init__.py',
+    'src/array_api_compat/tensorflow/_aliases.py',
+    'src/array_api_compat/tensorflow/_info.py',
+    'src/array_api_compat/tensorflow/_typing.py',
+    'src/array_api_compat/tensorflow/fft.py',
+    'src/array_api_compat/tensorflow/linalg.py',
+  ],
 }
 
 sources = {}

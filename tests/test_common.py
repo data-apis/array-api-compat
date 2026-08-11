@@ -7,10 +7,10 @@ from numpy.testing import assert_equal
 
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
-    is_dask_array, is_jax_array, is_pydata_sparse_array,
+    is_tensorflow_array, is_dask_array, is_jax_array, is_pydata_sparse_array,
     is_ndonnx_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
-    is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
+    is_tensorflow_namespace, is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
     is_array_api_strict_namespace, is_ndonnx_namespace,
 )
 
@@ -25,6 +25,7 @@ is_array_functions = {
     'numpy': 'is_numpy_array',
     'cupy': 'is_cupy_array',
     'torch': 'is_torch_array',
+    'tensorflow': 'is_tensorflow_array',
     'dask.array': 'is_dask_array',
     'jax.numpy': 'is_jax_array',
     'sparse': 'is_pydata_sparse_array',
@@ -35,6 +36,7 @@ is_namespace_functions = {
     'numpy': 'is_numpy_namespace',
     'cupy': 'is_cupy_namespace',
     'torch': 'is_torch_namespace',
+    'tensorflow': 'is_tensorflow_namespace',
     'dask.array': 'is_dask_namespace',
     'jax.numpy': 'is_jax_namespace',
     'sparse': 'is_pydata_sparse_namespace',
@@ -46,10 +48,10 @@ is_namespace_functions = {
 @pytest.mark.parametrize('library', is_array_functions.keys())
 @pytest.mark.parametrize('func', is_array_functions.values())
 def test_is_xp_array(library, func):
-    lib = import_(library)
+    xp = import_(library, wrapper=True)
     is_func = globals()[func]
 
-    x = lib.asarray([1, 2, 3])
+    x = xp.asarray([1, 2, 3])
 
     assert is_func(x) == (func == is_array_functions[library])
 
@@ -72,8 +74,8 @@ def test_xp_is_array_generics(library):
     an object that matches with exactly one among the is_*_array
     function of the same library and is_numpy_array.
     """
-    lib = import_(library)
-    x = lib.asarray([1, 2, 3])
+    xp = import_(library, wrapper=True)
+    x = xp.asarray([1, 2, 3])
     x0 = x[0]
 
     matches = []
@@ -91,8 +93,8 @@ def test_xp_is_array_generics(library):
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_is_writeable_array(library):
-    lib = import_(library)
-    x = lib.asarray([1, 2, 3])
+    xp = import_(library, wrapper=True)
+    x = xp.asarray([1, 2, 3])
     if is_writeable_array(x):
         x[1] = 4
     else:
@@ -109,7 +111,7 @@ def test_is_writeable_array_numpy():
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_size(library):
-    xp = import_(library)
+    xp = import_(library, wrapper=True)
     x = xp.asarray([1, 2, 3])
     assert size(x) == 3
 
@@ -119,7 +121,7 @@ def test_size_none(library):
     if library == "sparse":
         pytest.skip("No arange(); no indexing by sparse arrays")
 
-    xp = import_(library)
+    xp = import_(library, wrapper=True)
     x = xp.arange(10)
     x = x[x < 5]
 
@@ -131,8 +133,8 @@ def test_size_none(library):
 
 @pytest.mark.parametrize("library", all_libraries)
 def test_is_lazy_array(library):
-    lib = import_(library)
-    x = lib.asarray([1, 2, 3])
+    xp = import_(library, wrapper=True)
+    x = xp.asarray([1, 2, 3])
     assert isinstance(is_lazy_array(x), bool)
 
 
@@ -254,6 +256,8 @@ def test_asarray_cross_library(source_library, target_library, request):
 
     elif source_library == "jax.numpy" and target_library == "torch":
         xfail(request, reason="casts int to float")
+    elif source_library == "tensorflow" and target_library == "torch":
+        xfail(request, reason="torch.asarray misinterprets TensorFlow tensors as buffers")
     elif source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
@@ -277,6 +281,9 @@ def test_asarray_copy(library):
     # test the copy flag to asarray() very rigorously. Once
     # https://github.com/data-apis/array-api-tests/issues/241 is fixed we
     # should be able to delete this.
+    if library == "tensorflow":
+        pytest.skip("TensorFlow tensors are immutable and cannot exercise mutation-based copy checks")
+
     xp = import_(library, wrapper=True)
     asarray = xp.asarray
     is_lib_func = globals()[is_array_functions[library]]

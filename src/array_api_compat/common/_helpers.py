@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     import numpy as np
     import numpy.typing as npt
     import sparse
+    import tensorflow as tf
     import torch
 
     # TODO: import from typing (requires Python >=3.13)
@@ -51,6 +52,7 @@ if TYPE_CHECKING:
         | jax.Array
         | ndx.Array
         | sparse.SparseArray
+        | tf.Tensor
         | torch.Tensor
         | SupportsArrayNamespace[Any]
     )
@@ -166,6 +168,29 @@ def is_torch_array(x: object) -> TypeIs[torch.Tensor]:
     """
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "torch", "Tensor")
+
+
+def is_tensorflow_array(x: object) -> TypeIs[tf.Tensor]:
+    """
+    Return True if `x` is a TensorFlow tensor.
+
+    This function does not import TensorFlow if it has not already been
+    imported and is therefore cheap to use.
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    cls = cast(Hashable, type(x))
+    return _issubclass_fast(cls, "tensorflow", "Tensor")
 
 
 def is_ndonnx_array(x: object) -> TypeIs[ndx.Array]:
@@ -308,6 +333,7 @@ def _is_array_api_cls(cls: type) -> bool:
         or _issubclass_fast(cls, "numpy", "generic")
         or _issubclass_fast(cls, "cupy", "ndarray")
         or _issubclass_fast(cls, "torch", "Tensor")
+        or _issubclass_fast(cls, "tensorflow", "Tensor")
         or _issubclass_fast(cls, "dask.array", "Array")
         or _issubclass_fast(cls, "sparse", "SparseArray")
         # TODO: drop support for jax<0.4.32 which didn't have __array_namespace__
@@ -385,6 +411,30 @@ def is_torch_namespace(xp: Namespace) -> bool:
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"torch", _compat_module_name() + ".torch"}
+
+
+@lru_cache(100)
+def is_tensorflow_namespace(xp: Namespace) -> bool:
+    """
+    Returns True if `xp` is a TensorFlow namespace.
+
+    This includes both TensorFlow itself and the version wrapped by
+    array-api-compat.
+
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_namespace
+    is_cupy_namespace
+    is_torch_namespace
+    is_ndonnx_namespace
+    is_dask_namespace
+    is_jax_namespace
+    is_pydata_sparse_namespace
+    is_array_api_strict_namespace
+    """
+    return xp.__name__ in {"tensorflow", _compat_module_name() + ".tensorflow"}
 
 
 def is_ndonnx_namespace(xp: Namespace) -> bool:
@@ -549,6 +599,14 @@ def _cls_to_namespace(
             from .. import torch as xp  # type: ignore[no-redef]
         else:
             import torch as xp  # type: ignore[no-redef]
+        return xp, None
+
+    if _issubclass_fast(cls_, "tensorflow", "Tensor"):
+        if _use_compat:
+            _check_api_version(api_version)
+            from .. import tensorflow as xp  # type: ignore[no-redef]
+        else:
+            import tensorflow as xp  # type: ignore[no-redef]
         return xp, None
 
     if _issubclass_fast(cls_, "dask.array", "Array"):
@@ -790,6 +848,8 @@ def device(x: _ArrayApiObj, /) -> Device:
             return x_device()
         else:
             return x_device
+    elif is_tensorflow_array(x):
+        return x.device
     elif is_pydata_sparse_array(x):
         # `sparse` will gain `.device`, so check for this first.
         x_device = getattr(x, "device", None)
@@ -849,6 +909,20 @@ def _torch_to_device(
     if stream is not None:
         raise NotImplementedError
     return x.to(device)
+
+
+def _tensorflow_to_device(
+    x: tf.Tensor,
+    device: str,
+    /,
+    stream: int | Any | None = None,
+) -> tf.Tensor:
+    if stream is not None:
+        raise ValueError("The stream argument to to_device() is not supported")
+    import tensorflow as tf
+
+    with tf.device(device):
+        return tf.identity(x)
 
 
 def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -> Array:
@@ -911,6 +985,8 @@ def to_device(x: Array, device: Device, /, *, stream: int | Any | None = None) -
         return _cupy_to_device(x, device, stream=stream)
     elif is_torch_array(x):
         return _torch_to_device(x, device, stream=stream)
+    elif is_tensorflow_array(x):
+        return _tensorflow_to_device(x, device, stream=stream)
     elif is_dask_array(x):
         if stream is not None:
             raise ValueError("The stream argument to to_device() is not supported")
@@ -965,6 +1041,7 @@ def _is_writeable_cls(cls: type) -> bool | None:
         or _issubclass_fast(cls, "jax", "Array")
         or _issubclass_fast(cls, "jax.core", "Tracer")  # see is_jax_array for limitations
         or _issubclass_fast(cls, "sparse", "SparseArray")
+        or _issubclass_fast(cls, "tensorflow", "Tensor")
     ):
         return False
     if _is_array_api_cls(cls):
@@ -998,6 +1075,7 @@ def _is_lazy_cls(cls: type) -> bool | None:
         or _issubclass_fast(cls, "numpy", "generic")
         or _issubclass_fast(cls, "cupy", "ndarray")
         or _issubclass_fast(cls, "torch", "Tensor")
+        or _issubclass_fast(cls, "tensorflow", "Tensor")
         or _issubclass_fast(cls, "sparse", "SparseArray")
     ):
         return False
@@ -1083,6 +1161,8 @@ __all__ = [
     "is_numpy_namespace",
     "is_torch_array",
     "is_torch_namespace",
+    "is_tensorflow_array",
+    "is_tensorflow_namespace",
     "is_ndonnx_array",
     "is_ndonnx_namespace",
     "is_pydata_sparse_array",

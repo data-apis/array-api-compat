@@ -1,0 +1,13 @@
+name: Array API Tests (TensorFlow)
+
+on: [push, pull_request]
+
+jobs:
+  array-api-tests-tensorflow:
+    uses: ./.github/workflows/array-api-tests.yml
+    with:
+      package-name: tensorflow
+      python-versions: '[''3.10'', ''3.13'']'
+      pytest-extra-args: -n 2
+      extra-env-vars: |
+        ARRAY_API_TESTS_XFAIL_MARK=skip
