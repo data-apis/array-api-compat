@@ -80,6 +80,13 @@ def _is_jax_zero_gradient_array(x: object) -> TypeGuard[_ZeroGradientArray]:
         dtype = x.dtype  # type: ignore[attr-defined]
     except AttributeError:
         return False
+
+    torch = sys.modules.get("torch")
+    if torch is not None and torch.compiler.is_compiling():
+        # Under torch.compile tracing, `type(dtype)` can't be modeled by Dynamo
+        # for objects it hasn't fully specialized (e.g. attrs on empty tuples).
+        return False
+
     cls = cast(Hashable, type(dtype))
     if not _issubclass_fast(cls, "numpy.dtypes", "VoidDType"):
         return False
