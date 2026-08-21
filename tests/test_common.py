@@ -8,10 +8,11 @@ from numpy.testing import assert_equal
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
-    is_ndonnx_array,
+    is_ndonnx_array, is_dpnp_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
     is_array_api_strict_namespace, is_ndonnx_namespace,
+    is_dpnp_namespace,
 )
 
 from array_api_compat import (
@@ -29,6 +30,7 @@ is_array_functions = {
     'jax.numpy': 'is_jax_array',
     'sparse': 'is_pydata_sparse_array',
     'ndonnx': 'is_ndonnx_array',
+    'dpnp': 'is_dpnp_array',
 }
 
 is_namespace_functions = {
@@ -40,6 +42,7 @@ is_namespace_functions = {
     'sparse': 'is_pydata_sparse_namespace',
     'array_api_strict': 'is_array_api_strict_namespace',
     'ndonnx': 'is_ndonnx_namespace',
+    'dpnp': 'is_dpnp_namespace',
 }
 
 
@@ -195,6 +198,8 @@ def test_device_to_device(library, request):
         xfail(request, reason="Stub raises ValueError")
     if library == "sparse":
         xfail(request, reason="No __array_namespace_info__()")
+    if library == "dpnp":
+        xfail(request, reason="`dev` not in `devices`")
     if library == "array_api_strict":
         if np.__version__ < "2":
             xfail(request, reason="no copy argument of np.asarray")
@@ -259,6 +264,8 @@ def test_asarray_cross_library(source_library, target_library, request):
         pytest.skip(reason="cupy does not support implicit conversion to CPU")
     elif source_library == "sparse" and target_library != "sparse":
         pytest.skip(reason="`sparse` does not allow implicit densification")
+    elif source_library == "dpnp" and target_library != "dpnp":
+        pytest.skip(reason="dpnp does not allow implicit conversion")
 
     src_lib = import_(source_library, wrapper=True)
     tgt_lib = import_(target_library, wrapper=True)

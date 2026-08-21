@@ -32,6 +32,7 @@ from ._typing import Array, Device, HasShape, Namespace, SupportsArrayNamespace
 if TYPE_CHECKING:
     import cupy as cp
     import dask.array as da
+    import dpnp
     import jax
     import ndonnx as ndx
     import numpy as np
@@ -48,6 +49,8 @@ if TYPE_CHECKING:
         npt.NDArray[Any]
         | cp.ndarray
         | da.Array
+        | dpnp.ndarray
+        | dpnp.tensor.usm_ndarray
         | jax.Array
         | ndx.Array
         | sparse.SparseArray
@@ -112,6 +115,7 @@ def is_numpy_array(x: object) -> TypeIs[npt.NDArray[Any]]:
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     # TODO: Should we reject ndarray subclasses?
     cls = cast(Hashable, type(x))
@@ -141,6 +145,7 @@ def is_cupy_array(x: object) -> bool:
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "cupy", "ndarray")
@@ -163,6 +168,7 @@ def is_torch_array(x: object) -> TypeIs[torch.Tensor]:
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "torch", "Tensor")
@@ -186,6 +192,7 @@ def is_ndonnx_array(x: object) -> TypeIs[ndx.Array]:
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "ndonnx", "Array")
@@ -209,6 +216,7 @@ def is_dask_array(x: object) -> TypeIs[da.Array]:
     is_ndonnx_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "dask.array", "Array")
@@ -233,6 +241,7 @@ def is_jax_array(x: object) -> TypeIs[jax.Array]:
     is_ndonnx_array
     is_dask_array
     is_pydata_sparse_array
+    is_dpnp_array
     """
     cls = cast(Hashable, type(x))
     # We test for jax.core.Tracer here to identify jax arrays during jit tracing. From jax 0.8.2 on,
@@ -267,10 +276,39 @@ def is_pydata_sparse_array(x: object) -> TypeIs[sparse.SparseArray]:
     is_ndonnx_array
     is_dask_array
     is_jax_array
+    is_dpnp_array
     """
     # TODO: Account for other backends.
     cls = cast(Hashable, type(x))
     return _issubclass_fast(cls, "sparse", "SparseArray")
+
+
+def is_dpnp_array(x: object) -> bool:
+    """
+    Return True if `x` is a dpnp array.
+
+    This function does not import `dpnp` if it has not already been imported
+    and is therefore cheap to use.
+
+
+    See Also
+    --------
+
+    array_namespace
+    is_array_api_obj
+    is_numpy_array
+    is_cupy_array
+    is_torch_array
+    is_ndonnx_array
+    is_dask_array
+    is_jax_array
+    is_pydata_sparse_array
+    """
+    cls = cast(Hashable, type(x))
+    return (
+    _issubclass_fast(cls, "dpnp", "ndarray")
+    or _issubclass_fast(cls, "dpnp.tensor", "usm_ndarray")
+    )
 
 
 def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
@@ -287,6 +325,8 @@ def is_array_api_obj(x: object) -> TypeGuard[_ArrayApiObj]:
     is_ndonnx_array
     is_dask_array
     is_jax_array
+    is_pydata_sparse_array
+    is_dpnp_array
     """
     try:
         # TODO: drop this check after np.matrix is gone
@@ -338,6 +378,7 @@ def is_numpy_namespace(xp: Namespace) -> bool:
     is_dask_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"numpy", _compat_module_name() + ".numpy"}
@@ -360,6 +401,7 @@ def is_cupy_namespace(xp: Namespace) -> bool:
     is_dask_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"cupy", _compat_module_name() + ".cupy"}
@@ -382,6 +424,7 @@ def is_torch_namespace(xp: Namespace) -> bool:
     is_dask_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"torch", _compat_module_name() + ".torch"}
@@ -401,6 +444,7 @@ def is_ndonnx_namespace(xp: Namespace) -> bool:
     is_dask_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ == "ndonnx"
@@ -423,6 +467,7 @@ def is_dask_namespace(xp: Namespace) -> bool:
     is_ndonnx_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"dask.array", _compat_module_name() + ".dask.array"}
@@ -445,6 +490,7 @@ def is_jax_namespace(xp: Namespace) -> bool:
     is_ndonnx_namespace
     is_dask_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ in {"jax.numpy", "jax.experimental.array_api"}
@@ -464,9 +510,32 @@ def is_pydata_sparse_namespace(xp: Namespace) -> bool:
     is_ndonnx_namespace
     is_dask_namespace
     is_jax_namespace
+    is_dpnp_namespace
     is_array_api_strict_namespace
     """
     return xp.__name__ == "sparse"
+
+
+def is_dpnp_namespace(xp: Namespace) -> bool:
+    """
+    Returns True if `xp` is a dpnp namespace.
+
+    This includes `dpnp` and `dpnp.tensor`.
+    
+    See Also
+    --------
+
+    array_namespace
+    is_numpy_namespace
+    is_cupy_namespace
+    is_torch_namespace
+    is_ndonnx_namespace
+    is_dask_namespace
+    is_jax_namespace
+    is_pydata_sparse_namespace
+    is_array_api_strict_namespace
+    """
+    return xp.__name__ in {"dpnp", "dpnp.tensor"}
 
 
 def is_array_api_strict_namespace(xp: Namespace) -> bool:
@@ -484,6 +553,7 @@ def is_array_api_strict_namespace(xp: Namespace) -> bool:
     is_dask_namespace
     is_jax_namespace
     is_pydata_sparse_namespace
+    is_dpnp_namespace
     """
     return xp.__name__ == "array_api_strict"
 
@@ -645,6 +715,7 @@ def array_namespace(
     is_dask_array
     is_jax_array
     is_pydata_sparse_array
+    is_dpnp_array
 
     """
     namespaces: list[Namespace] = []
@@ -1077,6 +1148,8 @@ __all__ = [
     "is_cupy_namespace",
     "is_dask_array",
     "is_dask_namespace",
+    "is_dpnp_array",
+    "is_dpnp_namespace",
     "is_jax_array",
     "is_jax_namespace",
     "is_numpy_array",
