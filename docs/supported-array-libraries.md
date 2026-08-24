@@ -132,6 +132,11 @@ Similar to JAX, `sparse` Array API support is contained directly in `sparse`.
 
 Similar to JAX, `ndonnx` Array API support is contained directly in `ndonnx`.
 
+(dpnp-support)=
+## [dpnp](https://github.com/IntelPython/dpnp)
+
+Similar to JAX, `dpnp` Array API support is contained directly in `dpnp`.
+
 (array-api-strict-support)=
 ## [array-api-strict](https://data-apis.org/array-api-strict/)
 
