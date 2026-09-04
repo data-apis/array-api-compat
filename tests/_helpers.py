@@ -4,7 +4,7 @@ import pytest
 
 wrapped_libraries = ["numpy", "cupy", "torch", "dask.array"]
 all_libraries = wrapped_libraries + [
-    "array_api_strict", "jax.numpy", "ndonnx", "sparse", "dpnp"
+    "array_api_strict", "jax.numpy", "ndonnx", "sparse", "dpnp", "mparray"
 ]
 
 def import_(library, wrapper=False):

@@ -58,6 +58,12 @@ jobs:
             fi
           fi
 
+          # mparray requires Python >=3.11 and NumPy >=2.
+          if [[ "${{ matrix.python-version }}" =~ ^3\.1[1-4]$ &&
+                "${{ matrix.numpy-version }}" =~ ^(latest|dev)$ ]]; then
+            python -m pip install mparray
+          fi
+
       - name: Dump pip environment
         run: pip freeze
 

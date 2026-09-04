@@ -32,6 +32,7 @@ repository = "https://github.com/data-apis/array-api-compat/"
 cupy = ["cupy"]
 dask = ["dask>=2024.9.0"]
 jax = ["jax"]
+mparray = ["mparray"]
 # Note: array-api-compat follows scikit-learn minimum dependencies, which support
 # much older versions of NumPy than what SPEC0 recommends.
 numpy = ["numpy>=1.22"]
@@ -50,6 +51,7 @@ dev = [
     "array-api-strict",
     "dask[array]>=2024.9.0",
     "jax[cpu]",
+    "mparray; python_version >= '3.11'",
     "ndonnx",
     "numpy>=1.22",
     "pytest",
@@ -105,7 +107,7 @@ warn_unused_ignores = true
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["cupy.*", "cupy_backends.*", "dask.*", "jax.*", "ndonnx.*", "sparse.*", "torch.*"]
+module = ["cupy.*", "cupy_backends.*", "dask.*", "jax.*", "mparray.*", "ndonnx.*", "sparse.*", "torch.*"]
 ignore_missing_imports = true
 
 

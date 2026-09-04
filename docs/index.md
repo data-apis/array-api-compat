@@ -2,7 +2,8 @@
 
 This is a small wrapper around common array libraries that is compatible with
 the [Array API standard](https://data-apis.org/array-api/latest/). Currently,
-NumPy, CuPy, PyTorch, Dask, JAX, ndonnx, Sparse and dpnp are supported. If you want
+NumPy, CuPy, PyTorch, Dask, JAX, mparray, ndonnx, Sparse and dpnp are
+supported. If you want
 support for other array libraries, or if you encounter any issues, please
 [open an issue](https://github.com/data-apis/array-api-compat/issues).
 
@@ -61,12 +62,11 @@ import array_api_compat.dask as da
 ```
 
 ```{note}
-There are no `array_api_compat` submodules for JAX, sparse, or ndonnx. These
-support for these libraries is contained in the libraries themselves (JAX
-support is in the `jax.numpy` module in JAX v0.4.32 or newer, and in the
-`jax.experimental.array_api` module for older JAX versions). The
-array-api-compat support for these libraries consists of supporting them in
-the [helper functions](helper-functions).
+There are no `array_api_compat` submodules for JAX, mparray, sparse, or ndonnx.
+These libraries provide their own Array API support. (JAX provides it through
+`jax.numpy` in JAX v0.4.32+ or `jax.experimental.array_api` in older versions.)
+array-api-compat supports these libraries through the
+[helper functions](helper-functions).
 ```
 
 Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
