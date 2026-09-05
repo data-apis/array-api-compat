@@ -43,7 +43,8 @@ jobs:
           if [ "${{ matrix.numpy-version }}" == "dev" ]; then
             python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
             python -m pip install dask[array] jax[cpu]
-            if ["${{ matrix.python-version }}" != "3.14]; then
+            python -m pip install --index-url https://software.repos.intel.com/python/pypi dpnp
+            if ["${{ matrix.python-version }}" != "3.14"]; then
                python -m pip install sparse ndonnx
             fi
           elif [ "${{ matrix.numpy-version }}" == "1.22" ]; then
@@ -53,7 +54,8 @@ jobs:
           else
             python -m pip install numpy
             python -m pip install dask[array] jax[cpu]
-            if ["${{ matrix.python-version }}" != "3.14]; then
+            python -m pip install --index-url https://software.repos.intel.com/python/pypi dpnp
+            if ["${{ matrix.python-version }}" != "3.14"]; then
                python -m pip install sparse ndonnx
             fi
           fi
