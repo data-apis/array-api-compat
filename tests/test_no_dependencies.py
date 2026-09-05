@@ -50,7 +50,7 @@ def _test_dependency(mod):
 # Y (except most array libraries actually do themselves depend on numpy).
 
 @pytest.mark.parametrize("library", ["cupy", "numpy", "torch", "dask.array",
-                                     "jax.numpy", "sparse", "array_api_strict"])
+                                     "jax.numpy", "mparray", "sparse", "array_api_strict"])
 def test_numpy_dependency(library):
     # This import is here because it imports numpy
     from ._helpers import import_

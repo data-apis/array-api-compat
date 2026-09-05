@@ -8,11 +8,11 @@ from numpy.testing import assert_equal
 from array_api_compat import (  # noqa: F401
     is_numpy_array, is_cupy_array, is_torch_array,
     is_dask_array, is_jax_array, is_pydata_sparse_array,
-    is_ndonnx_array, is_dpnp_array,
+    is_ndonnx_array, is_dpnp_array, is_mparray_array,
     is_numpy_namespace, is_cupy_namespace, is_torch_namespace,
     is_dask_namespace, is_jax_namespace, is_pydata_sparse_namespace,
     is_array_api_strict_namespace, is_ndonnx_namespace,
-    is_dpnp_namespace,
+    is_dpnp_namespace, is_mparray_namespace,
 )
 
 from array_api_compat import (
@@ -31,6 +31,7 @@ is_array_functions = {
     'sparse': 'is_pydata_sparse_array',
     'ndonnx': 'is_ndonnx_array',
     'dpnp': 'is_dpnp_array',
+    'mparray': 'is_mparray_array',
 }
 
 is_namespace_functions = {
@@ -43,6 +44,7 @@ is_namespace_functions = {
     'array_api_strict': 'is_array_api_strict_namespace',
     'ndonnx': 'is_ndonnx_namespace',
     'dpnp': 'is_dpnp_namespace',
+    'mparray': 'is_mparray_namespace',
 }
 
 
@@ -259,6 +261,8 @@ def test_asarray_cross_library(source_library, target_library, request):
 
     elif source_library == "jax.numpy" and target_library == "torch":
         xfail(request, reason="casts int to float")
+    elif source_library == "mparray" and target_library != "mparray":
+        pytest.skip(reason="mparray does not support implicit conversion")
     elif source_library == "cupy" and target_library != "cupy":
         # cupy explicitly disallows implicit conversions to CPU
         pytest.skip(reason="cupy does not support implicit conversion to CPU")

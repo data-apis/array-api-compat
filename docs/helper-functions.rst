@@ -49,6 +49,7 @@ yet.
 .. autofunction:: is_torch_array
 .. autofunction:: is_dask_array
 .. autofunction:: is_jax_array
+.. autofunction:: is_mparray_array
 .. autofunction:: is_pydata_sparse_array
 .. autofunction:: is_ndonnx_array
 .. autofunction:: is_dpnp_array
@@ -59,6 +60,7 @@ yet.
 .. autofunction:: is_torch_namespace
 .. autofunction:: is_dask_namespace
 .. autofunction:: is_jax_namespace
+.. autofunction:: is_mparray_namespace
 .. autofunction:: is_pydata_sparse_namespace
 .. autofunction:: is_ndonnx_namespace
 .. autofunction:: is_dpnp_namespace
