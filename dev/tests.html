@@ -252,8 +252,9 @@ e.g., tests for <a class="reference internal" href="../helper-functions.html"><s
 that is not strictly required by the standard. To run these tests, install the
 dependencies from the <code class="docutils literal notranslate"><span class="pre">dev</span></code> optional group (array-api-compat has <a class="reference internal" href="special-considerations.html#no-dependencies"><span class="std std-ref">no hard
 runtime dependencies</span></a>).</p>
-<p>array-api-tests is run against all supported libraries are tested on CI
-(<a class="reference internal" href="../supported-array-libraries.html#jax-support"><span class="std std-ref">except for JAX</span></a> and <a class="reference internal" href="../supported-array-libraries.html#sparse-support"><span class="std std-ref">Sparse</span></a>). This is achieved
+<p>The array-api-tests suite is run against all supported libraries on CI
+(<a class="reference internal" href="../supported-array-libraries.html#jax-support"><span class="std std-ref">except for JAX</span></a>, <a class="reference internal" href="../supported-array-libraries.html#mparray-support"><span class="std std-ref">mparray</span></a>, and
+<a class="reference internal" href="../supported-array-libraries.html#sparse-support"><span class="std std-ref">Sparse</span></a>). This is achieved
 by a <a class="reference external" href="https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml">reusable GitHub Actions
 Workflow</a>.
 Most libraries have tests that must be xfailed or skipped for various reasons.

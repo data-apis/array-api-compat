@@ -295,7 +295,7 @@ version.</p>
 <code class="docutils literal notranslate"><span class="pre">__array_namespace__</span></code> and <code class="docutils literal notranslate"><span class="pre">to_device</span></code> methods, so the corresponding helper
 functions <a class="reference internal" href="helper-functions.html#array_api_compat.array_namespace" title="array_api_compat.array_namespace"><code class="xref py py-func docutils literal notranslate"><span class="pre">array_namespace()</span></code></a> and <a class="reference internal" href="helper-functions.html#array_api_compat.to_device" title="array_api_compat.to_device"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_device()</span></code></a> in this
 library should be used instead.</p></li>
-<li><p>The <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.12)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.size()</span></code></a> attribute on
+<li><p>The <a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.Tensor.size.html#torch.Tensor.size" title="(in PyTorch v2.14)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">x.size()</span></code></a> attribute on
 <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> is a method that behaves differently from the
 <a class="reference external" href="https://data-apis.org/array-api/draft/API_specification/generated/array_api.array.size.html"><code class="docutils literal notranslate"><span class="pre">x.size</span></code></a>
 attribute in the spec. Use the <a class="reference internal" href="helper-functions.html#array_api_compat.size" title="array_api_compat.size"><code class="xref py py-func docutils literal notranslate"><span class="pre">size()</span></code></a> helper function as a
@@ -328,6 +328,15 @@ exactly match the spec for functions that are not wrapped at all.</p></li>
 entirely in the JAX library. The JAX array API support is tracked at
 <a class="reference external" href="https://github.com/google/jax/issues/18353">https://github.com/google/jax/issues/18353</a>.</p>
 </section>
+<section id="mparray">
+<span id="mparray-support"></span><h2><a class="reference external" href="https://github.com/mdhaber/mparray">mparray</a><a class="headerlink" href="#mparray" title="Link to this heading">¶</a></h2>
+<p>mparray implements the Array API directly, so there is no
+<code class="docutils literal notranslate"><span class="pre">array_api_compat.mparray</span></code> wrapper. <code class="docutils literal notranslate"><span class="pre">array_namespace()</span></code> returns the native
+<code class="docutils literal notranslate"><span class="pre">mparray</span></code> namespace, and compatibility support consists of library
+detection and generic helper functions. mparray currently supports the
+<code class="docutils literal notranslate"><span class="pre">2025.12</span></code> version of the standard and only the <code class="docutils literal notranslate"><span class="pre">&quot;cpu&quot;</span></code> device, so
+<code class="docutils literal notranslate"><span class="pre">to_device()</span></code> follows NumPy’s CPU-only behavior.</p>
+</section>
 <section id="dask">
 <h2><a class="reference external" href="https://www.dask.org/">Dask</a><a class="headerlink" href="#dask" title="Link to this heading">¶</a></h2>
 <p>If you’re using dask with numpy, many of the same limitations that apply to numpy
@@ -357,6 +366,10 @@ Other methods may only be partially implemented or return incorrect results at t
 <section id="ndonnx">
 <span id="ndonnx-support"></span><h2><a class="reference external" href="https://github.com/quantco/ndonnx">ndonnx</a><a class="headerlink" href="#ndonnx" title="Link to this heading">¶</a></h2>
 <p>Similar to JAX, <code class="docutils literal notranslate"><span class="pre">ndonnx</span></code> Array API support is contained directly in <code class="docutils literal notranslate"><span class="pre">ndonnx</span></code>.</p>
+</section>
+<section id="dpnp">
+<span id="dpnp-support"></span><h2><a class="reference external" href="https://github.com/IntelPython/dpnp">dpnp</a><a class="headerlink" href="#dpnp" title="Link to this heading">¶</a></h2>
+<p>Similar to JAX, <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Array API support is contained directly in <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>.</p>
 </section>
 <section id="array-api-strict">
 <span id="array-api-strict-support"></span><h2><a class="reference external" href="https://data-apis.org/array-api-strict/">array-api-strict</a><a class="headerlink" href="#array-api-strict" title="Link to this heading">¶</a></h2>
@@ -430,9 +443,11 @@ Other methods may only be partially implemented or return incorrect results at t
 <li><a class="reference internal" href="#numpy-and-cupy">NumPy and CuPy</a></li>
 <li><a class="reference internal" href="#pytorch">PyTorch</a></li>
 <li><a class="reference internal" href="#jax">JAX</a></li>
+<li><a class="reference internal" href="#mparray">mparray</a></li>
 <li><a class="reference internal" href="#dask">Dask</a></li>
 <li><a class="reference internal" href="#sparse">Sparse</a></li>
 <li><a class="reference internal" href="#ndonnx">ndonnx</a></li>
+<li><a class="reference internal" href="#dpnp">dpnp</a></li>
 <li><a class="reference internal" href="#array-api-strict">array-api-strict</a></li>
 </ul>
 </li>

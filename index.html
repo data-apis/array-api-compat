@@ -245,7 +245,8 @@
 <h1>Array API compatibility library<a class="headerlink" href="#array-api-compatibility-library" title="Link to this heading">¶</a></h1>
 <p>This is a small wrapper around common array libraries that is compatible with
 the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API standard</a>. Currently,
-NumPy, CuPy, PyTorch, Dask, JAX, ndonnx, and Sparse are supported. If you want
+NumPy, CuPy, PyTorch, Dask, JAX, mparray, ndonnx, Sparse and dpnp are
+supported. If you want
 support for other array libraries, or if you encounter any issues, please
 <a class="reference external" href="https://github.com/data-apis/array-api-compat/issues">open an issue</a>.</p>
 <p>Note that some of the functionality in this library is backwards incompatible
@@ -292,12 +293,11 @@ corresponding wrapped namespace for each library, like</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There are no <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> submodules for JAX, sparse, or ndonnx. These
-support for these libraries is contained in the libraries themselves (JAX
-support is in the <code class="docutils literal notranslate"><span class="pre">jax.numpy</span></code> module in JAX v0.4.32 or newer, and in the
-<code class="docutils literal notranslate"><span class="pre">jax.experimental.array_api</span></code> module for older JAX versions). The
-array-api-compat support for these libraries consists of supporting them in
-the <a class="reference internal" href="helper-functions.html"><span class="doc std std-doc">helper functions</span></a>.</p>
+<p>There are no <code class="docutils literal notranslate"><span class="pre">array_api_compat</span></code> submodules for JAX, mparray, sparse, or ndonnx.
+These libraries provide their own Array API support. (JAX provides it through
+<code class="docutils literal notranslate"><span class="pre">jax.numpy</span></code> in JAX v0.4.32+ or <code class="docutils literal notranslate"><span class="pre">jax.experimental.array_api</span></code> in older versions.)
+array-api-compat supports these libraries through the
+<a class="reference internal" href="helper-functions.html"><span class="doc std std-doc">helper functions</span></a>.</p>
 </div>
 <p>Each will include all the functions from the normal NumPy/CuPy/PyTorch/dask.array
 namespace, except that functions that are part of the array API are wrapped so
