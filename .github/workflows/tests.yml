@@ -44,6 +44,7 @@ jobs:
             python -m pip install numpy --pre --extra-index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple
             python -m pip install dask[array] jax[cpu]
             python -m pip install --index-url https://software.repos.intel.com/python/pypi dpnp
+            echo "OCL_ICD_FILENAMES=/home/runner/.local/lib/libintelocl.so" >> "$GITHUB_ENV"
             if ["${{ matrix.python-version }}" != "3.14"]; then
                python -m pip install sparse ndonnx
             fi
@@ -55,6 +56,7 @@ jobs:
             python -m pip install numpy
             python -m pip install dask[array] jax[cpu]
             python -m pip install --index-url https://software.repos.intel.com/python/pypi dpnp
+            echo "OCL_ICD_FILENAMES=/home/runner/.local/lib/libintelocl.so" >> "$GITHUB_ENV"
             if ["${{ matrix.python-version }}" != "3.14"]; then
                python -m pip install sparse ndonnx
             fi
@@ -66,8 +68,8 @@ jobs:
             python -m pip install mparray
           fi
  
-      - name: Set environment variables
-        run: echo "OCL_ICD_FILENAMES=/home/runner/.local/lib/libintelocl.so" >> "$GITHUB_ENV"
+      # - name: Set environment variables
+      #   run: echo "OCL_ICD_FILENAMES=/home/runner/.local/lib/libintelocl.so" >> "$GITHUB_ENV"
 
       - name: Dump pip environment
         run: pip freeze
