@@ -67,8 +67,7 @@ jobs:
           fi
  
       - name: Set environment variables  
-        run: |
-            echo "OCL_ICD_FILENAMES=$LD_LIBRARY_PATH/libintelocl.so" >> "$GITHUB_ENV"
+        run: echo "OCL_ICD_FILENAMES=$LD_LIBRARY_PATH/libintelocl.so" >> "$GITHUB_ENV"
 
       - name: Dump pip environment
         run: pip freeze
