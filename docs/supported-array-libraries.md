@@ -100,6 +100,16 @@ Unlike the other libraries supported here, JAX array API support is contained
 entirely in the JAX library. The JAX array API support is tracked at
 https://github.com/google/jax/issues/18353.
 
+(mparray-support)=
+## [mparray](https://github.com/mdhaber/mparray)
+
+mparray implements the Array API directly, so there is no
+`array_api_compat.mparray` wrapper. `array_namespace()` returns the native
+`mparray` namespace, and compatibility support consists of library
+detection and generic helper functions. mparray currently supports the
+`2025.12` version of the standard and only the `"cpu"` device, so
+`to_device()` follows NumPy's CPU-only behavior.
+
 ## [Dask](https://www.dask.org/)
 
 If you're using dask with numpy, many of the same limitations that apply to numpy

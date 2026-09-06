@@ -10,8 +10,9 @@ that is not strictly required by the standard. To run these tests, install the
 dependencies from the `dev` optional group (array-api-compat has [no hard
 runtime dependencies](no-dependencies)).
 
-array-api-tests is run against all supported libraries are tested on CI
-([except for JAX](jax-support) and [Sparse](sparse-support)). This is achieved
+The array-api-tests suite is run against all supported libraries on CI
+([except for JAX](jax-support), [mparray](mparray-support), and
+[Sparse](sparse-support)). This is achieved
 by a [reusable GitHub Actions
 Workflow](https://github.com/data-apis/array-api-compat/blob/main/.github/workflows/array-api-tests.yml).
 Most libraries have tests that must be xfailed or skipped for various reasons.
