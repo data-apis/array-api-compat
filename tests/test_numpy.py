@@ -154,3 +154,26 @@ def test_reshape_copy_false_returns_a_view_without_deprecation():
 def test_reshape_copy_false_rejects_an_input_that_needs_a_copy():
     with pytest.raises((ValueError, AttributeError)):
         xp.reshape(np.arange(12).reshape(3, 4).T, (2, 6), copy=False)
+
+
+def test_inspection_dtypes_do_not_compare_equal_to_none():
+    """`dtypes()`/`default_dtypes()` must return the scalar types, not
+    `np.dtype` objects. gh-359.
+
+    `np.dtype(None)` is `float64` in NumPy, so `dtypes()["float64"] == None`
+    is True and a caller cannot tell "unsupported" from "supported". And
+    `np.dtype` objects have no `__name__`, so they are unusable for the
+    ordinary introspection callers do on the returned values.
+    """
+    info = xp.__array_namespace_info__()
+
+    assert info.dtypes()["float64"] is np.float64
+    assert info.default_dtypes()["real floating"] is np.float64
+
+    for dt in info.dtypes().values():
+        assert not (dt == None)  # noqa: E711
+        assert isinstance(dt.__name__, str)
+
+    for dt in info.default_dtypes().values():
+        assert not (dt == None)  # noqa: E711
+        assert isinstance(dt.__name__, str)
