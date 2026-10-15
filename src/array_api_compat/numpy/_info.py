@@ -13,7 +13,6 @@ from numpy import bool_ as bool
 from numpy import (
     complex64,
     complex128,
-    dtype,
     float32,
     float64,
     int8,
@@ -186,10 +185,10 @@ class __array_namespace_info__:
                 f' {device}'
             )
         return {
-            "real floating": dtype(float64),
-            "complex floating": dtype(complex128),
-            "integral": dtype(intp),
-            "indexing": dtype(intp),
+            "real floating": float64,
+            "complex floating": complex128,
+            "integral": intp,
+            "indexing": intp,
         }
 
     def dtypes(
@@ -259,71 +258,71 @@ class __array_namespace_info__:
             )
         if kind is None:
             return {
-                "bool": dtype(bool),
-                "int8": dtype(int8),
-                "int16": dtype(int16),
-                "int32": dtype(int32),
-                "int64": dtype(int64),
-                "uint8": dtype(uint8),
-                "uint16": dtype(uint16),
-                "uint32": dtype(uint32),
-                "uint64": dtype(uint64),
-                "float32": dtype(float32),
-                "float64": dtype(float64),
-                "complex64": dtype(complex64),
-                "complex128": dtype(complex128),
+                "bool": bool,
+                "int8": int8,
+                "int16": int16,
+                "int32": int32,
+                "int64": int64,
+                "uint8": uint8,
+                "uint16": uint16,
+                "uint32": uint32,
+                "uint64": uint64,
+                "float32": float32,
+                "float64": float64,
+                "complex64": complex64,
+                "complex128": complex128,
             }
         if kind == "bool":
-            return {"bool": dtype(bool)}
+            return {"bool": bool}
         if kind == "signed integer":
             return {
-                "int8": dtype(int8),
-                "int16": dtype(int16),
-                "int32": dtype(int32),
-                "int64": dtype(int64),
+                "int8": int8,
+                "int16": int16,
+                "int32": int32,
+                "int64": int64,
             }
         if kind == "unsigned integer":
             return {
-                "uint8": dtype(uint8),
-                "uint16": dtype(uint16),
-                "uint32": dtype(uint32),
-                "uint64": dtype(uint64),
+                "uint8": uint8,
+                "uint16": uint16,
+                "uint32": uint32,
+                "uint64": uint64,
             }
         if kind == "integral":
             return {
-                "int8": dtype(int8),
-                "int16": dtype(int16),
-                "int32": dtype(int32),
-                "int64": dtype(int64),
-                "uint8": dtype(uint8),
-                "uint16": dtype(uint16),
-                "uint32": dtype(uint32),
-                "uint64": dtype(uint64),
+                "int8": int8,
+                "int16": int16,
+                "int32": int32,
+                "int64": int64,
+                "uint8": uint8,
+                "uint16": uint16,
+                "uint32": uint32,
+                "uint64": uint64,
             }
         if kind == "real floating":
             return {
-                "float32": dtype(float32),
-                "float64": dtype(float64),
+                "float32": float32,
+                "float64": float64,
             }
         if kind == "complex floating":
             return {
-                "complex64": dtype(complex64),
-                "complex128": dtype(complex128),
+                "complex64": complex64,
+                "complex128": complex128,
             }
         if kind == "numeric":
             return {
-                "int8": dtype(int8),
-                "int16": dtype(int16),
-                "int32": dtype(int32),
-                "int64": dtype(int64),
-                "uint8": dtype(uint8),
-                "uint16": dtype(uint16),
-                "uint32": dtype(uint32),
-                "uint64": dtype(uint64),
-                "float32": dtype(float32),
-                "float64": dtype(float64),
-                "complex64": dtype(complex64),
-                "complex128": dtype(complex128),
+                "int8": int8,
+                "int16": int16,
+                "int32": int32,
+                "int64": int64,
+                "uint8": uint8,
+                "uint16": uint16,
+                "uint32": uint32,
+                "uint64": uint64,
+                "float32": float32,
+                "float64": float64,
+                "complex64": complex64,
+                "complex128": complex128,
             }
         if isinstance(kind, tuple):
             res: dict[str, DType] = {}
