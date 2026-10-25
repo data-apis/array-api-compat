@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.16.0 (2026-10-25)
+
+### New features
+
+- New helpers for the `mparray` library have been added: `is_mparray_array` and
+  `is_mparray_namespace`.
+- New helpers for the `dpnp` library have been added: `is_dpnp_array` and
+  `is_dpnp_namespace`.
+- `torch.reshape` now implements `copy=` arguments.
+- Pytorch binary functions have been wrapped to accept (array, python scalar) pairs.
+
+### Perfomance and other improvements
+
+- Performance of `numpy.clip` has been improved
+- `numpy.reshape` uses the native numpy `reshape` function for `numpy >= 2.1`
+- Multiple `fft` functions avoid an unneccessary copy, which improves performance
+  and memory consumption
+- `py.typed` marker is included in the installed package.
+
+### The following users contributed to this release:
+
+Raashish Aggarwal,
+Evgeni Burovski,
+Lucas Colley,
+Stanley C,
+Matt Haberland, 
+Tim Head,
+Chris Ninham,
+Laslo Ruhberg.
+
+
 ## 1.15.0 (2026-06-07)
 
 ### Major changes
