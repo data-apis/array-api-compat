@@ -214,6 +214,9 @@ def test_binary_python_scalars(func_name):
     assert xp.all(func(s, x) == func(y, x))
     assert func(x, s).dtype == func(s, x).dtype == func(x, y).dtype
 
+    with pytest.raises(TypeError):
+        func(s, s)
+
 
 @pytest.mark.parametrize("func_name", ["logical_and", "logical_or", "logical_xor"])
 def test_logical_python_scalars(func_name):
