@@ -1,6 +1,6 @@
 project(
   'array_api_compat',
-  version: '1.16.0',
+  version: '1.17.0.dev0',
   license: 'MIT',
   license_files: ['LICENSE']
 )
