@@ -30,12 +30,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v7.0.1
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       with:
         fetch-depth: 0
 
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  #v7.1.0
       with:
         python-version: '3.x'
 
@@ -60,7 +60,7 @@ jobs:
       run: python -m zipfile --list dist/array_api_compat-*.whl
 
     - name: Upload distribution artifact
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: dist-artifact
         path: dist
@@ -81,7 +81,7 @@ jobs:
 
     steps:
     - name: Download distribution artifact
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: dist-artifact
         path: dist
@@ -102,12 +102,12 @@ jobs:
 
     - name: Publish distribution 📦 to PyPI
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@v1.14.2
+      uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
       with:
         print-hash: true
 
     - name: Create GitHub Release from a Tag
-      uses: softprops/action-gh-release@v3
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64  # v3.0.3
       if: startsWith(github.ref, 'refs/tags/')
       with:
           files: dist/*
