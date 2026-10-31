@@ -50,6 +50,9 @@ array_api_tests/test_creation_functions.py::test_linspace
 # https://github.com/numpy/numpy/issues/21083
 array_api_tests/test_linalg.py::test_vector_norm
 
+# in-place matmuls fail on NumPy 1.22
+array_api_tests/test_linalg.py::test_matmul
+
 # NumPy 1.22 doesn't support NPY_PROMOTION_STATE=weak, so many tests fail with
 # type promotion issues
 # NOTE: some of these may not fail until one runs array-api-tests with
