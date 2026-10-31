@@ -132,6 +132,39 @@ def test_numpy_clip_returns_copy_when_unbounded():
     np.testing.assert_array_equal(y, x)
 
 
+@pytest.mark.parametrize("dtype", [np.int8, np.int64, np.uint8, np.uint64])
+@pytest.mark.parametrize("bound_name", ["min", "max"])
+@pytest.mark.parametrize("broadcast", [False, True])
+@pytest.mark.parametrize("use_out", [False, True])
+def test_numpy_clip_readonly_integer_bounds(dtype, bound_name, broadcast, use_out):
+    x = xp.asarray([[0, 3, 9], [4, 8, 1]], dtype=dtype)
+    if broadcast:
+        bound = xp.broadcast_to(xp.asarray(2 if bound_name == "min" else 5, dtype=dtype), (3,))
+        expected = [[2, 3, 9], [4, 8, 2]] if bound_name == "min" else [[0, 3, 5], [4, 5, 1]]
+    else:
+        bound = xp.asarray([2, 3, 4] if bound_name == "min" else [5, 6, 7], dtype=dtype)
+        bound.flags.writeable = False
+        expected = [[2, 3, 9], [4, 8, 4]] if bound_name == "min" else [[0, 3, 7], [4, 6, 1]]
+
+    original_bound = bound.copy()
+    assert not bound.flags.writeable
+    kwargs = {bound_name: bound}
+    if use_out:
+        kwargs["out"] = xp.empty_like(x)
+    result = xp.clip(x, **kwargs)
+
+    np.testing.assert_array_equal(result, xp.asarray(expected, dtype=dtype))
+    assert result.dtype == x.dtype
+    if use_out:
+        np.testing.assert_array_equal(kwargs["out"], result)
+        assert np.shares_memory(kwargs["out"], result)
+    else:
+        assert not np.shares_memory(x, result)
+    np.testing.assert_array_equal(x, xp.asarray([[0, 3, 9], [4, 8, 1]], dtype=dtype))
+    np.testing.assert_array_equal(bound, original_bound)
+    assert not bound.flags.writeable
+
+
 def test_matrix_is_not_array_api_obj():
     assert is_array_api_obj(np.asarray(3))
     assert is_array_api_obj(np.float64(3))
