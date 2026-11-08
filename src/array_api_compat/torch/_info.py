@@ -120,7 +120,7 @@ class __array_namespace_info__:
         --------
         https://github.com/data-apis/array-api/issues/835
         """
-        return torch.device("cpu")
+        return torch.get_default_device()
 
     def default_dtypes(self, *, device=None):
         """
