@@ -80,6 +80,22 @@ def test_asarray_no_compute(xp):
         xp.asarray(a, copy=False, dtype=a.dtype)
 
 
+@pytest.mark.parametrize("unknown", [False, True])
+def test_broadcast_shapes_no_compute(xp, unknown):
+    a = da.arange(6, chunks=2)
+    if unknown:
+        a = a[a > 0]
+    chunks = a.chunks
+    with assert_no_compute():
+        shape = xp.broadcast_shapes(a.shape, (1,))
+    assert isinstance(shape, tuple)
+    if unknown:
+        assert np.isnan(shape[0])
+    else:
+        assert shape == (6,)
+    assert a.chunks == chunks
+
+
 @pytest.mark.parametrize("copy", [True, False])
 def test_astype_no_compute(xp, copy):
     with assert_no_compute():
