@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from typing_extensions import TypeIs
 
 import dask.array as da
+from dask.array.core import broadcast_shapes
 import numpy as np
 from numpy import bool_ as bool
 from numpy import (
@@ -351,6 +352,7 @@ def count_nonzero(
 
 
 __all__ = [
+    "broadcast_shapes",
     "count_nonzero",
     "bool",
     "int8", "int16", "int32", "int64",

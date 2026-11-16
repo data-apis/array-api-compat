@@ -231,7 +231,7 @@ NAMES = {
 
 XFAILS = {
     ("numpy", ""): ["from_dlpack"] if np.__version__ < "1.23" else [],
-    ("dask.array", ""): ["from_dlpack", "take_along_axis", "broadcast_shapes"],
+    ("dask.array", ""): ["from_dlpack", "take_along_axis"],
     ("dask.array", "linalg"): [
         "cross",
         "det",
