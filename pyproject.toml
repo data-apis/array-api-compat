@@ -57,6 +57,7 @@ dev = [
     "pytest",
     "torch",
     "sparse>=0.15.1",
+    "mlx; sys_platform == 'darwin'",
 ]
 
 
